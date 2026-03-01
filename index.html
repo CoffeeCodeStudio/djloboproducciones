@@ -6,7 +6,9 @@
     <title>DJ Lobo Radio - 80s, 90s & Latin Music</title>
     <meta name="description" content="DJ Lobo Radio - Over 20 years of experience mixing 80s, 90s classics and hot Latin beats. Tune in for synth-pop, eurodance, salsa and reggaeton." />
     <meta name="author" content="DJ Lobo Radio" />
-    <link rel="icon" href="/favicon.png" type="image/png" />
+    
+    <!-- Favicon - use ICO for smallest file size -->
+    <link rel="icon" href="/favicon.ico" type="image/x-icon" sizes="32x32" />
 
     <meta property="og:title" content="DJ Lobo Radio - 80s, 90s & Latin Music" />
     <meta property="og:description" content="Over 20 years mixing 80s, 90s classics and Latin beats. Tune in and let the nostalgia flow." />
@@ -14,10 +16,17 @@
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@DJLoboRadio" />
+
+    <!-- Preload critical font (display only) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
 
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <!-- Load Google Fonts non-blocking -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" /></noscript>
   </body>
 </html>

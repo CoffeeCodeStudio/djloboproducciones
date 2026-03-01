@@ -4,6 +4,7 @@ import { useBranding } from "@/hooks/useBranding";
 import { usePresence } from "@/hooks/usePresence";
 import { useStreamStatus } from "@/hooks/useStreamStatus";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { optimizeProfile } from "@/lib/imageOptimizer";
 
 const translations = {
   sv: {
@@ -68,7 +69,7 @@ const HeroSection = () => {
   };
 
   // Use dynamic profile image if available, otherwise use the default
-  const profileImage = branding?.profile_image_url || djLoboImage;
+  const profileImage = optimizeProfile(branding?.profile_image_url) || djLoboImage;
   const siteName = branding?.site_name || "DJ LOBO";
 
   return (

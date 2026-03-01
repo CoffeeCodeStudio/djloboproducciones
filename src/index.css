@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap');
+/* Google Fonts loaded non-blocking via index.html */
 
 @tailwind base;
 @tailwind components;
@@ -282,6 +282,13 @@
   .card-bpm-pulse {
     animation: card-border-pulse 0.484s ease-in-out infinite;
     border-color: hsla(var(--neon-cyan), 0.4);
+  }
+
+  @media (max-width: 768px) {
+    .card-bpm-pulse {
+      animation: none;
+      border-color: hsla(var(--neon-cyan), 0.3);
+    }
   }
 
   @keyframes card-border-pulse {
