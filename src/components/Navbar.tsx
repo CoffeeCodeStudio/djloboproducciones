@@ -136,6 +136,8 @@ const Navbar = () => {
                   alt="DJ Lobo Radio Logo"
                   className="h-10 sm:h-12 w-auto object-contain"
                   src={branding.logo_url}
+                  fetchPriority="high"
+                  loading="eager"
                 />
               ) : (
                 <div className="h-10 sm:h-12 w-10 sm:w-12 flex items-center justify-center">

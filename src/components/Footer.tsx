@@ -66,9 +66,9 @@ const Footer = () => {
       <div className="max-w-7xl mx-auto text-center">
         {/* Logo */}
         <div className="flex items-center justify-center mb-4 sm:mb-6">
-          {branding?.logo_url ? (
-            <img alt="DJ Lobo Radio Logo" className="h-16 sm:h-20 w-auto object-contain" src={branding.logo_url} />
-          ) : (
+            {branding?.logo_url ? (
+              <img alt="DJ Lobo Radio Logo" className="h-16 sm:h-20 w-auto object-contain" src={branding.logo_url} loading="lazy" />
+            ) : (
             <div className="h-16 sm:h-20 w-16 sm:w-20 flex items-center justify-center glass-card rounded-full">
               <Radio className="h-10 sm:h-12 w-10 sm:w-12 text-neon-cyan" />
             </div>

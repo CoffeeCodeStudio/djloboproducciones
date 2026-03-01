@@ -153,6 +153,8 @@ const HeroSection = () => {
             src={profileImage}
             alt="DJ Lobo vid mixerbordet med hörlurar"
             className="w-full h-full object-cover rounded-full"
+            fetchPriority="high"
+            loading="eager"
           />
         </div>
         {/* Pulsing glow effect behind image synced to 124 BPM */}

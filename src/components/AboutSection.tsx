@@ -177,6 +177,7 @@ const AboutSection = () => {
                 src={heroImage}
                 alt="DJ Lobo spelar latinmusik live"
                 className="w-full h-64 sm:h-80 object-cover"
+                loading="lazy"
               />
             </div>
 

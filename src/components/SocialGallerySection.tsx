@@ -5,6 +5,7 @@ import { useGallery } from "@/hooks/useGallery";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useBranding } from "@/hooks/useBranding";
 import MixcloudModal from "@/components/MixcloudModal";
+import LazyYouTube from "@/components/LazyYouTube";
 
 const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/djloboradio",
@@ -206,18 +207,15 @@ const SocialGallerySection = () => {
           <div className="max-w-3xl mx-auto">
             <div className="glass-card overflow-hidden group hover:border-neon-pink/50 transition-all duration-300">
               {featuredVideoId ? (
-                // Show actual YouTube video
+                // Show actual YouTube video - lazy loaded
                 <div className="aspect-video relative">
-                  <iframe
-                    src={`https://www.youtube.com/embed/${featuredVideoId}?rel=0&modestbranding=1`}
+                  <LazyYouTube
+                    videoId={featuredVideoId}
                     title="DJ Lobo - Latest Video"
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                    allowFullScreen
-                    className="w-full h-full"
                   />
                   
                   {/* Featured badge */}
-                  <div className="absolute top-4 left-4 z-10">
+                  <div className="absolute top-4 left-4 z-10 pointer-events-none">
                     <span className="px-3 py-1.5 rounded text-sm font-semibold flex items-center gap-1.5 bg-neon-pink/90 text-white">
                       <Play className="w-4 h-4" />
                       {t.featured}
@@ -292,18 +290,15 @@ const SocialGallerySection = () => {
                   key={videoId}
                   className="glass-card overflow-hidden group transition-all duration-300 card-bpm-pulse video-card-hover hover:border-neon-cyan/50"
                 >
-                  {/* YouTube Embed */}
+                  {/* YouTube Embed - Lazy loaded */}
                   <div className="aspect-video relative">
-                    <iframe
-                      src={`https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1`}
+                    <LazyYouTube
+                      videoId={videoId}
                       title={`Featured Video ${index + 1}`}
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                      className="w-full h-full"
                     />
                     
                     {/* Badge */}
-                    <div className="absolute top-3 left-3 z-10">
+                    <div className="absolute top-3 left-3 z-10 pointer-events-none">
                       <span className="px-2 py-1 rounded text-xs font-semibold flex items-center gap-1 text-white bg-neon-pink/90">
                         <Play className="w-3 h-3" />
                         {t.exclusive}

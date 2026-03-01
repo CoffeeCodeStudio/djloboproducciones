@@ -211,30 +211,41 @@
     animation: mesh-flow 25s ease-in-out infinite;
     pointer-events: none;
     z-index: 0;
+    will-change: background-position;
+  }
+
+  /* Disable mesh animation on mobile for performance */
+  @media (max-width: 768px) {
+    .mesh-gradient-bg {
+      animation: none;
+    }
   }
 
   @keyframes mesh-flow {
     0%, 100% {
       background-position: 0% 0%, 100% 100%, 50% 50%, 30% 70%;
-      transform: scale(1);
     }
     25% {
       background-position: 10% 20%, 90% 80%, 60% 40%, 40% 60%;
-      transform: scale(1.02);
     }
     50% {
       background-position: 20% 10%, 80% 90%, 40% 60%, 50% 50%;
-      transform: scale(1);
     }
     75% {
       background-position: 5% 15%, 95% 85%, 55% 45%, 35% 65%;
-      transform: scale(1.01);
     }
   }
 
-  /* 124 BPM neon pulse animation (0.484s per beat) */
+  /* 124 BPM neon pulse animation (0.484s per beat) - disabled on mobile for perf */
   .bpm-pulse-124 {
     animation: bpm-pulse 0.484s ease-in-out infinite;
+  }
+
+  @media (max-width: 768px) {
+    .bpm-pulse-124 {
+      animation: none;
+      box-shadow: 0 0 20px hsla(var(--neon-pink), 0.4), 0 0 40px hsla(var(--neon-cyan), 0.2);
+    }
   }
 
   @keyframes bpm-pulse {
