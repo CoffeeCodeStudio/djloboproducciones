@@ -69,7 +69,9 @@ const HeroSection = () => {
   };
 
   // Use dynamic profile image if available, otherwise use the default
-  const profileImage = optimizeProfile(branding?.profile_image_url) || djLoboImage;
+  const profileOpt = optimizeProfile(branding?.profile_image_url);
+  const profileImage = profileOpt.src || djLoboImage;
+  const profileFallback = profileOpt.fallback || djLoboImage;
   const siteName = branding?.site_name || "DJ LOBO";
 
   return (
@@ -156,6 +158,7 @@ const HeroSection = () => {
             className="w-full h-full object-cover rounded-full"
             fetchPriority="high"
             loading="eager"
+            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = profileFallback; }}
           />
         </div>
         {/* Pulsing glow effect behind image synced to 124 BPM */}
