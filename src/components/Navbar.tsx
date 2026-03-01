@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Menu, X, Radio, Globe, ChevronDown } from "lucide-react";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
 import { useBranding } from "@/hooks/useBranding";
+import { optimizeLogo } from "@/lib/imageOptimizer";
 
 interface NavItem {
   id: string;
@@ -135,9 +136,11 @@ const Navbar = () => {
                 <img
                   alt="DJ Lobo Radio Logo"
                   className="h-10 sm:h-12 w-auto object-contain"
-                  src={branding.logo_url}
+                  src={optimizeLogo(branding.logo_url)}
                   fetchPriority="high"
                   loading="eager"
+                  width={48}
+                  height={48}
                 />
               ) : (
                 <div className="h-10 sm:h-12 w-10 sm:w-12 flex items-center justify-center">

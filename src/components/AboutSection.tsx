@@ -3,6 +3,7 @@ import djLoboAboutImage from "@/assets/dj-lobo-about.jpg";
 import { Music, Headphones, Zap, Disc } from "lucide-react";
 import { useBranding } from "@/hooks/useBranding";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { optimizeHero } from "@/lib/imageOptimizer";
 
 const translations = {
   sv: {
@@ -74,7 +75,7 @@ const AboutSection = () => {
   const t = translations[language];
 
   // Use dynamic hero image if available, otherwise use the default
-  const heroImage = branding?.hero_image_url || djLoboAboutImage;
+  const heroImage = optimizeHero(branding?.hero_image_url) || djLoboAboutImage;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
