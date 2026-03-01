@@ -173,12 +173,13 @@ const SocialGallerySection = () => {
                   className="aspect-square glass-card overflow-hidden group relative hover:border-neon-pink/50 transition-all duration-300"
                 >
                   <img
-                    src={optimizeGallery(image.image_url)}
+                    src={optimizeGallery(image.image_url).src}
                     alt={image.alt_text || "DJ Lobo gallery image"}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     loading="lazy"
                     width={400}
                     height={400}
+                    onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = optimizeGallery(image.image_url).fallback; }}
                   />
                   
                   {/* Hover overlay with neon glow */}

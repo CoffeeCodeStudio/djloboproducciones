@@ -68,7 +68,7 @@ const Footer = () => {
         {/* Logo */}
         <div className="flex items-center justify-center mb-4 sm:mb-6">
             {branding?.logo_url ? (
-              <img alt="DJ Lobo Radio Logo" className="h-16 sm:h-20 w-auto object-contain" src={optimizeLogo(branding.logo_url)} loading="lazy" />
+              <img alt="DJ Lobo Radio Logo" className="h-16 sm:h-20 w-auto object-contain" src={optimizeLogo(branding.logo_url).src} loading="lazy" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = optimizeLogo(branding.logo_url).fallback; }} />
             ) : (
             <div className="h-16 sm:h-20 w-16 sm:w-20 flex items-center justify-center glass-card rounded-full">
               <Radio className="h-10 sm:h-12 w-10 sm:w-12 text-neon-cyan" />

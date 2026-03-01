@@ -75,7 +75,9 @@ const AboutSection = () => {
   const t = translations[language];
 
   // Use dynamic hero image if available, otherwise use the default
-  const heroImage = optimizeHero(branding?.hero_image_url) || djLoboAboutImage;
+  const heroOpt = optimizeHero(branding?.hero_image_url);
+  const heroImage = heroOpt.src || djLoboAboutImage;
+  const heroFallback = heroOpt.fallback || djLoboAboutImage;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -179,6 +181,7 @@ const AboutSection = () => {
                 alt="DJ Lobo spelar latinmusik live"
                 className="w-full h-64 sm:h-80 object-cover"
                 loading="lazy"
+                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = heroFallback; }}
               />
             </div>
 
