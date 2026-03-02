@@ -15,7 +15,7 @@ const Index = () => {
       <div className="mesh-gradient-bg" aria-hidden="true" />
       <div className="relative z-10">
         <Navbar />
-        <main id="main-content" tabIndex={-1} className="px-4 sm:px-6 pb-32">
+        <main id="main-content" tabIndex={-1} className="px-4 sm:px-6 pb-40">
           <div className="max-w-7xl mx-auto">
             <div id="hem">
               <HeroSection />

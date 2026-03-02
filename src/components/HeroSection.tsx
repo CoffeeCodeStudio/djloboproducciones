@@ -65,7 +65,7 @@ const HeroSection = () => {
 
   return (
     <section
-      className="min-h-[85vh] flex flex-col items-center justify-center px-4 sm:px-6 pt-20 pb-32 relative"
+      className="min-h-[85vh] flex flex-col items-center justify-center px-4 sm:px-6 pt-20 pb-40 relative"
       aria-labelledby="hero-title"
     >
       {/* Stream Status Badge */}
