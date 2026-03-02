@@ -556,8 +556,46 @@
     }
   }
 
+  /* Gold Neon Sign Button */
+  .neon-sign-gold {
+    --gold: #FFD700;
+    --gold-dim: #B8960C;
+    color: var(--gold);
+    border: 2px solid var(--gold);
+    background: transparent;
+    text-shadow: 0 0 4px #fff, 0 0 11px var(--gold), 0 0 19px var(--gold);
+    box-shadow: 0 0 5px var(--gold), inset 0 0 5px var(--gold);
+    animation: goldNeonFlicker 4s infinite;
+  }
+
+  .neon-sign-gold:hover,
+  .neon-sign-gold:focus-visible {
+    animation: none;
+    color: #fff;
+    border-color: var(--gold);
+    text-shadow: 0 0 7px #fff, 0 0 20px var(--gold), 0 0 40px var(--gold), 0 0 60px var(--gold);
+    box-shadow: 0 0 10px var(--gold), 0 0 30px var(--gold), 0 0 60px var(--gold), inset 0 0 15px var(--gold);
+    background: rgba(255, 215, 0, 0.08);
+    transform: scale(1.05);
+    outline: none;
+  }
+
+  @keyframes goldNeonFlicker {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+      text-shadow: 0 0 4px #fff, 0 0 11px #FFD700, 0 0 19px #FFD700;
+      box-shadow: 0 0 5px #FFD700, inset 0 0 5px #FFD700;
+      opacity: 1;
+    }
+    20%, 24%, 55% {
+      text-shadow: none;
+      box-shadow: none;
+      opacity: 0.7;
+    }
+  }
+
   @media (prefers-reduced-motion: reduce) {
-    .profile-neon-aura {
+    .profile-neon-aura,
+    .neon-sign-gold {
       animation: none !important;
     }
   }
