@@ -24,7 +24,7 @@ const Layout = () => {
 
       {/* Cinematic Animated Background Image */}
       {branding?.background_image_url && (
-        <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden" aria-hidden="true">
+        <div className="fixed inset-0 pointer-events-none overflow-hidden" style={{ zIndex: 0 }} aria-hidden="true">
           <div
             className="absolute inset-0 bg-cinematic bg-no-repeat"
             style={{ backgroundImage: `url(${branding.background_image_url})` }}
@@ -33,7 +33,7 @@ const Layout = () => {
         </div>
       )}
 
-      <div className="mesh-gradient-bg" aria-hidden="true" />
+      <div className="mesh-gradient-bg" aria-hidden="true" style={{ zIndex: 1 }} />
       <div className="relative z-10">
         <Navbar />
         <main
