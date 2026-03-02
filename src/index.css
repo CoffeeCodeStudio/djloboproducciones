@@ -562,24 +562,41 @@
     }
   }
 
-  /* Listen button pulse - neon cyan */
-  .listen-pulse {
-    animation: listen-glow 2.5s ease-in-out infinite;
+  /* Permanent gold neon flicker for 'Lyssna' nav link */
+  .permanent-neon-link {
+    color: #FFD700 !important;
+    border: 2px solid hsla(45, 100%, 50%, 0.5);
+    border-radius: 99px;
+    text-decoration: none;
+    position: relative;
+    overflow: visible;
+    animation: goldNeonFlickerPermanent 3s infinite ease-in-out;
   }
 
-  @keyframes listen-glow {
-    0%, 100% {
-      box-shadow: 0 0 10px hsla(var(--neon-cyan), 0.3), 0 0 20px hsla(var(--neon-cyan), 0.15);
+  @keyframes goldNeonFlickerPermanent {
+    0%, 18%, 22%, 25%, 53%, 57%, 100% {
+      text-shadow: 0 0 4px hsla(0, 0%, 100%, 0.8), 0 0 11px #FFD700, 0 0 19px #FF8C00;
+      box-shadow: 0 0 8px hsla(45, 100%, 50%, 0.6), inset 0 0 8px hsla(45, 100%, 50%, 0.4);
+      opacity: 1;
     }
-    50% {
-      box-shadow: 0 0 20px hsla(var(--neon-cyan), 0.6), 0 0 40px hsla(var(--neon-cyan), 0.3), 0 0 60px hsla(var(--neon-cyan), 0.15);
+    20%, 24%, 55% {
+      text-shadow: none;
+      box-shadow: none;
+      opacity: 0.8;
     }
+  }
+
+  .permanent-neon-link:hover {
+    animation: none;
+    text-shadow: 0 0 8px #fff, 0 0 20px #FFD700, 0 0 35px #FF8C00;
+    box-shadow: 0 0 15px #FFD700, inset 0 0 15px #FFD700;
+    opacity: 1;
   }
 
   /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
     .book-now-button,
-    .listen-pulse {
+    .permanent-neon-link {
       animation: none !important;
     }
     .book-now-shine {

@@ -119,10 +119,10 @@ const Navbar = () => {
                     key={item.id}
                     to={item.href}
                     className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-                      isActive(item)
+                      item.id === "radio"
+                        ? "permanent-neon-link font-bold"
+                        : isActive(item)
                         ? "text-neon-cyan bg-neon-cyan/10 shadow-[0_0_10px_rgba(0,255,255,0.3)]"
-                        : item.id === "radio"
-                        ? "text-neon-cyan font-bold hover:bg-neon-cyan/10 listen-pulse"
                         : "text-foreground/80 hover:text-neon-cyan hover:bg-neon-cyan/5"
                     }`}
                   >
@@ -201,7 +201,9 @@ const Navbar = () => {
                     to={item.href}
                     onClick={() => setIsMenuOpen(false)}
                     className={`w-full block text-left px-4 py-4 text-lg font-medium rounded-xl transition-all duration-200 ${
-                      isActive(item)
+                      item.id === "radio"
+                        ? "permanent-neon-link font-bold"
+                        : isActive(item)
                         ? "text-neon-cyan bg-neon-cyan/10 border border-neon-cyan/30 shadow-[0_0_15px_rgba(0,255,255,0.2)]"
                         : "text-foreground/90 hover:text-neon-cyan hover:bg-neon-cyan/5 border border-transparent"
                     }`}
