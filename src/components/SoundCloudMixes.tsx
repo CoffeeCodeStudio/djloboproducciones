@@ -1,48 +1,34 @@
 import { useEffect, useRef, useState } from "react";
 import { Music, Headphones } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { supabase } from "@/integrations/supabase/client";
 
 const translations = {
   sv: {
     title: "SENASTE MIXAR",
     subtitle: "Lyssna på DJ Lobos senaste sets",
     loading: "Laddar mix…",
+    empty: "Inga mixar tillgängliga just nu.",
   },
   en: {
     title: "LATEST MIXES",
     subtitle: "Listen to DJ Lobo's latest sets",
     loading: "Loading mix…",
+    empty: "No mixes available right now.",
   },
   es: {
     title: "ÚLTIMAS MEZCLAS",
     subtitle: "Escucha los últimos sets de DJ Lobo",
     loading: "Cargando mezcla…",
+    empty: "No hay mezclas disponibles en este momento.",
   },
 };
 
-// Placeholder SoundCloud track URLs – replace with real ones
-const SOUNDCLOUD_TRACKS = [
-  {
-    id: "1",
-    title: "Latin House Mix 2025",
-    embedUrl: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/placeholder1&color=%2300e5ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true",
-  },
-  {
-    id: "2",
-    title: "80s & 90s Retro Set",
-    embedUrl: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/placeholder2&color=%2300e5ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true",
-  },
-  {
-    id: "3",
-    title: "Reggaeton Party Mix",
-    embedUrl: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/placeholder3&color=%2300e5ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true",
-  },
-  {
-    id: "4",
-    title: "Deep House Sunset Session",
-    embedUrl: "https://w.soundcloud.com/player/?url=https%3A//api.soundcloud.com/tracks/placeholder4&color=%2300e5ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true",
-  },
-];
+interface Track {
+  id: string;
+  title: string;
+  soundcloud_url: string;
+}
 
 interface LazyEmbedProps {
   title: string;
@@ -69,7 +55,11 @@ const LazyEmbed = ({ title, embedUrl, loadingText }: LazyEmbedProps) => {
   }, []);
 
   return (
-    <div ref={ref} className="rounded-xl border border-neon-cyan/20 bg-background/50 backdrop-blur-sm overflow-hidden transition-shadow" style={{ boxShadow: '0 0 20px -8px hsla(180, 100%, 50%, 0.12)' }}>
+    <div
+      ref={ref}
+      className="rounded-xl border border-neon-cyan/20 bg-background/50 backdrop-blur-sm overflow-hidden transition-shadow"
+      style={{ boxShadow: "0 0 20px -8px hsla(180, 100%, 50%, 0.12)" }}
+    >
       <div className="px-4 py-3 border-b border-neon-cyan/10 flex items-center gap-2">
         <Music className="w-4 h-4 text-[#FFD700]" aria-hidden="true" />
         <span className="font-display text-sm font-bold text-[#FFD700] truncate">{title}</span>
@@ -97,7 +87,6 @@ const LazyEmbed = ({ title, embedUrl, loadingText }: LazyEmbedProps) => {
 };
 
 interface SoundCloudMixesProps {
-  /** Show only the first mix (for homepage preview) */
   preview?: boolean;
 }
 
@@ -105,8 +94,20 @@ const SoundCloudMixes = ({ preview = false }: SoundCloudMixesProps) => {
   const sectionRef = useRef<HTMLElement>(null);
   const { language } = useLanguage();
   const t = translations[language];
+  const [tracks, setTracks] = useState<Track[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const tracks = preview ? SOUNDCLOUD_TRACKS.slice(0, 1) : SOUNDCLOUD_TRACKS;
+  useEffect(() => {
+    const fetchTracks = async () => {
+      const { data } = await supabase
+        .from("soundcloud_mixes")
+        .select("id, title, soundcloud_url")
+        .order("sort_order", { ascending: true });
+      setTracks(data || []);
+      setLoading(false);
+    };
+    fetchTracks();
+  }, []);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -125,6 +126,16 @@ const SoundCloudMixes = ({ preview = false }: SoundCloudMixesProps) => {
     return () => observer.disconnect();
   }, []);
 
+  const displayTracks = preview ? tracks.slice(0, 1) : tracks;
+
+  if (!loading && tracks.length === 0) {
+    return (
+      <section className="py-12 text-center">
+        <p className="text-muted-foreground">{t.empty}</p>
+      </section>
+    );
+  }
+
   return (
     <section
       ref={sectionRef}
@@ -133,7 +144,6 @@ const SoundCloudMixes = ({ preview = false }: SoundCloudMixesProps) => {
       aria-labelledby="mixes-title"
     >
       <div className={preview ? "max-w-3xl mx-auto" : "max-w-5xl mx-auto"}>
-        {/* Header */}
         <div className="text-center mb-6 sm:mb-10 scroll-reveal">
           <h2
             id="mixes-title"
@@ -141,22 +151,25 @@ const SoundCloudMixes = ({ preview = false }: SoundCloudMixesProps) => {
           >
             {t.title}
           </h2>
-          {!preview && (
-            <p className="text-muted-foreground text-sm sm:text-base">{t.subtitle}</p>
-          )}
+          {!preview && <p className="text-muted-foreground text-sm sm:text-base">{t.subtitle}</p>}
         </div>
 
-        {/* Grid */}
-        <div className={`scroll-reveal ${preview ? "" : "grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"}`}>
-          {tracks.map((track) => (
-            <LazyEmbed
-              key={track.id}
-              title={track.title}
-              embedUrl={track.embedUrl}
-              loadingText={t.loading}
-            />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex items-center justify-center py-12">
+            <div className="loading-spinner" />
+          </div>
+        ) : (
+          <div className={`scroll-reveal ${preview ? "" : "grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6"}`}>
+            {displayTracks.map((track) => (
+              <LazyEmbed
+                key={track.id}
+                title={track.title}
+                embedUrl={track.soundcloud_url}
+                loadingText={t.loading}
+              />
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );
