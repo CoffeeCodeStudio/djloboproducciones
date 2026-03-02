@@ -65,13 +65,13 @@ const HeroSection = () => {
 
   return (
     <section
-      className="min-h-[85vh] flex flex-col items-center justify-center px-4 sm:px-6 pt-20 pb-40 relative"
+      className="h-[calc(100vh-5rem)] flex flex-col items-center justify-center px-4 sm:px-6 pt-16 pb-20 relative"
       aria-labelledby="hero-title"
     >
       {/* Stream Status Badge */}
-      <div className="mb-6 sm:mb-8">
+      <div className="mb-3 sm:mb-5">
         <div
-          className={`px-4 sm:px-6 py-2 sm:py-3 flex items-center gap-2 sm:gap-3 rounded-full border transition-all ${
+          className={`px-3 sm:px-5 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-3 rounded-full border transition-all ${
             status === "live"
               ? "glass-card-pink on-air-pulse border-neon-pink/30"
               : status === "connecting"
@@ -94,31 +94,31 @@ const HeroSection = () => {
         >
           {status === "live" ? (
             <>
-              <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-neon-pink rounded-full live-dot" aria-hidden="true" />
-              <span className="font-display font-bold text-neon-pink tracking-wider text-sm sm:text-base">{t.onAir}</span>
+              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-neon-pink rounded-full live-dot" aria-hidden="true" />
+              <span className="font-display font-bold text-neon-pink tracking-wider text-xs sm:text-sm">{t.onAir}</span>
             </>
           ) : status === "connecting" ? (
             <>
-              <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 text-neon-cyan animate-spin" aria-hidden="true" />
-              <span className="font-display font-bold text-neon-cyan tracking-wider text-sm sm:text-base">{t.connecting}</span>
+              <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-neon-cyan animate-spin" aria-hidden="true" />
+              <span className="font-display font-bold text-neon-cyan tracking-wider text-xs sm:text-sm">{t.connecting}</span>
             </>
           ) : status === "error" ? (
             <>
-              <WifiOff className="w-4 h-4 sm:w-5 sm:h-5 text-red-400" aria-hidden="true" />
-              <span className="font-display font-bold text-red-400 tracking-wider text-sm sm:text-base">{t.offline}</span>
+              <WifiOff className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-400" aria-hidden="true" />
+              <span className="font-display font-bold text-red-400 tracking-wider text-xs sm:text-sm">{t.offline}</span>
             </>
           ) : (
             <>
-              <Radio className="w-4 h-4 sm:w-5 sm:h-5 text-muted-foreground" aria-hidden="true" />
-              <span className="font-display font-bold text-muted-foreground tracking-wider text-sm sm:text-base">{t.clickPlay}</span>
+              <Radio className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" aria-hidden="true" />
+              <span className="font-display font-bold text-muted-foreground tracking-wider text-xs sm:text-sm">{t.clickPlay}</span>
             </>
           )}
         </div>
       </div>
 
       {/* DJ Image */}
-      <div className="relative mb-6 sm:mb-8">
-        <div className="w-44 h-44 sm:w-56 sm:h-56 md:w-72 md:h-72 rounded-full overflow-hidden neon-border-gradient profile-neon-aura">
+      <div className="relative mb-3 sm:mb-5">
+        <div className="w-32 h-32 sm:w-44 sm:h-44 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-full overflow-hidden neon-border-gradient profile-neon-aura">
           <img
             src={profileImage}
             alt="DJ Lobo vid mixerbordet"
@@ -128,37 +128,37 @@ const HeroSection = () => {
             onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = profileFallback; }}
           />
         </div>
-        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-neon-pink/30 to-neon-cyan/30 blur-3xl -z-10 scale-110 bpm-pulse-124" aria-hidden="true" />
+        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-neon-pink/30 to-neon-cyan/30 blur-3xl -z-10 scale-110" aria-hidden="true" />
       </div>
 
       {/* Title */}
       <h1
         id="hero-title"
-        className="font-display text-4xl sm:text-6xl md:text-8xl font-black text-neon-gradient mb-3 sm:mb-4 tracking-wider text-high-contrast text-center"
+        className="font-display text-3xl sm:text-5xl md:text-7xl font-black text-neon-gradient mb-2 sm:mb-3 tracking-wider text-high-contrast text-center"
       >
         {siteName.toUpperCase().replace(" RADIO", "")}
       </h1>
 
       {/* Bio */}
-      <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 sm:mb-10 text-center max-w-xl px-4">
+      <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-5 sm:mb-7 text-center max-w-xl px-4">
         {t.bio}
       </p>
 
       {/* Two CTA Buttons */}
-      <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6">
+      <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5">
         <button
           onClick={scrollToBooking}
-          className="book-now-button tap-target px-8 sm:px-10 py-3.5 sm:py-4 font-display font-bold tracking-wider text-base sm:text-lg rounded-full flex items-center gap-2.5 transition-all"
+          className="book-now-button tap-target px-6 sm:px-8 py-3 sm:py-3.5 font-display font-bold tracking-wider text-sm sm:text-base rounded-full flex items-center gap-2 transition-all"
         >
-          <CalendarDays className="w-5 h-5" />
+          <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5" />
           {t.bookNow}
         </button>
 
         <Link
           to="/radio"
-          className="tap-target px-8 sm:px-10 py-3.5 sm:py-4 font-display font-bold tracking-wider text-base sm:text-lg rounded-full flex items-center gap-2.5 border-2 border-neon-cyan text-neon-cyan hover:bg-neon-cyan/10 transition-all hover:scale-105 listen-pulse"
+          className="tap-target px-6 sm:px-8 py-3 sm:py-3.5 font-display font-bold tracking-wider text-sm sm:text-base rounded-full flex items-center gap-2 border-2 border-neon-cyan text-neon-cyan hover:bg-neon-cyan/10 transition-all hover:scale-105 listen-pulse"
         >
-          <Headphones className="w-5 h-5" />
+          <Headphones className="w-4 h-4 sm:w-5 sm:h-5" />
           {t.listenMixes}
         </Link>
       </div>
