@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -17,10 +17,20 @@ import {
   Sparkles,
   Youtube,
   Instagram,
-  Trash2
+  Trash2,
+  History
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useBranding, SiteBranding } from "@/hooks/useBranding";
+import { supabase } from "@/integrations/supabase/client";
+
+interface UploadHistoryItem {
+  id: string;
+  category: string;
+  image_url: string;
+  storage_path: string;
+  created_at: string;
+}
 
 // Preset color themes
 const COLOR_PRESETS = [
@@ -42,11 +52,30 @@ const BrandingTab = () => {
   // Local state for pending changes
   const [pendingChanges, setPendingChanges] = useState<Partial<SiteBranding>>({});
   const [previewImages, setPreviewImages] = useState<Record<string, string>>({});
+  const [uploadHistory, setUploadHistory] = useState<Record<string, UploadHistoryItem[]>>({});
   
   const heroInputRef = useRef<HTMLInputElement>(null);
   const logoInputRef = useRef<HTMLInputElement>(null);
   const bgInputRef = useRef<HTMLInputElement>(null);
   const profileInputRef = useRef<HTMLInputElement>(null);
+
+  const fetchHistory = useCallback(async () => {
+    const { data } = await supabase
+      .from("image_upload_history" as any)
+      .select("*")
+      .order("created_at", { ascending: false })
+      .limit(12);
+    if (data) {
+      const grouped: Record<string, UploadHistoryItem[]> = {};
+      for (const item of data as unknown as UploadHistoryItem[]) {
+        if (!grouped[item.category]) grouped[item.category] = [];
+        if (grouped[item.category].length < 3) grouped[item.category].push(item);
+      }
+      setUploadHistory(grouped);
+    }
+  }, []);
+
+  useEffect(() => { fetchHistory(); }, [fetchHistory]);
 
   const handleFileSelect = async (
     event: React.ChangeEvent<HTMLInputElement>,
@@ -57,13 +86,12 @@ const BrandingTab = () => {
 
     // Validate file type
     if (!file.type.startsWith("image/")) {
-      toast({ title: "Error", description: "Please select an image file", variant: "destructive" });
+      toast({ title: "❌ Fel filtyp", description: "Välj en bildfil (JPG, PNG eller WebP)", variant: "destructive" });
       return;
     }
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      toast({ title: "Error", description: "Image must be less than 5MB", variant: "destructive" });
+      toast({ title: "❌ Filen är för stor", description: `Filen är ${(file.size / 1024 / 1024).toFixed(1)} MB. Max 5 MB.`, variant: "destructive" });
       return;
     }
 
@@ -98,7 +126,11 @@ const BrandingTab = () => {
     };
     
     setPendingChanges((prev) => ({ ...prev, [fieldMap[imageType]]: url }));
-    toast({ title: "Uploaded", description: `${imageType} image uploaded. Click Save to apply.` });
+    toast({ 
+      title: "✅ Uppladdad!", 
+      description: `${imageType}-bilden laddades upp. Klicka Spara för att aktivera.` 
+    });
+    fetchHistory();
   };
 
   const handleColorPreset = (preset: typeof COLOR_PRESETS[0]) => {
@@ -149,6 +181,43 @@ const BrandingTab = () => {
     };
     
     return fieldMap[imageType] || null;
+  };
+
+  const selectFromHistory = (imageType: "hero" | "logo" | "background" | "profile", url: string) => {
+    const fieldMap = {
+      hero: "hero_image_url",
+      logo: "logo_url",
+      background: "background_image_url",
+      profile: "profile_image_url",
+    } as const;
+    setPendingChanges((prev) => ({ ...prev, [fieldMap[imageType]]: url }));
+    setPreviewImages((prev) => ({ ...prev, [imageType]: url }));
+    toast({ title: "✅ Vald!", description: "Bilden valdes från historiken. Klicka Spara för att aktivera." });
+  };
+
+  const renderRecentUploads = (category: "hero" | "logo" | "background" | "profile") => {
+    const items = uploadHistory[category];
+    if (!items || items.length === 0) return null;
+    return (
+      <div className="space-y-2 pt-2 border-t border-border/30">
+        <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
+          <History className="w-3 h-3" />
+          <span>Senaste uppladdningar</span>
+        </div>
+        <div className="flex gap-2">
+          {items.map((item) => (
+            <button
+              key={item.id}
+              onClick={() => selectFromHistory(category, item.image_url)}
+              className="relative w-16 h-16 rounded-md overflow-hidden border border-border/50 hover:border-primary/70 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-primary/50"
+              title="Klicka för att välja denna bild"
+            >
+              <img src={item.image_url} alt="Tidigare uppladdning" className="w-full h-full object-cover" />
+            </button>
+          ))}
+        </div>
+      </div>
+    );
   };
 
   const hasPendingChanges = Object.keys(pendingChanges).length > 0;
@@ -247,10 +316,9 @@ const BrandingTab = () => {
                 </p>
               </div>
             </div>
+            {renderRecentUploads("profile")}
           </CardContent>
         </Card>
-
-        {/* Hero Image */}
         <Card className="glass-card">
           <CardHeader>
             <CardTitle className="font-display flex items-center gap-2">
@@ -301,11 +369,10 @@ const BrandingTab = () => {
               <p className="text-xs text-muted-foreground">
                 Recommended: 1920x1080px or 16:9 aspect ratio, max 5MB
               </p>
+              {renderRecentUploads("hero")}
             </div>
           </CardContent>
         </Card>
-
-        {/* Logo */}
         <Card className="glass-card">
           <CardHeader>
             <CardTitle className="font-display flex items-center gap-2">
@@ -368,11 +435,10 @@ const BrandingTab = () => {
                   Recommended: PNG with transparent background, max 5MB
                 </p>
               </div>
+              {renderRecentUploads("logo")}
             </div>
           </CardContent>
         </Card>
-
-        {/* Background Image */}
         <Card className="glass-card">
           <CardHeader>
             <CardTitle className="font-display flex items-center gap-2">
@@ -423,11 +489,10 @@ const BrandingTab = () => {
               <p className="text-xs text-muted-foreground">
                 Recommended: High-resolution image, will be darkened for readability
               </p>
+              {renderRecentUploads("background")}
             </div>
           </CardContent>
         </Card>
-
-        {/* YouTube Video */}
         <Card className="glass-card">
           <CardHeader>
             <CardTitle className="font-display flex items-center gap-2">

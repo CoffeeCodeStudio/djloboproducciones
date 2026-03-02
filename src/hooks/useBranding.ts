@@ -77,6 +77,14 @@ export const useBranding = () => {
     file: File,
     imageType: "hero" | "logo" | "background" | "profile"
   ): Promise<{ url: string | null; error: string | null }> => {
+    // Validate size with clear message
+    if (file.size > 5 * 1024 * 1024) {
+      return { url: null, error: `Filen är för stor (${(file.size / 1024 / 1024).toFixed(1)} MB). Max 5 MB.` };
+    }
+    if (!file.type.startsWith("image/")) {
+      return { url: null, error: "Filen är inte en bild. Välj en JPG, PNG eller WebP-fil." };
+    }
+
     const fileExt = file.name.split(".").pop();
     const fileName = `${imageType}-${Date.now()}.${fileExt}`;
     const filePath = `${imageType}/${fileName}`;
@@ -86,11 +94,25 @@ export const useBranding = () => {
       .upload(filePath, file, { upsert: true });
 
     if (uploadError) {
-      return { url: null, error: uploadError.message };
+      const msg = uploadError.message.includes("Payload too large")
+        ? "Filen är för stor för servern. Försök med en mindre bild."
+        : uploadError.message.includes("network")
+        ? "Anslutningen bröts. Kontrollera din internetanslutning och försök igen."
+        : `Uppladdningsfel: ${uploadError.message}`;
+      return { url: null, error: msg };
     }
 
     const { data } = supabase.storage.from("branding").getPublicUrl(filePath);
-    return { url: data.publicUrl, error: null };
+    const publicUrl = data.publicUrl;
+
+    // Save to upload history
+    await supabase.from("image_upload_history" as any).insert({
+      category: imageType,
+      image_url: publicUrl,
+      storage_path: filePath,
+    } as any);
+
+    return { url: publicUrl, error: null };
   };
 
   useEffect(() => {
