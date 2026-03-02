@@ -536,9 +536,24 @@
     }
   }
 
+  /* Listen button pulse - neon cyan */
+  .listen-pulse {
+    animation: listen-glow 2.5s ease-in-out infinite;
+  }
+
+  @keyframes listen-glow {
+    0%, 100% {
+      box-shadow: 0 0 10px hsla(var(--neon-cyan), 0.3), 0 0 20px hsla(var(--neon-cyan), 0.15);
+    }
+    50% {
+      box-shadow: 0 0 20px hsla(var(--neon-cyan), 0.6), 0 0 40px hsla(var(--neon-cyan), 0.3), 0 0 60px hsla(var(--neon-cyan), 0.15);
+    }
+  }
+
   /* Respect reduced motion */
   @media (prefers-reduced-motion: reduce) {
-    .book-now-button {
+    .book-now-button,
+    .listen-pulse {
       animation: none !important;
     }
     .book-now-shine {
