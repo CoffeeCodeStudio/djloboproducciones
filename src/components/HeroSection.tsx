@@ -156,7 +156,7 @@ const HeroSection = () => {
 
         <Link
           to="/radio"
-          className="tap-target px-6 sm:px-8 py-3 sm:py-3.5 font-display font-bold tracking-wider text-sm sm:text-base rounded-full flex items-center gap-2 border-2 border-neon-cyan text-neon-cyan hover:bg-neon-cyan/10 transition-all hover:scale-105 listen-pulse"
+          className="permanent-neon-link tap-target px-6 sm:px-8 py-3 sm:py-3.5 font-display font-bold tracking-wider text-sm sm:text-base flex items-center gap-2 transition-all hover:scale-105"
         >
           <Headphones className="w-4 h-4 sm:w-5 sm:h-5" />
           {t.listenMixes}
