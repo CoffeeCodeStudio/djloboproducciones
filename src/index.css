@@ -399,6 +399,20 @@
     justify-content: center;
   }
 
+  /* Page fade-in transition for route changes */
+  .page-fade-in {
+    animation: pageFadeIn 0.2s ease-out both;
+  }
+
+  @keyframes pageFadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
   /* Loading spinner */
   .loading-spinner {
     width: 20px;
