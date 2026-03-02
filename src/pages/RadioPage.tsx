@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import SocialGallerySection from "@/components/SocialGallerySection";
+import SoundCloudMixes from "@/components/SoundCloudMixes";
 import LiveChat from "@/components/LiveChat";
 import Footer from "@/components/Footer";
 import NowPlayingBar from "@/components/NowPlayingBar";
@@ -19,6 +20,7 @@ const RadioPage = () => {
             <div id="mixar">
               <SocialGallerySection />
             </div>
+            <SoundCloudMixes />
             <LiveChat />
           </div>
         </main>
