@@ -3,7 +3,7 @@ import { Radio, Loader2, WifiOff, Headphones, CalendarDays } from "lucide-react"
 import { useBranding } from "@/hooks/useBranding";
 import { useStreamStatus } from "@/hooks/useStreamStatus";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { optimizeProfile } from "@/lib/imageOptimizer";
+import { optimizeProfile, optimizeHero } from "@/lib/imageOptimizer";
 import { Link } from "react-router-dom";
 
 const translations = {
@@ -61,13 +61,27 @@ const HeroSection = () => {
   const profileOpt = optimizeProfile(branding?.profile_image_url);
   const profileImage = profileOpt.src || djLoboImage;
   const profileFallback = profileOpt.fallback || djLoboImage;
+  const heroOpt = optimizeHero(branding?.hero_image_url);
   const siteName = branding?.site_name || "DJ LOBO";
 
   return (
     <section
-      className="h-[calc(100vh-5rem)] flex flex-col items-center justify-center px-4 sm:px-6 pt-16 pb-20 relative"
+      className="h-[calc(100vh-5rem)] flex flex-col items-center justify-center px-4 sm:px-6 pt-16 pb-20 relative overflow-hidden"
       aria-labelledby="hero-title"
     >
+      {/* Hero Background Image */}
+      {branding?.hero_image_url && (
+        <div className="absolute inset-0 -z-10">
+          <img
+            src={heroOpt.src}
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover opacity-30"
+            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = heroOpt.fallback; }}
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
+        </div>
+      )}
       {/* Stream Status Badge */}
       <div className="mb-3 sm:mb-5">
         <div

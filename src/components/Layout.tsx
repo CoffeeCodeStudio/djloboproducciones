@@ -4,10 +4,12 @@ import Navbar from "@/components/Navbar";
 import NowPlayingBar from "@/components/NowPlayingBar";
 import FloatingChatButton from "@/components/FloatingChatButton";
 import CookieConsent from "@/components/CookieConsent";
+import { useBranding } from "@/hooks/useBranding";
 
 const Layout = () => {
   const location = useLocation();
   const [fadeKey, setFadeKey] = useState(location.key);
+  const { branding } = useBranding();
 
   useEffect(() => {
     setFadeKey(location.key);
@@ -19,6 +21,16 @@ const Layout = () => {
       <a href="#main-content" className="skip-link">
         Hoppa till huvudinnehåll
       </a>
+
+      {/* Dynamic Background Image from Admin */}
+      {branding?.background_image_url && (
+        <div
+          className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat opacity-15 pointer-events-none"
+          style={{ backgroundImage: `url(${branding.background_image_url})` }}
+          aria-hidden="true"
+        />
+      )}
+
       <div className="mesh-gradient-bg" aria-hidden="true" />
       <div className="relative z-10">
         <Navbar />

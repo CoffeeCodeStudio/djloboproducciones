@@ -59,14 +59,21 @@ export const useBranding = () => {
   };
 
   const updateBranding = async (updates: Partial<SiteBranding>) => {
-    if (!branding?.id) return { error: "No branding record found" };
+    if (!branding?.id) {
+      console.error("[Branding] No branding record found for update");
+      return { error: "No branding record found" };
+    }
 
+    console.log("[Branding] Saving updates:", Object.keys(updates));
     const { error } = await supabase
       .from("site_branding")
       .update(updates)
       .eq("id", branding.id);
 
-    if (!error) {
+    if (error) {
+      console.error("[Branding] Save failed:", error.message);
+    } else {
+      console.log("[Branding] ✅ Save successful");
       setBranding((prev) => prev ? { ...prev, ...updates } : null);
     }
 
@@ -89,6 +96,7 @@ export const useBranding = () => {
     const fileName = `${imageType}-${Date.now()}.${fileExt}`;
     const filePath = `${imageType}/${fileName}`;
 
+    console.log(`[Branding] Uploading ${imageType} to: ${filePath}`);
     const { error: uploadError } = await supabase.storage
       .from("branding")
       .upload(filePath, file, { upsert: true });
@@ -104,6 +112,7 @@ export const useBranding = () => {
 
     const { data } = supabase.storage.from("branding").getPublicUrl(filePath);
     const publicUrl = data.publicUrl;
+    console.log(`[Branding] ✅ Upload complete. Public URL: ${publicUrl}`);
 
     // Save to upload history
     await supabase.from("image_upload_history" as any).insert({
