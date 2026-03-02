@@ -118,7 +118,7 @@ const HeroSection = () => {
 
       {/* DJ Image */}
       <div className="relative mb-6 sm:mb-8">
-        <div className="w-44 h-44 sm:w-56 sm:h-56 md:w-72 md:h-72 rounded-full overflow-hidden neon-border-gradient profile-bpm-pulse bpm-pulse-124">
+        <div className="w-44 h-44 sm:w-56 sm:h-56 md:w-72 md:h-72 rounded-full overflow-hidden neon-border-gradient profile-neon-aura">
           <img
             src={profileImage}
             alt="DJ Lobo vid mixerbordet"

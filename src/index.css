@@ -536,6 +536,32 @@
     }
   }
 
+  /* Profile neon aura - slow breathing glow */
+  .profile-neon-aura {
+    border: 2px solid hsla(var(--neon-cyan), 0.5);
+    animation: neon-aura-pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes neon-aura-pulse {
+    0%, 100% {
+      box-shadow:
+        0 0 10px hsla(var(--neon-cyan), 0.3),
+        0 0 20px hsla(var(--neon-cyan), 0.15);
+    }
+    50% {
+      box-shadow:
+        0 0 25px hsla(var(--neon-cyan), 0.6),
+        0 0 50px hsla(var(--neon-cyan), 0.35),
+        0 0 80px hsla(var(--neon-pink), 0.2);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .profile-neon-aura {
+      animation: none !important;
+    }
+  }
+
   /* Listen button pulse - neon cyan */
   .listen-pulse {
     animation: listen-glow 2.5s ease-in-out infinite;
