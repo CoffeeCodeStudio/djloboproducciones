@@ -220,6 +220,32 @@
     transform: translateY(0);
   }
 
+  /* Subtle parallax move for full-page background image */
+  @keyframes subtleMove {
+    0% {
+      transform: scale(1);
+      background-position: 50% 50%;
+    }
+    100% {
+      transform: scale(1.1);
+      background-position: 55% 45%;
+    }
+  }
+
+  .bg-cinematic {
+    background-size: 110%;
+    background-position: 50% 50%;
+    animation: subtleMove 20s infinite alternate ease-in-out;
+    will-change: transform;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .bg-cinematic {
+      animation: none !important;
+      transform: none;
+    }
+  }
+
   /* Moving mesh gradient background */
   .mesh-gradient-bg {
     position: fixed;

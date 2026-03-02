@@ -22,13 +22,15 @@ const Layout = () => {
         Hoppa till huvudinnehåll
       </a>
 
-      {/* Dynamic Background Image from Admin */}
+      {/* Cinematic Animated Background Image */}
       {branding?.background_image_url && (
-        <div
-          className="fixed inset-0 -z-10 bg-cover bg-center bg-no-repeat opacity-15 pointer-events-none"
-          style={{ backgroundImage: `url(${branding.background_image_url})` }}
-          aria-hidden="true"
-        />
+        <div className="fixed inset-0 -z-10 pointer-events-none overflow-hidden" aria-hidden="true">
+          <div
+            className="absolute inset-0 bg-cinematic bg-no-repeat"
+            style={{ backgroundImage: `url(${branding.background_image_url})` }}
+          />
+          <div className="absolute inset-0 bg-black/50" />
+        </div>
       )}
 
       <div className="mesh-gradient-bg" aria-hidden="true" />
