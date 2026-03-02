@@ -9,7 +9,7 @@ const ReferencesPage = () => {
       <div className="mesh-gradient-bg" aria-hidden="true" />
       <div className="relative z-10">
         <Navbar />
-        <main className="px-4 sm:px-6">
+        <main className="px-4 sm:px-6 pb-32">
           <div className="max-w-7xl mx-auto">
             <TestimonialsSection />
           </div>
