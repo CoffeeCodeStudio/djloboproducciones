@@ -70,7 +70,7 @@ const CalendarSection = () => {
         </div>
 
         {/* Event list container */}
-        <div className="scroll-reveal rounded-2xl border border-neon-cyan/20 bg-background/40 backdrop-blur-md overflow-hidden shadow-[0_0_30px_-10px_hsl(var(--neon-cyan)/0.15)]">
+        <div className="scroll-reveal rounded-2xl border border-neon-cyan/20 bg-background/40 backdrop-blur-md overflow-hidden" style={{ boxShadow: '0 0 30px -10px hsla(180, 100%, 50%, 0.15)' }}>
           {loading && (
             <div className="flex items-center justify-center py-16">
               <div className="loading-spinner" />

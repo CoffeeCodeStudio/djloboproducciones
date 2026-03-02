@@ -69,7 +69,7 @@ const LazyEmbed = ({ title, embedUrl, loadingText }: LazyEmbedProps) => {
   }, []);
 
   return (
-    <div ref={ref} className="rounded-xl border border-neon-cyan/20 bg-background/50 backdrop-blur-sm overflow-hidden shadow-[0_0_20px_-8px_hsl(var(--neon-cyan)/0.12)] transition-shadow hover:shadow-[0_0_30px_-6px_hsl(var(--neon-cyan)/0.25)]">
+    <div ref={ref} className="rounded-xl border border-neon-cyan/20 bg-background/50 backdrop-blur-sm overflow-hidden transition-shadow" style={{ boxShadow: '0 0 20px -8px hsla(180, 100%, 50%, 0.12)' }}>
       <div className="px-4 py-3 border-b border-neon-cyan/10 flex items-center gap-2">
         <Music className="w-4 h-4 text-[#FFD700]" aria-hidden="true" />
         <span className="font-display text-sm font-bold text-[#FFD700] truncate">{title}</span>
