@@ -365,6 +365,19 @@ const BrandingTab = () => {
                   <Upload className="w-4 h-4 mr-2" />
                   Upload Hero Image
                 </Button>
+                {(getImagePreview("hero") || branding?.hero_image_url) && (
+                  <Button 
+                    variant="destructive" 
+                    size="icon"
+                    onClick={() => {
+                      setPendingChanges((prev) => ({ ...prev, hero_image_url: null }));
+                      setPreviewImages((prev) => { const next = { ...prev }; delete next.hero; return next; });
+                    }}
+                    title="Ta bort hero-bild"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </Button>
+                )}
               </div>
               <p className="text-xs text-muted-foreground">
                 Recommended: 1920x1080px or 16:9 aspect ratio, max 5MB
