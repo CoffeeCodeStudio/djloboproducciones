@@ -107,6 +107,48 @@ export type Database = {
         }
         Relationships: []
       }
+      equipment: {
+        Row: {
+          created_at: string
+          description_en: string
+          description_es: string
+          description_sv: string
+          icon: string
+          id: string
+          sort_order: number
+          title_en: string
+          title_es: string
+          title_sv: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description_en?: string
+          description_es?: string
+          description_sv?: string
+          icon?: string
+          id?: string
+          sort_order?: number
+          title_en: string
+          title_es: string
+          title_sv: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description_en?: string
+          description_es?: string
+          description_sv?: string
+          icon?: string
+          id?: string
+          sort_order?: number
+          title_en?: string
+          title_es?: string
+          title_sv?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       gallery_images: {
         Row: {
           alt_text: string | null

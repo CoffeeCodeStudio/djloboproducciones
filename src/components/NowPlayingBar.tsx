@@ -214,7 +214,7 @@ const NowPlayingBar = () => {
             {/* Radio button */}
             <button
               onClick={handleRadioToggle}
-              className={`tap-target flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 rounded-full text-xs sm:text-sm font-display font-bold tracking-wide transition-all duration-200 ${
+              className={`tap-target flex items-center gap-1.5 px-3 sm:px-3.5 py-2.5 sm:py-2 rounded-full text-xs sm:text-sm font-display font-bold tracking-wide transition-all duration-200 ${
                 isRadio
                   ? "bg-destructive/20 text-destructive border border-destructive/40 shadow-[0_0_12px_hsl(var(--destructive)/0.3)]"
                   : "glass-card text-muted-foreground hover:text-foreground hover:border-destructive/30"
@@ -236,7 +236,7 @@ const NowPlayingBar = () => {
             {/* Mixes button */}
             <button
               onClick={handleMixesClick}
-              className={`tap-target flex items-center gap-1.5 px-2.5 sm:px-3.5 py-2 rounded-full text-xs sm:text-sm font-display font-bold tracking-wide transition-all duration-200 ${
+              className={`tap-target flex items-center gap-1.5 px-3 sm:px-3.5 py-2.5 sm:py-2 rounded-full text-xs sm:text-sm font-display font-bold tracking-wide transition-all duration-200 ${
                 isMix
                   ? "bg-primary/20 text-primary border border-primary/40 shadow-[0_0_12px_hsl(var(--primary)/0.3)]"
                   : "glass-card text-muted-foreground hover:text-foreground hover:border-primary/30"

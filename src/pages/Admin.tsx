@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, Send, Users, MessageSquare, Shield, Ban, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Music } from "lucide-react";
+import { Trash2, Send, Users, MessageSquare, Shield, Ban, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Music, Wrench } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { usePresenceObserver } from "@/hooks/usePresence";
 import { useAuth } from "@/hooks/useAuth";
@@ -16,6 +16,7 @@ import BrandingTab from "@/components/admin/BrandingTab";
 import GalleryTab from "@/components/admin/GalleryTab";
 import ScheduleTab from "@/components/admin/ScheduleTab";
 import MixesTab from "@/components/admin/MixesTab";
+import EquipmentTab from "@/components/admin/EquipmentTab";
 
 
 interface ChatMessage {
@@ -287,7 +288,7 @@ const Admin = () => {
 
       <main className="container mx-auto px-4 py-8 relative z-10">
         <Tabs defaultValue="moderation" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 mb-8 glass-card">
+          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 mb-8 glass-card">
             <TabsTrigger value="moderation" className="data-[state=active]:bg-primary/20">
               <MessageSquare className="w-4 h-4 mr-2" />
               Chat
@@ -307,6 +308,10 @@ const Admin = () => {
             <TabsTrigger value="branding" className="data-[state=active]:bg-primary/20">
               <Palette className="w-4 h-4 mr-2" />
               Branding
+            </TabsTrigger>
+            <TabsTrigger value="equipment" className="data-[state=active]:bg-primary/20">
+              <Wrench className="w-4 h-4 mr-2" />
+              Utrustning
             </TabsTrigger>
           </TabsList>
 
@@ -570,6 +575,10 @@ const Admin = () => {
 
           <TabsContent value="branding">
             <BrandingTab />
+          </TabsContent>
+
+          <TabsContent value="equipment">
+            <EquipmentTab />
           </TabsContent>
         </Tabs>
       </main>
