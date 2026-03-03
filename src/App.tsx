@@ -11,7 +11,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 // Lazy-loaded pages
 const Index = lazy(() => import("./pages/Index"));
 const ListenPage = lazy(() => import("./pages/ListenPage"));
-const ReferencesPage = lazy(() => import("./pages/ReferencesPage"));
+const GalleryPage = lazy(() => import("./pages/GalleryPage"));
 const EquipmentPage = lazy(() => import("./pages/EquipmentPage"));
 const Admin = lazy(() => import("./pages/Admin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -41,7 +41,8 @@ const App = () => (
                   <Route path="/lyssna" element={<ListenPage />} />
                   <Route path="/radio" element={<Navigate to="/lyssna" replace />} />
                   <Route path="/mixes" element={<Navigate to="/lyssna" replace />} />
-                  <Route path="/referenser" element={<ReferencesPage />} />
+                  <Route path="/galleri" element={<GalleryPage />} />
+                  <Route path="/referenser" element={<Navigate to="/galleri" replace />} />
                   <Route path="/utrustning" element={<EquipmentPage />} />
                   <Route path="/admin" element={<Admin />} />
                   <Route path="/privacy" element={<PrivacyPolicy />} />

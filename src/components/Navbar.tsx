@@ -15,7 +15,7 @@ const navItems: NavItem[] = [
   { id: "hem", label: { sv: "Hem", en: "Home", es: "Inicio" } },
   { id: "boka", label: { sv: "Boka spelning", en: "Book Event", es: "Reservar" } },
   { id: "lyssna", href: "/lyssna", label: { sv: "DJ Lobo Radio", en: "DJ Lobo Radio", es: "DJ Lobo Radio" } },
-  { id: "referenser", href: "/referenser", label: { sv: "Referenser", en: "References", es: "Referencias" } },
+  { id: "galleri", href: "/galleri", label: { sv: "Galleri", en: "Gallery", es: "Galería" } },
   { id: "utrustning", href: "/utrustning", label: { sv: "Utrustning", en: "Equipment", es: "Equipo" } },
 ];
 
