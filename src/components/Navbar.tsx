@@ -14,7 +14,7 @@ interface NavItem {
 const navItems: NavItem[] = [
   { id: "hem", label: { sv: "Hem", en: "Home", es: "Inicio" } },
   { id: "boka", label: { sv: "Boka spelning", en: "Book Event", es: "Reservar" } },
-  { id: "radio", href: "/radio", label: { sv: "Lyssna", en: "Listen", es: "Escuchar" } },
+  { id: "lyssna", href: "/lyssna", label: { sv: "Lyssna", en: "Listen", es: "Escuchar" } },
   { id: "referenser", href: "/referenser", label: { sv: "Referenser", en: "References", es: "Referencias" } },
   { id: "utrustning", href: "/utrustning", label: { sv: "Utrustning", en: "Equipment", es: "Equipo" } },
 ];
@@ -119,7 +119,7 @@ const Navbar = () => {
                     key={item.id}
                     to={item.href}
                     className={`px-3 py-2 text-sm font-medium rounded-lg transition-all duration-200 ${
-                      item.id === "radio"
+                      item.id === "lyssna"
                         ? "permanent-neon-link font-bold"
                         : isActive(item)
                         ? "text-neon-cyan bg-neon-cyan/10 shadow-[0_0_10px_rgba(0,255,255,0.3)]"
@@ -201,7 +201,7 @@ const Navbar = () => {
                     to={item.href}
                     onClick={() => setIsMenuOpen(false)}
                     className={`w-full block text-left px-4 py-4 text-lg font-medium rounded-xl transition-all duration-200 ${
-                      item.id === "radio"
+                      item.id === "lyssna"
                         ? "permanent-neon-link font-bold"
                         : isActive(item)
                         ? "text-neon-cyan bg-neon-cyan/10 border border-neon-cyan/30 shadow-[0_0_15px_rgba(0,255,255,0.2)]"
