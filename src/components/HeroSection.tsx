@@ -66,7 +66,7 @@ const HeroSection = () => {
       {/* Title */}
       <h1
         id="hero-title"
-        className="font-display text-3xl xs:text-4xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-neon-gradient mb-3 sm:mb-4 tracking-wider text-high-contrast text-center px-2"
+        className="font-display text-[clamp(1.8rem,7vw,7rem)] font-black text-neon-gradient mb-3 sm:mb-4 tracking-wider text-high-contrast text-center px-2 leading-tight"
       >
         DJ LOBO PRODUCCIONES
       </h1>
