@@ -158,7 +158,7 @@ const NowPlayingBar = () => {
   // Add/remove body padding when player is active
   useEffect(() => {
     if (isActive) {
-      document.body.style.paddingBottom = "80px";
+      document.body.style.paddingBottom = "60px";
     } else {
       document.body.style.paddingBottom = "";
     }
@@ -214,12 +214,12 @@ const NowPlayingBar = () => {
       {/* Hidden audio element for radio */}
       <audio ref={audioRef} preload="none" />
 
-      {/* Glass backdrop */}
-      <div className="absolute inset-0 bg-background/90 backdrop-blur-xl border-t border-primary/30 shadow-[0_-4px_30px_-4px_hsl(var(--primary)/0.25)]" />
+      {/* Solid dark backdrop */}
+      <div className="absolute inset-0 bg-background border-t border-border/50" />
 
       <div className="relative h-full flex flex-col">
         {/* Main control bar — mobile: taller, reorganized layout */}
-        <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 py-3 md:py-2 flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 py-2 md:py-2 flex items-center gap-2 sm:gap-3 shrink-0">
 
           {/* === PLAY/PAUSE button (LEFT on mobile) === */}
           {isRadio && (

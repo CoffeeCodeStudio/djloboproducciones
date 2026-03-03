@@ -40,7 +40,7 @@ const Layout = () => {
           key={fadeKey}
           id="main-content"
           tabIndex={-1}
-          className="page-fade-in px-4 sm:px-6 pb-40"
+          className="page-fade-in px-4 sm:px-6 pb-20"
         >
           <Outlet />
         </main>
