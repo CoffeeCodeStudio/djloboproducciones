@@ -1,68 +1,48 @@
-import djLoboImage from "@/assets/dj-lobo-real.jpg";
-import { Radio, Loader2, WifiOff, Headphones, CalendarDays } from "lucide-react";
+import { CalendarDays, Headphones } from "lucide-react";
 import { useBranding } from "@/hooks/useBranding";
-import { useStreamStatus } from "@/hooks/useStreamStatus";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { optimizeProfile, optimizeHero } from "@/lib/imageOptimizer";
+import { optimizeHero } from "@/lib/imageOptimizer";
 import { Link } from "react-router-dom";
 
 const translations = {
   sv: {
-    onAir: "ON AIR",
-    connecting: "ANSLUTER...",
-    offline: "OFFLINE",
-    clickPlay: "KLICKA PLAY ▶",
-    onAirLabel: "DJ Lobo är på luften just nu",
-    connectingLabel: "Ansluter till streamen",
-    errorLabel: "Kunde inte ansluta till streamen",
-    offlineLabel: "Klicka på play för att lyssna",
-    bio: "Skapar magi på dansgolvet i Göteborg. Expert på 80-tal, 90-tal & Latin beats.",
-    bookNow: "BOKA NU",
-    listenMixes: "LYSSNA PÅ MIXAR",
+    title: "DJ LOBO",
+    subtitle: "80-TAL · 90-TAL · LATIN BEATS",
+    cta1: "SE SCHEMA",
+    cta2: "BOKA SPELNING",
+    tagline: "Göteborg's mest anlitade DJ för fester, bröllop och företagsevent",
   },
   en: {
-    onAir: "ON AIR",
-    connecting: "CONNECTING...",
-    offline: "OFFLINE",
-    clickPlay: "CLICK PLAY ▶",
-    onAirLabel: "DJ Lobo is on air right now",
-    connectingLabel: "Connecting to stream",
-    errorLabel: "Could not connect to stream",
-    offlineLabel: "Click play to listen",
-    bio: "Creating magic on the dance floor in Gothenburg. Expert in 80s, 90s & Latin beats.",
-    bookNow: "BOOK NOW",
-    listenMixes: "LISTEN TO MIXES",
+    title: "DJ LOBO",
+    subtitle: "80S · 90S · LATIN BEATS",
+    cta1: "VIEW SCHEDULE",
+    cta2: "BOOK EVENT",
+    tagline: "Gothenburg's most sought-after DJ for parties, weddings, and corporate events",
   },
   es: {
-    onAir: "ON AIR",
-    connecting: "CONECTANDO...",
-    offline: "FUERA DE LÍNEA",
-    clickPlay: "PULSA PLAY ▶",
-    onAirLabel: "DJ Lobo está en vivo ahora",
-    connectingLabel: "Conectando al stream",
-    errorLabel: "No se pudo conectar al stream",
-    offlineLabel: "Pulsa play para escuchar",
-    bio: "Creando magia en la pista de baile en Gotemburgo. Experto en 80s, 90s y Latin beats.",
-    bookNow: "RESERVAR",
-    listenMixes: "ESCUCHAR MEZCLAS",
+    title: "DJ LOBO",
+    subtitle: "80S · 90S · LATIN BEATS",
+    cta1: "VER AGENDA",
+    cta2: "RESERVAR",
+    tagline: "El DJ más solicitado de Gotemburgo para fiestas, bodas y eventos corporativos",
   },
 };
 
 const HeroSection = () => {
   const { branding } = useBranding();
-  const { status } = useStreamStatus();
   const { language } = useLanguage();
   const t = translations[language];
+  const heroOpt = optimizeHero(branding?.hero_image_url);
+  const siteName = branding?.site_name || "DJ LOBO";
+
+  const scrollToSchedule = () => {
+    const el = document.getElementById("schedule") || document.getElementById("boka");
+    el?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const scrollToBooking = () => {
     document.getElementById("boka")?.scrollIntoView({ behavior: "smooth" });
   };
-
-  const profileOpt = optimizeProfile(branding?.profile_image_url);
-  const profileImage = profileOpt.src || djLoboImage;
-  const profileFallback = profileOpt.fallback || djLoboImage;
-  const heroOpt = optimizeHero(branding?.hero_image_url);
-  const siteName = branding?.site_name || "DJ LOBO";
 
   return (
     <section
@@ -76,104 +56,51 @@ const HeroSection = () => {
             src={heroOpt.src}
             alt=""
             aria-hidden="true"
-            className="w-full h-full object-cover opacity-30"
+            className="w-full h-full object-cover opacity-40"
             onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = heroOpt.fallback; }}
           />
-          <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-background/80 to-background" />
+          <div className="absolute inset-0 bg-gradient-to-b from-background/40 via-background/70 to-background" />
         </div>
       )}
-      {/* Stream Status Badge */}
-      <div className="mb-3 sm:mb-5">
-        <div
-          className={`px-3 sm:px-5 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-3 rounded-full border transition-all ${
-            status === "live"
-              ? "glass-card-pink on-air-pulse border-neon-pink/30"
-              : status === "connecting"
-              ? "glass-card border-neon-cyan/30"
-              : status === "error"
-              ? "glass-card border-red-500/30"
-              : "glass-card border-muted"
-          }`}
-          role="status"
-          aria-live="polite"
-          aria-label={
-            status === "live"
-              ? t.onAirLabel
-              : status === "connecting"
-              ? t.connectingLabel
-              : status === "error"
-              ? t.errorLabel
-              : t.offlineLabel
-          }
-        >
-          {status === "live" ? (
-            <>
-              <div className="w-2 h-2 sm:w-3 sm:h-3 bg-neon-pink rounded-full live-dot" aria-hidden="true" />
-              <span className="font-display font-bold text-neon-pink tracking-wider text-xs sm:text-sm">{t.onAir}</span>
-            </>
-          ) : status === "connecting" ? (
-            <>
-              <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-neon-cyan animate-spin" aria-hidden="true" />
-              <span className="font-display font-bold text-neon-cyan tracking-wider text-xs sm:text-sm">{t.connecting}</span>
-            </>
-          ) : status === "error" ? (
-            <>
-              <WifiOff className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-400" aria-hidden="true" />
-              <span className="font-display font-bold text-red-400 tracking-wider text-xs sm:text-sm">{t.offline}</span>
-            </>
-          ) : (
-            <>
-              <Radio className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" aria-hidden="true" />
-              <span className="font-display font-bold text-muted-foreground tracking-wider text-xs sm:text-sm">{t.clickPlay}</span>
-            </>
-          )}
-        </div>
-      </div>
 
-      {/* DJ Image */}
-      <div className="relative mb-3 sm:mb-5">
-        <div className="w-32 h-32 sm:w-44 sm:h-44 md:w-56 md:h-56 lg:w-64 lg:h-64 rounded-full overflow-hidden neon-border-gradient profile-neon-aura">
-          <img
-            src={profileImage}
-            alt="DJ Lobo vid mixerbordet"
-            className="w-full h-full object-cover rounded-full"
-            fetchPriority="high"
-            loading="eager"
-            onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = profileFallback; }}
-          />
-        </div>
-        <div className="absolute inset-0 rounded-full bg-gradient-to-br from-neon-pink/30 to-neon-cyan/30 blur-3xl -z-10 scale-110" aria-hidden="true" />
-      </div>
+      {/* Decorative neon orbs */}
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-neon-pink/10 blur-[100px] -z-10 animate-pulse" aria-hidden="true" />
+      <div className="absolute bottom-1/3 right-1/4 w-72 h-72 rounded-full bg-neon-cyan/10 blur-[100px] -z-10 animate-pulse" style={{ animationDelay: "1s" }} aria-hidden="true" />
 
       {/* Title */}
       <h1
         id="hero-title"
-        className="font-display text-3xl sm:text-5xl md:text-7xl font-black text-neon-gradient mb-2 sm:mb-3 tracking-wider text-high-contrast text-center"
+        className="font-display text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black text-neon-gradient mb-3 sm:mb-4 tracking-wider text-high-contrast text-center"
       >
         {siteName.toUpperCase().replace(" RADIO", "")}
       </h1>
 
-      {/* Bio */}
-      <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-5 sm:mb-7 text-center max-w-xl px-4">
-        {t.bio}
+      {/* Subtitle */}
+      <p className="font-display text-sm sm:text-lg md:text-xl tracking-[0.3em] text-neon-cyan/80 mb-4 sm:mb-6 text-center">
+        {t.subtitle}
       </p>
 
-      {/* Two CTA Buttons */}
+      {/* Tagline */}
+      <p className="text-sm sm:text-base text-muted-foreground mb-8 sm:mb-10 text-center max-w-lg px-4">
+        {t.tagline}
+      </p>
+
+      {/* CTA Buttons */}
       <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5">
         <button
           onClick={scrollToBooking}
-          className="book-now-button tap-target px-6 sm:px-8 py-3 sm:py-3.5 font-display font-bold tracking-wider text-sm sm:text-base rounded-full flex items-center gap-2 transition-all"
+          className="book-now-button tap-target px-8 sm:px-10 py-3.5 sm:py-4 font-display font-bold tracking-wider text-sm sm:text-base rounded-full flex items-center gap-2.5 transition-all"
         >
-          <CalendarDays className="w-4 h-4 sm:w-5 sm:h-5" />
-          {t.bookNow}
+          <CalendarDays className="w-5 h-5" />
+          {t.cta2}
         </button>
 
         <Link
-          to="/radio"
-          className="permanent-neon-link tap-target px-6 sm:px-8 py-3 sm:py-3.5 font-display font-bold tracking-wider text-sm sm:text-base flex items-center gap-2 transition-all hover:scale-105"
+          to="/lyssna"
+          className="permanent-neon-link tap-target px-8 sm:px-10 py-3.5 sm:py-4 font-display font-bold tracking-wider text-sm sm:text-base flex items-center gap-2.5 transition-all hover:scale-105"
         >
-          <Headphones className="w-4 h-4 sm:w-5 sm:h-5" />
-          {t.listenMixes}
+          <Headphones className="w-5 h-5" />
+          DJ LOBO RADIO
         </Link>
       </div>
     </section>
