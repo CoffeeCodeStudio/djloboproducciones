@@ -106,13 +106,6 @@ const Navbar = () => {
                 >
                   <item.icon className="w-4 h-4" />
                   {item.label[language]}
-                  {/* Pulsing LIVE dot for Radio */}
-                  {item.highlight && (
-                    <span className="relative flex h-2 w-2 ml-0.5">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-pink opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2 w-2 bg-neon-pink" />
-                    </span>
-                  )}
                 </Link>
               ))}
             </div>
@@ -183,12 +176,6 @@ const Navbar = () => {
                 >
                   <item.icon className="w-5 h-5" />
                   {item.label[language]}
-                  {item.highlight && (
-                    <span className="relative flex h-2.5 w-2.5 ml-auto">
-                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-neon-pink opacity-75" />
-                      <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-neon-pink" />
-                    </span>
-                  )}
                 </Link>
               ))}
             </nav>
