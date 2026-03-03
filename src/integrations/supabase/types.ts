@@ -134,6 +134,33 @@ export type Database = {
         }
         Relationships: []
       }
+      mixcloud_mixes: {
+        Row: {
+          created_at: string
+          id: string
+          mixcloud_url: string
+          sort_order: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mixcloud_url: string
+          sort_order?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mixcloud_url?: string
+          sort_order?: number
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_branding: {
         Row: {
           accent_color: string | null

@@ -3,6 +3,7 @@ import { useGallery } from "@/hooks/useGallery";
 import { useBranding } from "@/hooks/useBranding";
 import { useLanguage } from "@/contexts/LanguageContext";
 import SoundCloudMixes from "@/components/SoundCloudMixes";
+import MixcloudMixes from "@/components/MixcloudMixes";
 import LazyYouTube from "@/components/LazyYouTube";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import Footer from "@/components/Footer";
@@ -143,6 +144,13 @@ const GalleryPage = () => {
       <ErrorBoundary>
         <div className="px-4 sm:px-6">
           <SoundCloudMixes />
+        </div>
+      </ErrorBoundary>
+
+      {/* Mixcloud Sets */}
+      <ErrorBoundary>
+        <div className="px-4 sm:px-6">
+          <MixcloudMixes />
         </div>
       </ErrorBoundary>
 
