@@ -125,7 +125,7 @@ const Navbar = () => {
                   <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform ${isLangOpen ? "rotate-180" : ""}`} aria-hidden="true" />
                 </button>
                 {isLangOpen && (
-                  <ul role="listbox" aria-label="Välj språk" className="absolute right-0 mt-2 w-40 glass-card rounded-lg overflow-hidden py-1 shadow-lg border border-neon-cyan/20 z-[60]">
+                  <ul role="listbox" aria-label="Välj språk" className="absolute right-0 mt-2 w-40 rounded-lg overflow-hidden py-1 shadow-lg border border-neon-cyan/20 z-[60] bg-background/95 backdrop-blur-xl">
                     {languages.map((lang) => (
                       <li key={lang.code} role="option" aria-selected={language === lang.code} tabIndex={0}
                         onClick={() => { setLanguage(lang.code); setIsLangOpen(false); }}

@@ -1,4 +1,5 @@
-import { Instagram, Facebook, Youtube, ExternalLink, Radio, Mail, Phone, MapPin } from "lucide-react";
+import { Instagram, Facebook, Youtube, Radio as RadioIcon, Mail, Phone, MapPin } from "lucide-react";
+import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Link } from "react-router-dom";
 import { useBranding } from "@/hooks/useBranding";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -88,7 +89,7 @@ const Footer = () => {
                 <img alt="DJ Lobo Radio Logo" className="h-12 w-auto object-contain" src={optimizeLogo(branding.logo_url).src} loading="lazy" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = optimizeLogo(branding.logo_url).fallback; }} />
               ) : (
                 <div className="h-12 w-12 flex items-center justify-center glass-card rounded-full">
-                  <Radio className="h-8 w-8 text-neon-cyan" />
+                  <RadioIcon className="h-8 w-8 text-neon-cyan" />
                 </div>
               )}
             </div>
@@ -115,33 +116,54 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Social */}
           <div className="flex flex-col sm:col-span-2 md:col-span-1">
             <h3 className="font-display text-lg font-bold text-neon-gradient mb-4">Social</h3>
-            <nav aria-label="Sociala medier">
-              <ul className="flex gap-3 flex-wrap">
-                <li>
-                  <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label={t.followInstagram} className="tap-target w-11 h-11 glass-card rounded-full flex items-center justify-center transition-all group focus-neon hover:scale-110">
-                    <Instagram className="w-5 h-5 text-muted-foreground group-hover:text-neon-pink transition-colors" />
-                  </a>
-                </li>
-                <li>
-                  <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label={t.followFacebook} className="tap-target w-11 h-11 glass-card rounded-full flex items-center justify-center transition-all group focus-neon hover:scale-110">
-                    <Facebook className="w-5 h-5 text-muted-foreground group-hover:text-neon-cyan transition-colors" />
-                  </a>
-                </li>
-                <li>
-                  <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label={t.subscribeYoutube} className="tap-target w-11 h-11 glass-card rounded-full flex items-center justify-center transition-all group focus-neon hover:scale-110">
-                    <Youtube className="w-5 h-5 text-muted-foreground group-hover:text-neon-pink transition-colors" />
-                  </a>
-                </li>
-                <li>
-                  <a href={socialLinks.zenoPlayer} target="_blank" rel="noopener noreferrer" aria-label={t.listenZeno} className="tap-target w-11 h-11 glass-card rounded-full flex items-center justify-center transition-all group focus-neon hover:scale-110">
-                    <ExternalLink className="w-5 h-5 text-muted-foreground group-hover:text-neon-cyan transition-colors" />
-                  </a>
-                </li>
-              </ul>
-            </nav>
+            <TooltipProvider>
+              <nav aria-label="Sociala medier">
+                <ul className="flex gap-3 flex-wrap">
+                  <li>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label={t.followInstagram} className="tap-target w-11 h-11 glass-card rounded-full flex items-center justify-center transition-all group focus-neon hover:scale-110">
+                          <Instagram className="w-5 h-5 text-muted-foreground group-hover:text-neon-pink transition-colors" />
+                        </a>
+                      </TooltipTrigger>
+                      <TooltipContent><p>Instagram</p></TooltipContent>
+                    </Tooltip>
+                  </li>
+                  <li>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer" aria-label={t.followFacebook} className="tap-target w-11 h-11 glass-card rounded-full flex items-center justify-center transition-all group focus-neon hover:scale-110">
+                          <Facebook className="w-5 h-5 text-muted-foreground group-hover:text-neon-cyan transition-colors" />
+                        </a>
+                      </TooltipTrigger>
+                      <TooltipContent><p>Facebook</p></TooltipContent>
+                    </Tooltip>
+                  </li>
+                  <li>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label={t.subscribeYoutube} className="tap-target w-11 h-11 glass-card rounded-full flex items-center justify-center transition-all group focus-neon hover:scale-110">
+                          <Youtube className="w-5 h-5 text-muted-foreground group-hover:text-neon-pink transition-colors" />
+                        </a>
+                      </TooltipTrigger>
+                      <TooltipContent><p>YouTube</p></TooltipContent>
+                    </Tooltip>
+                  </li>
+                  <li>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <a href={socialLinks.zenoPlayer} target="_blank" rel="noopener noreferrer" aria-label={t.listenZeno} className="tap-target w-11 h-11 glass-card rounded-full flex items-center justify-center transition-all group focus-neon hover:scale-110">
+                          <RadioIcon className="w-5 h-5 text-muted-foreground group-hover:text-neon-cyan transition-colors" />
+                        </a>
+                      </TooltipTrigger>
+                      <TooltipContent><p>Zeno.fm</p></TooltipContent>
+                    </Tooltip>
+                  </li>
+                </ul>
+              </nav>
+            </TooltipProvider>
           </div>
         </div>
 
