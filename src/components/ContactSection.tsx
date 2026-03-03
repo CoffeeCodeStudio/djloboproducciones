@@ -220,30 +220,6 @@ const ContactSection = () => {
             </div>
           </div>
 
-          {/* Social Links */}
-          <div className="glass-card p-6 rounded-xl">
-            <p className="text-sm text-muted-foreground mb-4">{t.followUs}</p>
-            <div className="flex gap-4">
-              <a
-                href={instagramUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-12 h-12 rounded-full bg-gradient-to-br from-pink-500 to-purple-600 flex items-center justify-center hover:scale-110 transition-transform"
-                aria-label="Instagram"
-              >
-                <Instagram className="w-6 h-6 text-white" />
-              </a>
-              <a
-                href={youtubeUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-12 h-12 rounded-full bg-red-600 flex items-center justify-center hover:scale-110 transition-transform"
-                aria-label="YouTube"
-              >
-                <Youtube className="w-6 h-6 text-white" />
-              </a>
-            </div>
-          </div>
         </div>
       </div>
     </section>
