@@ -124,14 +124,6 @@ const CalendarSection = () => {
                       </div>
                     </div>
 
-                    {/* Book link */}
-                    <a
-                      href="#booking"
-                      className="flex-shrink-0 hidden sm:inline-flex items-center gap-1 text-xs font-display font-bold tracking-wider text-neon-cyan border border-neon-cyan/40 rounded-full px-3 py-1.5 hover:bg-neon-cyan/10 transition-colors"
-                    >
-                      {t.bookNow}
-                      <ExternalLink className="w-3 h-3" aria-hidden="true" />
-                    </a>
                   </li>
                 );
               })}
