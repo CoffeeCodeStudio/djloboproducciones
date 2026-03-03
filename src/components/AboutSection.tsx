@@ -17,13 +17,12 @@ const translations = {
     latin: "latinmusik",
     bio2b: "skapar en oförglömlig atmosfär. Oavsett om det är synth-pop, eurodance, salsa eller reggaeton – DJ Lobo tar dig på en musikalisk resa!",
     yearsLabel: "År",
-    eventsLabel: "Events",
-    listenersLabel: "Lyssnare",
+    eventsLabel: "Spelningar",
     feature1Title: "80 & 90-tal",
     feature1Desc: "Synth-pop, eurodance och discoklassiker",
     feature2Title: "Latin Vibes",
     feature2Desc: "Salsa, reggaeton och tropical hits",
-    feature3Title: "Club & Events",
+    feature3Title: "Club & Spelningar",
     feature3Desc: "Bröllop, företag och privatfester",
   },
   en: {
@@ -38,7 +37,6 @@ const translations = {
     bio2b: "creates an unforgettable atmosphere. Whether it's synth-pop, eurodance, salsa or reggaeton – DJ Lobo takes you on a musical journey!",
     yearsLabel: "Years",
     eventsLabel: "Events",
-    listenersLabel: "Listeners",
     feature1Title: "80s & 90s",
     feature1Desc: "Synth-pop, eurodance and disco classics",
     feature2Title: "Latin Vibes",
@@ -58,7 +56,6 @@ const translations = {
     bio2b: "crea una atmósfera inolvidable. Ya sea synth-pop, eurodance, salsa o reggaeton – ¡DJ Lobo te lleva en un viaje musical!",
     yearsLabel: "Años",
     eventsLabel: "Eventos",
-    listenersLabel: "Oyentes",
     feature1Title: "80s & 90s",
     feature1Desc: "Synth-pop, eurodance y clásicos disco",
     feature2Title: "Latin Vibes",
@@ -105,7 +102,6 @@ const AboutSection = () => {
   const stats = [
     { value: "20+", label: t.yearsLabel, ariaLabel: "Över 20 års erfarenhet" },
     { value: "500+", label: t.eventsLabel, ariaLabel: "Över 500 spelningar" },
-    { value: "100K+", label: t.listenersLabel, ariaLabel: "Över 100 000 lyssnare" },
   ];
 
   const features = [
@@ -155,7 +151,7 @@ const AboutSection = () => {
             </p>
 
             {/* Stats */}
-            <dl className="flex gap-8 sm:gap-12 mt-6 sm:mt-8">
+            <dl className="flex justify-center gap-12 sm:gap-16 mt-6 sm:mt-8">
               {stats.map((stat, index) => (
                 <div key={index} className="text-center scroll-reveal">
                   <dt className="sr-only">{stat.ariaLabel}</dt>

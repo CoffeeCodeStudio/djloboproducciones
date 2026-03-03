@@ -1,9 +1,13 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Calendar, Clock, MapPin, Music, Send } from "lucide-react";
+import { Calendar, Clock, MapPin, Music, Send, CalendarIcon } from "lucide-react";
 import { useState } from "react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Calendar as CalendarPicker } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -91,11 +95,12 @@ const BookingSection = () => {
     email: "",
     phone: "",
     eventType: "",
-    eventDate: "",
+    eventDate: undefined as Date | undefined,
     location: "",
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [dateOpen, setDateOpen] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -107,7 +112,7 @@ const BookingSection = () => {
         email: formData.email,
         phone: formData.phone || null,
         event_type: formData.eventType,
-        event_date: formData.eventDate,
+        event_date: formData.eventDate ? format(formData.eventDate, "yyyy-MM-dd") : "",
         location: formData.location || null,
         message: formData.message || null,
       });
@@ -124,7 +129,7 @@ const BookingSection = () => {
         email: "",
         phone: "",
         eventType: "",
-        eventDate: "",
+        eventDate: undefined,
         location: "",
         message: "",
       });
@@ -222,18 +227,33 @@ const BookingSection = () => {
             </div>
 
             <div>
-              <label htmlFor="booking-date" className="block text-sm font-medium text-foreground mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 {t.eventDate} *
               </label>
-              <Input
-                id="booking-date"
-                type="date"
-                value={formData.eventDate}
-                onChange={(e) => setFormData({ ...formData, eventDate: e.target.value })}
-                required
-                min={new Date().toISOString().split("T")[0]}
-                className="bg-background/50 border-muted focus:border-neon-pink"
-              />
+              <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                <PopoverTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full justify-start text-left font-normal bg-background/50 border-muted hover:border-neon-pink",
+                      !formData.eventDate && "text-muted-foreground"
+                    )}
+                  >
+                    <CalendarIcon className="mr-2 h-4 w-4" />
+                    {formData.eventDate ? format(formData.eventDate, "PPP") : t.eventDate}
+                  </Button>
+                </PopoverTrigger>
+                <PopoverContent className="w-auto p-0" align="start">
+                  <CalendarPicker
+                    mode="single"
+                    selected={formData.eventDate}
+                    onSelect={(date) => { setFormData({ ...formData, eventDate: date }); setDateOpen(false); }}
+                    disabled={(date) => date < new Date()}
+                    initialFocus
+                    className={cn("p-3 pointer-events-auto")}
+                  />
+                </PopoverContent>
+              </Popover>
             </div>
 
             <div>

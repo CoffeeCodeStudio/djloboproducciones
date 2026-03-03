@@ -5,8 +5,8 @@ import { useCalendarEvents } from "@/hooks/useCalendarEvents";
 
 const translations = {
   sv: {
-    title: "KOMMANDE EVENTS",
-    subtitle: "Missa inte dessa shower",
+    title: "KOMMANDE SPELNINGAR",
+    subtitle: "Missa inte dessa spelningar",
     noEvents: "Inga kommande spelningar just nu",
     bookNow: "Boka",
     locationTBA: "Plats meddelas",

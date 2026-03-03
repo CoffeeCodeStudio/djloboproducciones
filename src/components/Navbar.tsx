@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
-import { Menu, X, Radio, Globe, ChevronDown, Home, Headphones, CalendarDays, Star, Film } from "lucide-react";
+import { Menu, Radio, Globe, ChevronDown, Home, Headphones, CalendarDays, Star, Film } from "lucide-react";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
 import { useBranding } from "@/hooks/useBranding";
 import { optimizeLogo } from "@/lib/imageOptimizer";
 import { Link, useLocation } from "react-router-dom";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 interface NavItem {
   id: string;
@@ -17,7 +23,7 @@ const navItems: NavItem[] = [
   { id: "hem", href: "/", label: { sv: "Hem", en: "Home", es: "Inicio" }, icon: Home },
   { id: "media", href: "/media", label: { sv: "Media", en: "Media", es: "Media" }, icon: Film },
   { id: "radio", href: "/lyssna", label: { sv: "Radio", en: "Radio", es: "Radio" }, icon: Radio, highlight: true },
-  { id: "referenser", href: "/referenser", label: { sv: "Referenser", en: "References", es: "Referencias" }, icon: Star },
+  { id: "referenser", href: "/referenser", label: { sv: "Omdömen", en: "Reviews", es: "Reseñas" }, icon: Star },
   { id: "spelningar", href: "/spelningar", label: { sv: "Spelningar", en: "Shows", es: "Shows" }, icon: CalendarDays },
 ];
 
@@ -32,10 +38,8 @@ const Navbar = () => {
   const { language, setLanguage } = useLanguage();
   const { branding } = useBranding();
   const location = useLocation();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
-
   const currentLang = languages.find((l) => l.code === language)!;
 
   useEffect(() => {
@@ -52,10 +56,6 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  useEffect(() => {
-    document.body.style.overflow = isMenuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
-  }, [isMenuOpen]);
 
   const isActive = (item: NavItem) => {
     if (item.href === "/") return location.pathname === "/";
@@ -140,56 +140,40 @@ const Navbar = () => {
                 )}
               </div>
 
-              {/* Mobile Menu Button */}
-              <button
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="lg:hidden tap-target glass-card p-2 rounded-lg focus-neon hover:border-neon-purple/50 transition-colors"
-                aria-label={isMenuOpen ? "Stäng meny" : "Öppna meny"}
-                aria-expanded={isMenuOpen}
-              >
-                {isMenuOpen ? <X className="w-6 h-6 text-neon-cyan" /> : <Menu className="w-6 h-6 text-foreground" />}
-              </button>
+              {/* Mobile Menu Dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button
+                    className="lg:hidden tap-target glass-card p-2 rounded-lg focus-neon hover:border-neon-purple/50 transition-colors"
+                    aria-label="Öppna meny"
+                  >
+                    <Menu className="w-6 h-6 text-foreground" />
+                  </button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-56 glass-card border-neon-purple/30 bg-background/95 backdrop-blur-xl">
+                  {navItems.map((item) => (
+                    <DropdownMenuItem key={item.id} asChild>
+                      <Link
+                        to={item.href}
+                        className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium cursor-pointer ${
+                          item.highlight
+                            ? "text-neon-pink font-bold"
+                            : isActive(item)
+                            ? "text-neon-cyan"
+                            : "text-foreground/90"
+                        }`}
+                      >
+                        <item.icon className="w-4 h-4" />
+                        {item.label[language]}
+                      </Link>
+                    </DropdownMenuItem>
+                  ))}
+                </DropdownMenuContent>
+              </DropdownMenu>
             </div>
           </div>
         </div>
       </nav>
-
-      {/* Mobile Menu Overlay */}
-      <div className={`fixed inset-0 z-40 lg:hidden transition-all duration-300 ${isMenuOpen ? "visible" : "invisible"}`}>
-        <div className={`absolute inset-0 bg-background/90 backdrop-blur-xl transition-opacity duration-300 ${isMenuOpen ? "opacity-100" : "opacity-0"}`} onClick={() => setIsMenuOpen(false)} />
-        <div className={`absolute top-0 right-0 h-full w-full max-w-sm bg-background/95 backdrop-blur-2xl border-l border-neon-purple/30 shadow-2xl transition-transform duration-300 ${isMenuOpen ? "translate-x-0" : "translate-x-full"}`}>
-          <div className="flex flex-col h-full pt-20 pb-8 px-6">
-            <nav className="flex-1 space-y-2">
-              {navItems.map((item, index) => (
-                <Link
-                  key={item.id}
-                  to={item.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={`w-full flex items-center gap-3 text-left px-4 py-4 text-lg font-medium rounded-xl transition-all duration-200 ${
-                    item.highlight
-                      ? "permanent-neon-link font-bold text-neon-pink bg-neon-pink/10 border border-neon-pink/40 shadow-[0_0_15px_rgba(255,0,128,0.3)]"
-                      : isActive(item)
-                      ? "text-neon-cyan bg-neon-cyan/10 border border-neon-cyan/30 shadow-[0_0_15px_rgba(0,255,255,0.2)]"
-                      : "text-foreground/90 hover:text-neon-cyan hover:bg-neon-cyan/5 border border-transparent"
-                  }`}
-                  style={{ animationDelay: `${index * 50}ms` }}
-                >
-                  <item.icon className="w-5 h-5" />
-                  {item.label[language]}
-                </Link>
-              ))}
-            </nav>
-            <div className="mt-auto pt-6 border-t border-neon-purple/20">
-              <p className="text-sm text-muted-foreground text-center">{branding?.site_name || "DJ Lobo Radio"}</p>
-              <div className="flex justify-center gap-1 mt-2">
-                <span className="w-2 h-2 rounded-full bg-neon-pink animate-pulse" />
-                <span className="w-2 h-2 rounded-full bg-neon-cyan animate-pulse" style={{ animationDelay: "0.2s" }} />
-                <span className="w-2 h-2 rounded-full bg-neon-purple animate-pulse" style={{ animationDelay: "0.4s" }} />
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
       <div className="h-16 sm:h-20" />
     </>

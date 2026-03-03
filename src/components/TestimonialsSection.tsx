@@ -77,7 +77,7 @@ const clientLogos: ClientLogo[] = [
 
 const translations = {
   sv: {
-    title: "Mina Referenser",
+    title: "Omdömen",
     subtitle: "Vad våra kunder säger om oss",
     trustedBy: "Erfarenhet från många olika eventtyper",
     bookNow: "Boka nu",
