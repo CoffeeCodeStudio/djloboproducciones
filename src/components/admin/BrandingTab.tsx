@@ -322,60 +322,6 @@ const BrandingTab = () => {
         <Card className="glass-card">
           <CardHeader>
             <CardTitle className="font-display flex items-center gap-2">
-              <Layout className="w-5 h-5 text-neon-cyan" />
-              Hero Banner Image
-            </CardTitle>
-            <CardDescription>Large banner image at the top of the landing page</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {/* Preview */}
-              <div className="relative aspect-video rounded-lg overflow-hidden border border-border/50 bg-muted/30">
-                {getImagePreview("hero") ? (
-                  <img 
-                    src={getImagePreview("hero")!} 
-                    alt="Hero preview" 
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Image className="w-16 h-16 text-muted-foreground" />
-                  </div>
-                )}
-                {uploading === "hero" && (
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-white" />
-                  </div>
-                )}
-              </div>
-              
-              <div className="flex gap-3">
-                <input
-                  ref={heroInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => handleFileSelect(e, "hero")}
-                />
-                <Button 
-                  variant="outline" 
-                  onClick={() => heroInputRef.current?.click()}
-                  disabled={uploading === "hero"}
-                >
-                  <Upload className="w-4 h-4 mr-2" />
-                  Upload Hero Image
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Recommended: 1920x1080px or 16:9 aspect ratio, max 5MB
-              </p>
-              {renderRecentUploads("hero")}
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="glass-card">
-          <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2">
               <Sparkles className="w-5 h-5 text-neon-purple" />
               Logo
             </CardTitle>
