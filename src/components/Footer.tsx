@@ -80,9 +80,9 @@ const Footer = () => {
     <footer className="py-12 sm:py-16 px-4 sm:px-6 pb-32 sm:pb-36 relative border-t border-neon-purple/20">
       <div className="max-w-7xl mx-auto">
         {/* Grid: About + Contact + Social */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 md:gap-8 mb-10">
           {/* About */}
-          <div>
+          <div className="flex flex-col">
             <div className="flex items-center gap-3 mb-4">
               {branding?.logo_url ? (
                 <img alt="DJ Lobo Radio Logo" className="h-12 w-auto object-contain" src={optimizeLogo(branding.logo_url).src} loading="lazy" onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = optimizeLogo(branding.logo_url).fallback; }} />
@@ -97,12 +97,12 @@ const Footer = () => {
           </div>
 
           {/* Contact */}
-          <div>
+          <div className="flex flex-col">
             <h3 className="font-display text-lg font-bold text-neon-gradient mb-4">{t.contact}</h3>
             <ul className="space-y-3">
-              <li className="flex items-center gap-3 text-sm text-muted-foreground">
-                <Mail className="w-4 h-4 text-neon-cyan flex-shrink-0" />
-                <a href="mailto:info@djloboproducciones.com" className="hover:text-neon-cyan transition-colors">info@djloboproducciones.com</a>
+              <li className="flex items-start gap-3 text-sm text-muted-foreground">
+                <Mail className="w-4 h-4 text-neon-cyan flex-shrink-0 mt-0.5" />
+                <a href="mailto:info@djloboproducciones.com" className="hover:text-neon-cyan transition-colors break-all">info@djloboproducciones.com</a>
               </li>
               <li className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Phone className="w-4 h-4 text-neon-pink flex-shrink-0" />
@@ -116,10 +116,10 @@ const Footer = () => {
           </div>
 
           {/* Social */}
-          <div>
+          <div className="flex flex-col sm:col-span-2 md:col-span-1">
             <h3 className="font-display text-lg font-bold text-neon-gradient mb-4">Social</h3>
             <nav aria-label="Sociala medier">
-              <ul className="flex gap-3">
+              <ul className="flex gap-3 flex-wrap">
                 <li>
                   <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label={t.followInstagram} className="tap-target w-11 h-11 glass-card rounded-full flex items-center justify-center transition-all group focus-neon hover:scale-110">
                     <Instagram className="w-5 h-5 text-muted-foreground group-hover:text-neon-pink transition-colors" />
