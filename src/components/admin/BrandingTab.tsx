@@ -388,60 +388,6 @@ const BrandingTab = () => {
         <Card className="glass-card">
           <CardHeader>
             <CardTitle className="font-display flex items-center gap-2">
-              <Monitor className="w-5 h-5 text-neon-blue" />
-              Background Image
-            </CardTitle>
-            <CardDescription>Full-page background image (optional)</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              {/* Preview */}
-              <div className="relative aspect-video rounded-lg overflow-hidden border border-border/50 bg-muted/30 max-w-md">
-                {getImagePreview("background") ? (
-                  <img 
-                    src={getImagePreview("background")!} 
-                    alt="Background preview" 
-                    className="w-full h-full object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center">
-                    <Monitor className="w-12 h-12 text-muted-foreground" />
-                  </div>
-                )}
-                {uploading === "background" && (
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <Loader2 className="w-8 h-8 animate-spin text-white" />
-                  </div>
-                )}
-              </div>
-              
-              <div className="flex gap-3">
-                <input
-                  ref={bgInputRef}
-                  type="file"
-                  accept="image/*"
-                  className="hidden"
-                  onChange={(e) => handleFileSelect(e, "background")}
-                />
-                <Button 
-                  variant="outline" 
-                  onClick={() => bgInputRef.current?.click()}
-                  disabled={uploading === "background"}
-                >
-                  <Upload className="w-4 h-4 mr-2" />
-                  Upload Background
-                </Button>
-              </div>
-              <p className="text-xs text-muted-foreground">
-                Recommended: High-resolution image, will be darkened for readability
-              </p>
-              {renderRecentUploads("background")}
-            </div>
-          </CardContent>
-        </Card>
-        <Card className="glass-card">
-          <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2">
               <Youtube className="w-5 h-5 text-red-500" />
               YouTube Video
             </CardTitle>
