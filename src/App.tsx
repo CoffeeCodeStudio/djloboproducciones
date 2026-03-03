@@ -7,6 +7,7 @@ import { LanguageProvider } from "@/contexts/LanguageContext";
 import { lazy, Suspense } from "react";
 import Layout from "@/components/Layout";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import GlobalMiniPlayer from "@/components/GlobalMiniPlayer";
 
 // Lazy-loaded pages
 const Index = lazy(() => import("./pages/Index"));
@@ -51,6 +52,7 @@ const App = () => (
                 </Route>
               </Routes>
             </Suspense>
+            <GlobalMiniPlayer />
           </ErrorBoundary>
         </BrowserRouter>
       </TooltipProvider>

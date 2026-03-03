@@ -3,14 +3,20 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Trash2, Plus, GripVertical, Pencil, Check, X, Music } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Trash2, Plus, Pencil, Check, X, Music, Pin, EyeOff, Eye, RefreshCw, Disc3 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 interface Mix {
   id: string;
   title: string;
-  soundcloud_url: string;
+  url: string;
+  cover_art_url: string | null;
   sort_order: number;
+  pinned: boolean;
+  hidden: boolean;
+  source: string;
+  table: "soundcloud" | "mixcloud";
 }
 
 const MixesTab = () => {
@@ -22,31 +28,60 @@ const MixesTab = () => {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editTitle, setEditTitle] = useState("");
   const [editUrl, setEditUrl] = useState("");
+  const [fetching, setFetching] = useState(false);
   const { toast } = useToast();
 
-  useEffect(() => {
-    fetchMixes();
-  }, []);
+  useEffect(() => { fetchMixes(); }, []);
 
   const fetchMixes = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("soundcloud_mixes")
-      .select("*")
-      .order("sort_order", { ascending: true });
+    const [scRes, mcRes] = await Promise.all([
+      supabase.from("soundcloud_mixes").select("*").order("sort_order", { ascending: true }),
+      supabase.from("mixcloud_mixes").select("*").order("sort_order", { ascending: true }),
+    ]);
 
-    if (error) {
-      toast({ title: "Fel", description: "Kunde inte hämta mixar", variant: "destructive" });
-    } else {
-      setMixes(data || []);
-    }
+    const scMixes: Mix[] = (scRes.data || []).map((m) => ({
+      id: m.id,
+      title: m.title,
+      url: m.soundcloud_url,
+      cover_art_url: m.cover_art_url,
+      sort_order: m.sort_order,
+      pinned: m.pinned ?? false,
+      hidden: m.hidden ?? false,
+      source: m.source ?? "manual",
+      table: "soundcloud" as const,
+    }));
+
+    const mcMixes: Mix[] = (mcRes.data || []).map((m) => ({
+      id: m.id,
+      title: m.title,
+      url: m.mixcloud_url,
+      cover_art_url: m.cover_art_url,
+      sort_order: m.sort_order,
+      pinned: m.pinned ?? false,
+      hidden: m.hidden ?? false,
+      source: m.source ?? "manual",
+      table: "mixcloud" as const,
+    }));
+
+    const all = [...scMixes, ...mcMixes].sort((a, b) => {
+      if (a.pinned && !b.pinned) return -1;
+      if (!a.pinned && b.pinned) return 1;
+      return a.sort_order - b.sort_order;
+    });
+
+    setMixes(all);
     setLoading(false);
   };
 
-  const buildEmbedUrl = (rawUrl: string): string => {
-    // If already an embed URL, return as-is
+  const detectSource = (url: string): "soundcloud" | "mixcloud" | null => {
+    if (url.includes("soundcloud.com")) return "soundcloud";
+    if (url.includes("mixcloud.com")) return "mixcloud";
+    return null;
+  };
+
+  const buildSoundCloudEmbedUrl = (rawUrl: string): string => {
     if (rawUrl.includes("w.soundcloud.com/player")) return rawUrl;
-    // Convert a regular SoundCloud URL to an embed URL
     const encoded = encodeURIComponent(rawUrl.trim());
     return `https://w.soundcloud.com/player/?url=${encoded}&color=%2300e5ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true`;
   };
@@ -54,206 +89,266 @@ const MixesTab = () => {
   const handleAdd = async () => {
     const trimmedTitle = newTitle.trim();
     const trimmedUrl = newUrl.trim();
-
     if (!trimmedTitle || !trimmedUrl) {
       toast({ title: "Fyll i alla fält", description: "Både titel och URL krävs", variant: "destructive" });
       return;
     }
 
-    if (trimmedTitle.length > 100) {
-      toast({ title: "Titel för lång", description: "Max 100 tecken", variant: "destructive" });
-      return;
-    }
-
-    if (!trimmedUrl.includes("soundcloud.com")) {
-      toast({ title: "Ogiltig URL", description: "Ange en giltig SoundCloud-länk", variant: "destructive" });
+    const source = detectSource(trimmedUrl);
+    if (!source) {
+      toast({ title: "Ogiltig URL", description: "Ange en SoundCloud eller Mixcloud-länk", variant: "destructive" });
       return;
     }
 
     setAdding(true);
     const nextOrder = mixes.length > 0 ? Math.max(...mixes.map(m => m.sort_order)) + 1 : 0;
 
-    const { error } = await supabase.from("soundcloud_mixes").insert({
-      title: trimmedTitle,
-      soundcloud_url: buildEmbedUrl(trimmedUrl),
-      sort_order: nextOrder,
-    });
-
-    if (error) {
-      toast({ title: "Fel", description: error.message, variant: "destructive" });
+    if (source === "soundcloud") {
+      const { error } = await supabase.from("soundcloud_mixes").insert({
+        title: trimmedTitle,
+        soundcloud_url: buildSoundCloudEmbedUrl(trimmedUrl),
+        sort_order: nextOrder,
+        source: "manual",
+      });
+      if (error) toast({ title: "Fel", description: error.message, variant: "destructive" });
+      else { toast({ title: "✅ Mix tillagd!" }); setNewTitle(""); setNewUrl(""); fetchMixes(); }
     } else {
-      toast({ title: "✅ Mix tillagd!", description: `"${trimmedTitle}" sparades` });
-      setNewTitle("");
-      setNewUrl("");
-      fetchMixes();
+      const { error } = await supabase.from("mixcloud_mixes").insert({
+        title: trimmedTitle,
+        mixcloud_url: trimmedUrl,
+        sort_order: nextOrder,
+        source: "manual",
+      });
+      if (error) toast({ title: "Fel", description: error.message, variant: "destructive" });
+      else { toast({ title: "✅ Set tillagt!" }); setNewTitle(""); setNewUrl(""); fetchMixes(); }
     }
     setAdding(false);
   };
 
-  const handleDelete = async (id: string, title: string) => {
-    if (!window.confirm(`Ta bort "${title}"?`)) return;
-    const { error } = await supabase.from("soundcloud_mixes").delete().eq("id", id);
-    if (error) {
-      toast({ title: "Fel", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Borttagen", description: `"${title}" har tagits bort` });
-      setMixes(prev => prev.filter(m => m.id !== id));
+  const handleDelete = async (mix: Mix) => {
+    if (!window.confirm(`Ta bort "${mix.title}"?`)) return;
+    const table = mix.table === "soundcloud" ? "soundcloud_mixes" : "mixcloud_mixes";
+    const { error } = await supabase.from(table).delete().eq("id", mix.id);
+    if (error) toast({ title: "Fel", description: error.message, variant: "destructive" });
+    else { toast({ title: "Borttagen" }); setMixes(prev => prev.filter(m => m.id !== mix.id)); }
+  };
+
+  const togglePin = async (mix: Mix) => {
+    const table = mix.table === "soundcloud" ? "soundcloud_mixes" : "mixcloud_mixes";
+    const { error } = await supabase.from(table).update({ pinned: !mix.pinned }).eq("id", mix.id);
+    if (!error) {
+      setMixes(prev => prev.map(m => m.id === mix.id ? { ...m, pinned: !m.pinned } : m));
+      toast({ title: mix.pinned ? "Avpinnad" : "📌 Pinnad!" });
     }
+  };
+
+  const toggleHidden = async (mix: Mix) => {
+    const table = mix.table === "soundcloud" ? "soundcloud_mixes" : "mixcloud_mixes";
+    const { error } = await supabase.from(table).update({ hidden: !mix.hidden }).eq("id", mix.id);
+    if (!error) {
+      setMixes(prev => prev.map(m => m.id === mix.id ? { ...m, hidden: !m.hidden } : m));
+      toast({ title: mix.hidden ? "Synlig igen" : "🙈 Dold" });
+    }
+  };
+
+  const handleAutoFetch = async () => {
+    setFetching(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("fetch-mixcloud");
+      if (error) throw error;
+      toast({
+        title: "✅ Mixcloud synkad!",
+        description: `${data?.inserted || 0} nya mixar hämtades`,
+      });
+      fetchMixes();
+    } catch (err: any) {
+      toast({ title: "Fel vid hämtning", description: err.message, variant: "destructive" });
+    }
+    setFetching(false);
   };
 
   const startEdit = (mix: Mix) => {
     setEditingId(mix.id);
     setEditTitle(mix.title);
-    setEditUrl(mix.soundcloud_url);
+    setEditUrl(mix.url);
   };
 
-  const cancelEdit = () => {
-    setEditingId(null);
-    setEditTitle("");
-    setEditUrl("");
-  };
+  const cancelEdit = () => { setEditingId(null); };
 
   const saveEdit = async () => {
     if (!editingId) return;
+    const mix = mixes.find(m => m.id === editingId);
+    if (!mix) return;
     const trimmedTitle = editTitle.trim();
     const trimmedUrl = editUrl.trim();
+    if (!trimmedTitle || !trimmedUrl) { toast({ title: "Fyll i alla fält", variant: "destructive" }); return; }
 
-    if (!trimmedTitle || !trimmedUrl) {
-      toast({ title: "Fyll i alla fält", variant: "destructive" });
-      return;
-    }
+    const table = mix.table === "soundcloud" ? "soundcloud_mixes" : "mixcloud_mixes";
+    const urlField = mix.table === "soundcloud" ? "soundcloud_url" : "mixcloud_url";
+    const finalUrl = mix.table === "soundcloud" ? buildSoundCloudEmbedUrl(trimmedUrl) : trimmedUrl;
 
     const { error } = await supabase
-      .from("soundcloud_mixes")
-      .update({ title: trimmedTitle, soundcloud_url: buildEmbedUrl(trimmedUrl) })
+      .from(table)
+      .update({ title: trimmedTitle, [urlField]: finalUrl })
       .eq("id", editingId);
 
-    if (error) {
-      toast({ title: "Fel", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "✅ Uppdaterad!", description: `"${trimmedTitle}" sparades` });
-      cancelEdit();
-      fetchMixes();
-    }
+    if (error) toast({ title: "Fel", description: error.message, variant: "destructive" });
+    else { toast({ title: "✅ Uppdaterad!" }); cancelEdit(); fetchMixes(); }
   };
 
   return (
     <div className="space-y-6">
-      {/* Add new mix */}
-      <Card className="glass-card-pink">
-        <CardHeader>
-          <CardTitle className="font-display flex items-center gap-2">
-            <Plus className="w-5 h-5 text-primary" />
-            Lägg till ny mix
-          </CardTitle>
-          <CardDescription>Klistra in en SoundCloud-länk och ge den en titel</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">Titel</label>
+      {/* Auto-fetch + Add mix */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Auto-fetch card */}
+        <Card className="glass-card">
+          <CardHeader>
+            <CardTitle className="font-display flex items-center gap-2">
+              <RefreshCw className="w-5 h-5 text-accent" />
+              Auto-Fetch Mixcloud
+            </CardTitle>
+            <CardDescription>
+              Hämta senaste mixar automatiskt från DjLobo75 på Mixcloud
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button
+              onClick={handleAutoFetch}
+              disabled={fetching}
+              className="w-full h-12 text-base"
+              variant="outline"
+            >
+              {fetching ? (
+                <>
+                  <RefreshCw className="w-5 h-5 mr-2 animate-spin" />
+                  Hämtar från Mixcloud...
+                </>
+              ) : (
+                <>
+                  <Disc3 className="w-5 h-5 mr-2" />
+                  Synka med Mixcloud
+                </>
+              )}
+            </Button>
+            <p className="text-xs text-muted-foreground mt-2">
+              Nya mixar läggs till automatiskt. Befintliga uppdateras inte.
+            </p>
+          </CardContent>
+        </Card>
+
+        {/* Add new mix */}
+        <Card className="glass-card-pink">
+          <CardHeader>
+            <CardTitle className="font-display flex items-center gap-2">
+              <Plus className="w-5 h-5 text-primary" />
+              Lägg till mix manuellt
+            </CardTitle>
+            <CardDescription>SoundCloud eller Mixcloud — detekteras automatiskt</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
             <Input
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
-              placeholder="t.ex. Latin House Mix 2025"
-              className="bg-input border-border text-base h-12"
+              placeholder="Titel, t.ex. Latin House 2025"
+              className="bg-input border-border h-11"
               maxLength={100}
             />
-          </div>
-          <div>
-            <label className="text-sm font-medium text-foreground mb-1.5 block">SoundCloud URL</label>
             <Input
               value={newUrl}
               onChange={(e) => setNewUrl(e.target.value)}
-              placeholder="https://soundcloud.com/dj-lobo/mix-name"
-              className="bg-input border-border text-base h-12"
+              placeholder="https://soundcloud.com/... eller https://mixcloud.com/..."
+              className="bg-input border-border h-11"
             />
-            <p className="text-xs text-muted-foreground mt-1">
-              Klistra in hela länken från SoundCloud (vanlig eller embed-länk)
-            </p>
-          </div>
-          <Button
-            onClick={handleAdd}
-            disabled={adding || !newTitle.trim() || !newUrl.trim()}
-            className="w-full h-12 text-base neon-glow-pink"
-          >
-            {adding ? <div className="loading-spinner mr-2" /> : <Plus className="w-5 h-5 mr-2" />}
-            Lägg till mix
-          </Button>
-        </CardContent>
-      </Card>
+            <Button
+              onClick={handleAdd}
+              disabled={adding || !newTitle.trim() || !newUrl.trim()}
+              className="w-full h-11 neon-glow-pink"
+            >
+              {adding ? <div className="loading-spinner mr-2" /> : <Plus className="w-5 h-5 mr-2" />}
+              Lägg till
+            </Button>
+          </CardContent>
+        </Card>
+      </div>
 
-      {/* Current mixes */}
+      {/* Unified mix list */}
       <Card className="glass-card">
         <CardHeader>
           <CardTitle className="font-display flex items-center gap-2">
             <Music className="w-5 h-5 text-secondary" />
-            Aktiva mixar ({mixes.length})
+            Alla mixar ({mixes.length})
           </CardTitle>
-          <CardDescription>Dessa visas på Lyssna-sidan</CardDescription>
+          <CardDescription>Hantera alla SoundCloud & Mixcloud-mixar. Pinna, dölj eller ta bort.</CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
-            <div className="flex items-center justify-center py-8">
-              <div className="loading-spinner" />
-            </div>
+            <div className="flex items-center justify-center py-8"><div className="loading-spinner" /></div>
           ) : mixes.length === 0 ? (
             <p className="text-muted-foreground text-center py-8 text-sm">
-              Inga mixar tillagda ännu. Lägg till din första ovan!
+              Inga mixar tillagda. Synka med Mixcloud eller lägg till manuellt!
             </p>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-2">
               {mixes.map((mix) => (
                 <div
                   key={mix.id}
-                  className="flex items-center gap-3 p-3 rounded-lg bg-muted/20 hover:bg-muted/30 transition-colors group"
+                  className={`flex items-center gap-3 p-3 rounded-xl transition-colors group ${
+                    mix.hidden ? "bg-muted/10 opacity-60" : "bg-muted/20 hover:bg-muted/30"
+                  }`}
                 >
-                  <GripVertical className="w-4 h-4 text-muted-foreground shrink-0" />
+                  {/* Cover art thumbnail */}
+                  <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-border/30 bg-muted">
+                    {mix.cover_art_url ? (
+                      <img src={mix.cover_art_url} alt="" className="w-full h-full object-cover" />
+                    ) : (
+                      <div className="w-full h-full flex items-center justify-center">
+                        <Music className="w-4 h-4 text-muted-foreground" />
+                      </div>
+                    )}
+                  </div>
 
                   {editingId === mix.id ? (
                     <div className="flex-1 space-y-2">
-                      <Input
-                        value={editTitle}
-                        onChange={(e) => setEditTitle(e.target.value)}
-                        className="bg-input border-border text-base h-10"
-                        maxLength={100}
-                      />
-                      <Input
-                        value={editUrl}
-                        onChange={(e) => setEditUrl(e.target.value)}
-                        className="bg-input border-border text-sm h-10"
-                      />
+                      <Input value={editTitle} onChange={(e) => setEditTitle(e.target.value)} className="bg-input border-border h-9" maxLength={100} />
+                      <Input value={editUrl} onChange={(e) => setEditUrl(e.target.value)} className="bg-input border-border h-9 text-xs" />
                       <div className="flex gap-2">
-                        <Button size="sm" onClick={saveEdit} className="gap-1">
-                          <Check className="w-3 h-3" /> Spara
-                        </Button>
-                        <Button size="sm" variant="ghost" onClick={cancelEdit} className="gap-1">
-                          <X className="w-3 h-3" /> Avbryt
-                        </Button>
+                        <Button size="sm" onClick={saveEdit} className="gap-1"><Check className="w-3 h-3" /> Spara</Button>
+                        <Button size="sm" variant="ghost" onClick={cancelEdit} className="gap-1"><X className="w-3 h-3" /> Avbryt</Button>
                       </div>
                     </div>
                   ) : (
                     <>
                       <div className="flex-1 min-w-0">
-                        <p className="font-medium text-sm text-foreground truncate">{mix.title}</p>
-                        <p className="text-xs text-muted-foreground truncate">{mix.soundcloud_url}</p>
+                        <div className="flex items-center gap-2">
+                          <p className="font-medium text-sm text-foreground truncate">{mix.title}</p>
+                          {mix.pinned && <Pin className="w-3 h-3 text-primary shrink-0" />}
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
+                            mix.table === "mixcloud" ? "bg-accent/20 text-accent" : "bg-secondary/20 text-secondary"
+                          }`}>
+                            {mix.table === "mixcloud" ? "MC" : "SC"}
+                          </span>
+                          <span className="truncate">{mix.source === "auto" ? "Auto-fetched" : "Manuell"}</span>
+                        </div>
                       </div>
-                      <div className="flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-8 w-8 text-secondary hover:text-secondary hover:bg-secondary/10"
-                          onClick={() => startEdit(mix)}
-                          title="Redigera"
-                        >
+
+                      {/* Controls */}
+                      <div className="flex items-center gap-1 shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <Button size="icon" variant="ghost" className={`h-8 w-8 ${mix.pinned ? "text-primary" : "text-muted-foreground hover:text-primary"}`}
+                          onClick={() => togglePin(mix)} title={mix.pinned ? "Avpinna" : "Pinna"}>
+                          <Pin className="w-4 h-4" />
+                        </Button>
+                        <Button size="icon" variant="ghost" className={`h-8 w-8 ${mix.hidden ? "text-muted-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                          onClick={() => toggleHidden(mix)} title={mix.hidden ? "Visa" : "Dölj"}>
+                          {mix.hidden ? <Eye className="w-4 h-4" /> : <EyeOff className="w-4 h-4" />}
+                        </Button>
+                        <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-secondary"
+                          onClick={() => startEdit(mix)} title="Redigera">
                           <Pencil className="w-4 h-4" />
                         </Button>
-                        <Button
-                          size="icon"
-                          variant="ghost"
-                          className="h-8 w-8 text-destructive hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => handleDelete(mix.id, mix.title)}
-                          title="Ta bort"
-                        >
+                        <Button size="icon" variant="ghost" className="h-8 w-8 text-muted-foreground hover:text-destructive"
+                          onClick={() => handleDelete(mix)} title="Ta bort">
                           <Trash2 className="w-4 h-4" />
                         </Button>
                       </div>
