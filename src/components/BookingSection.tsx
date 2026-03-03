@@ -119,6 +119,19 @@ const BookingSection = () => {
 
       if (error) throw error;
 
+      // Send email notification (fire-and-forget)
+      supabase.functions.invoke("send-booking-notification", {
+        body: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone || undefined,
+          eventType: formData.eventType,
+          eventDate: formData.eventDate ? format(formData.eventDate, "yyyy-MM-dd") : "",
+          location: formData.location || undefined,
+          message: formData.message || undefined,
+        },
+      }).catch((err) => console.error("Booking notification failed:", err));
+
       toast({
         title: t.success,
         variant: "default",
