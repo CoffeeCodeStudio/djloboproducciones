@@ -45,7 +45,7 @@ const Layout = () => {
           <Outlet />
         </main>
         <NowPlayingBar />
-        <FloatingChatButton />
+        {location.pathname === "/lyssna" && <FloatingChatButton />}
       </div>
       <CookieConsent />
     </div>
