@@ -26,15 +26,6 @@ const SpelningarPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Page Header */}
-      <section className="pt-12 sm:pt-16 pb-4 text-center px-4">
-        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-neon-gradient mb-3 italic">
-          {t.pageTitle}
-        </h1>
-        <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto">
-          {t.pageSubtitle}
-        </p>
-      </section>
 
       {/* Calendar / Schedule */}
       <ErrorBoundary>
