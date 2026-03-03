@@ -83,13 +83,13 @@ const translations = {
     bookNow: "Boka nu",
   },
   en: {
-    title: "My References",
+    title: "Reviews",
     subtitle: "What our clients say about us",
     trustedBy: "Experience from many different event types",
     bookNow: "Book now",
   },
   es: {
-    title: "Mis Referencias",
+    title: "Reseñas",
     subtitle: "Lo que dicen nuestros clientes sobre nosotros",
     trustedBy: "Experiencia en muchos tipos de eventos diferentes",
     bookNow: "Reservar ahora",
