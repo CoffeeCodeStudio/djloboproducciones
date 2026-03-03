@@ -136,26 +136,41 @@ export type Database = {
       }
       mixcloud_mixes: {
         Row: {
+          cover_art_url: string | null
           created_at: string
+          external_id: string | null
+          hidden: boolean
           id: string
           mixcloud_url: string
+          pinned: boolean
           sort_order: number
+          source: string
           title: string
           updated_at: string
         }
         Insert: {
+          cover_art_url?: string | null
           created_at?: string
+          external_id?: string | null
+          hidden?: boolean
           id?: string
           mixcloud_url: string
+          pinned?: boolean
           sort_order?: number
+          source?: string
           title: string
           updated_at?: string
         }
         Update: {
+          cover_art_url?: string | null
           created_at?: string
+          external_id?: string | null
+          hidden?: boolean
           id?: string
           mixcloud_url?: string
+          pinned?: boolean
           sort_order?: number
+          source?: string
           title?: string
           updated_at?: string
         }
@@ -274,26 +289,41 @@ export type Database = {
       }
       soundcloud_mixes: {
         Row: {
+          cover_art_url: string | null
           created_at: string
+          external_id: string | null
+          hidden: boolean
           id: string
+          pinned: boolean
           sort_order: number
           soundcloud_url: string
+          source: string
           title: string
           updated_at: string
         }
         Insert: {
+          cover_art_url?: string | null
           created_at?: string
+          external_id?: string | null
+          hidden?: boolean
           id?: string
+          pinned?: boolean
           sort_order?: number
           soundcloud_url: string
+          source?: string
           title: string
           updated_at?: string
         }
         Update: {
+          cover_art_url?: string | null
           created_at?: string
+          external_id?: string | null
+          hidden?: boolean
           id?: string
+          pinned?: boolean
           sort_order?: number
           soundcloud_url?: string
+          source?: string
           title?: string
           updated_at?: string
         }
