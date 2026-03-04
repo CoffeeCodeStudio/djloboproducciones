@@ -155,24 +155,30 @@ export type Database = {
           created_at: string
           id: string
           image_url: string
+          media_type: string
           sort_order: number
           updated_at: string
+          video_url: string | null
         }
         Insert: {
           alt_text?: string | null
           created_at?: string
           id?: string
           image_url: string
+          media_type?: string
           sort_order?: number
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
           alt_text?: string | null
           created_at?: string
           id?: string
           image_url?: string
+          media_type?: string
           sort_order?: number
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }

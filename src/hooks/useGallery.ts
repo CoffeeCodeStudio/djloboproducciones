@@ -7,6 +7,8 @@ export interface GalleryImage {
   image_url: string;
   alt_text: string | null;
   sort_order: number;
+  media_type: string;
+  video_url: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -27,7 +29,7 @@ export const useGallery = () => {
     },
   });
 
-  const uploadImage = async (file: File): Promise<string> => {
+  const uploadFile = async (file: File): Promise<string> => {
     const fileExt = file.name.split(".").pop();
     const fileName = `${crypto.randomUUID()}.${fileExt}`;
     const filePath = `gallery/${fileName}`;
@@ -43,10 +45,31 @@ export const useGallery = () => {
   };
 
   const addImage = useMutation({
-    mutationFn: async ({ file, altText }: { file: File; altText?: string }) => {
-      const imageUrl = await uploadImage(file);
-      
-      // Get max sort_order
+    mutationFn: async ({
+      file,
+      altText,
+      mediaType = "photo",
+      videoUrl,
+    }: {
+      file?: File;
+      altText?: string;
+      mediaType?: string;
+      videoUrl?: string;
+    }) => {
+      let imageUrl = "";
+
+      if (file) {
+        imageUrl = await uploadFile(file);
+      }
+
+      // For YouTube videos without a file upload, use thumbnail as image_url
+      if (mediaType === "video" && videoUrl && !file) {
+        const ytId = extractYouTubeId(videoUrl);
+        imageUrl = ytId
+          ? `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`
+          : "/placeholder.svg";
+      }
+
       const { data: existing } = await supabase
         .from("gallery_images")
         .select("sort_order")
@@ -59,16 +82,18 @@ export const useGallery = () => {
         image_url: imageUrl,
         alt_text: altText || null,
         sort_order: nextOrder,
+        media_type: mediaType,
+        video_url: videoUrl || null,
       });
 
       if (error) throw error;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["gallery-images"] });
-      toast.success("Bild tillagd!");
+      toast.success("Media tillagd!");
     },
     onError: (error) => {
-      toast.error("Kunde inte lägga till bild: " + error.message);
+      toast.error("Kunde inte lägga till: " + error.message);
     },
   });
 
@@ -77,20 +102,26 @@ export const useGallery = () => {
       id,
       file,
       altText,
+      mediaType,
+      videoUrl,
     }: {
       id: string;
       file?: File;
       altText?: string;
+      mediaType?: string;
+      videoUrl?: string;
     }) => {
       let imageUrl: string | undefined;
-      
+
       if (file) {
-        imageUrl = await uploadImage(file);
+        imageUrl = await uploadFile(file);
       }
 
-      const updateData: Partial<GalleryImage> = {};
+      const updateData: Record<string, unknown> = {};
       if (imageUrl) updateData.image_url = imageUrl;
       if (altText !== undefined) updateData.alt_text = altText;
+      if (mediaType !== undefined) updateData.media_type = mediaType;
+      if (videoUrl !== undefined) updateData.video_url = videoUrl;
 
       const { error } = await supabase
         .from("gallery_images")
@@ -101,10 +132,10 @@ export const useGallery = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["gallery-images"] });
-      toast.success("Bild uppdaterad!");
+      toast.success("Media uppdaterad!");
     },
     onError: (error) => {
-      toast.error("Kunde inte uppdatera bild: " + error.message);
+      toast.error("Kunde inte uppdatera: " + error.message);
     },
   });
 
@@ -119,10 +150,10 @@ export const useGallery = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["gallery-images"] });
-      toast.success("Bild borttagen!");
+      toast.success("Media borttagen!");
     },
     onError: (error) => {
-      toast.error("Kunde inte ta bort bild: " + error.message);
+      toast.error("Kunde inte ta bort: " + error.message);
     },
   });
 
@@ -134,3 +165,10 @@ export const useGallery = () => {
     deleteImage,
   };
 };
+
+export function extractYouTubeId(url: string): string | null {
+  const match = url.match(
+    /(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|shorts\/))([a-zA-Z0-9_-]{11})/
+  );
+  return match?.[1] || null;
+}
