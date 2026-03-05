@@ -138,7 +138,17 @@ const Footer = () => {
                           <Facebook className="w-5 h-5 text-muted-foreground group-hover:text-neon-cyan transition-colors" />
                         </a>
                       </TooltipTrigger>
-                      <TooltipContent><p>Facebook</p></TooltipContent>
+                      <TooltipContent><p>FB Radio</p></TooltipContent>
+                    </Tooltip>
+                  </li>
+                  <li>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <a href="https://www.facebook.com/DjloboProduccionesSweden/" target="_blank" rel="noopener noreferrer" aria-label={t.followFacebookProd} className="tap-target w-11 h-11 glass-card rounded-full flex items-center justify-center transition-all group focus-neon hover:scale-110">
+                          <Facebook className="w-5 h-5 text-muted-foreground group-hover:text-neon-pink transition-colors" />
+                        </a>
+                      </TooltipTrigger>
+                      <TooltipContent><p>FB Producciones</p></TooltipContent>
                     </Tooltip>
                   </li>
                   <li>
