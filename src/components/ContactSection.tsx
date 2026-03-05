@@ -220,6 +220,30 @@ const ContactSection = () => {
             </div>
           </div>
 
+          {/* Social Links */}
+          <div className="glass-card p-6 rounded-xl hover:border-neon-cyan/50 transition-colors">
+            <p className="text-sm text-muted-foreground mb-3">{t.followUs}</p>
+            <div className="flex flex-col gap-3">
+              <a href="https://www.facebook.com/DjloboProduccionesSweden/" target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-foreground hover:text-neon-pink transition-colors group">
+                <div className="w-10 h-10 rounded-full bg-neon-pink/10 flex items-center justify-center group-hover:bg-neon-pink/20 transition-colors">
+                  <Facebook className="w-5 h-5 text-neon-pink" />
+                </div>
+                <span className="text-sm font-medium">DJ Lobo Producciones</span>
+              </a>
+              <a href={instagramUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-foreground hover:text-neon-cyan transition-colors group">
+                <div className="w-10 h-10 rounded-full bg-neon-cyan/10 flex items-center justify-center group-hover:bg-neon-cyan/20 transition-colors">
+                  <Instagram className="w-5 h-5 text-neon-cyan" />
+                </div>
+                <span className="text-sm font-medium">Instagram</span>
+              </a>
+              <a href={youtubeUrl} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-foreground hover:text-neon-purple transition-colors group">
+                <div className="w-10 h-10 rounded-full bg-neon-purple/10 flex items-center justify-center group-hover:bg-neon-purple/20 transition-colors">
+                  <Youtube className="w-5 h-5 text-neon-purple" />
+                </div>
+                <span className="text-sm font-medium">YouTube</span>
+              </a>
+            </div>
+          </div>
         </div>
       </div>
     </section>
