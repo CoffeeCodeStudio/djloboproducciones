@@ -349,17 +349,17 @@ const NowPlayingBar = () => {
             </button>
           </div>
 
-          {/* === Volume (radio mode, desktop only) === */}
+          {/* === Volume (radio mode, all screens) === */}
           {isRadio && (
-            <div className="hidden md:flex items-center gap-2 shrink-0">
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
               <button
                 onClick={() => setIsMuted(!isMuted)}
                 aria-label={isMuted ? t.unmute : t.mute}
-                className="tap-target text-muted-foreground hover:text-foreground transition-colors focus-neon rounded-lg"
+                className="tap-target p-1.5 text-muted-foreground hover:text-foreground transition-colors focus-neon rounded-lg"
               >
-                {isMuted ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
+                {isMuted || volume === 0 ? <VolumeX className="w-4 h-4" /> : <Volume2 className="w-4 h-4" />}
               </button>
-              <div className="relative w-20 h-1.5 bg-muted rounded-full overflow-hidden">
+              <div className="relative w-14 sm:w-20 h-1.5 bg-muted rounded-full overflow-hidden">
                 <div
                   className="absolute left-0 top-0 h-full bg-gradient-to-r from-destructive to-primary rounded-full transition-all"
                   style={{ width: `${isMuted ? 0 : volume}%` }}
