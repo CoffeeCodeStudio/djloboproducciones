@@ -78,10 +78,17 @@ const Footer = () => {
           <div className="flex flex-col">
             <div className="flex items-center gap-3 mb-4">
               {branding?.logo_url ? (
-                <img alt="DJ Lobo Radio Logo" className="h-16 sm:h-24 w-auto min-w-[4rem] sm:min-w-[6rem] object-contain rounded-xl drop-shadow-lg" src={optimizeLogo(branding.logo_url).src} loading="lazy" width={120} height={120} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = optimizeLogo(branding.logo_url).fallback; }} />
+                <img
+                  alt="DJ Lobo Radio Logo"
+                  className="!h-16 sm:!h-24 w-auto object-contain rounded-xl drop-shadow-[0_0_15px_rgba(0,255,255,0.3)]"
+                  src={branding.logo_url}
+                  loading="lazy"
+                  width={120}
+                  height={120}
+                />
               ) : (
-                <div className="h-12 w-12 flex items-center justify-center glass-card rounded-full">
-                  <RadioIcon className="h-8 w-8 text-neon-cyan" />
+                <div className="h-16 sm:h-24 w-16 sm:w-24 flex items-center justify-center glass-card rounded-full">
+                  <RadioIcon className="h-10 sm:h-16 w-10 sm:w-16 text-neon-cyan" />
                 </div>
               )}
             </div>
