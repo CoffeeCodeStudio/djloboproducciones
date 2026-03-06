@@ -88,9 +88,14 @@ const Navbar = () => {
               {branding?.logo_url ? (
                 <img
                   alt="DJ Lobo Radio Logo"
-                  className="object-contain"
                   src={branding.logo_url}
-                  style={{ width: "200px", height: "100px" }}
+                  style={{
+                    width: "80px",
+                    height: "80px",
+                    objectFit: "cover",
+                    objectPosition: "center",
+                    borderRadius: "50%",
+                  }}
                   fetchPriority="high"
                   loading="eager"
                 />
