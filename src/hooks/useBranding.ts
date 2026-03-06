@@ -12,6 +12,7 @@ export interface SiteBranding {
   accent_color: string | null;
   site_name: string | null;
   tagline: string | null;
+  bio_text: string | null;
   youtube_video_id: string | null;
   youtube_channel_id: string | null;
   instagram_username: string | null;

@@ -90,8 +90,8 @@ const BrandingTab = () => {
       return;
     }
 
-    if (file.size > 5 * 1024 * 1024) {
-      toast({ title: "❌ Filen är för stor", description: `Filen är ${(file.size / 1024 / 1024).toFixed(1)} MB. Max 5 MB.`, variant: "destructive" });
+    if (file.size > 2 * 1024 * 1024) {
+      toast({ title: "❌ Bilden är för stor", description: `Bilden är ${(file.size / 1024 / 1024).toFixed(1)} MB. Välj en bild under 2 MB så att sidan laddar snabbt.`, variant: "destructive" });
       return;
     }
 
@@ -238,15 +238,15 @@ const BrandingTab = () => {
           <div className="sticky top-0 z-10 bg-background/95 backdrop-blur py-3 -mx-4 px-4 border-b border-border/50">
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">
-                You have unsaved changes
+                Du har osparade ändringar
               </p>
-              <Button onClick={handleSave} disabled={saving} className="neon-glow-cyan">
+              <Button onClick={handleSave} disabled={saving} className="neon-glow-cyan" size="lg">
                 {saving ? (
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
                 ) : (
-                  <Save className="w-4 h-4 mr-2" />
+                  <Save className="w-5 h-5 mr-2" />
                 )}
-                Save Changes
+                Spara
               </Button>
             </div>
           </div>
@@ -312,7 +312,7 @@ const BrandingTab = () => {
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Recommended: Square image, at least 400x400px, max 5MB
+                  💡 För bäst resultat: Fyrkantig bild (400×400 px), max 2 MB, JPG/PNG/WebP
                 </p>
               </div>
             </div>
@@ -378,7 +378,7 @@ const BrandingTab = () => {
                   )}
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  Recommended: PNG with transparent background, max 5MB
+                  💡 För bäst resultat: PNG med genomskinlig bakgrund, fyrkantig (400×400 px), max 2 MB
                 </p>
               </div>
               {renderRecentUploads("logo")}
