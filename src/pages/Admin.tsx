@@ -7,7 +7,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Trash2, Send, Users, MessageSquare, Shield, Ban, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Music, Wrench } from "lucide-react";
+import { Trash2, Send, Users, MessageSquare, Shield, Ban, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Music, Wrench, UserCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { usePresenceObserver } from "@/hooks/usePresence";
 import { useAuth } from "@/hooks/useAuth";
@@ -17,6 +17,7 @@ import GalleryTab from "@/components/admin/GalleryTab";
 import ScheduleTab from "@/components/admin/ScheduleTab";
 import MixesTab from "@/components/admin/MixesTab";
 import EquipmentTab from "@/components/admin/EquipmentTab";
+import BioTab from "@/components/admin/BioTab";
 
 
 interface ChatMessage {
