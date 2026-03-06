@@ -246,6 +246,7 @@ export type Database = {
           live_set_video_4: string | null
           live_set_video_5: string | null
           logo_url: string | null
+          og_image_url: string | null
           primary_glow_color: string | null
           profile_image_url: string | null
           secondary_glow_color: string | null
@@ -276,6 +277,7 @@ export type Database = {
           live_set_video_4?: string | null
           live_set_video_5?: string | null
           logo_url?: string | null
+          og_image_url?: string | null
           primary_glow_color?: string | null
           profile_image_url?: string | null
           secondary_glow_color?: string | null
@@ -306,6 +308,7 @@ export type Database = {
           live_set_video_4?: string | null
           live_set_video_5?: string | null
           logo_url?: string | null
+          og_image_url?: string | null
           primary_glow_color?: string | null
           profile_image_url?: string | null
           secondary_glow_color?: string | null

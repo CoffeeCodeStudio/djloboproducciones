@@ -16,6 +16,7 @@ export interface SiteBranding {
   youtube_video_id: string | null;
   youtube_channel_id: string | null;
   instagram_username: string | null;
+  og_image_url: string | null;
   live_set_video_1: string | null;
   live_set_video_2: string | null;
   live_set_video_3: string | null;
@@ -129,7 +130,7 @@ export const useBranding = () => {
     fetchBranding();
   }, []);
 
-  // Apply branding colors to CSS variables
+  // Apply branding colors to CSS variables + OG image meta tag
   useEffect(() => {
     if (branding) {
       const root = document.documentElement;
@@ -144,6 +145,16 @@ export const useBranding = () => {
       if (branding.accent_color) {
         root.style.setProperty("--neon-purple", branding.accent_color);
         root.style.setProperty("--accent", branding.accent_color);
+      }
+      // Dynamic OG image
+      if ((branding as any).og_image_url) {
+        let ogMeta = document.querySelector('meta[property="og:image"]') as HTMLMetaElement;
+        if (!ogMeta) {
+          ogMeta = document.createElement("meta");
+          ogMeta.setAttribute("property", "og:image");
+          document.head.appendChild(ogMeta);
+        }
+        ogMeta.content = (branding as any).og_image_url;
       }
     }
   }, [branding]);
