@@ -82,10 +82,10 @@ const Navbar = () => {
               aria-label="DJ Lobo Radio - Hem"
             >
               {branding?.logo_url ? (
-                <img alt="DJ Lobo Radio Logo" className="h-14 sm:h-16 w-auto object-contain rounded-lg" src={optimizeLogo(branding.logo_url).src} fetchPriority="high" loading="eager" width={64} height={64} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = optimizeLogo(branding.logo_url).fallback; }} />
+                <img alt="DJ Lobo Radio Logo" className="h-16 sm:h-20 w-auto object-contain rounded-xl" src={optimizeLogo(branding.logo_url).src} fetchPriority="high" loading="eager" width={80} height={80} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = optimizeLogo(branding.logo_url).fallback; }} />
               ) : (
-                <div className="h-12 sm:h-14 w-12 sm:w-14 flex items-center justify-center">
-                  <Radio className="h-10 sm:h-12 w-10 sm:w-12 text-neon-cyan" />
+              <div className="h-16 sm:h-20 w-16 sm:w-20 flex items-center justify-center">
+                  <Radio className="h-12 sm:h-16 w-12 sm:w-16 text-neon-cyan" />
                 </div>
               )}
             </Link>

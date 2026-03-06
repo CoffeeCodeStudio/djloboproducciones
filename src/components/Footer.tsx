@@ -15,7 +15,7 @@ const LINKEDIN_URL = "https://www.linkedin.com/in/rami-e-453b77330/";
 
 const translations = {
   sv: {
-    copyright: "© 2026 DJ Lobo Radio. All rights reserved.",
+    copyright: "© 2026 DJ Lobo Producciones. All rights reserved.",
     privacyPolicy: "Integritetspolicy",
     terms: "Användarvillkor",
     contact: "Kontakt",
@@ -27,7 +27,7 @@ const translations = {
     visitStudio: "Besök Coffee Code Studio",
   },
   en: {
-    copyright: "© 2026 DJ Lobo Radio. All rights reserved.",
+    copyright: "© 2026 DJ Lobo Producciones. All rights reserved.",
     privacyPolicy: "Privacy Policy",
     terms: "Terms of Service",
     contact: "Contact",
@@ -39,7 +39,7 @@ const translations = {
     visitStudio: "Visit Coffee Code Studio",
   },
   es: {
-    copyright: "© 2026 DJ Lobo Radio. Todos los derechos reservados.",
+    copyright: "© 2026 DJ Lobo Producciones. Todos los derechos reservados.",
     privacyPolicy: "Política de Privacidad",
     terms: "Términos de Servicio",
     contact: "Contacto",
