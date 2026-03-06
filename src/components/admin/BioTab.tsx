@@ -3,16 +3,20 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Upload, User, Save, Loader2, AlertTriangle, ImageIcon } from "lucide-react";
+import { Upload, User, Save, Loader2, AlertTriangle, ImageIcon, CheckCircle2, Trash2 } from "lucide-react";
 import { useBranding, SiteBranding } from "@/hooks/useBranding";
 import { toast } from "sonner";
 
 const MAX_FILE_SIZE_MB = 2;
 const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
 
+const PLACEHOLDER_PROFILE = "/placeholder.svg";
+const PLACEHOLDER_HERO = "/placeholder.svg";
+
 const BioTab = () => {
   const { branding, loading, updateBranding, uploadImage, refetch } = useBranding();
   const [saving, setSaving] = useState(false);
+  const [saved, setSaved] = useState(false);
   const [uploadingType, setUploadingType] = useState<string | null>(null);
   const [pendingChanges, setPendingChanges] = useState<Partial<SiteBranding>>({});
   const [previewProfile, setPreviewProfile] = useState<string | null>(null);
@@ -61,7 +65,7 @@ const BioTab = () => {
     }
 
     setPendingChanges((prev) => ({ ...prev, [fieldName]: url }));
-    toast.success("Bilden laddades upp! Tryck 'Spara' för att aktivera.");
+    toast.success("Bilden laddades upp! Tryck 'Spara ändringar' för att aktivera.");
   };
 
   const handleSave = async () => {
@@ -73,7 +77,9 @@ const BioTab = () => {
     if (error) {
       toast.error("Kunde inte spara: " + error);
     } else {
-      toast.success("Ändringarna har sparats!");
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+      toast.success("✅ Ändringarna har sparats!");
       setPendingChanges({});
       setPreviewProfile(null);
       setPreviewHero(null);
@@ -94,10 +100,10 @@ const BioTab = () => {
       {/* Save bar */}
       {hasPending && (
         <div className="sticky top-0 z-10 bg-background/95 backdrop-blur py-3 border-b border-border/50 flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">Du har osparade ändringar</p>
+          <p className="text-sm text-muted-foreground">⚠️ Du har osparade ändringar</p>
           <Button onClick={handleSave} disabled={saving} size="lg" className="text-base px-8">
-            {saving ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Save className="w-5 h-5 mr-2" />}
-            Spara
+            {saving ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : saved ? <CheckCircle2 className="w-5 h-5 mr-2 text-green-400" /> : <Save className="w-5 h-5 mr-2" />}
+            {saved ? "Sparat! ✅" : "Spara ändringar"}
           </Button>
         </div>
       )}
@@ -116,13 +122,13 @@ const BioTab = () => {
           </p>
 
           <div className="flex items-center gap-6">
-            <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-primary/50 bg-muted/30 flex-shrink-0">
+            <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-primary/50 bg-muted/30 flex-shrink-0"
+              style={{ background: !currentProfileUrl ? "repeating-conic-gradient(hsl(var(--muted)) 0% 25%, hsl(var(--background)) 0% 50%) 50% / 16px 16px" : undefined }}
+            >
               {currentProfileUrl ? (
                 <img src={currentProfileUrl} alt="Profilbild" className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <User className="w-12 h-12 text-muted-foreground" />
-                </div>
+                <img src={PLACEHOLDER_PROFILE} alt="Platshållare" className="w-full h-full object-cover opacity-40" />
               )}
               {uploadingType === "profile" && (
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
@@ -139,16 +145,32 @@ const BioTab = () => {
                 className="hidden"
                 onChange={(e) => handleFileSelect(e, "profile", "profile_image_url", setPreviewProfile)}
               />
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full text-base py-6"
-                onClick={() => profileInputRef.current?.click()}
-                disabled={uploadingType === "profile"}
-              >
-                <Upload className="w-5 h-5 mr-2" />
-                {uploadingType === "profile" ? "Laddar upp..." : "Ladda upp ny profilbild"}
-              </Button>
+              <div className="flex gap-2">
+                <Button
+                  size="lg"
+                  variant="outline"
+                  className="flex-1 text-base py-6"
+                  onClick={() => profileInputRef.current?.click()}
+                  disabled={uploadingType === "profile"}
+                >
+                  <Upload className="w-5 h-5 mr-2" />
+                  {uploadingType === "profile" ? "Laddar upp..." : "Ladda upp profilbild"}
+                </Button>
+                {currentProfileUrl && currentProfileUrl !== PLACEHOLDER_PROFILE && (
+                  <Button
+                    variant="destructive"
+                    size="icon"
+                    className="h-14 w-14"
+                    onClick={() => {
+                      setPendingChanges((prev) => ({ ...prev, profile_image_url: null }));
+                      setPreviewProfile(null);
+                    }}
+                    title="Ta bort profilbild"
+                  >
+                    <Trash2 className="w-5 h-5" />
+                  </Button>
+                )}
+              </div>
 
               <div className="bg-muted/30 rounded-lg p-3 space-y-1">
                 <p className="text-sm font-medium flex items-center gap-1.5">
@@ -177,17 +199,19 @@ const BioTab = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Den här bilden visas som huvudbild i "Om DJ Lobo"-sektionen. Den visas i en <strong>liggande rektangel</strong>.
+            Huvudbilden i "Om DJ Lobo"-sektionen. Visas i en <strong>liggande rektangel</strong>.
           </p>
 
           <div className="space-y-4">
-            {/* Rectangle preview */}
-            <div className="relative w-full aspect-video max-w-md rounded-lg overflow-hidden border-2 border-primary/50 bg-muted/30">
+            <div className="relative w-full aspect-video max-w-md rounded-lg overflow-hidden border-2 border-primary/50 bg-muted/30"
+              style={{ background: !currentHeroUrl ? "repeating-conic-gradient(hsl(var(--muted)) 0% 25%, hsl(var(--background)) 0% 50%) 50% / 16px 16px" : undefined }}
+            >
               {currentHeroUrl ? (
                 <img src={currentHeroUrl} alt="Om mig-bild" className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full flex items-center justify-center">
-                  <ImageIcon className="w-12 h-12 text-muted-foreground" />
+                <div className="w-full h-full flex flex-col items-center justify-center gap-2">
+                  <ImageIcon className="w-10 h-10 text-muted-foreground" />
+                  <p className="text-xs text-muted-foreground">Ingen bild uppladdad – platshållare visas</p>
                 </div>
               )}
               {uploadingType === "hero" && (
@@ -204,16 +228,32 @@ const BioTab = () => {
               className="hidden"
               onChange={(e) => handleFileSelect(e, "hero", "hero_image_url", setPreviewHero)}
             />
-            <Button
-              size="lg"
-              variant="outline"
-              className="w-full text-base py-6 max-w-md"
-              onClick={() => heroInputRef.current?.click()}
-              disabled={uploadingType === "hero"}
-            >
-              <Upload className="w-5 h-5 mr-2" />
-              {uploadingType === "hero" ? "Laddar upp..." : "Ladda upp ny bild"}
-            </Button>
+            <div className="flex gap-2 max-w-md">
+              <Button
+                size="lg"
+                variant="outline"
+                className="flex-1 text-base py-6"
+                onClick={() => heroInputRef.current?.click()}
+                disabled={uploadingType === "hero"}
+              >
+                <Upload className="w-5 h-5 mr-2" />
+                {uploadingType === "hero" ? "Laddar upp..." : "Ladda upp ny bild"}
+              </Button>
+              {currentHeroUrl && (
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  className="h-14 w-14"
+                  onClick={() => {
+                    setPendingChanges((prev) => ({ ...prev, hero_image_url: null }));
+                    setPreviewHero(null);
+                  }}
+                  title="Ta bort bild"
+                >
+                  <Trash2 className="w-5 h-5" />
+                </Button>
+              )}
+            </div>
 
             <div className="bg-muted/30 rounded-lg p-3 space-y-1 max-w-md">
               <p className="text-sm font-medium flex items-center gap-1.5">
@@ -239,7 +279,7 @@ const BioTab = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Skriv en kort presentation av dig själv. Denna text visas på "Om mig"-sidan.
+            Skriv en kort presentation av dig själv. Denna text visas i "Om DJ Lobo"-sektionen på startsidan.
           </p>
           <div>
             <Label htmlFor="bio-text" className="text-sm font-medium">
@@ -258,10 +298,10 @@ const BioTab = () => {
             </p>
           </div>
 
-          {!hasPending ? null : (
+          {hasPending && (
             <Button onClick={handleSave} disabled={saving} size="lg" className="w-full text-base py-6">
-              {saving ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Save className="w-5 h-5 mr-2" />}
-              Spara ändringar
+              {saving ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : saved ? <CheckCircle2 className="w-5 h-5 mr-2 text-green-400" /> : <Save className="w-5 h-5 mr-2" />}
+              {saved ? "Sparat! ✅" : "Spara ändringar"}
             </Button>
           )}
         </CardContent>

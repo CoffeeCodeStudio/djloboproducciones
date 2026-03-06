@@ -80,7 +80,7 @@ const Footer = () => {
               {branding?.logo_url ? (
                 <img
                   alt="DJ Lobo Radio Logo"
-                  className="!h-16 sm:!h-24 w-auto object-contain rounded-xl drop-shadow-[0_0_15px_rgba(0,255,255,0.3)]"
+                  className="!h-16 sm:!h-24 w-auto object-contain rounded-xl drop-shadow-[0_0_15px_rgba(0,255,255,0.3)] bg-transparent"
                   src={branding.logo_url}
                   loading="lazy"
                   width={120}
