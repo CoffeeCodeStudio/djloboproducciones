@@ -81,7 +81,7 @@ const Navbar = () => {
             {/* Logo */}
             <Link
               to="/"
-              className="rounded-lg hover:scale-105 transition-transform flex items-center justify-center flex-shrink-0"
+              className="focus-neon rounded-lg hover:scale-105 transition-transform flex items-center justify-center flex-shrink-0"
               style={{ width: "120px", height: "120px" }}
               aria-label="DJ Lobo Radio - Hem"
             >
