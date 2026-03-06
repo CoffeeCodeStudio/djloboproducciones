@@ -82,21 +82,20 @@ const Navbar = () => {
             <Link
               to="/"
               className="focus-neon rounded-lg hover:scale-105 transition-transform flex items-center justify-center flex-shrink-0"
-              style={{ width: "160px", height: "80px" }}
+              style={{ width: "64px", height: "64px" }}
               aria-label="DJ Lobo Radio - Hem"
             >
               {branding?.logo_url ? (
                 <img
                   alt="DJ Lobo Radio Logo"
-                  className="object-contain"
                   src={branding.logo_url}
-                  style={{ width: "200px", height: "100px" }}
+                  style={{ width: "64px", height: "64px", objectFit: "contain" }}
                   fetchPriority="high"
                   loading="eager"
                 />
               ) : (
-                <div className="flex items-center justify-center">
-                  <Radio className="h-12 w-12 text-neon-cyan" />
+                <div className="flex items-center justify-center w-12 h-12 rounded-full border-2 border-neon-cyan">
+                  <Radio className="h-6 w-6 text-neon-cyan" />
                 </div>
               )}
             </Link>
@@ -211,7 +210,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      <div className="h-24 sm:h-32" />
+      <div className="h-20 sm:h-24" />
     </>
   );
 };
