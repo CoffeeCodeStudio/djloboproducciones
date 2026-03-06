@@ -39,7 +39,7 @@ const translations = {
     visitStudio: "Visit Coffee Code Studio",
   },
   es: {
-    copyright: "© 2026 DJ Lobo Radio. Todos los derechos reservados.",
+    copyright: "© 2026 DJ Lobo Producciones. Todos los derechos reservados.",
     privacyPolicy: "Política de Privacidad",
     terms: "Términos de Servicio",
     contact: "Contacto",

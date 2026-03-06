@@ -33,7 +33,7 @@ export function optimizeWithFallback(
 }
 
 export function optimizeLogo(url: string | null | undefined) {
-  return optimizeWithFallback(url, 120);
+  return optimizeWithFallback(url, 200);
 }
 
 export function optimizeHero(url: string | null | undefined) {
