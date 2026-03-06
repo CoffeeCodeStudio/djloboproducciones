@@ -20,6 +20,12 @@ const GalleryTab = () => {
   const handleAddPhoto = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (file.size > 2 * 1024 * 1024) {
+      const { toast } = await import("sonner");
+      toast.error(`Bilden är för stor (${(file.size / 1024 / 1024).toFixed(1)} MB). Välj en bild under 2 MB.`);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
     await addImage.mutateAsync({ file, mediaType: "photo" });
     if (fileInputRef.current) fileInputRef.current.value = "";
   };
