@@ -27,7 +27,11 @@ const navItems: NavItem[] = [
   { id: "spelningar", href: "/spelningar", label: { sv: "Spelningar", en: "Shows", es: "Shows" }, icon: CalendarDays },
 ];
 
-interface LanguageOption { code: Language; flag: string; label: string; }
+interface LanguageOption {
+  code: Language;
+  flag: string;
+  label: string;
+}
 const languages: LanguageOption[] = [
   { code: "sv", flag: "🇸🇪", label: "Svenska" },
   { code: "en", flag: "🇬🇧", label: "English" },
@@ -56,7 +60,6 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
   const isActive = (item: NavItem) => {
     if (item.href === "/") return location.pathname === "/";
     return location.pathname.startsWith(item.href);
@@ -76,21 +79,26 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link
-              to="/"
-              className="focus-neon rounded-lg hover:scale-105 transition-transform flex-shrink-0"
-              aria-label="DJ Lobo Radio - Hem"
-            >
-              {branding?.logo_url ? (
-                <img
-                  alt="DJ Lobo Radio Logo"
-                  className="!h-14 xs:!h-16 sm:!h-20 md:!h-24 w-auto object-contain rounded-xl drop-shadow-[0_0_15px_rgba(0,255,255,0.3)]"
-                  src={branding.logo_url}
-                  fetchPriority="high"
-                  loading="eager"
-                  width={120}
-                  height={120}
-                />
+
+<Link
+  to="/"
+  className="focus-neon rounded-lg hover:scale-105 transition-transform flex items-center justify-center flex-shrink-0"
+  style={{ width: '160px' }} // Tvinga en bredd här
+  aria-label="DJ Lobo Radio - Hem"
+>
+  {branding?.logo_url ? (
+    <img
+      alt="DJ Lobo Radio Logo"
+      className="object-contain w-full h-full" // Fyller ut wrappern
+      src={branding.logo_url}
+      style={{ maxHeight: "110px" }} // Maxhöjd begränsar så den inte spräcker navbaren
+      fetchPriority="high"
+      loading="eager"
+    />
+  ) : (
+    // ... din radio-ikon fallback
+  )}
+</Link>
               ) : (
                 <div className="h-14 xs:h-16 sm:h-20 md:h-24 w-14 xs:w-16 sm:w-20 md:w-24 flex items-center justify-center">
                   <Radio className="h-10 xs:h-12 sm:h-16 md:h-20 w-10 xs:w-12 sm:w-16 md:w-20 text-neon-cyan" />
@@ -108,8 +116,8 @@ const Navbar = () => {
                     item.highlight
                       ? "permanent-neon-link font-bold text-neon-pink bg-neon-pink/10 border border-neon-pink/40 shadow-[0_0_15px_rgba(255,0,128,0.3)] hover:shadow-[0_0_25px_rgba(255,0,128,0.5)]"
                       : isActive(item)
-                      ? "text-neon-cyan bg-neon-cyan/10 shadow-[0_0_10px_rgba(0,255,255,0.3)]"
-                      : "text-foreground/80 hover:text-neon-cyan hover:bg-neon-cyan/5"
+                        ? "text-neon-cyan bg-neon-cyan/10 shadow-[0_0_10px_rgba(0,255,255,0.3)]"
+                        : "text-foreground/80 hover:text-neon-cyan hover:bg-neon-cyan/5"
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
@@ -129,15 +137,37 @@ const Navbar = () => {
                   className="tap-target glass-card px-2 sm:px-3 py-2 flex items-center gap-1.5 hover:border-neon-cyan/50 transition-colors focus-neon rounded-lg"
                 >
                   <Globe className="w-4 h-4 text-foreground" aria-hidden="true" />
-                  <span className="text-sm font-medium" aria-hidden="true">{currentLang.flag}</span>
-                  <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform ${isLangOpen ? "rotate-180" : ""}`} aria-hidden="true" />
+                  <span className="text-sm font-medium" aria-hidden="true">
+                    {currentLang.flag}
+                  </span>
+                  <ChevronDown
+                    className={`w-3 h-3 text-muted-foreground transition-transform ${isLangOpen ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                  />
                 </button>
                 {isLangOpen && (
-                  <ul role="listbox" aria-label="Välj språk" className="absolute right-0 mt-2 w-40 rounded-lg overflow-hidden py-1 shadow-lg border border-neon-cyan/20 z-[60] bg-background/95 backdrop-blur-xl">
+                  <ul
+                    role="listbox"
+                    aria-label="Välj språk"
+                    className="absolute right-0 mt-2 w-40 rounded-lg overflow-hidden py-1 shadow-lg border border-neon-cyan/20 z-[60] bg-background/95 backdrop-blur-xl"
+                  >
                     {languages.map((lang) => (
-                      <li key={lang.code} role="option" aria-selected={language === lang.code} tabIndex={0}
-                        onClick={() => { setLanguage(lang.code); setIsLangOpen(false); }}
-                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setLanguage(lang.code); setIsLangOpen(false); } }}
+                      <li
+                        key={lang.code}
+                        role="option"
+                        aria-selected={language === lang.code}
+                        tabIndex={0}
+                        onClick={() => {
+                          setLanguage(lang.code);
+                          setIsLangOpen(false);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setLanguage(lang.code);
+                            setIsLangOpen(false);
+                          }
+                        }}
                         className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors focus-neon ${language === lang.code ? "bg-neon-cyan/10 text-neon-cyan" : "hover:bg-muted/50 text-foreground"}`}
                       >
                         <span aria-hidden="true">{lang.flag}</span>
@@ -158,7 +188,10 @@ const Navbar = () => {
                     <Menu className="w-6 h-6 text-foreground" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 glass-card border-neon-purple/30 bg-background/95 backdrop-blur-xl">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-56 glass-card border-neon-purple/30 bg-background/95 backdrop-blur-xl"
+                >
                   {navItems.map((item) => (
                     <DropdownMenuItem key={item.id} asChild>
                       <Link
@@ -167,8 +200,8 @@ const Navbar = () => {
                           item.highlight
                             ? "text-neon-pink font-bold"
                             : isActive(item)
-                            ? "text-neon-cyan"
-                            : "text-foreground/90"
+                              ? "text-neon-cyan"
+                              : "text-foreground/90"
                         }`}
                       >
                         <item.icon className="w-4 h-4" />
@@ -183,7 +216,7 @@ const Navbar = () => {
         </div>
       </nav>
 
-      <div className="h-20 sm:h-28" />
+      <div className="h-24 sm:h-32" />
     </>
   );
 };
