@@ -228,6 +228,7 @@ export type Database = {
         Row: {
           accent_color: string | null
           background_image_url: string | null
+          bio_text: string | null
           created_at: string
           google_calendar_id: string | null
           hero_image_url: string | null
@@ -257,6 +258,7 @@ export type Database = {
         Insert: {
           accent_color?: string | null
           background_image_url?: string | null
+          bio_text?: string | null
           created_at?: string
           google_calendar_id?: string | null
           hero_image_url?: string | null
@@ -286,6 +288,7 @@ export type Database = {
         Update: {
           accent_color?: string | null
           background_image_url?: string | null
+          bio_text?: string | null
           created_at?: string
           google_calendar_id?: string | null
           hero_image_url?: string | null
