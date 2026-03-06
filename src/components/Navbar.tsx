@@ -78,14 +78,14 @@ const Navbar = () => {
             {/* Logo */}
             <Link
               to="/"
-              className="glass-card p-1.5 sm:p-2 focus-neon rounded-lg hover:scale-105 transition-transform"
+              className="focus-neon rounded-lg hover:scale-105 transition-transform"
               aria-label="DJ Lobo Radio - Hem"
             >
               {branding?.logo_url ? (
-                <img alt="DJ Lobo Radio Logo" className="h-10 sm:h-12 w-auto object-contain" src={optimizeLogo(branding.logo_url).src} fetchPriority="high" loading="eager" width={48} height={48} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = optimizeLogo(branding.logo_url).fallback; }} />
+                <img alt="DJ Lobo Radio Logo" className="h-12 sm:h-14 w-auto object-contain rounded-md" src={optimizeLogo(branding.logo_url).src} fetchPriority="high" loading="eager" width={56} height={56} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = optimizeLogo(branding.logo_url).fallback; }} />
               ) : (
-                <div className="h-10 sm:h-12 w-10 sm:w-12 flex items-center justify-center">
-                  <Radio className="h-8 sm:h-10 w-8 sm:w-10 text-neon-cyan" />
+                <div className="h-12 sm:h-14 w-12 sm:w-14 flex items-center justify-center">
+                  <Radio className="h-10 sm:h-12 w-10 sm:w-12 text-neon-cyan" />
                 </div>
               )}
             </Link>
