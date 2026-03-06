@@ -9,7 +9,7 @@ const DEFAULT_SOCIAL_LINKS = {
   facebookRadio: "https://www.facebook.com/djloboradiodjs/",
   facebookProd: "https://www.facebook.com/DjloboProduccionesSweden/",
   youtube: "https://www.youtube.com/@djloboproducciones3211",
-  zenoPlayer: "https://zeno.fm/radio/dj-lobo-radio-o85p/",
+  zenoPlayer: "https://zeno.fm/radio/dj-lobo-radio-o85p/"
 };
 const LINKEDIN_URL = "https://www.linkedin.com/in/rami-e-453b77330/";
 
@@ -20,8 +20,7 @@ const translations = {
     terms: "Användarvillkor",
     contact: "Kontakt",
     about: "Om DJ Lobo",
-    aboutText:
-      "Professionell DJ i Göteborg med 20+ års erfarenhet. Expert på House, World Hits, 80-tal, 90-tal och Latin beats.",
+    aboutText: "Professionell DJ i Göteborg med 20+ års erfarenhet. Expert på House, World Hits, 80-tal, 90-tal och Latin beats.",
     location: "Göteborg, Sverige",
     bookSection: "Boka DJ Lobo",
     radioSection: "Följ Radion",
@@ -33,8 +32,7 @@ const translations = {
     terms: "Terms of Service",
     contact: "Contact",
     about: "About DJ Lobo",
-    aboutText:
-      "Professional DJ in Gothenburg with 20+ years of experience. Expert in House, World Hits, 80s, 90s and Latin beats.",
+    aboutText: "Professional DJ in Gothenburg with 20+ years of experience. Expert in House, World Hits, 80s, 90s and Latin beats.",
     location: "Gothenburg, Sweden",
     bookSection: "Book DJ Lobo",
     radioSection: "Follow the Radio",
@@ -46,13 +44,12 @@ const translations = {
     terms: "Términos de Servicio",
     contact: "Contacto",
     about: "Sobre DJ Lobo",
-    aboutText:
-      "DJ profesional en Gotemburgo con más de 20 años de experiencia. Experto en House, World Hits, 80s, 90s y Latin beats.",
+    aboutText: "DJ profesional en Gotemburgo con más de 20 años de experiencia. Experto en House, World Hits, 80s, 90s y Latin beats.",
     location: "Gotemburgo, Suecia",
     bookSection: "Reservar DJ Lobo",
     radioSection: "Sigue la Radio",
     visitStudio: "Visitar Coffee Code Studio",
-  },
+  }
 };
 
 const Footer = () => {
@@ -86,8 +83,8 @@ const Footer = () => {
                   className="!h-16 sm:!h-24 w-auto object-contain rounded-xl drop-shadow-[0_0_15px_rgba(0,255,255,0.3)]"
                   src={branding.logo_url}
                   loading="lazy"
-                  width={200}
-                  height={300}
+                  width={120}
+                  height={120}
                 />
               ) : (
                 <div className="h-16 sm:h-24 w-16 sm:w-24 flex items-center justify-center glass-card rounded-full">
@@ -105,18 +102,11 @@ const Footer = () => {
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-sm text-muted-foreground">
                 <Mail className="w-4 h-4 text-neon-cyan flex-shrink-0 mt-0.5" />
-                <a
-                  href="mailto:info@djloboproducciones.com"
-                  className="hover:text-neon-cyan transition-colors break-all"
-                >
-                  info@djloboproducciones.com
-                </a>
+                <a href="mailto:info@djloboproducciones.com" className="hover:text-neon-cyan transition-colors break-all">info@djloboproducciones.com</a>
               </li>
               <li className="flex items-center gap-3 text-sm text-muted-foreground">
                 <Phone className="w-4 h-4 text-neon-pink flex-shrink-0" />
-                <a href="tel:+46769125260" className="hover:text-neon-pink transition-colors">
-                  +46 76 912 52 60
-                </a>
+                <a href="tel:+46769125260" className="hover:text-neon-pink transition-colors">+46 76 912 52 60</a>
               </li>
               <li className="flex items-center gap-3 text-sm text-muted-foreground">
                 <MapPin className="w-4 h-4 text-neon-purple flex-shrink-0" />
@@ -131,12 +121,7 @@ const Footer = () => {
             <nav aria-label={t.bookSection}>
               <ul className="space-y-3">
                 <li>
-                  <a
-                    href={socialLinks.facebookProd}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group"
-                  >
+                  <a href={socialLinks.facebookProd} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" />
                     </span>
@@ -144,12 +129,7 @@ const Footer = () => {
                   </a>
                 </li>
                 <li>
-                  <a
-                    href={socialLinks.instagram}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group"
-                  >
+                  <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Instagram className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" />
                     </span>
@@ -157,12 +137,7 @@ const Footer = () => {
                   </a>
                 </li>
                 <li>
-                  <a
-                    href={socialLinks.youtube}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group"
-                  >
+                  <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Youtube className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" />
                     </span>
@@ -179,12 +154,7 @@ const Footer = () => {
             <nav aria-label={t.radioSection}>
               <ul className="space-y-3">
                 <li>
-                  <a
-                    href={socialLinks.facebookRadio}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group"
-                  >
+                  <a href={socialLinks.facebookRadio} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" />
                     </span>
@@ -192,12 +162,7 @@ const Footer = () => {
                   </a>
                 </li>
                 <li>
-                  <a
-                    href={socialLinks.zenoPlayer}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group"
-                  >
+                  <a href={socialLinks.zenoPlayer} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <RadioIcon className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" />
                     </span>
@@ -214,38 +179,18 @@ const Footer = () => {
           <p className="text-muted-foreground/70 text-xs">{t.copyright}</p>
           <nav aria-label="Juridiska länkar">
             <ul className="flex gap-4 text-xs">
-              <li>
-                <Link to="/privacy" className="text-neon-cyan hover:underline">
-                  {t.privacyPolicy}
-                </Link>
-              </li>
-              <li>
-                <Link to="/terms" className="text-neon-cyan hover:underline">
-                  {t.terms}
-                </Link>
-              </li>
+              <li><Link to="/privacy" className="text-neon-cyan hover:underline">{t.privacyPolicy}</Link></li>
+              <li><Link to="/terms" className="text-neon-cyan hover:underline">{t.terms}</Link></li>
             </ul>
           </nav>
         </div>
 
         {/* Coffee Code Studio */}
         <div className="mt-6 text-center">
-          <a
-            href={LINKEDIN_URL}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="group inline-flex items-center gap-2 px-4 py-2 rounded-lg glass-card hover:scale-105 transition-all focus-neon"
-            aria-label={t.visitStudio}
-          >
-            <span className="text-neon-cyan font-bold text-lg" style={{ textShadow: "0 0 15px rgba(0,255,255,0.8)" }}>
-              &lt;
-            </span>
-            <span className="text-xl" style={{ filter: "drop-shadow(0 0 10px rgba(0,255,255,0.6))" }}>
-              ☕️
-            </span>
-            <span className="text-neon-cyan font-bold text-lg" style={{ textShadow: "0 0 15px rgba(0,255,255,0.8)" }}>
-              &gt;
-            </span>
+          <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" className="group inline-flex items-center gap-2 px-4 py-2 rounded-lg glass-card hover:scale-105 transition-all focus-neon" aria-label={t.visitStudio}>
+            <span className="text-neon-cyan font-bold text-lg" style={{ textShadow: "0 0 15px rgba(0,255,255,0.8)" }}>&lt;</span>
+            <span className="text-xl" style={{ filter: "drop-shadow(0 0 10px rgba(0,255,255,0.6))" }}>☕️</span>
+            <span className="text-neon-cyan font-bold text-lg" style={{ textShadow: "0 0 15px rgba(0,255,255,0.8)" }}>&gt;</span>
             <span className="ml-1 font-semibold tracking-wide text-foreground text-sm">Coffee Code Studio</span>
           </a>
         </div>
