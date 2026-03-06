@@ -79,32 +79,6 @@ const Navbar = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6">
           <div className="flex items-center justify-between">
             {/* Logo */}
-            <Link
-              to="/"
-              className="focus-neon rounded-lg hover:scale-105 transition-transform flex items-center justify-center flex-shrink-0"
-              style={{ width: "160px", height: "80px" }}
-              aria-label="DJ Lobo Radio - Hem"
-            >
-              {branding?.logo_url ? (
-                <img
-                  alt="DJ Lobo Radio Logo"
-                  src={branding.logo_url}
-                  style={{
-                    width: "80px",
-                    height: "80px",
-                    objectFit: "cover",
-                    objectPosition: "center",
-                    borderRadius: "50%",
-                  }}
-                  fetchPriority="high"
-                  loading="eager"
-                />
-              ) : (
-                <div className="flex items-center justify-center">
-                  <Radio className="h-12 w-12 text-neon-cyan" />
-                </div>
-              )}
-            </Link>
 
             {/* Desktop Navigation — 5 items, RADIO centered */}
             <div className="hidden lg:flex items-center gap-1">
