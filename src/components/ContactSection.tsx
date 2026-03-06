@@ -184,44 +184,7 @@ const ContactSection = () => {
         </div>
 
         {/* Contact Info */}
-        <div className="space-y-6">
-          {/* Contact Cards */}
-          <div className="glass-card p-6 rounded-xl flex items-center gap-4 hover:border-neon-cyan/50 transition-colors group">
-            <div className="w-12 h-12 rounded-full bg-neon-cyan/10 flex items-center justify-center group-hover:bg-neon-cyan/20 transition-colors">
-              <Mail className="w-6 h-6 text-neon-cyan" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Email</p>
-              <a href="mailto:info@djloboproducciones.com" className="text-foreground hover:text-neon-cyan transition-colors">
-                info@djloboproducciones.com
-              </a>
-            </div>
-          </div>
-
-          <div className="glass-card p-6 rounded-xl flex items-center gap-4 hover:border-neon-pink/50 transition-colors group">
-            <div className="w-12 h-12 rounded-full bg-neon-pink/10 flex items-center justify-center group-hover:bg-neon-pink/20 transition-colors">
-              <Phone className="w-6 h-6 text-neon-pink" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Telefon</p>
-              <a href="tel:+46769125260" className="text-foreground hover:text-neon-pink transition-colors">
-                +46 76 912 52 60
-              </a>
-            </div>
-          </div>
-
-          <div className="glass-card p-6 rounded-xl flex items-center gap-4 hover:border-neon-purple/50 transition-colors group">
-            <div className="w-12 h-12 rounded-full bg-neon-purple/10 flex items-center justify-center group-hover:bg-neon-purple/20 transition-colors">
-              <MapPin className="w-6 h-6 text-neon-purple" />
-            </div>
-            <div>
-              <p className="text-sm text-muted-foreground">Plats</p>
-              <p className="text-foreground">{t.location}</p>
-            </div>
-          </div>
-
-          {/* Social Links */}
-          
+        
 
 
 
@@ -243,8 +206,45 @@ const ContactSection = () => {
 
 
 
-          
-        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
       </div>
     </section>);
 
