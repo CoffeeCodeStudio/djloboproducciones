@@ -82,7 +82,7 @@ const Navbar = () => {
             <Link
               to="/"
               className="focus-neon rounded-lg hover:scale-105 transition-transform flex items-center justify-center flex-shrink-0"
-              style={{ width: "64px", height: "64px" }}
+              style={{ width: "120px", height: "120px" }}
               aria-label="DJ Lobo Radio - Hem"
             >
               {branding?.logo_url ? (
