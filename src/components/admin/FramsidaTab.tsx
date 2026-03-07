@@ -105,24 +105,25 @@ const FramsidaTab = () => {
           <CardTitle className="flex items-center gap-2 text-lg"><ImageIcon className="w-5 h-5 text-primary" />Huvudbild – "Om mig"</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">Används som bakgrund i hero-sektionen och i "Om DJ Lobo".</p>
+          <p className="text-sm text-muted-foreground">Visas i "Om DJ Lobo"-sektionen. Bilden beskärs automatiskt till <strong>stående format (4:5)</strong>.</p>
           {currentHeroUrl ? (
-            <div className="space-y-3 max-w-md">
-              <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-primary/50">
-                <img src={currentHeroUrl} alt="Nuvarande huvudbild" className="w-full h-full object-cover" />
+            <div className="space-y-3 max-w-[280px]">
+              <div className="relative w-full aspect-[4/5] rounded-lg overflow-hidden border-2 border-primary/50">
+                <img src={currentHeroUrl} alt="Nuvarande huvudbild" className="w-full h-full object-cover object-center" />
                 {uploadingType === "hero" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}
               </div>
-              <p className="text-xs text-muted-foreground">👆 Nuvarande bild</p>
+              <p className="text-xs text-muted-foreground">👆 Nuvarande bild – förhandsvisning i 4:5</p>
             </div>
           ) : (
-            <div className="relative w-full aspect-video max-w-md rounded-lg overflow-hidden border-2 border-border bg-muted/20 flex flex-col items-center justify-center gap-2">
+            <div className="relative w-full aspect-[4/5] max-w-[280px] rounded-lg overflow-hidden border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center gap-2">
               <ImageIcon className="w-10 h-10 text-muted-foreground" />
-              <p className="text-xs text-muted-foreground">Ingen bild uppladdad</p>
+              <p className="text-sm text-muted-foreground font-medium">4:5 stående format</p>
+              <p className="text-xs text-muted-foreground">Ladda upp bild här</p>
               {uploadingType === "hero" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}
             </div>
           )}
           <input ref={heroInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleFileSelect(e, "hero", "hero_image_url", setPreviewHero)} />
-          <div className="flex gap-2 max-w-md">
+          <div className="flex gap-2 max-w-[280px]">
             <Button size="lg" variant="outline" className="flex-1 text-base py-6" onClick={() => heroInputRef.current?.click()} disabled={uploadingType === "hero"}>
               <Upload className="w-5 h-5 mr-2" />{uploadingType === "hero" ? "Laddar upp..." : "Ladda upp ny bild"}
             </Button>
@@ -132,8 +133,12 @@ const FramsidaTab = () => {
               </Button>
             )}
           </div>
-          <div className="bg-muted/30 rounded-lg p-3 max-w-md">
-            <p className="text-xs text-muted-foreground flex items-center gap-1.5"><AlertTriangle className="w-3 h-3 text-amber-400" />Liggande bild (1200×800 px), max {MAX_FILE_SIZE_MB} MB</p>
+          <div className="bg-muted/30 rounded-lg p-3 max-w-[280px] space-y-1.5">
+            <p className="text-sm font-medium">📐 Beskärningsguide</p>
+            <p className="text-xs text-muted-foreground">• Ladda upp bild i <strong>stående format (4:5)</strong> för bästa resultat</p>
+            <p className="text-xs text-muted-foreground">• Rekommenderad storlek: <strong>800×1000 px</strong></p>
+            <p className="text-xs text-muted-foreground">• Centrera motivet i bilden – kanterna kan beskäras</p>
+            <p className="text-xs text-muted-foreground">• Max filstorlek: {MAX_FILE_SIZE_MB} MB</p>
           </div>
         </CardContent>
       </Card>
