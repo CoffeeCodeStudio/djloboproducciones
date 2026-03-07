@@ -187,7 +187,7 @@ const AboutSection = () => {
               <img
                 src={heroImage}
                 alt="DJ Lobo spelar latinmusik live"
-                className="w-full object-contain"
+                className="w-full h-64 sm:h-80 object-contain"
                 loading="lazy"
                 onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = heroFallback; }}
               />
