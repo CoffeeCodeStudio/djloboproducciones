@@ -2,8 +2,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { 
+import {
   Upload, 
   Palette, 
   Save, 
@@ -206,8 +205,7 @@ const BrandingTab = () => {
   const ogPreview = getImagePreview("og");
 
   return (
-    <ScrollArea className="h-[calc(100vh-200px)]">
-      <div className="space-y-6 pr-4 max-w-3xl mx-auto">
+    <div className="w-full max-w-[600px] mx-auto flex flex-col gap-8">
         {/* Save Button - Sticky */}
         {hasPendingChanges && (
           <div className="sticky top-0 z-10 bg-background/95 backdrop-blur py-3 -mx-4 px-4 border-b border-border/50">
@@ -230,7 +228,7 @@ const BrandingTab = () => {
         )}
 
         {/* ===== LOGOTYP ===== */}
-        <Card className="glass-card border-white/10">
+        <Card className="bg-card border border-border/50 shadow-sm">
           <CardHeader>
             <CardTitle className="font-display flex items-center gap-2 text-lg">
               <Sparkles className="w-5 h-5 text-neon-purple" />
@@ -242,8 +240,8 @@ const BrandingTab = () => {
               Logotypen visas i navigeringen (menyn) och i sidfoten. Den bör ha <strong>genomskinlig bakgrund</strong> (PNG) så att den smälter in i designen.
             </p>
 
-            <div className="flex items-start gap-6">
-              <div className="relative w-40 h-24 rounded-lg overflow-hidden border border-border/50 flex-shrink-0"
+            <div className="flex flex-col gap-4">
+              <div className="relative w-full h-24 rounded-lg overflow-hidden border border-border/50"
                 style={{ background: "repeating-conic-gradient(hsl(var(--muted)) 0% 25%, hsl(var(--background)) 0% 50%) 50% / 16px 16px" }}
               >
                 <img 
@@ -258,43 +256,41 @@ const BrandingTab = () => {
                 )}
               </div>
               
-              <div className="flex-1 space-y-3">
-                <input
-                  ref={logoInputRef}
-                  type="file"
-                  accept="image/png,image/webp,image/svg+xml"
-                  className="hidden"
-                  onChange={(e) => handleFileSelect(e, "logo", "logo_url", 300)}
-                />
-                <div className="flex gap-2">
+              <input
+                ref={logoInputRef}
+                type="file"
+                accept="image/png,image/webp,image/svg+xml"
+                className="hidden"
+                onChange={(e) => handleFileSelect(e, "logo", "logo_url", 300)}
+              />
+              <div className="flex gap-2">
+                <Button 
+                  size="lg"
+                  variant="outline" 
+                  className="text-base py-6 flex-1"
+                  onClick={() => logoInputRef.current?.click()}
+                  disabled={uploading === "logo"}
+                >
+                  <Upload className="w-5 h-5 mr-2" />
+                  {uploading === "logo" ? "Laddar upp..." : "Ladda upp logotyp"}
+                </Button>
+                {(getImagePreview("logo") || branding?.logo_url) && (
                   <Button 
-                    size="lg"
-                    variant="outline" 
-                    className="text-base py-6 flex-1"
-                    onClick={() => logoInputRef.current?.click()}
-                    disabled={uploading === "logo"}
+                    variant="destructive" 
+                    size="icon"
+                    className="h-14 w-14"
+                    onClick={() => setPendingChanges((prev) => ({ ...prev, logo_url: null }))}
+                    title="Ta bort logotyp"
                   >
-                    <Upload className="w-5 h-5 mr-2" />
-                    {uploading === "logo" ? "Laddar upp..." : "Ladda upp logotyp"}
+                    <Trash2 className="w-5 h-5" />
                   </Button>
-                  {(getImagePreview("logo") || branding?.logo_url) && (
-                    <Button 
-                      variant="destructive" 
-                      size="icon"
-                      className="h-14 w-14"
-                      onClick={() => setPendingChanges((prev) => ({ ...prev, logo_url: null }))}
-                      title="Ta bort logotyp"
-                    >
-                      <Trash2 className="w-5 h-5" />
-                    </Button>
-                  )}
-                </div>
-                <div className="bg-muted/30 rounded-lg p-3">
-                  <p className="text-sm font-medium mb-1">📐 Rekommenderad storlek</p>
-                  <p className="text-xs text-muted-foreground">
-                    400×100 pixlar, PNG med genomskinlig bakgrund, max 300 KB
-                  </p>
-                </div>
+                )}
+              </div>
+              <div className="bg-muted/30 rounded-lg p-3">
+                <p className="text-sm font-medium mb-1">📐 Rekommenderad storlek</p>
+                <p className="text-xs text-muted-foreground">
+                  400×100 pixlar, PNG med genomskinlig bakgrund, max 300 KB
+                </p>
               </div>
             </div>
             {renderRecentUploads("logo", "logo_url")}
@@ -302,7 +298,7 @@ const BrandingTab = () => {
         </Card>
 
         {/* ===== OG / DELA-BILD ===== */}
-        <Card className="glass-card border-white/10">
+        <Card className="bg-card border border-border/50 shadow-sm">
           <CardHeader>
             <CardTitle className="font-display flex items-center gap-2 text-lg">
               <Share2 className="w-5 h-5 text-neon-cyan" />
@@ -315,7 +311,7 @@ const BrandingTab = () => {
             </p>
 
             <div className="space-y-4">
-              <div className="relative w-full max-w-md rounded-lg overflow-hidden border border-border/50 bg-muted/30"
+              <div className="relative w-full rounded-lg overflow-hidden border border-border/50 bg-muted/30"
                 style={{ aspectRatio: "1200/630" }}
               >
                 {ogPreview ? (
@@ -343,14 +339,14 @@ const BrandingTab = () => {
               <Button
                 size="lg"
                 variant="outline"
-                className="w-full max-w-md text-base py-6"
+                className="w-full text-base py-6"
                 onClick={() => ogInputRef.current?.click()}
               >
                 <Upload className="w-5 h-5 mr-2" />
                 Ladda upp dela-bild
               </Button>
 
-              <div className="bg-muted/30 rounded-lg p-3 max-w-md">
+              <div className="bg-muted/30 rounded-lg p-3">
                 <p className="text-sm font-medium mb-1">📐 Rekommenderad storlek</p>
                 <p className="text-xs text-muted-foreground">
                   1200×630 pixlar, JPG eller PNG, max 2 MB
@@ -361,7 +357,7 @@ const BrandingTab = () => {
         </Card>
 
         {/* ===== FÄRGTEMA ===== */}
-        <Card className="glass-card border-white/10">
+        <Card className="bg-card border border-border/50 shadow-sm">
           <CardHeader>
             <CardTitle className="font-display flex items-center gap-2 text-lg">
               <Palette className="w-5 h-5 text-primary" />
@@ -441,8 +437,7 @@ const BrandingTab = () => {
             {saved ? "Sparat! ✅" : "Spara ändringar"}
           </Button>
         )}
-      </div>
-    </ScrollArea>
+    </div>
   );
 };
 
