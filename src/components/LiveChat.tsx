@@ -537,7 +537,7 @@ const LiveChat = () => {
 
           {/* Messages */}
           <ScrollArea 
-            className="h-64 sm:h-80 p-4" 
+            className="h-64 sm:h-80 p-3 sm:p-4" 
             ref={scrollRef}
             aria-label={t.chatMessages}
             role="log"
