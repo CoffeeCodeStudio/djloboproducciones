@@ -139,30 +139,59 @@ const NowPlayingBar = () => {
     }
   }, [volume, isMuted]);
 
-  // Volume sync for mix iframes (Mixcloud & SoundCloud Widget APIs)
-  useEffect(() => {
+  // Mixcloud widget instance ref
+  const mixcloudWidgetRef = useRef<any>(null);
+  const scWidgetRef = useRef<any>(null);
+
+  // Initialize Mixcloud/SoundCloud widget when iframe loads
+  const handleMixIframeLoad = useCallback(() => {
     const iframe = mixIframeRef.current;
-    if (!iframe || !isMix || !currentTrack) return;
+    if (!iframe || !currentTrack) return;
+
+    if (currentTrack.source === "mixcloud" && (window as any).Mixcloud) {
+      try {
+        const widget = (window as any).Mixcloud.PlayerWidget(iframe);
+        widget.ready.then(() => {
+          mixcloudWidgetRef.current = widget;
+          const vol = isMuted ? 0 : volume / 100;
+          widget.setVolume(vol);
+        });
+      } catch (e) {
+        logger.error("Mixcloud widget init error:", e);
+      }
+    } else if (currentTrack.source === "soundcloud" && (window as any).SC) {
+      try {
+        const widget = (window as any).SC.Widget(iframe);
+        scWidgetRef.current = widget;
+        widget.setVolume(isMuted ? 0 : volume);
+      } catch (e) {
+        logger.error("SoundCloud widget init error:", e);
+      }
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTrack]);
+
+  // Volume sync for mix widgets
+  useEffect(() => {
+    if (!isMix || !currentTrack) return;
     const effectiveVolume = isMuted ? 0 : volume / 100;
 
-    try {
-      if (currentTrack.source === "mixcloud") {
-        // Mixcloud Widget API uses postMessage
-        iframe.contentWindow?.postMessage(
-          JSON.stringify({ method: "volume", args: [effectiveVolume] }),
-          "https://www.mixcloud.com"
-        );
-      } else {
-        // SoundCloud Widget API
-        iframe.contentWindow?.postMessage(
-          JSON.stringify({ method: "setVolume", value: effectiveVolume * 100 }),
-          "https://w.soundcloud.com"
-        );
-      }
-    } catch {
-      // Cross-origin errors are expected sometimes
+    if (currentTrack.source === "mixcloud" && mixcloudWidgetRef.current) {
+      try {
+        mixcloudWidgetRef.current.setVolume(effectiveVolume);
+      } catch { /* ignore */ }
+    } else if (currentTrack.source === "soundcloud" && scWidgetRef.current) {
+      try {
+        scWidgetRef.current.setVolume(isMuted ? 0 : volume);
+      } catch { /* ignore */ }
     }
   }, [volume, isMuted, isMix, currentTrack]);
+
+  // Reset widget refs when track changes
+  useEffect(() => {
+    mixcloudWidgetRef.current = null;
+    scWidgetRef.current = null;
+  }, [currentTrack?.id]);
 
   // Audio element event listeners
   useEffect(() => {
