@@ -85,7 +85,7 @@ export const useBranding = () => {
 
   const uploadImage = async (
     file: File,
-    imageType: "hero" | "logo" | "background" | "profile"
+    imageType: "hero" | "logo" | "background" | "profile" | "radio"
   ): Promise<{ url: string | null; error: string | null }> => {
     // Validate size with clear message
     if (file.size > 5 * 1024 * 1024) {

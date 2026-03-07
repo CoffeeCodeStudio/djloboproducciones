@@ -42,9 +42,9 @@ const ListenPage = () => {
   const { status } = useStreamStatus();
   const t = translations[language];
 
-  const profileOpt = optimizeProfile(branding?.profile_image_url);
-  const profileImage = profileOpt.src || djLoboImage;
-  const profileFallback = profileOpt.fallback || djLoboImage;
+  const radioOpt = optimizeProfile((branding as any)?.radio_image_url || branding?.profile_image_url);
+  const profileImage = radioOpt.src || djLoboImage;
+  const profileFallback = radioOpt.fallback || djLoboImage;
   const siteName = branding?.site_name || "DJ LOBO";
 
   return (

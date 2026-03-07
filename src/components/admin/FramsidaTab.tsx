@@ -24,6 +24,9 @@ const FramsidaTab = () => {
   // Cropper state
   const [cropperOpen, setCropperOpen] = useState(false);
   const [cropperSrc, setCropperSrc] = useState<string>("");
+  const [cropperTarget, setCropperTarget] = useState<"profile" | "radio">("profile");
+  const [previewRadio, setPreviewRadio] = useState<string | null>(null);
+  const radioInputRef = useRef<HTMLInputElement>(null);
 
   const currentBio = pendingChanges.bio_text ?? branding?.bio_text ?? "";
   const currentHeroUrl = previewHero || branding?.profile_image_url || null;
