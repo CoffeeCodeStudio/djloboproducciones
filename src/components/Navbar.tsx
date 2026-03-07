@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { Menu, Radio, Globe, ChevronDown, Home, Headphones, CalendarDays, Star, Film } from "lucide-react";
+import { Menu, Radio, Globe, ChevronDown, Home, CalendarDays, Star, Film } from "lucide-react";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
 import { useBranding } from "@/hooks/useBranding";
-import { optimizeLogo } from "@/lib/imageOptimizer";
+import { Link, useLocation } from "react-router-dom";
 import { Link, useLocation } from "react-router-dom";
 import {
   DropdownMenu,
