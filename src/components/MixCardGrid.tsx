@@ -71,7 +71,7 @@ const MixCardGrid = () => {
           .order("sort_order", { ascending: true }),
         supabase
           .from("mixcloud_mixes")
-          .select("id, title, mixcloud_url, cover_art_url, pinned, hidden, sort_order")
+          .select("id, title, mixcloud_url, cover_art_url, pinned, hidden, sort_order, mixcloud_created_time")
           .eq("hidden", false)
           .order("sort_order", { ascending: true }),
       ]);
