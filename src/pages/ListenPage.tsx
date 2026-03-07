@@ -97,7 +97,6 @@ const ListenPage = () => {
               src={profileImage}
               alt="DJ Lobo vid mixerbordet"
               className="w-full h-full object-cover rounded-full"
-              fetchPriority="high"
               loading="eager"
               onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = profileFallback; }}
             />

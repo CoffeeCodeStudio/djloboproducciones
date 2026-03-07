@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import { Menu, Radio, Globe, ChevronDown, Home, Headphones, CalendarDays, Star, Film } from "lucide-react";
+import { Menu, Radio, Globe, ChevronDown, Home, CalendarDays, Star, Film } from "lucide-react";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
 import { useBranding } from "@/hooks/useBranding";
-import { optimizeLogo } from "@/lib/imageOptimizer";
 import { Link, useLocation } from "react-router-dom";
 import {
   DropdownMenu,
@@ -86,7 +85,6 @@ const Navbar = () => {
                   alt="DJ Lobo Radio Logo"
                   className="!h-14 xs:!h-16 sm:!h-20 md:!h-24 w-auto object-contain rounded-xl drop-shadow-[0_0_15px_rgba(0,255,255,0.3)] bg-transparent"
                   src={branding.logo_url}
-                  fetchPriority="high"
                   loading="eager"
                   width={120}
                   height={120}

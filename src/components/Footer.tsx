@@ -1,8 +1,8 @@
+import { forwardRef } from "react";
 import { Instagram, Facebook, Youtube, Radio as RadioIcon, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useBranding } from "@/hooks/useBranding";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { optimizeLogo } from "@/lib/imageOptimizer";
 
 const DEFAULT_SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/djloboradio",
@@ -52,7 +52,7 @@ const translations = {
   }
 };
 
-const Footer = () => {
+const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { language } = useLanguage();
   const { branding } = useBranding();
   const t = translations[language];
@@ -70,7 +70,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="py-12 sm:py-16 px-4 sm:px-6 pb-32 sm:pb-36 relative border-t border-neon-purple/20">
+    <footer ref={ref} className="py-12 sm:py-16 px-4 sm:px-6 pb-32 sm:pb-36 relative border-t border-neon-purple/20">
       <div className="max-w-7xl mx-auto">
         {/* Grid: About + Contact + Social */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-8 mb-10">
@@ -197,6 +197,8 @@ const Footer = () => {
       </div>
     </footer>
   );
-};
+});
+
+Footer.displayName = "Footer";
 
 export default Footer;
