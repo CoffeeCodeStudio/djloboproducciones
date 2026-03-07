@@ -4,9 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Upload, Save, Loader2, AlertTriangle, ImageIcon, CheckCircle2, Trash2 } from "lucide-react";
+import { Upload, Save, Loader2, ImageIcon, CheckCircle2, Trash2 } from "lucide-react";
 import { useBranding, SiteBranding } from "@/hooks/useBranding";
 import { toast } from "sonner";
+import ImageCropper from "./ImageCropper";
 
 const MAX_FILE_SIZE_MB = 2;
 const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
@@ -20,16 +21,15 @@ const FramsidaTab = () => {
   const [previewHero, setPreviewHero] = useState<string | null>(null);
   const heroInputRef = useRef<HTMLInputElement>(null);
 
+  // Cropper state
+  const [cropperOpen, setCropperOpen] = useState(false);
+  const [cropperSrc, setCropperSrc] = useState<string>("");
+
   const currentBio = pendingChanges.bio_text ?? branding?.bio_text ?? "";
   const currentHeroUrl = previewHero || branding?.hero_image_url || null;
   const hasPending = Object.keys(pendingChanges).length > 0;
 
-  const handleFileSelect = async (
-    e: React.ChangeEvent<HTMLInputElement>,
-    imageType: "profile" | "hero",
-    fieldName: keyof SiteBranding,
-    setPreview: (url: string | null) => void
-  ) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
@@ -40,15 +40,37 @@ const FramsidaTab = () => {
       toast.error(`Bilden är för stor (${(file.size / 1024 / 1024).toFixed(1)} MB). Välj en bild under ${MAX_FILE_SIZE_MB} MB.`);
       return;
     }
+    // Read file and open cropper
     const reader = new FileReader();
-    reader.onload = (ev) => setPreview(ev.target?.result as string);
+    reader.onload = (ev) => {
+      const src = ev.target?.result as string;
+      setCropperSrc(src);
+      setCropperOpen(true);
+    };
     reader.readAsDataURL(file);
-    setUploadingType(imageType);
-    const { url, error } = await uploadImage(file, imageType);
+    // Reset input so same file can be re-selected
+    e.target.value = "";
+  };
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    setCropperOpen(false);
+    // Show preview immediately
+    const previewUrl = URL.createObjectURL(croppedBlob);
+    setPreviewHero(previewUrl);
+
+    // Upload cropped image
+    const file = new File([croppedBlob], "hero-cropped.jpg", { type: "image/jpeg" });
+    setUploadingType("hero");
+    const { url, error } = await uploadImage(file, "hero");
     setUploadingType(null);
-    if (error) { toast.error(error); setPreview(null); return; }
-    setPendingChanges((prev) => ({ ...prev, [fieldName]: url }));
-    toast.success("Bilden laddades upp! Tryck 'Spara ändringar'.");
+
+    if (error) {
+      toast.error(error);
+      setPreviewHero(null);
+      return;
+    }
+    setPendingChanges((prev) => ({ ...prev, hero_image_url: url }));
+    toast.success("Bilden beskars och laddades upp! Tryck 'Spara ändringar'.");
   };
 
   const handleSave = async () => {
@@ -105,14 +127,14 @@ const FramsidaTab = () => {
           <CardTitle className="flex items-center gap-2 text-lg"><ImageIcon className="w-5 h-5 text-primary" />Huvudbild – "Om mig"</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">Visas i "Om DJ Lobo"-sektionen. Bilden beskärs automatiskt till <strong>stående format (4:5)</strong>.</p>
+          <p className="text-sm text-muted-foreground">Visas i "Om DJ Lobo"-sektionen. När du laddar upp öppnas en <strong>beskärare</strong> där du väljer exakt vad som ska synas.</p>
           {currentHeroUrl ? (
             <div className="space-y-3 max-w-[280px]">
               <div className="relative w-full aspect-[4/5] rounded-lg overflow-hidden border-2 border-primary/50">
                 <img src={currentHeroUrl} alt="Nuvarande huvudbild" className="w-full h-full object-cover object-center" />
                 {uploadingType === "hero" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}
               </div>
-              <p className="text-xs text-muted-foreground">👆 Nuvarande bild – förhandsvisning i 4:5</p>
+              <p className="text-xs text-muted-foreground">👆 Förhandsvisning i 4:5 – exakt som på sajten</p>
             </div>
           ) : (
             <div className="relative w-full aspect-[4/5] max-w-[280px] rounded-lg overflow-hidden border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center gap-2">
@@ -122,7 +144,7 @@ const FramsidaTab = () => {
               {uploadingType === "hero" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}
             </div>
           )}
-          <input ref={heroInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleFileSelect(e, "hero", "hero_image_url", setPreviewHero)} />
+          <input ref={heroInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
           <div className="flex gap-2 max-w-[280px]">
             <Button size="lg" variant="outline" className="flex-1 text-base py-6" onClick={() => heroInputRef.current?.click()} disabled={uploadingType === "hero"}>
               <Upload className="w-5 h-5 mr-2" />{uploadingType === "hero" ? "Laddar upp..." : "Ladda upp ny bild"}
@@ -134,10 +156,10 @@ const FramsidaTab = () => {
             )}
           </div>
           <div className="bg-muted/30 rounded-lg p-3 max-w-[280px] space-y-1.5">
-            <p className="text-sm font-medium">📐 Beskärningsguide</p>
-            <p className="text-xs text-muted-foreground">• Ladda upp bild i <strong>stående format (4:5)</strong> för bästa resultat</p>
-            <p className="text-xs text-muted-foreground">• Rekommenderad storlek: <strong>800×1000 px</strong></p>
-            <p className="text-xs text-muted-foreground">• Centrera motivet i bilden – kanterna kan beskäras</p>
+            <p className="text-sm font-medium">✂️ Så funkar det</p>
+            <p className="text-xs text-muted-foreground">1. Klicka "Ladda upp ny bild"</p>
+            <p className="text-xs text-muted-foreground">2. En beskärare öppnas – dra och zooma för att välja motivet</p>
+            <p className="text-xs text-muted-foreground">3. Klicka "Använd beskärning" – bilden sparas i rätt format</p>
             <p className="text-xs text-muted-foreground">• Max filstorlek: {MAX_FILE_SIZE_MB} MB</p>
           </div>
         </CardContent>
@@ -163,6 +185,16 @@ const FramsidaTab = () => {
           )}
         </CardContent>
       </Card>
+
+      {/* Image Cropper Dialog */}
+      <ImageCropper
+        open={cropperOpen}
+        imageSrc={cropperSrc}
+        aspect={4 / 5}
+        title="Beskär huvudbild (4:5)"
+        onComplete={handleCropComplete}
+        onCancel={() => setCropperOpen(false)}
+      />
     </div>
   );
 };
