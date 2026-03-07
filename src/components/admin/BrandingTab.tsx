@@ -1,7 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
@@ -11,8 +10,6 @@ import {
   Loader2, 
   Check,
   Sparkles,
-  Youtube,
-  Instagram,
   Trash2,
   History,
   Share2,
@@ -246,7 +243,6 @@ const BrandingTab = () => {
             </p>
 
             <div className="flex items-start gap-6">
-              {/* Logo preview on dark + checkerboard bg */}
               <div className="relative w-40 h-24 rounded-lg overflow-hidden border border-border/50 flex-shrink-0"
                 style={{ background: "repeating-conic-gradient(hsl(var(--muted)) 0% 25%, hsl(var(--background)) 0% 50%) 50% / 16px 16px" }}
               >
@@ -364,134 +360,6 @@ const BrandingTab = () => {
           </CardContent>
         </Card>
 
-        {/* ===== YOUTUBE VIDEO ===== */}
-        <Card className="glass-card border-white/10">
-          <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2 text-lg">
-              <Youtube className="w-5 h-5 text-red-500" />
-              YouTube-video
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Huvudvideo som visas på startsidan.
-            </p>
-            <div className="space-y-2">
-              <Label htmlFor="youtube-video-id">Video-ID</Label>
-              <Input
-                id="youtube-video-id"
-                placeholder="t.ex. dQw4w9WgXcQ"
-                value={pendingChanges.youtube_video_id ?? branding?.youtube_video_id ?? ""}
-                onChange={(e) => setPendingChanges((prev) => ({ ...prev, youtube_video_id: e.target.value }))}
-                className="bg-input border-border"
-              />
-              <p className="text-xs text-muted-foreground">
-                Kopiera video-ID från YouTube URL: youtube.com/watch?v=<strong>VIDEO_ID</strong>
-              </p>
-            </div>
-            {(pendingChanges.youtube_video_id || branding?.youtube_video_id) && (
-              <div className="aspect-video rounded-lg overflow-hidden border border-border/50 max-w-md">
-                <iframe
-                  src={`https://www.youtube.com/embed/${pendingChanges.youtube_video_id || branding?.youtube_video_id}?rel=0&modestbranding=1`}
-                  title="YouTube-förhandsgranskning"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                  className="w-full h-full"
-                />
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* ===== FEATURED VIDEOS ===== */}
-        <Card className="glass-card border-white/10">
-          <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2 text-lg">
-              <Youtube className="w-5 h-5 text-red-500" />
-              Utvalda videor
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <p className="text-sm text-muted-foreground">
-              Upp till 5 YouTube-videor som visas i galleriet.
-            </p>
-            {[1, 2, 3, 4, 5].map((num) => {
-              const fieldName = `live_set_video_${num}` as keyof typeof pendingChanges;
-              const currentValue = pendingChanges[fieldName] ?? branding?.[fieldName as keyof typeof branding] ?? "";
-              return (
-                <div key={num} className="space-y-3">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-neon-cyan/20 flex items-center justify-center">
-                      <span className="text-sm font-bold text-neon-cyan">{num}</span>
-                    </div>
-                    <Label htmlFor={`live-set-${num}`}>Video {num}</Label>
-                  </div>
-                  <Input
-                    id={`live-set-${num}`}
-                    placeholder="YouTube video-ID (t.ex. MGkHGrazGRc)"
-                    value={currentValue as string}
-                    onChange={(e) => setPendingChanges((prev) => ({ ...prev, [fieldName]: e.target.value || null }))}
-                    className="bg-input border-border"
-                  />
-                  {currentValue && (
-                    <div className="aspect-video rounded-lg overflow-hidden border border-border/50 max-w-md">
-                      <iframe
-                        src={`https://www.youtube.com/embed/${currentValue}?rel=0&modestbranding=1`}
-                        title={`Video ${num}`}
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                        className="w-full h-full"
-                      />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </CardContent>
-        </Card>
-
-        {/* ===== INSTAGRAM ===== */}
-        <Card className="glass-card border-white/10">
-          <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2 text-lg">
-              <Instagram className="w-5 h-5 text-pink-500" />
-              Instagram-inlägg
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <p className="text-sm text-muted-foreground">
-              Upp till 6 Instagram-inlägg som visas i galleriet.
-            </p>
-            {[1, 2, 3, 4, 5, 6].map((num) => {
-              const fieldName = `instagram_post_${num}` as keyof typeof pendingChanges;
-              const currentValue = pendingChanges[fieldName] ?? branding?.[fieldName as keyof typeof branding] ?? "";
-              return (
-                <div key={num} className="space-y-2">
-                  <div className="flex items-center gap-2">
-                    <div className="w-8 h-8 rounded-full bg-pink-500/20 flex items-center justify-center">
-                      <span className="text-sm font-bold text-pink-500">{num}</span>
-                    </div>
-                    <Label htmlFor={`instagram-post-${num}`}>Inlägg {num}</Label>
-                  </div>
-                  <Input
-                    id={`instagram-post-${num}`}
-                    placeholder="https://www.instagram.com/p/ABC123/"
-                    value={currentValue as string}
-                    onChange={(e) => setPendingChanges((prev) => ({ ...prev, [fieldName]: e.target.value || null }))}
-                    className="bg-input border-border"
-                  />
-                  {currentValue && (
-                    <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                      <Check className="w-4 h-4 text-green-500" />
-                      <span className="truncate max-w-xs">{currentValue as string}</span>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </CardContent>
-        </Card>
-
         {/* ===== FÄRGTEMA ===== */}
         <Card className="glass-card border-white/10">
           <CardHeader>
@@ -562,73 +430,6 @@ const BrandingTab = () => {
                   </div>
                 ))}
               </div>
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* ===== SAJT-INFO ===== */}
-        <Card className="glass-card border-white/10">
-          <CardHeader>
-            <CardTitle className="font-display text-lg">Sajtnamn & slogan</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="siteName">Sajtnamn</Label>
-              <Input
-                id="siteName"
-                value={pendingChanges.site_name ?? branding?.site_name ?? ""}
-                onChange={(e) => setPendingChanges((prev) => ({ ...prev, site_name: e.target.value }))}
-                placeholder="DJ Lobo Radio"
-                className="mt-1.5"
-              />
-            </div>
-            <div>
-              <Label htmlFor="tagline">Slogan</Label>
-              <Input
-                id="tagline"
-                value={pendingChanges.tagline ?? branding?.tagline ?? ""}
-                onChange={(e) => setPendingChanges((prev) => ({ ...prev, tagline: e.target.value }))}
-                placeholder="Bringing the best of 80s and 90s music"
-                className="mt-1.5"
-              />
-            </div>
-          </CardContent>
-        </Card>
-
-        {/* ===== SOCIALA MEDIER ===== */}
-        <Card className="glass-card border-white/10">
-          <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2 text-lg">
-              <Instagram className="w-5 h-5 text-pink-500" />
-              Sociala medier-kopplingar
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Youtube className="w-5 h-5 text-red-500" />
-                <Label htmlFor="youtube-channel-id">YouTube-kanal</Label>
-              </div>
-              <Input
-                id="youtube-channel-id"
-                placeholder="t.ex. @djloboproducciones3211"
-                value={pendingChanges.youtube_channel_id ?? branding?.youtube_channel_id ?? ""}
-                onChange={(e) => setPendingChanges((prev) => ({ ...prev, youtube_channel_id: e.target.value }))}
-                className="bg-input border-border"
-              />
-            </div>
-            <div className="space-y-3">
-              <div className="flex items-center gap-2">
-                <Instagram className="w-5 h-5 text-pink-500" />
-                <Label htmlFor="instagram-username">Instagram-användarnamn</Label>
-              </div>
-              <Input
-                id="instagram-username"
-                placeholder="t.ex. djloboradio (utan @)"
-                value={pendingChanges.instagram_username ?? branding?.instagram_username ?? ""}
-                onChange={(e) => setPendingChanges((prev) => ({ ...prev, instagram_username: e.target.value }))}
-                className="bg-input border-border"
-              />
             </div>
           </CardContent>
         </Card>
