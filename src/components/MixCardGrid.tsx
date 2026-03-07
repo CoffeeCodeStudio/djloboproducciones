@@ -231,6 +231,12 @@ const MixCardGrid = () => {
                     <p className="font-display text-sm sm:text-base font-bold text-foreground leading-tight line-clamp-2 drop-shadow-lg">
                       {mix.title}
                     </p>
+                    {mix.createdTime && (
+                      <p className="flex items-center gap-1 mt-1 text-[10px] sm:text-xs text-muted-foreground drop-shadow-lg">
+                        <Calendar className="w-3 h-3" aria-hidden="true" />
+                        {formatMixDate(mix.createdTime, language)}
+                      </p>
+                    )}
                   </div>
                 </button>
               );
