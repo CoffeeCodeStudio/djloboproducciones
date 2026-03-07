@@ -492,13 +492,13 @@ const LiveChat = () => {
   return (
     <section 
       id="live-chat-section"
-      className="py-12 sm:py-16 px-4 sm:px-6"
+      className="py-12 sm:py-16 px-3 sm:px-6"
       aria-labelledby="chat-title"
     >
       <div className="max-w-2xl mx-auto">
-        <div className="glass-card overflow-hidden">
+        <div className="glass-card-neon overflow-hidden">
           {/* Header */}
-          <div className="p-4 border-b border-muted flex items-center justify-between">
+          <div className="p-3 sm:p-4 border-b border-border/50 flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 bg-neon-cyan rounded-full animate-pulse" aria-hidden="true"></div>
               <h2 
