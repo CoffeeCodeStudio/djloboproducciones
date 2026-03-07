@@ -91,30 +91,33 @@ const Admin = () => {
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 relative z-10">
         <Tabs defaultValue="framsida" className="w-full">
           <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 mb-4 sm:mb-8 glass-card h-auto gap-0.5 p-1">
-            <TabsTrigger value="framsida" className="data-[state=active]:bg-primary/20">
-              <Home className="w-4 h-4 mr-1.5" />
+            <TabsTrigger value="framsida" className="data-[state=active]:bg-primary/20 text-xs sm:text-sm py-2 px-1.5 sm:px-3">
+              <Home className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1.5" />
               <span className="hidden sm:inline">Framsida</span>
-              <span className="sm:hidden">Hem</span>
+              <span className="sm:hidden ml-1">Hem</span>
             </TabsTrigger>
-            <TabsTrigger value="media" className="data-[state=active]:bg-primary/20">
-              <ImageIcon className="w-4 h-4 mr-1.5" />
-              Media
+            <TabsTrigger value="media" className="data-[state=active]:bg-primary/20 text-xs sm:text-sm py-2 px-1.5 sm:px-3">
+              <ImageIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1.5" />
+              <span className="ml-1 sm:ml-0">Media</span>
             </TabsTrigger>
-            <TabsTrigger value="radio" className="data-[state=active]:bg-primary/20">
-              <Radio className="w-4 h-4 mr-1.5" />
-              Radio
+            <TabsTrigger value="radio" className="data-[state=active]:bg-primary/20 text-xs sm:text-sm py-2 px-1.5 sm:px-3">
+              <Radio className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1.5" />
+              <span className="ml-1 sm:ml-0">Radio</span>
             </TabsTrigger>
-            <TabsTrigger value="omdomen" className="data-[state=active]:bg-primary/20">
-              <Star className="w-4 h-4 mr-1.5" />
-              Omdömen
+            <TabsTrigger value="omdomen" className="data-[state=active]:bg-primary/20 text-xs sm:text-sm py-2 px-1.5 sm:px-3">
+              <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1.5" />
+              <span className="hidden xs:inline ml-1 sm:ml-0">Omdömen</span>
+              <span className="xs:hidden ml-1">⭐</span>
             </TabsTrigger>
-            <TabsTrigger value="spelningar" className="data-[state=active]:bg-primary/20">
-              <Calendar className="w-4 h-4 mr-1.5" />
-              Spelningar
+            <TabsTrigger value="spelningar" className="data-[state=active]:bg-primary/20 text-xs sm:text-sm py-2 px-1.5 sm:px-3">
+              <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1.5" />
+              <span className="hidden xs:inline ml-1 sm:ml-0">Spelningar</span>
+              <span className="xs:hidden ml-1">📅</span>
             </TabsTrigger>
-            <TabsTrigger value="utseende" className="data-[state=active]:bg-primary/20">
-              <Palette className="w-4 h-4 mr-1.5" />
-              Utseende
+            <TabsTrigger value="utseende" className="data-[state=active]:bg-primary/20 text-xs sm:text-sm py-2 px-1.5 sm:px-3">
+              <Palette className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1.5" />
+              <span className="hidden xs:inline ml-1 sm:ml-0">Utseende</span>
+              <span className="xs:hidden ml-1">🎨</span>
             </TabsTrigger>
           </TabsList>
 
