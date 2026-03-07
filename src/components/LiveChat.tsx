@@ -437,11 +437,11 @@ const LiveChat = () => {
     return (
       <section 
         id="live-chat-section"
-        className="py-12 sm:py-16 px-4 sm:px-6"
+        className="py-12 sm:py-16 px-3 sm:px-6"
         aria-labelledby="chat-join-title"
       >
         <div className="max-w-md mx-auto">
-          <div className="glass-card p-6 sm:p-8 text-center">
+          <div className="glass-card-neon p-6 sm:p-8 text-center">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full icon-gradient-cyan flex items-center justify-center">
               <MessageCircle className="w-8 h-8 text-white" aria-hidden="true" />
             </div>
