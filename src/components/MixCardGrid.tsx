@@ -3,8 +3,6 @@ import { Play, Disc3, Music, Pin, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlayerStore, MixTrack } from "@/stores/usePlayerStore";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { usePlayerStore, MixTrack } from "@/stores/usePlayerStore";
-import { useLanguage } from "@/contexts/LanguageContext";
 
 const translations = {
   sv: {
