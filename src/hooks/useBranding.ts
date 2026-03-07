@@ -17,6 +17,7 @@ export interface SiteBranding {
   youtube_channel_id: string | null;
   instagram_username: string | null;
   og_image_url: string | null;
+  radio_image_url: string | null;
   live_set_video_1: string | null;
   live_set_video_2: string | null;
   live_set_video_3: string | null;
