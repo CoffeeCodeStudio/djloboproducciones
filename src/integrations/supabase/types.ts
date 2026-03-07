@@ -189,6 +189,7 @@ export type Database = {
           external_id: string | null
           hidden: boolean
           id: string
+          mixcloud_created_time: string | null
           mixcloud_url: string
           pinned: boolean
           sort_order: number
@@ -202,6 +203,7 @@ export type Database = {
           external_id?: string | null
           hidden?: boolean
           id?: string
+          mixcloud_created_time?: string | null
           mixcloud_url: string
           pinned?: boolean
           sort_order?: number
@@ -215,6 +217,7 @@ export type Database = {
           external_id?: string | null
           hidden?: boolean
           id?: string
+          mixcloud_created_time?: string | null
           mixcloud_url?: string
           pinned?: boolean
           sort_order?: number

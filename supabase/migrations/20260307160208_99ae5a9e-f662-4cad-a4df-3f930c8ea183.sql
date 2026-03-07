@@ -1,0 +1,1 @@
+ALTER TABLE public.mixcloud_mixes ADD COLUMN IF NOT EXISTS mixcloud_created_time TIMESTAMPTZ;

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Play, Disc3, Music, Pin } from "lucide-react";
+import { Play, Disc3, Music, Pin, Calendar } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlayerStore, MixTrack } from "@/stores/usePlayerStore";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -34,7 +34,18 @@ interface UnifiedMix {
   source: "mixcloud" | "soundcloud";
   pinned: boolean;
   sortOrder: number;
+  createdTime?: string;
 }
+
+const formatMixDate = (dateStr: string | undefined, lang: string): string => {
+  if (!dateStr) return "";
+  const date = new Date(dateStr);
+  if (isNaN(date.getTime())) return "";
+  return date.toLocaleDateString(
+    lang === "sv" ? "sv-SE" : lang === "es" ? "es-ES" : "en-GB",
+    { day: "numeric", month: "long", year: "numeric" }
+  );
+};
 
 const DEFAULT_COVERS = [
   "https://images.unsplash.com/photo-1571266028243-e4733b0f0bb0?w=400&h=400&fit=crop",
@@ -60,7 +71,7 @@ const MixCardGrid = () => {
           .order("sort_order", { ascending: true }),
         supabase
           .from("mixcloud_mixes")
-          .select("id, title, mixcloud_url, cover_art_url, pinned, hidden, sort_order")
+          .select("id, title, mixcloud_url, cover_art_url, pinned, hidden, sort_order, mixcloud_created_time")
           .eq("hidden", false)
           .order("sort_order", { ascending: true }),
       ]);
@@ -85,12 +96,19 @@ const MixCardGrid = () => {
         source: "mixcloud" as const,
         pinned: m.pinned ?? false,
         sortOrder: m.sort_order,
+        createdTime: (m as any).mixcloud_created_time || undefined,
       }));
 
-      // Combine: pinned first, then by sort order
+      // Combine: pinned first, then by created_time (newest first), fallback to sort_order
       const all = [...scMixes, ...mcMixes].sort((a, b) => {
         if (a.pinned && !b.pinned) return -1;
         if (!a.pinned && b.pinned) return 1;
+        // Sort by createdTime descending (newest first)
+        if (a.createdTime && b.createdTime) {
+          return new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime();
+        }
+        if (a.createdTime && !b.createdTime) return -1;
+        if (!a.createdTime && b.createdTime) return 1;
         return a.sortOrder - b.sortOrder;
       });
 
@@ -213,6 +231,12 @@ const MixCardGrid = () => {
                     <p className="font-display text-sm sm:text-base font-bold text-foreground leading-tight line-clamp-2 drop-shadow-lg">
                       {mix.title}
                     </p>
+                    {mix.createdTime && (
+                      <p className="flex items-center gap-1 mt-1 text-[10px] sm:text-xs text-muted-foreground drop-shadow-lg">
+                        <Calendar className="w-3 h-3" aria-hidden="true" />
+                        {formatMixDate(mix.createdTime, language)}
+                      </p>
+                    )}
                   </div>
                 </button>
               );

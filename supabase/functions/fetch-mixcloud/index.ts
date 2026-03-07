@@ -36,13 +36,15 @@ Deno.serve(async (req) => {
     const cloudcasts: MixcloudCloudcast[] = data.data || [];
 
     let inserted = 0;
+    let updated = 0;
+
     for (const cast of cloudcasts) {
       const externalId = cast.key;
 
       // Check if already exists
       const { data: existing } = await supabase
         .from("mixcloud_mixes")
-        .select("id")
+        .select("id, mixcloud_created_time")
         .eq("external_id", externalId)
         .maybeSingle();
 
@@ -57,13 +59,21 @@ Deno.serve(async (req) => {
           external_id: externalId,
           source: "auto",
           sort_order: inserted,
+          mixcloud_created_time: cast.created_time || null,
         });
         if (!error) inserted++;
+      } else if (!existing.mixcloud_created_time && cast.created_time) {
+        // Backfill created_time for existing rows that don't have it
+        await supabase
+          .from("mixcloud_mixes")
+          .update({ mixcloud_created_time: cast.created_time })
+          .eq("id", existing.id);
+        updated++;
       }
     }
 
     return new Response(
-      JSON.stringify({ success: true, fetched: cloudcasts.length, inserted }),
+      JSON.stringify({ success: true, fetched: cloudcasts.length, inserted, updated }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error) {
