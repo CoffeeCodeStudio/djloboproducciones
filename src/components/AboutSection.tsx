@@ -185,11 +185,11 @@ const AboutSection = () => {
             {/* DJ Image */}
             <div className="scroll-reveal glass-card overflow-hidden aspect-[4/5]">
               <img
-                src={heroImage}
+                src={aboutImage}
                 alt="DJ Lobo spelar latinmusik live"
                 className="w-full h-full object-cover object-center"
                 loading="lazy"
-                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = heroFallback; }}
+                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = aboutFallback; }}
               />
             </div>
 
