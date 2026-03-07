@@ -30,6 +30,7 @@ const FramsidaTab = () => {
 
   const currentBio = pendingChanges.bio_text ?? branding?.bio_text ?? "";
   const currentHeroUrl = previewHero || branding?.profile_image_url || null;
+  const currentRadioUrl = previewRadio || (branding as any)?.radio_image_url || null;
   const hasPending = Object.keys(pendingChanges).length > 0;
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
