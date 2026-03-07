@@ -617,7 +617,7 @@ const LiveChat = () => {
           {/* Input */}
           <form
             onSubmit={handleSendMessage}
-            className="p-4 border-t border-muted flex gap-2"
+            className="p-3 sm:p-4 border-t border-border/30 flex gap-2"
           >
             <label htmlFor="message-input" className="sr-only">
               {t.typeMessage}
