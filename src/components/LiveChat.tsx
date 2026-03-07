@@ -437,11 +437,11 @@ const LiveChat = () => {
     return (
       <section 
         id="live-chat-section"
-        className="py-12 sm:py-16 px-4 sm:px-6"
+        className="py-12 sm:py-16 px-3 sm:px-6"
         aria-labelledby="chat-join-title"
       >
         <div className="max-w-md mx-auto">
-          <div className="glass-card p-6 sm:p-8 text-center">
+          <div className="glass-card-neon p-6 sm:p-8 text-center">
             <div className="w-16 h-16 mx-auto mb-4 rounded-full icon-gradient-cyan flex items-center justify-center">
               <MessageCircle className="w-8 h-8 text-white" aria-hidden="true" />
             </div>
@@ -492,13 +492,13 @@ const LiveChat = () => {
   return (
     <section 
       id="live-chat-section"
-      className="py-12 sm:py-16 px-4 sm:px-6"
+      className="py-12 sm:py-16 px-3 sm:px-6"
       aria-labelledby="chat-title"
     >
       <div className="max-w-2xl mx-auto">
-        <div className="glass-card overflow-hidden">
+        <div className="glass-card-neon overflow-hidden">
           {/* Header */}
-          <div className="p-4 border-b border-muted flex items-center justify-between">
+          <div className="p-3 sm:p-4 border-b border-border/50 flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-3">
               <div className="w-3 h-3 bg-neon-cyan rounded-full animate-pulse" aria-hidden="true"></div>
               <h2 
@@ -537,7 +537,7 @@ const LiveChat = () => {
 
           {/* Messages */}
           <ScrollArea 
-            className="h-64 sm:h-80 p-4" 
+            className="h-64 sm:h-80 p-3 sm:p-4" 
             ref={scrollRef}
             aria-label={t.chatMessages}
             role="log"
@@ -599,7 +599,7 @@ const LiveChat = () => {
           </ScrollArea>
 
           {/* Quick Emotes */}
-          <div className="px-4 py-2 border-t border-muted/50 flex items-center justify-center gap-2">
+          <div className="px-3 sm:px-4 py-2 border-t border-border/30 flex items-center justify-center gap-1.5 sm:gap-2 flex-wrap">
             <span className="text-xs text-muted-foreground mr-2">Quick:</span>
             {QUICK_EMOTES.map((emote) => (
               <button
@@ -617,7 +617,7 @@ const LiveChat = () => {
           {/* Input */}
           <form
             onSubmit={handleSendMessage}
-            className="p-4 border-t border-muted flex gap-2"
+            className="p-3 sm:p-4 border-t border-border/30 flex gap-2"
           >
             <label htmlFor="message-input" className="sr-only">
               {t.typeMessage}

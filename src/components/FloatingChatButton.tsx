@@ -61,7 +61,7 @@ const FloatingChatButton = () => {
   if (!isVisible) return null;
 
   return (
-    <div className="fixed bottom-20 sm:bottom-24 right-4 sm:right-6 z-30">
+    <div className="fixed bottom-24 sm:bottom-28 right-3 sm:right-6 z-30">
       {/* Tooltip */}
       <div
         className={`absolute bottom-full right-0 mb-3 transition-all duration-300 ${
