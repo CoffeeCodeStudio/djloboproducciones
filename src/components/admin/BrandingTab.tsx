@@ -240,21 +240,6 @@ const BrandingTab = () => {
             </p>
 
             <div className="flex flex-col gap-4">
-              {/* Logo preview */}
-              <div className="relative w-40 h-10 rounded-xl overflow-hidden border border-border/50 bg-background">
-                <img 
-                  src={logoPreview} 
-                  alt="Förhandsgranskning av logotyp" 
-                  className="h-full w-full object-contain"
-                  style={{ filter: "drop-shadow(0 0 6px hsl(var(--neon-cyan) / 0.5))" }}
-                />
-                {uploading === "logo" && (
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center rounded-xl">
-                    <Loader2 className="w-4 h-4 animate-spin text-white" />
-                  </div>
-                )}
-              </div>
-              
               <input
                 ref={logoInputRef}
                 type="file"
@@ -285,6 +270,58 @@ const BrandingTab = () => {
                   </Button>
                 )}
               </div>
+
+              {/* Live preview boxes */}
+              <div className="grid grid-cols-2 gap-3">
+                {/* Header preview */}
+                <div className="flex flex-col gap-1.5">
+                  <p className="text-xs text-muted-foreground font-medium">Header (mörk)</p>
+                  <div className="relative h-16 rounded-lg border border-border/50 flex items-center justify-center px-3"
+                    style={{ backgroundColor: "#000000" }}
+                  >
+                    {logoPreview !== PLACEHOLDER_LOGO ? (
+                      <img 
+                        src={logoPreview} 
+                        alt="Logo i header" 
+                        className="h-10 max-w-full object-contain rounded-xl"
+                        style={{ filter: "drop-shadow(0 0 6px hsl(var(--neon-cyan) / 0.5))" }}
+                      />
+                    ) : (
+                      <span className="text-xs text-muted-foreground">Ingen logotyp</span>
+                    )}
+                    {uploading === "logo" && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-lg">
+                        <Loader2 className="w-4 h-4 animate-spin text-white" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+
+                {/* Footer preview */}
+                <div className="flex flex-col gap-1.5">
+                  <p className="text-xs text-muted-foreground font-medium">Footer</p>
+                  <div className="relative h-16 rounded-lg border border-border/50 flex items-center justify-center px-3"
+                    style={{ backgroundColor: "hsl(var(--muted))" }}
+                  >
+                    {logoPreview !== PLACEHOLDER_LOGO ? (
+                      <img 
+                        src={logoPreview} 
+                        alt="Logo i footer" 
+                        className="h-10 max-w-full object-contain rounded-xl"
+                        style={{ filter: "drop-shadow(0 0 6px hsl(var(--neon-cyan) / 0.5))" }}
+                      />
+                    ) : (
+                      <span className="text-xs text-muted-foreground">Ingen logotyp</span>
+                    )}
+                    {uploading === "logo" && (
+                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-lg">
+                        <Loader2 className="w-4 h-4 animate-spin text-white" />
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+
               <div className="bg-muted/30 rounded-lg p-3">
                 <p className="text-sm font-medium mb-1">📐 Rekommenderad storlek</p>
                 <p className="text-xs text-muted-foreground">
