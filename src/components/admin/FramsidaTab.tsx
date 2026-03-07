@@ -69,7 +69,7 @@ const FramsidaTab = () => {
       setPreviewHero(null);
       return;
     }
-    setPendingChanges((prev) => ({ ...prev, hero_image_url: url }));
+    setPendingChanges((prev) => ({ ...prev, profile_image_url: url }));
     toast.success("Bilden beskars och laddades upp! Tryck 'Spara ändringar'.");
   };
 
