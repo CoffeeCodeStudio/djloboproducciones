@@ -24,12 +24,16 @@ const FramsidaTab = () => {
   // Cropper state
   const [cropperOpen, setCropperOpen] = useState(false);
   const [cropperSrc, setCropperSrc] = useState<string>("");
+  const [cropperTarget, setCropperTarget] = useState<"profile" | "radio">("profile");
+  const [previewRadio, setPreviewRadio] = useState<string | null>(null);
+  const radioInputRef = useRef<HTMLInputElement>(null);
 
   const currentBio = pendingChanges.bio_text ?? branding?.bio_text ?? "";
   const currentHeroUrl = previewHero || branding?.profile_image_url || null;
+  const currentRadioUrl = previewRadio || (branding as any)?.radio_image_url || null;
   const hasPending = Object.keys(pendingChanges).length > 0;
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, target: "profile" | "radio") => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
@@ -40,36 +44,40 @@ const FramsidaTab = () => {
       toast.error(`Bilden är för stor (${(file.size / 1024 / 1024).toFixed(1)} MB). Välj en bild under ${MAX_FILE_SIZE_MB} MB.`);
       return;
     }
-    // Read file and open cropper
     const reader = new FileReader();
     reader.onload = (ev) => {
       const src = ev.target?.result as string;
       setCropperSrc(src);
+      setCropperTarget(target);
       setCropperOpen(true);
     };
     reader.readAsDataURL(file);
-    // Reset input so same file can be re-selected
     e.target.value = "";
   };
 
   const handleCropComplete = async (croppedBlob: Blob) => {
     setCropperOpen(false);
-    // Show preview immediately
     const previewUrl = URL.createObjectURL(croppedBlob);
-    setPreviewHero(previewUrl);
+    const isRadio = cropperTarget === "radio";
 
-    // Upload cropped image
-    const file = new File([croppedBlob], "profile-cropped.jpg", { type: "image/jpeg" });
-    setUploadingType("hero");
-    const { url, error } = await uploadImage(file, "profile");
+    if (isRadio) {
+      setPreviewRadio(previewUrl);
+    } else {
+      setPreviewHero(previewUrl);
+    }
+
+    const file = new File([croppedBlob], `${cropperTarget}-cropped.jpg`, { type: "image/jpeg" });
+    setUploadingType(isRadio ? "radio" : "hero");
+    const { url, error } = await uploadImage(file, isRadio ? "radio" : "profile");
     setUploadingType(null);
 
     if (error) {
       toast.error(error);
-      setPreviewHero(null);
+      if (isRadio) setPreviewRadio(null); else setPreviewHero(null);
       return;
     }
-    setPendingChanges((prev) => ({ ...prev, profile_image_url: url }));
+    const field = isRadio ? "radio_image_url" : "profile_image_url";
+    setPendingChanges((prev) => ({ ...prev, [field]: url }));
     toast.success("Bilden beskars och laddades upp! Tryck 'Spara ändringar'.");
   };
 
@@ -144,7 +152,7 @@ const FramsidaTab = () => {
               {uploadingType === "hero" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}
             </div>
           )}
-          <input ref={heroInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
+          <input ref={heroInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleFileSelect(e, "profile")} />
           <div className="flex gap-2 max-w-[280px]">
             <Button size="lg" variant="outline" className="flex-1 text-base py-6" onClick={() => heroInputRef.current?.click()} disabled={uploadingType === "hero"}>
               <Upload className="w-5 h-5 mr-2" />{uploadingType === "hero" ? "Laddar upp..." : "Ladda upp ny bild"}
@@ -165,7 +173,42 @@ const FramsidaTab = () => {
         </CardContent>
       </Card>
 
-      {/* Bio text */}
+      {/* Radiobild */}
+      <Card className="glass-card border-white/10">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">📻 Radiobild</CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <p className="text-sm text-muted-foreground">Visas på radiosidan (Lyssna). Separat från "Om mig"-bilden ovan.</p>
+          {currentRadioUrl ? (
+            <div className="space-y-3 max-w-[280px]">
+              <div className="relative w-full aspect-[4/5] rounded-lg overflow-hidden border-2 border-secondary/50">
+                <img src={currentRadioUrl} alt="Radiobild" className="w-full h-full object-cover object-center" />
+                {uploadingType === "radio" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-secondary" /></div>}
+              </div>
+            </div>
+          ) : (
+            <div className="relative w-full aspect-[4/5] max-w-[280px] rounded-lg overflow-hidden border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center gap-2">
+              <ImageIcon className="w-10 h-10 text-muted-foreground" />
+              <p className="text-sm text-muted-foreground font-medium">4:5 stående format</p>
+              <p className="text-xs text-muted-foreground">Ladda upp bild här</p>
+              {uploadingType === "radio" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-secondary" /></div>}
+            </div>
+          )}
+          <input ref={radioInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleFileSelect(e, "radio")} />
+          <div className="flex gap-2 max-w-[280px]">
+            <Button size="lg" variant="outline" className="flex-1 text-base py-6" onClick={() => radioInputRef.current?.click()} disabled={uploadingType === "radio"}>
+              <Upload className="w-5 h-5 mr-2" />{uploadingType === "radio" ? "Laddar upp..." : "Ladda upp radiobild"}
+            </Button>
+            {currentRadioUrl && (
+              <Button variant="destructive" size="icon" className="h-14 w-14" onClick={() => { setPendingChanges((prev) => ({ ...prev, radio_image_url: null })); setPreviewRadio(null); }} title="Ta bort">
+                <Trash2 className="w-5 h-5" />
+              </Button>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+
       <Card className="glass-card border-white/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">✍️ Om mig – Text</CardTitle>
@@ -191,7 +234,7 @@ const FramsidaTab = () => {
         open={cropperOpen}
         imageSrc={cropperSrc}
         aspect={4 / 5}
-        title="Beskär huvudbild (4:5)"
+        title={cropperTarget === "radio" ? "Beskär radiobild (4:5)" : "Beskär huvudbild (4:5)"}
         onComplete={handleCropComplete}
         onCancel={() => setCropperOpen(false)}
       />

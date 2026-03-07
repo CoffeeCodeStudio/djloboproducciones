@@ -1,0 +1,1 @@
+ALTER TABLE public.site_branding ADD COLUMN radio_image_url text;

@@ -17,6 +17,7 @@ export interface SiteBranding {
   youtube_channel_id: string | null;
   instagram_username: string | null;
   og_image_url: string | null;
+  radio_image_url: string | null;
   live_set_video_1: string | null;
   live_set_video_2: string | null;
   live_set_video_3: string | null;
@@ -84,7 +85,7 @@ export const useBranding = () => {
 
   const uploadImage = async (
     file: File,
-    imageType: "hero" | "logo" | "background" | "profile"
+    imageType: "hero" | "logo" | "background" | "profile" | "radio"
   ): Promise<{ url: string | null; error: string | null }> => {
     // Validate size with clear message
     if (file.size > 5 * 1024 * 1024) {

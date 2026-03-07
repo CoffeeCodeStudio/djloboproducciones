@@ -252,6 +252,7 @@ export type Database = {
           og_image_url: string | null
           primary_glow_color: string | null
           profile_image_url: string | null
+          radio_image_url: string | null
           secondary_glow_color: string | null
           site_name: string | null
           tagline: string | null
@@ -283,6 +284,7 @@ export type Database = {
           og_image_url?: string | null
           primary_glow_color?: string | null
           profile_image_url?: string | null
+          radio_image_url?: string | null
           secondary_glow_color?: string | null
           site_name?: string | null
           tagline?: string | null
@@ -314,6 +316,7 @@ export type Database = {
           og_image_url?: string | null
           primary_glow_color?: string | null
           profile_image_url?: string | null
+          radio_image_url?: string | null
           secondary_glow_color?: string | null
           site_name?: string | null
           tagline?: string | null
