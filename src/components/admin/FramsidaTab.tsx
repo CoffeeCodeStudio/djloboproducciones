@@ -99,38 +99,6 @@ const FramsidaTab = () => {
         </CardContent>
       </Card>
 
-      {/* Profilbild */}
-      <Card className="glass-card border-white/10">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg"><User className="w-5 h-5 text-primary" />Profilbild</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">Visas som din profilbild på startsidan i en <strong>rund</strong> ram.</p>
-          <div className="flex items-center gap-6">
-            <div className="relative w-32 h-32 rounded-full overflow-hidden border-2 border-primary/50 bg-muted/30 flex-shrink-0" style={{ background: !currentProfileUrl ? "repeating-conic-gradient(hsl(var(--muted)) 0% 25%, hsl(var(--background)) 0% 50%) 50% / 16px 16px" : undefined }}>
-              {currentProfileUrl ? <img src={currentProfileUrl} alt="Profilbild" className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center"><User className="w-10 h-10 text-muted-foreground" /></div>}
-              {uploadingType === "profile" && <div className="absolute inset-0 bg-black/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-white" /></div>}
-            </div>
-            <div className="flex-1 space-y-3">
-              <input ref={profileInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleFileSelect(e, "profile", "profile_image_url", setPreviewProfile)} />
-              <div className="flex gap-2">
-                <Button size="lg" variant="outline" className="flex-1 text-base py-6" onClick={() => profileInputRef.current?.click()} disabled={uploadingType === "profile"}>
-                  <Upload className="w-5 h-5 mr-2" />{uploadingType === "profile" ? "Laddar upp..." : "Ladda upp profilbild"}
-                </Button>
-                {currentProfileUrl && (
-                  <Button variant="destructive" size="icon" className="h-14 w-14" onClick={() => { setPendingChanges((prev) => ({ ...prev, profile_image_url: null })); setPreviewProfile(null); }} title="Ta bort">
-                    <Trash2 className="w-5 h-5" />
-                  </Button>
-                )}
-              </div>
-              <div className="bg-muted/30 rounded-lg p-3 space-y-1">
-                <p className="text-xs text-muted-foreground flex items-center gap-1.5"><AlertTriangle className="w-3 h-3 text-amber-400" />Fyrkantig bild (400×400 px), max {MAX_FILE_SIZE_MB} MB</p>
-              </div>
-            </div>
-          </div>
-        </CardContent>
-      </Card>
-
       {/* Huvudbild (Om mig) */}
       <Card className="glass-card border-white/10">
         <CardHeader>
