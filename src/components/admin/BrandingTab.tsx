@@ -206,8 +206,7 @@ const BrandingTab = () => {
   const ogPreview = getImagePreview("og");
 
   return (
-    <ScrollArea className="h-[calc(100vh-200px)]">
-      <div className="space-y-6 pr-4 max-w-3xl mx-auto">
+    <div className="w-full max-w-[600px] mx-auto flex flex-col gap-8">
         {/* Save Button - Sticky */}
         {hasPendingChanges && (
           <div className="sticky top-0 z-10 bg-background/95 backdrop-blur py-3 -mx-4 px-4 border-b border-border/50">
