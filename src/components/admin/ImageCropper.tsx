@@ -98,15 +98,15 @@ const ImageCropper = ({
             image={imageSrc}
             crop={crop}
             zoom={zoom}
-            minZoom={0.5}
+            minZoom={1}
             maxZoom={5}
             aspect={aspect}
             onCropChange={setCrop}
             onZoomChange={setZoom}
             onCropComplete={onCropComplete}
             showGrid
-            objectFit="contain"
-            restrictPosition={false}
+            objectFit="cover"
+            restrictPosition={true}
             style={{
               containerStyle: { width: "100%", height: "100%" },
             }}
