@@ -71,10 +71,10 @@ const AboutSection = () => {
   const { language } = useLanguage();
   const t = translations[language];
 
-  // Use dynamic hero image if available, otherwise use the default
-  const heroOpt = optimizeHero(branding?.hero_image_url);
-  const heroImage = heroOpt.src || djLoboAboutImage;
-  const heroFallback = heroOpt.fallback || djLoboAboutImage;
+  // Use profile image for About section (separate from hero background)
+  const profileOpt = optimizeHero(branding?.profile_image_url);
+  const aboutImage = profileOpt.src || djLoboAboutImage;
+  const aboutFallback = profileOpt.fallback || djLoboAboutImage;
 
   useEffect(() => {
     const observer = new IntersectionObserver(
