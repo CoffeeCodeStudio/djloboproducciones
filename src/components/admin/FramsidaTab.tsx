@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
-import { Upload, User, Save, Loader2, AlertTriangle, ImageIcon, CheckCircle2, Trash2 } from "lucide-react";
+import { Upload, Save, Loader2, AlertTriangle, ImageIcon, CheckCircle2, Trash2 } from "lucide-react";
 import { useBranding, SiteBranding } from "@/hooks/useBranding";
 import { toast } from "sonner";
 
