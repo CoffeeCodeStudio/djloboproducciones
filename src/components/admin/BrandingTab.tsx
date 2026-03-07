@@ -441,7 +441,7 @@ const BrandingTab = () => {
           </Button>
         )}
       </div>
-    </ScrollArea>
+    </div>
   );
 };
 
