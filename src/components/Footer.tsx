@@ -34,7 +34,7 @@ const translations = {
     about: "About DJ Lobo",
     aboutText: "Professional DJ in Gothenburg with 20+ years of experience. Expert in House, World Hits, 80s, 90s and Latin beats.",
     location: "Gothenburg, Sweden",
-    bookSection: "Book DJ Lobo",
+    bookSection: "DJ Lobo Producciones",
     radioSection: "Follow the Radio",
     visitStudio: "Visit Coffee Code Studio",
   },
