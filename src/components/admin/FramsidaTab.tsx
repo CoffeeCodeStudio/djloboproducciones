@@ -17,9 +17,7 @@ const FramsidaTab = () => {
   const [saved, setSaved] = useState(false);
   const [uploadingType, setUploadingType] = useState<string | null>(null);
   const [pendingChanges, setPendingChanges] = useState<Partial<SiteBranding>>({});
-  const [previewProfile, setPreviewProfile] = useState<string | null>(null);
   const [previewHero, setPreviewHero] = useState<string | null>(null);
-  const profileInputRef = useRef<HTMLInputElement>(null);
   const heroInputRef = useRef<HTMLInputElement>(null);
 
   const currentBio = pendingChanges.bio_text ?? branding?.bio_text ?? "";
