@@ -11,7 +11,6 @@ import {
   Sparkles,
   Trash2,
   History,
-  Share2,
   CheckCircle2
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
@@ -49,7 +48,7 @@ const BrandingTab = () => {
   const [uploadHistory, setUploadHistory] = useState<Record<string, UploadHistoryItem[]>>({});
   
   const logoInputRef = useRef<HTMLInputElement>(null);
-  const ogInputRef = useRef<HTMLInputElement>(null);
+  
 
   const fetchHistory = useCallback(async () => {
     const { data } = await supabase
@@ -202,7 +201,7 @@ const BrandingTab = () => {
   }
 
   const logoPreview = getImagePreview("logo") || PLACEHOLDER_LOGO;
-  const ogPreview = getImagePreview("og");
+  
 
   return (
     <div className="w-full max-w-[600px] mx-auto flex flex-col gap-8">
@@ -297,64 +296,7 @@ const BrandingTab = () => {
           </CardContent>
         </Card>
 
-        {/* ===== OG / DELA-BILD ===== */}
-        <Card className="bg-card border border-border/50 shadow-sm">
-          <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2 text-lg">
-              <Share2 className="w-5 h-5 text-neon-cyan" />
-              Dela-bild (sociala medier)
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">
-              Den här bilden visas när någon delar din sida på Facebook, Twitter eller andra sociala medier. Den kallas "Open Graph"-bild.
-            </p>
 
-            <div className="space-y-4">
-              <div className="relative w-full rounded-lg overflow-hidden border border-border/50 bg-muted/30"
-                style={{ aspectRatio: "1200/630" }}
-              >
-                {ogPreview ? (
-                  <img src={ogPreview} alt="Dela-bild förhandsgranskning" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="w-full h-full flex flex-col items-center justify-center gap-2 p-4">
-                    <Share2 className="w-10 h-10 text-muted-foreground" />
-                    <p className="text-xs text-muted-foreground text-center">Ingen dela-bild uppladdad ännu</p>
-                  </div>
-                )}
-                {uploading === "hero" && (
-                  <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                    <Loader2 className="w-6 h-6 animate-spin text-white" />
-                  </div>
-                )}
-              </div>
-
-              <input
-                ref={ogInputRef}
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleFileSelect(e, "hero", "og_image_url")}
-              />
-              <Button
-                size="lg"
-                variant="outline"
-                className="w-full text-base py-6"
-                onClick={() => ogInputRef.current?.click()}
-              >
-                <Upload className="w-5 h-5 mr-2" />
-                Ladda upp dela-bild
-              </Button>
-
-              <div className="bg-muted/30 rounded-lg p-3">
-                <p className="text-sm font-medium mb-1">📐 Rekommenderad storlek</p>
-                <p className="text-xs text-muted-foreground">
-                  1200×630 pixlar, JPG eller PNG, max 2 MB
-                </p>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
 
         {/* ===== FÄRGTEMA ===== */}
         <Card className="bg-card border border-border/50 shadow-sm">
