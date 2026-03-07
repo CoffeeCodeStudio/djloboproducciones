@@ -201,7 +201,7 @@ const BrandingTab = () => {
   }
 
   const logoPreview = getImagePreview("logo") || PLACEHOLDER_LOGO;
-  const ogPreview = getImagePreview("og");
+  
 
   return (
     <div className="w-full max-w-[600px] mx-auto flex flex-col gap-8">
