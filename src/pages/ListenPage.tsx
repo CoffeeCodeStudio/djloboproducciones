@@ -46,11 +46,19 @@ const ListenPage = () => {
   const profileImage = radioOpt.src || djLoboImage;
   const profileFallback = radioOpt.fallback || djLoboImage;
   const siteName = branding?.site_name || "DJ LOBO";
+  const radioSectionTitle = branding?.radio_section_title || "Live Radio";
 
   return (
     <div className="max-w-7xl mx-auto">
+      {/* Radio Section Title */}
+      <div className="text-center pt-8 pb-4">
+        <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-black text-neon-gradient tracking-wider">
+          {radioSectionTitle.toUpperCase()}
+        </h1>
+      </div>
+
       {/* DJ Profile + Stream Status */}
-      <section className="py-12 sm:py-20 flex flex-col items-center text-center relative" aria-labelledby="listen-title">
+      <section className="py-8 sm:py-12 flex flex-col items-center text-center relative" aria-labelledby="listen-title">
         {/* Stream Status Badge */}
         <div className="mb-4 sm:mb-6">
           <div
