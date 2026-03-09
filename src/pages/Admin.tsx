@@ -64,60 +64,65 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background pb-safe">
       <div className="light-leak-purple" />
       <div className="light-leak-blue" />
 
-      {/* Header */}
-      <header className="sticky top-0 z-50 glass-card border-b border-border/50">
-        <div className="container mx-auto px-3 sm:px-4 py-3 sm:py-4 flex items-center justify-between">
+      {/* Header - Mobile optimized */}
+      <header className="sticky top-0 z-50 glass-card border-b border-border/50 safe-area-top">
+        <div className="container mx-auto px-3 sm:px-4 py-2.5 sm:py-4 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="hover:bg-muted flex-shrink-0 h-8 w-8 sm:h-10 sm:w-10"><ArrowLeft className="w-4 h-4 sm:w-5 sm:h-5" /></Button>
+            <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="hover:bg-muted flex-shrink-0 h-9 w-9 sm:h-10 sm:w-10">
+              <ArrowLeft className="w-5 h-5" />
+            </Button>
             <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full icon-gradient-pink flex items-center justify-center flex-shrink-0"><Radio className="w-4 h-4 sm:w-5 sm:h-5 text-white" /></div>
+              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full icon-gradient-pink flex items-center justify-center flex-shrink-0">
+                <Radio className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+              </div>
               <div className="min-w-0">
-                <h1 className="font-display text-base sm:text-xl text-neon-gradient">Kontrollpanel</h1>
-                <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{user.email}</p>
+                <h1 className="font-display text-base sm:text-xl text-neon-gradient leading-tight">Kontrollpanel</h1>
+                <p className="text-[10px] sm:text-xs text-muted-foreground truncate max-w-[120px] sm:max-w-none">{user.email}</p>
               </div>
             </div>
           </div>
-          <div className="flex items-center gap-1.5 sm:gap-3 flex-shrink-0">
-            <Badge variant="outline" className="border-primary/50 text-primary text-[10px] sm:text-xs px-1.5 sm:px-2.5"><Shield className="w-3 h-3 mr-1" />Admin</Badge>
-            <Button variant="ghost" size="icon" onClick={handleSignOut} className="hover:bg-destructive/10 hover:text-destructive h-8 w-8 sm:h-10 sm:w-10"><LogOut className="w-4 h-4 sm:w-5 sm:h-5" /></Button>
+          <div className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
+            <Badge variant="outline" className="border-primary/50 text-primary text-[10px] sm:text-xs px-1.5 sm:px-2.5 h-6 sm:h-auto hidden xs:flex">
+              <Shield className="w-3 h-3 mr-0.5 sm:mr-1" />Admin
+            </Badge>
+            <Button variant="ghost" size="icon" onClick={handleSignOut} className="hover:bg-destructive/10 hover:text-destructive h-9 w-9 sm:h-10 sm:w-10">
+              <LogOut className="w-5 h-5" />
+            </Button>
           </div>
         </div>
       </header>
 
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 relative z-10">
         <Tabs defaultValue="framsida" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 sm:grid-cols-6 mb-4 sm:mb-8 glass-card h-auto gap-0.5 p-1">
-            <TabsTrigger value="framsida" className="data-[state=active]:bg-primary/20 text-xs sm:text-sm py-2 px-1.5 sm:px-3">
-              <Home className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1.5" />
-              <span className="hidden sm:inline">Framsida</span>
-              <span className="sm:hidden ml-1">Hem</span>
+          {/* Mobile-first tab navigation */}
+          <TabsList className="grid w-full grid-cols-6 mb-4 sm:mb-8 glass-card h-auto p-1 gap-0.5">
+            <TabsTrigger value="framsida" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 min-h-[52px] sm:min-h-0">
+              <Home className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="text-[10px] sm:text-sm leading-tight">Hem</span>
             </TabsTrigger>
-            <TabsTrigger value="media" className="data-[state=active]:bg-primary/20 text-xs sm:text-sm py-2 px-1.5 sm:px-3">
-              <ImageIcon className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1.5" />
-              <span className="ml-1 sm:ml-0">Media</span>
+            <TabsTrigger value="media" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 min-h-[52px] sm:min-h-0">
+              <ImageIcon className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="text-[10px] sm:text-sm leading-tight">Media</span>
             </TabsTrigger>
-            <TabsTrigger value="radio" className="data-[state=active]:bg-primary/20 text-xs sm:text-sm py-2 px-1.5 sm:px-3">
-              <Radio className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1.5" />
-              <span className="ml-1 sm:ml-0">Radio</span>
+            <TabsTrigger value="radio" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 min-h-[52px] sm:min-h-0">
+              <Radio className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="text-[10px] sm:text-sm leading-tight">Radio</span>
             </TabsTrigger>
-            <TabsTrigger value="omdomen" className="data-[state=active]:bg-primary/20 text-xs sm:text-sm py-2 px-1.5 sm:px-3">
-              <Star className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1.5" />
-              <span className="hidden xs:inline ml-1 sm:ml-0">Omdömen</span>
-              <span className="xs:hidden ml-1">⭐</span>
+            <TabsTrigger value="omdomen" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 min-h-[52px] sm:min-h-0">
+              <Star className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="text-[10px] sm:text-sm leading-tight">Omdömen</span>
             </TabsTrigger>
-            <TabsTrigger value="spelningar" className="data-[state=active]:bg-primary/20 text-xs sm:text-sm py-2 px-1.5 sm:px-3">
-              <Calendar className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1.5" />
-              <span className="hidden xs:inline ml-1 sm:ml-0">Spelningar</span>
-              <span className="xs:hidden ml-1">📅</span>
+            <TabsTrigger value="spelningar" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 min-h-[52px] sm:min-h-0">
+              <Calendar className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="text-[10px] sm:text-sm leading-tight">Event</span>
             </TabsTrigger>
-            <TabsTrigger value="utseende" className="data-[state=active]:bg-primary/20 text-xs sm:text-sm py-2 px-1.5 sm:px-3">
-              <Palette className="w-3.5 h-3.5 sm:w-4 sm:h-4 sm:mr-1.5" />
-              <span className="hidden xs:inline ml-1 sm:ml-0">Utseende</span>
-              <span className="xs:hidden ml-1">🎨</span>
+            <TabsTrigger value="utseende" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 min-h-[52px] sm:min-h-0">
+              <Palette className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="text-[10px] sm:text-sm leading-tight">Stil</span>
             </TabsTrigger>
           </TabsList>
 

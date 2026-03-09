@@ -110,13 +110,13 @@ const FramsidaTab = () => {
   }
 
   return (
-    <div className="space-y-6 max-w-2xl mx-auto">
+    <div className="space-y-4 sm:space-y-6 max-w-2xl mx-auto">
       {hasPending && (
-        <div className="sticky top-0 z-10 bg-background/95 backdrop-blur py-3 border-b border-border/50 flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">⚠️ Du har osparade ändringar</p>
-          <Button onClick={handleSave} disabled={saving} size="lg" className="text-base px-8">
-            {saving ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : saved ? <CheckCircle2 className="w-5 h-5 mr-2 text-green-400" /> : <Save className="w-5 h-5 mr-2" />}
-            {saved ? "Sparat! ✅" : "Spara ändringar"}
+        <div className="sticky top-[60px] sm:top-[72px] z-10 bg-background/95 backdrop-blur py-3 -mx-3 sm:-mx-4 px-3 sm:px-4 border-b border-border/50 flex items-center justify-between gap-3">
+          <p className="text-xs sm:text-sm text-muted-foreground">⚠️ Osparade ändringar</p>
+          <Button onClick={handleSave} disabled={saving} size="lg" className="text-sm sm:text-base px-4 sm:px-8 h-10 sm:h-11">
+            {saving ? <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" /> : saved ? <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-green-400" /> : <Save className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />}
+            {saved ? "Sparat! ✅" : "Spara"}
           </Button>
         </div>
       )}
@@ -124,17 +124,17 @@ const FramsidaTab = () => {
       {/* Sajtnamn & Slogan */}
       <Card className="glass-card border-white/10">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">✏️ Välkomsttext</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">✏️ Välkomsttext</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">Sajtens namn och slogan som visas på startsidan.</p>
+        <CardContent className="space-y-3 sm:space-y-4">
+          <p className="text-xs sm:text-sm text-muted-foreground">Sajtens namn och slogan som visas på startsidan.</p>
           <div>
-            <Label htmlFor="siteName">Sajtnamn</Label>
-            <Input id="siteName" value={pendingChanges.site_name ?? branding?.site_name ?? ""} onChange={(e) => setPendingChanges((prev) => ({ ...prev, site_name: e.target.value }))} placeholder="DJ Lobo Radio" className="mt-1.5" />
+            <Label htmlFor="siteName" className="text-sm">Sajtnamn</Label>
+            <Input id="siteName" value={pendingChanges.site_name ?? branding?.site_name ?? ""} onChange={(e) => setPendingChanges((prev) => ({ ...prev, site_name: e.target.value }))} placeholder="DJ Lobo Radio" className="mt-1.5 h-11 sm:h-10 text-base" />
           </div>
           <div>
-            <Label htmlFor="tagline">Slogan</Label>
-            <Input id="tagline" value={pendingChanges.tagline ?? branding?.tagline ?? ""} onChange={(e) => setPendingChanges((prev) => ({ ...prev, tagline: e.target.value }))} placeholder="Bringing the best of 80s and 90s music" className="mt-1.5" />
+            <Label htmlFor="tagline" className="text-sm">Slogan</Label>
+            <Input id="tagline" value={pendingChanges.tagline ?? branding?.tagline ?? ""} onChange={(e) => setPendingChanges((prev) => ({ ...prev, tagline: e.target.value }))} placeholder="Bringing the best of 80s and 90s music" className="mt-1.5 h-11 sm:h-10 text-base" />
           </div>
         </CardContent>
       </Card>
@@ -142,12 +142,12 @@ const FramsidaTab = () => {
       {/* Hero-bakgrundsbild (16:9) */}
       <Card className="glass-card border-white/10">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg"><ImageIcon className="w-5 h-5 text-secondary" />Hero-bakgrundsbild (16:9)</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg"><ImageIcon className="w-4 h-4 sm:w-5 sm:h-5 text-secondary" />Hero-bakgrundsbild (16:9)</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">Stor bakgrundsbild som visas överst på startsidan. <strong>16:9 format</strong> för bästa resultat på alla skärmar.</p>
+        <CardContent className="space-y-3 sm:space-y-4">
+          <p className="text-xs sm:text-sm text-muted-foreground">Stor bakgrundsbild som visas överst på startsidan. <strong>16:9 format</strong> för bästa resultat på alla skärmar.</p>
           {currentHeroUrl ? (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-secondary/50">
                 <img src={currentHeroUrl} alt="Hero-bakgrundsbild" className="w-full h-full object-cover object-center" />
                 {uploadingType === "hero" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-secondary" /></div>}
@@ -157,24 +157,24 @@ const FramsidaTab = () => {
           ) : (
             <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center gap-2">
               <ImageIcon className="w-10 h-10 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground font-medium">16:9 liggande format</p>
+              <p className="text-xs sm:text-sm text-muted-foreground font-medium text-center px-2">16:9 liggande format</p>
               <p className="text-xs text-muted-foreground">Ladda upp bakgrundsbild här</p>
               {uploadingType === "hero" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-secondary" /></div>}
             </div>
           )}
           <input ref={heroInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect("hero")} />
           <div className="flex gap-2">
-            <Button size="lg" variant="outline" className="flex-1 text-base py-6" onClick={() => heroInputRef.current?.click()} disabled={uploadingType === "hero"}>
-              <Upload className="w-5 h-5 mr-2" />{uploadingType === "hero" ? "Laddar upp..." : "Ladda upp ny bakgrundsbild"}
+            <Button size="lg" variant="outline" className="flex-1 text-sm sm:text-base py-5 sm:py-6 h-auto" onClick={() => heroInputRef.current?.click()} disabled={uploadingType === "hero"}>
+              <Upload className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />{uploadingType === "hero" ? "Laddar..." : "Ladda upp"}
             </Button>
             {currentHeroUrl && (
-              <Button variant="destructive" size="icon" className="h-14 w-14" onClick={() => { setPendingChanges((prev) => ({ ...prev, hero_image_url: null })); setPreviewHero(null); }} title="Ta bort">
+              <Button variant="destructive" size="icon" className="h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0" onClick={() => { setPendingChanges((prev) => ({ ...prev, hero_image_url: null })); setPreviewHero(null); }} title="Ta bort">
                 <Trash2 className="w-5 h-5" />
               </Button>
             )}
           </div>
           <div className="bg-muted/30 rounded-lg p-3 space-y-1.5">
-            <p className="text-sm font-medium">✂️ Automatisk beskärning & optimering</p>
+            <p className="text-xs sm:text-sm font-medium">✂️ Automatisk beskärning & optimering</p>
             <p className="text-xs text-muted-foreground">• Välj motivet du vill ha i 16:9 format</p>
             <p className="text-xs text-muted-foreground">• Bilden optimeras automatiskt för snabb laddning</p>
             <p className="text-xs text-muted-foreground">• Max filstorlek: {MAX_FILE_SIZE_MB} MB</p>
@@ -185,12 +185,12 @@ const FramsidaTab = () => {
       {/* Huvudbild (Om mig) - 4:5 */}
       <Card className="glass-card border-white/10">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg"><ImageIcon className="w-5 h-5 text-primary" />Huvudbild – "Om mig" (4:5)</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg"><ImageIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />Huvudbild – "Om mig" (4:5)</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">Visas i "Om DJ Lobo"-sektionen. <strong>4:5 stående format</strong> för professionellt utseende.</p>
+        <CardContent className="space-y-3 sm:space-y-4">
+          <p className="text-xs sm:text-sm text-muted-foreground">Visas i "Om DJ Lobo"-sektionen. <strong>4:5 stående format</strong> för professionellt utseende.</p>
           {currentProfileUrl ? (
-            <div className="space-y-3 max-w-[280px]">
+            <div className="space-y-2 sm:space-y-3 max-w-[280px]">
               <div className="relative w-full aspect-[4/5] rounded-lg overflow-hidden border-2 border-primary/50">
                 <img src={currentProfileUrl} alt="Nuvarande profilbild" className="w-full h-full object-cover object-center" />
                 {uploadingType === "profile" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}
@@ -200,27 +200,27 @@ const FramsidaTab = () => {
           ) : (
             <div className="relative w-full aspect-[4/5] max-w-[280px] rounded-lg overflow-hidden border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center gap-2">
               <ImageIcon className="w-10 h-10 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground font-medium">4:5 stående format</p>
+              <p className="text-xs sm:text-sm text-muted-foreground font-medium">4:5 stående format</p>
               <p className="text-xs text-muted-foreground">Ladda upp profilbild här</p>
               {uploadingType === "profile" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}
             </div>
           )}
           <input ref={profileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect("profile")} />
           <div className="flex gap-2 max-w-[280px]">
-            <Button size="lg" variant="outline" className="flex-1 text-base py-6" onClick={() => profileInputRef.current?.click()} disabled={uploadingType === "profile"}>
-              <Upload className="w-5 h-5 mr-2" />{uploadingType === "profile" ? "Laddar upp..." : "Ladda upp ny profilbild"}
+            <Button size="lg" variant="outline" className="flex-1 text-sm sm:text-base py-5 sm:py-6 h-auto" onClick={() => profileInputRef.current?.click()} disabled={uploadingType === "profile"}>
+              <Upload className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />{uploadingType === "profile" ? "Laddar..." : "Ladda upp"}
             </Button>
             {currentProfileUrl && (
-              <Button variant="destructive" size="icon" className="h-14 w-14" onClick={() => { setPendingChanges((prev) => ({ ...prev, profile_image_url: null })); setPreviewProfile(null); }} title="Ta bort">
+              <Button variant="destructive" size="icon" className="h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0" onClick={() => { setPendingChanges((prev) => ({ ...prev, profile_image_url: null })); setPreviewProfile(null); }} title="Ta bort">
                 <Trash2 className="w-5 h-5" />
               </Button>
             )}
           </div>
           <div className="bg-muted/30 rounded-lg p-3 max-w-[280px] space-y-1.5">
-            <p className="text-sm font-medium">✂️ Så funkar det</p>
-            <p className="text-xs text-muted-foreground">1. Klicka "Ladda upp ny profilbild"</p>
-            <p className="text-xs text-muted-foreground">2. Beskäraren öppnas – dra och zooma för att välja motivet</p>
-            <p className="text-xs text-muted-foreground">3. Klicka "Använd beskärning" – bilden sparas automatiskt</p>
+            <p className="text-xs sm:text-sm font-medium">✂️ Så funkar det</p>
+            <p className="text-xs text-muted-foreground">1. Klicka "Ladda upp"</p>
+            <p className="text-xs text-muted-foreground">2. Beskär motivet i 4:5 format</p>
+            <p className="text-xs text-muted-foreground">3. Klicka "Använd" – bilden sparas</p>
             <p className="text-xs text-muted-foreground">• Max filstorlek: {MAX_FILE_SIZE_MB} MB</p>
           </div>
         </CardContent>
@@ -228,18 +228,18 @@ const FramsidaTab = () => {
 
       <Card className="glass-card border-white/10">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">✍️ Om mig – Text</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">✍️ Om mig – Text</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">Skriv en kort presentation. Visas i "Om DJ Lobo"-sektionen på startsidan.</p>
+        <CardContent className="space-y-3 sm:space-y-4">
+          <p className="text-xs sm:text-sm text-muted-foreground">Skriv en kort presentation. Visas i "Om DJ Lobo"-sektionen på startsidan.</p>
           <div>
-            <Label htmlFor="bio-text">Din presentation</Label>
-            <Textarea id="bio-text" value={currentBio} onChange={(e) => setPendingChanges((prev) => ({ ...prev, bio_text: e.target.value }))} placeholder="Skriv om dig själv, din musik och din erfarenhet..." className="mt-1.5 min-h-[160px] text-base" maxLength={2000} />
+            <Label htmlFor="bio-text" className="text-sm">Din presentation</Label>
+            <Textarea id="bio-text" value={currentBio} onChange={(e) => setPendingChanges((prev) => ({ ...prev, bio_text: e.target.value }))} placeholder="Skriv om dig själv, din musik och din erfarenhet..." className="mt-1.5 min-h-[140px] sm:min-h-[160px] text-base" maxLength={2000} />
             <p className="text-xs text-muted-foreground mt-1 text-right">{currentBio.length} / 2 000 tecken</p>
           </div>
           {hasPending && (
-            <Button onClick={handleSave} disabled={saving} size="lg" className="w-full text-base py-6">
-              {saving ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : saved ? <CheckCircle2 className="w-5 h-5 mr-2 text-green-400" /> : <Save className="w-5 h-5 mr-2" />}
+            <Button onClick={handleSave} disabled={saving} size="lg" className="w-full text-sm sm:text-base py-5 sm:py-6 h-auto">
+              {saving ? <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" /> : saved ? <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-green-400" /> : <Save className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />}
               {saved ? "Sparat! ✅" : "Spara ändringar"}
             </Button>
           )}

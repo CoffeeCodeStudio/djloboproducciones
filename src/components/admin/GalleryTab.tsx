@@ -74,21 +74,22 @@ const GalleryTab = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <Card className="glass-card border-white/10">
         <CardHeader>
-          <CardTitle className="text-neon-cyan flex items-center gap-2">
-            <ImageIcon className="w-5 h-5" />
+          <CardTitle className="text-neon-cyan flex items-center gap-2 text-base sm:text-lg">
+            <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
             Bildgalleri & Video
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 sm:space-y-6">
           {/* Type selector */}
           <div className="flex gap-2 mb-2">
             <Button
               variant={newMediaType === "photo" ? "default" : "outline"}
               size="sm"
               onClick={() => setNewMediaType("photo")}
+              className="flex-1 h-10 sm:h-9 sm:flex-none"
             >
               <ImageIcon className="w-4 h-4 mr-1" /> Foto
             </Button>
@@ -96,13 +97,14 @@ const GalleryTab = () => {
               variant={newMediaType === "video" ? "default" : "outline"}
               size="sm"
               onClick={() => setNewMediaType("video")}
+              className="flex-1 h-10 sm:h-9 sm:flex-none"
             >
               <Video className="w-4 h-4 mr-1" /> Video
             </Button>
           </div>
 
           {newMediaType === "photo" ? (
-            <div className="border-2 border-dashed border-white/20 rounded-lg p-6 text-center hover:border-neon-cyan/50 transition-colors">
+            <div className="border-2 border-dashed border-white/20 rounded-lg p-4 sm:p-6 text-center hover:border-neon-cyan/50 transition-colors">
               <input
                 type="file"
                 ref={fileInputRef}
@@ -111,13 +113,13 @@ const GalleryTab = () => {
                 className="hidden"
                 id="add-gallery-image"
               />
-              <label htmlFor="add-gallery-image" className="cursor-pointer flex flex-col items-center gap-3">
+              <label htmlFor="add-gallery-image" className="cursor-pointer flex flex-col items-center gap-2 sm:gap-3">
                 {addImage.isPending ? (
-                  <Loader2 className="w-10 h-10 text-neon-cyan animate-spin" />
+                  <Loader2 className="w-8 h-8 sm:w-10 sm:h-10 text-neon-cyan animate-spin" />
                 ) : (
-                  <Upload className="w-10 h-10 text-muted-foreground" />
+                  <Upload className="w-8 h-8 sm:w-10 sm:h-10 text-muted-foreground" />
                 )}
-                <span className="text-muted-foreground">
+                <span className="text-sm sm:text-base text-muted-foreground">
                   {addImage.isPending ? "Laddar upp..." : "Klicka för att lägga till en ny bild"}
                 </span>
                 <span className="text-xs text-muted-foreground mt-1">
@@ -153,8 +155,8 @@ const GalleryTab = () => {
             </div>
           )}
 
-          {/* Gallery grid */}
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+          {/* Gallery grid - Mobile optimized */}
+          <div className="grid grid-cols-1 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4">
             {images.map((image) => {
               const isVideo = image.media_type === "video";
               const ytId = isVideo && image.video_url ? extractYouTubeId(image.video_url) : null;

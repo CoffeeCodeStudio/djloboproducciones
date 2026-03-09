@@ -204,23 +204,23 @@ const BrandingTab = () => {
   
 
   return (
-    <div className="w-full max-w-[600px] mx-auto flex flex-col gap-8">
+    <div className="w-full max-w-[600px] mx-auto flex flex-col gap-6 sm:gap-8">
         {/* Save Button - Sticky */}
         {hasPendingChanges && (
-          <div className="sticky top-0 z-10 bg-background/95 backdrop-blur py-3 -mx-4 px-4 border-b border-border/50">
-            <div className="flex items-center justify-between">
-              <p className="text-sm text-muted-foreground">
-                ⚠️ Du har osparade ändringar
+          <div className="sticky top-[60px] sm:top-[72px] z-10 bg-background/95 backdrop-blur py-3 -mx-3 sm:-mx-4 px-3 sm:px-4 border-b border-border/50">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-xs sm:text-sm text-muted-foreground">
+                ⚠️ Osparade ändringar
               </p>
-              <Button onClick={handleSave} disabled={saving} size="lg" className="text-base px-8">
+              <Button onClick={handleSave} disabled={saving} size="lg" className="text-sm sm:text-base px-4 sm:px-8 h-10 sm:h-11">
                 {saving ? (
-                  <Loader2 className="w-5 h-5 mr-2 animate-spin" />
+                  <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" />
                 ) : saved ? (
-                  <CheckCircle2 className="w-5 h-5 mr-2 text-green-400" />
+                  <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-green-400" />
                 ) : (
-                  <Save className="w-5 h-5 mr-2" />
+                  <Save className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
                 )}
-                {saved ? "Sparat! ✅" : "Spara ändringar"}
+                {saved ? "Sparat! ✅" : "Spara"}
               </Button>
             </div>
           </div>
@@ -229,17 +229,17 @@ const BrandingTab = () => {
         {/* ===== LOGOTYP ===== */}
         <Card className="bg-card border border-border/50 shadow-sm">
           <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2 text-lg">
-              <Sparkles className="w-5 h-5 text-neon-purple" />
+            <CardTitle className="font-display flex items-center gap-2 text-base sm:text-lg">
+              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-neon-purple" />
               Logotyp
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
-            <p className="text-sm text-muted-foreground">
+          <CardContent className="space-y-3 sm:space-y-4">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Logotypen visas i navigeringen (menyn) och i sidfoten. Den bör ha <strong>genomskinlig bakgrund</strong> (PNG) så att den smälter in i designen.
             </p>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3 sm:gap-4">
               <input
                 ref={logoInputRef}
                 type="file"
@@ -251,18 +251,18 @@ const BrandingTab = () => {
                 <Button 
                   size="lg"
                   variant="outline" 
-                  className="text-base py-6 flex-1"
+                  className="text-sm sm:text-base py-5 sm:py-6 h-auto flex-1"
                   onClick={() => logoInputRef.current?.click()}
                   disabled={uploading === "logo"}
                 >
-                  <Upload className="w-5 h-5 mr-2" />
-                  {uploading === "logo" ? "Laddar upp..." : "Ladda upp logotyp"}
+                  <Upload className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  {uploading === "logo" ? "Laddar..." : "Ladda upp"}
                 </Button>
                 {(getImagePreview("logo") || branding?.logo_url) && (
                   <Button 
                     variant="destructive" 
                     size="icon"
-                    className="h-14 w-14"
+                    className="h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0"
                     onClick={() => setPendingChanges((prev) => ({ ...prev, logo_url: null }))}
                     title="Ta bort logotyp"
                   >
@@ -323,7 +323,7 @@ const BrandingTab = () => {
               </div>
 
               <div className="bg-muted/30 rounded-lg p-3">
-                <p className="text-sm font-medium mb-1">📐 Rekommenderad storlek</p>
+                <p className="text-xs sm:text-sm font-medium mb-1">📐 Rekommenderad storlek</p>
                 <p className="text-xs text-muted-foreground">
                   400×100 pixlar, PNG med genomskinlig bakgrund, max 300 KB
                 </p>
@@ -338,19 +338,19 @@ const BrandingTab = () => {
         {/* ===== FÄRGTEMA ===== */}
         <Card className="bg-card border border-border/50 shadow-sm">
           <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2 text-lg">
-              <Palette className="w-5 h-5 text-primary" />
+            <CardTitle className="font-display flex items-center gap-2 text-base sm:text-lg">
+              <Palette className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               Färgtema
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <p className="text-sm text-muted-foreground">
+          <CardContent className="space-y-4 sm:space-y-6">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Välj ett färgtema eller skapa ett eget. Färgerna syns som neon-glöd på hela sidan.
             </p>
             {/* Presets */}
             <div>
-              <Label className="text-sm font-medium mb-3 block">Snabbval</Label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <Label className="text-xs sm:text-sm font-medium mb-2 sm:mb-3 block">Snabbval</Label>
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 {COLOR_PRESETS.map((preset) => {
                   const isSelected = 
                     pendingChanges.primary_glow_color === preset.primary ||
@@ -359,17 +359,17 @@ const BrandingTab = () => {
                     <button
                       key={preset.name}
                       onClick={() => handleColorPreset(preset)}
-                      className={`relative p-4 rounded-lg border transition-all ${
+                      className={`relative p-3 sm:p-4 rounded-lg border transition-all ${
                         isSelected ? "border-primary bg-primary/10" : "border-border/50 hover:border-primary/50 bg-muted/20"
                       }`}
                     >
-                      <div className="flex gap-1 mb-2">
-                        <span className="w-6 h-6 rounded-full" style={{ backgroundColor: `hsl(${preset.primary})` }} />
-                        <span className="w-6 h-6 rounded-full" style={{ backgroundColor: `hsl(${preset.secondary})` }} />
-                        <span className="w-6 h-6 rounded-full" style={{ backgroundColor: `hsl(${preset.accent})` }} />
+                      <div className="flex gap-1 mb-1.5 sm:mb-2">
+                        <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full" style={{ backgroundColor: `hsl(${preset.primary})` }} />
+                        <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full" style={{ backgroundColor: `hsl(${preset.secondary})` }} />
+                        <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full" style={{ backgroundColor: `hsl(${preset.accent})` }} />
                       </div>
-                      <span className="text-xs font-medium">{preset.name}</span>
-                      {isSelected && <Check className="absolute top-2 right-2 w-4 h-4 text-primary" />}
+                      <span className="text-[11px] sm:text-xs font-medium">{preset.name}</span>
+                      {isSelected && <Check className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />}
                     </button>
                   );
                 })}
@@ -378,24 +378,24 @@ const BrandingTab = () => {
 
             {/* Custom Colors */}
             <div>
-              <Label className="text-sm font-medium mb-3 block">Egna färger</Label>
-              <div className="grid grid-cols-3 gap-4">
+              <Label className="text-xs sm:text-sm font-medium mb-2 sm:mb-3 block">Egna färger</Label>
+              <div className="grid grid-cols-3 gap-3 sm:gap-4">
                 {[
-                  { label: "Primär glöd", key: "primary_glow_color", def: "300 100% 50%" },
-                  { label: "Sekundär glöd", key: "secondary_glow_color", def: "180 100% 50%" },
+                  { label: "Primär", key: "primary_glow_color", def: "300 100% 50%" },
+                  { label: "Sekundär", key: "secondary_glow_color", def: "180 100% 50%" },
                   { label: "Accent", key: "accent_color", def: "270 100% 60%" },
                 ].map((c) => (
                   <div key={c.key}>
-                    <Label className="text-xs text-muted-foreground mb-1 block">{c.label}</Label>
-                    <div className="flex items-center gap-2">
+                    <Label className="text-[10px] sm:text-xs text-muted-foreground mb-1 block">{c.label}</Label>
+                    <div className="flex items-center gap-1.5 sm:gap-2">
                       <input
                         type="color"
                         value={hslToHex((pendingChanges as any)[c.key] || (branding as any)?.[c.key] || c.def)}
                         onChange={(e) => handleCustomColor(c.key, e.target.value)}
-                        className="w-10 h-10 rounded cursor-pointer border-0"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded cursor-pointer border-0"
                       />
                       <div 
-                        className="w-10 h-10 rounded"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded"
                         style={{ 
                           backgroundColor: `hsl(${(pendingChanges as any)[c.key] || (branding as any)?.[c.key] || c.def})`,
                           boxShadow: `0 0 20px hsla(${(pendingChanges as any)[c.key] || (branding as any)?.[c.key] || c.def}, 0.5)`
@@ -411,8 +411,8 @@ const BrandingTab = () => {
 
         {/* Bottom save */}
         {hasPendingChanges && (
-          <Button onClick={handleSave} disabled={saving} size="lg" className="w-full text-base py-6">
-            {saving ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Save className="w-5 h-5 mr-2" />}
+          <Button onClick={handleSave} disabled={saving} size="lg" className="w-full text-sm sm:text-base py-5 sm:py-6 h-auto">
+            {saving ? <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" /> : <Save className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />}
             {saved ? "Sparat! ✅" : "Spara ändringar"}
           </Button>
         )}
