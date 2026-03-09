@@ -74,21 +74,22 @@ const GalleryTab = () => {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <Card className="glass-card border-white/10">
         <CardHeader>
-          <CardTitle className="text-neon-cyan flex items-center gap-2">
-            <ImageIcon className="w-5 h-5" />
+          <CardTitle className="text-neon-cyan flex items-center gap-2 text-base sm:text-lg">
+            <ImageIcon className="w-4 h-4 sm:w-5 sm:h-5" />
             Bildgalleri & Video
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-6">
+        <CardContent className="space-y-4 sm:space-y-6">
           {/* Type selector */}
           <div className="flex gap-2 mb-2">
             <Button
               variant={newMediaType === "photo" ? "default" : "outline"}
               size="sm"
               onClick={() => setNewMediaType("photo")}
+              className="flex-1 h-10 sm:h-9 sm:flex-none"
             >
               <ImageIcon className="w-4 h-4 mr-1" /> Foto
             </Button>
@@ -96,6 +97,7 @@ const GalleryTab = () => {
               variant={newMediaType === "video" ? "default" : "outline"}
               size="sm"
               onClick={() => setNewMediaType("video")}
+              className="flex-1 h-10 sm:h-9 sm:flex-none"
             >
               <Video className="w-4 h-4 mr-1" /> Video
             </Button>
