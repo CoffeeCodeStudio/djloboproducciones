@@ -33,7 +33,7 @@ body {
     --secondary-foreground: 0 0% 0%;
 
     --muted: 260 20% 15%;
-    --muted-foreground: 260 10% 60%;
+    --muted-foreground: 260 10% 70%;
 
     --accent: 270 100% 60%;
     --accent-foreground: 0 0% 100%;
@@ -75,10 +75,9 @@ body {
   ::-webkit-scrollbar-thumb:hover {
     background: hsla(45, 100%, 50%, 0.7);
   }
-  /* Firefox */
+  /* Firefox fallback */
   * {
     scrollbar-width: thin;
-    scrollbar-color: hsla(45, 100%, 50%, 0.4) hsl(260, 30%, 6%);
   }
 
   * {

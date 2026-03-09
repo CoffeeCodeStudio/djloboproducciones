@@ -10,6 +10,7 @@ import { usePresence } from "@/hooks/usePresence";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { logger } from "@/lib/logger";
 import { validateAndCleanMessage, sanitizeMessage } from "@/lib/profanityFilter";
+import { Link } from "react-router-dom";
 
 const chatTranslations = {
   sv: {
@@ -37,6 +38,10 @@ const chatTranslations = {
     send: "Skicka",
     chatMessages: "Chattmeddelanden",
     soundForNewMessages: "Ljud för nya meddelanden",
+    legalDisclaimer: "Genom att använda chatten godkänner du våra",
+    termsOfService: "Användarvillkor",
+    and: "och",
+    privacyPolicy: "Sekretesspolicy",
   },
   en: {
     liveChat: "LIVE CHAT",
@@ -63,6 +68,10 @@ const chatTranslations = {
     send: "Send",
     chatMessages: "Chat messages",
     soundForNewMessages: "Sound for new messages",
+    legalDisclaimer: "By using the chat, you agree to our",
+    termsOfService: "Terms of Service",
+    and: "and",
+    privacyPolicy: "Privacy Policy",
   },
   es: {
     liveChat: "CHAT EN VIVO",
@@ -89,6 +98,10 @@ const chatTranslations = {
     send: "Enviar",
     chatMessages: "Mensajes del chat",
     soundForNewMessages: "Sonido para nuevos mensajes",
+    legalDisclaimer: "Al usar el chat, aceptas nuestros",
+    termsOfService: "Términos de Servicio",
+    and: "y",
+    privacyPolicy: "Política de Privacidad",
   },
 };
 
@@ -469,10 +482,23 @@ const LiveChat = () => {
                   maxLength={20}
                   aria-describedby="nickname-help"
                 />
-                <p id="nickname-help" className="text-xs text-muted-foreground mt-2">
+                <p id="nickname-help" className="text-xs text-foreground/70 mt-2">
                   {t.nicknameHelp}
                 </p>
               </div>
+              
+              {/* Legal disclaimer */}
+              <p className="text-xs text-foreground/70 text-center px-2">
+                {t.legalDisclaimer}{" "}
+                <Link to="/terms" className="text-neon-cyan hover:underline">
+                  {t.termsOfService}
+                </Link>
+                {" "}{t.and}{" "}
+                <Link to="/privacy" className="text-neon-cyan hover:underline">
+                  {t.privacyPolicy}
+                </Link>
+              </p>
+              
               <Button
                 type="submit"
                 className="w-full bg-gradient-to-r from-neon-pink to-neon-cyan hover:opacity-90 text-white font-display font-bold tracking-wider"
