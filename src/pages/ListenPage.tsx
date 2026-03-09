@@ -103,6 +103,8 @@ const ListenPage = () => {
           <div className="w-36 h-36 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-full overflow-hidden neon-border-gradient profile-neon-aura">
             <img
               src={profileImage}
+              srcSet={radioOpt.srcSet}
+              sizes="(max-width: 640px) 144px, (max-width: 768px) 192px, 224px"
               alt="DJ Lobo vid mixerbordet"
               className="w-full h-full object-cover rounded-full"
               loading="eager"
