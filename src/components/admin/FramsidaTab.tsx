@@ -173,42 +173,6 @@ const FramsidaTab = () => {
         </CardContent>
       </Card>
 
-      {/* Radiobild */}
-      <Card className="glass-card border-white/10">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg">📻 Radiobild</CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">Visas på radiosidan (Lyssna). Separat från "Om mig"-bilden ovan.</p>
-          {currentRadioUrl ? (
-            <div className="space-y-3 max-w-[280px]">
-              <div className="relative w-full aspect-[4/5] rounded-lg overflow-hidden border-2 border-secondary/50">
-                <img src={currentRadioUrl} alt="Radiobild" className="w-full h-full object-cover object-center" />
-                {uploadingType === "radio" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-secondary" /></div>}
-              </div>
-            </div>
-          ) : (
-            <div className="relative w-full aspect-[4/5] max-w-[280px] rounded-lg overflow-hidden border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center gap-2">
-              <ImageIcon className="w-10 h-10 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground font-medium">4:5 stående format</p>
-              <p className="text-xs text-muted-foreground">Ladda upp bild här</p>
-              {uploadingType === "radio" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-secondary" /></div>}
-            </div>
-          )}
-          <input ref={radioInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleFileSelect(e, "radio")} />
-          <div className="flex gap-2 max-w-[280px]">
-            <Button size="lg" variant="outline" className="flex-1 text-base py-6" onClick={() => radioInputRef.current?.click()} disabled={uploadingType === "radio"}>
-              <Upload className="w-5 h-5 mr-2" />{uploadingType === "radio" ? "Laddar upp..." : "Ladda upp radiobild"}
-            </Button>
-            {currentRadioUrl && (
-              <Button variant="destructive" size="icon" className="h-14 w-14" onClick={() => { setPendingChanges((prev) => ({ ...prev, radio_image_url: null })); setPreviewRadio(null); }} title="Ta bort">
-                <Trash2 className="w-5 h-5" />
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
-
       <Card className="glass-card border-white/10">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-lg">✍️ Om mig – Text</CardTitle>
