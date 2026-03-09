@@ -100,6 +100,7 @@ const FramsidaTab = () => {
     setTimeout(() => setSaved(false), 3000);
     toast.success("✅ Ändringarna har sparats!");
     setPendingChanges({});
+    setPreviewProfile(null);
     setPreviewHero(null);
     refetch();
   };
