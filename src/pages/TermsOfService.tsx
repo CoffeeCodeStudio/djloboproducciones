@@ -50,47 +50,8 @@ const TermsOfService = () => {
               <FileText className="w-8 h-8 text-neon-cyan" />
               <h1 className="text-2xl sm:text-3xl font-bold text-white">{t.title}</h1>
             </div>
-            <p className="text-muted-foreground text-sm">{t.lastUpdated}</p>
-            <p className="text-foreground/90 mt-4">{t.intro}</p>
-          </div>
-
-          {/* Sections */}
-          <div className="space-y-6">
-            <section className="glass-card p-6 rounded-xl">
-              <h2 className="text-lg font-semibold text-white mb-3">{t.section1Title}</h2>
-              <p className="text-foreground/80">{t.section1Text}</p>
-            </section>
-
-            <section className="glass-card p-6 rounded-xl">
-              <h2 className="text-lg font-semibold text-white mb-3">{t.section2Title}</h2>
-              <p className="text-foreground/80">{t.section2Text}</p>
-            </section>
-
-            <section className="glass-card p-6 rounded-xl">
-              <h2 className="text-lg font-semibold text-white mb-3">{t.section3Title}</h2>
-              <p className="text-foreground/80">{t.section3Text}</p>
-            </section>
-
-            <section className="glass-card p-6 rounded-xl">
-              <h2 className="text-lg font-semibold text-white mb-3">{t.section4Title}</h2>
-              <p className="text-foreground/80">{t.section4Text}</p>
-            </section>
-
-            <section className="glass-card p-6 rounded-xl">
-              <h2 className="text-lg font-semibold text-white mb-3">{t.section5Title}</h2>
-              <p className="text-foreground/80">{t.section5Text}</p>
-            </section>
-
-            <section className="glass-card p-6 rounded-xl">
-              <h2 className="text-lg font-semibold text-white mb-3">{t.section6Title}</h2>
-              <p className="text-foreground/80 mb-2">{t.section6Text}</p>
-              <a 
-                href={`mailto:${t.contactEmail}`}
-                className="text-neon-cyan hover:underline font-medium"
-              >
-                {t.contactEmail}
-              </a>
-            </section>
+            <p className="text-foreground/70 text-sm mb-6">{t.lastUpdated}</p>
+            <p className="text-foreground text-base leading-relaxed">{t.content}</p>
           </div>
         </div>
       </div>
