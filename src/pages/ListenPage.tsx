@@ -16,7 +16,7 @@ const translations = {
     offline: "OFFLINE",
     clickPlay: "KLICKA PLAY ▶",
     bio: "Skapar magi på dansgolvet i Göteborg. Expert på 80-tal, 90-tal & Latin beats.",
-    listenBelow: "Tryck play i spelaren längst ner för att starta streamen",
+    listenBelow: "Tryck play i spelaren längst ner för att starta streamen"
   },
   en: {
     onAir: "ON AIR",
@@ -24,7 +24,7 @@ const translations = {
     offline: "OFFLINE",
     clickPlay: "CLICK PLAY ▶",
     bio: "Creating magic on the dance floor in Gothenburg. Expert in 80s, 90s & Latin beats.",
-    listenBelow: "Press play in the player bar below to start the stream",
+    listenBelow: "Press play in the player bar below to start the stream"
   },
   es: {
     onAir: "ON AIR",
@@ -32,8 +32,8 @@ const translations = {
     offline: "FUERA DE LÍNEA",
     clickPlay: "PULSA PLAY ▶",
     bio: "Creando magia en la pista de baile en Gotemburgo. Experto en 80s, 90s y Latin beats.",
-    listenBelow: "Pulsa play en el reproductor de abajo para iniciar la transmisión",
-  },
+    listenBelow: "Pulsa play en el reproductor de abajo para iniciar la transmisión"
+  }
 };
 
 const ListenPage = () => {
@@ -63,38 +63,38 @@ const ListenPage = () => {
         <div className="mb-4 sm:mb-6">
           <div
             className={`px-4 sm:px-5 py-1.5 sm:py-2 flex items-center gap-2 sm:gap-3 rounded-full border transition-all ${
-              status === "live"
-                ? "glass-card-pink on-air-pulse border-neon-pink/30"
-                : status === "connecting"
-                ? "glass-card border-neon-cyan/30"
-                : status === "error"
-                ? "glass-card border-red-500/30"
-                : "glass-card border-muted"
-            }`}
+            status === "live" ?
+            "glass-card-pink on-air-pulse border-neon-pink/30" :
+            status === "connecting" ?
+            "glass-card border-neon-cyan/30" :
+            status === "error" ?
+            "glass-card border-red-500/30" :
+            "glass-card border-muted"}`
+            }
             role="status"
-            aria-live="polite"
-          >
-            {status === "live" ? (
-              <>
+            aria-live="polite">
+            
+            {status === "live" ?
+            <>
                 <div className="w-2.5 h-2.5 sm:w-3 sm:h-3 bg-neon-pink rounded-full live-dot" aria-hidden="true" />
                 <span className="font-display font-bold text-neon-pink tracking-wider text-xs sm:text-sm">{t.onAir}</span>
-              </>
-            ) : status === "connecting" ? (
-              <>
+              </> :
+            status === "connecting" ?
+            <>
                 <Loader2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-neon-cyan animate-spin" aria-hidden="true" />
                 <span className="font-display font-bold text-neon-cyan tracking-wider text-xs sm:text-sm">{t.connecting}</span>
-              </>
-            ) : status === "error" ? (
-              <>
+              </> :
+            status === "error" ?
+            <>
                 <WifiOff className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-red-400" aria-hidden="true" />
                 <span className="font-display font-bold text-red-400 tracking-wider text-xs sm:text-sm">{t.offline}</span>
-              </>
-            ) : (
-              <>
+              </> :
+
+            <>
                 <Radio className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-muted-foreground" aria-hidden="true" />
                 <span className="font-display font-bold text-muted-foreground tracking-wider text-xs sm:text-sm">{t.clickPlay}</span>
               </>
-            )}
+            }
           </div>
         </div>
 
@@ -106,19 +106,19 @@ const ListenPage = () => {
               alt="DJ Lobo vid mixerbordet"
               className="w-full h-full object-cover rounded-full"
               loading="eager"
-              onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = profileFallback; }}
-            />
+              onError={(e) => {e.currentTarget.onerror = null;e.currentTarget.src = profileFallback;}} />
+            
           </div>
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-neon-pink/30 to-neon-cyan/30 blur-3xl -z-10 scale-110" aria-hidden="true" />
         </div>
 
         {/* Name */}
-        <h1
-          id="listen-title"
-          className="font-display text-4xl sm:text-5xl md:text-7xl font-black text-neon-gradient mb-2 sm:mb-3 tracking-wider text-high-contrast"
-        >
-          {siteName.toUpperCase().replace(" RADIO", "")}
-        </h1>
+        
+
+
+
+
+        
 
         {/* Bio */}
         <p className="text-sm sm:text-base md:text-lg text-muted-foreground mb-4 max-w-xl px-4">
@@ -139,8 +139,8 @@ const ListenPage = () => {
 
       <LiveChat />
       <Footer />
-    </div>
-  );
+    </div>);
+
 };
 
 export default ListenPage;
