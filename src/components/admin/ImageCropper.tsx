@@ -100,7 +100,7 @@ const ImageCropper = ({
             image={imageSrc}
             crop={crop}
             zoom={zoom}
-            minZoom={1}
+            minZoom={0.5}
             maxZoom={5}
             aspect={aspect}
             cropShape={cropShape}
@@ -108,8 +108,8 @@ const ImageCropper = ({
             onZoomChange={setZoom}
             onCropComplete={onCropComplete}
             showGrid={cropShape === "rect"}
-            objectFit="cover"
-            restrictPosition={true}
+            objectFit="contain"
+            restrictPosition={false}
             style={{
               containerStyle: { width: "100%", height: "100%" },
             }}
