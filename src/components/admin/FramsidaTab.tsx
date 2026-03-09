@@ -142,12 +142,12 @@ const FramsidaTab = () => {
       {/* Hero-bakgrundsbild (16:9) */}
       <Card className="glass-card border-white/10">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg"><ImageIcon className="w-5 h-5 text-secondary" />Hero-bakgrundsbild (16:9)</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg"><ImageIcon className="w-4 h-4 sm:w-5 sm:h-5 text-secondary" />Hero-bakgrundsbild (16:9)</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">Stor bakgrundsbild som visas överst på startsidan. <strong>16:9 format</strong> för bästa resultat på alla skärmar.</p>
+        <CardContent className="space-y-3 sm:space-y-4">
+          <p className="text-xs sm:text-sm text-muted-foreground">Stor bakgrundsbild som visas överst på startsidan. <strong>16:9 format</strong> för bästa resultat på alla skärmar.</p>
           {currentHeroUrl ? (
-            <div className="space-y-3">
+            <div className="space-y-2 sm:space-y-3">
               <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-secondary/50">
                 <img src={currentHeroUrl} alt="Hero-bakgrundsbild" className="w-full h-full object-cover object-center" />
                 {uploadingType === "hero" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-secondary" /></div>}
@@ -157,7 +157,7 @@ const FramsidaTab = () => {
           ) : (
             <div className="relative w-full aspect-video rounded-lg overflow-hidden border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center gap-2">
               <ImageIcon className="w-10 h-10 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground font-medium">16:9 liggande format</p>
+              <p className="text-xs sm:text-sm text-muted-foreground font-medium text-center px-2">16:9 liggande format</p>
               <p className="text-xs text-muted-foreground">Ladda upp bakgrundsbild här</p>
               {uploadingType === "hero" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-secondary" /></div>}
             </div>
