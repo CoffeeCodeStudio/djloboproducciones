@@ -141,7 +141,7 @@ const FramsidaTab = () => {
               {uploadingType === "hero" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}
             </div>
           )}
-          <input ref={heroInputRef} type="file" accept="image/*" className="hidden" onChange={(e) => handleFileSelect(e, "profile")} />
+          <input ref={heroInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect} />
           <div className="flex gap-2 max-w-[280px]">
             <Button size="lg" variant="outline" className="flex-1 text-base py-6" onClick={() => heroInputRef.current?.click()} disabled={uploadingType === "hero"}>
               <Upload className="w-5 h-5 mr-2" />{uploadingType === "hero" ? "Laddar upp..." : "Ladda upp ny bild"}
