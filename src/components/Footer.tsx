@@ -93,7 +93,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
               }
             </div>
             
-            <p className="text-muted-foreground/80 text-sm leading-relaxed">{t.aboutText}</p>
+            
           </div>
 
           {/* Contact */}
