@@ -185,7 +185,8 @@ const RadioTab = () => {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value="settings">
+        <TabsContent value="settings" className="space-y-6">
+          {/* Radio Section Title */}
           <Card className="glass-card border-white/10 max-w-2xl mx-auto">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">
@@ -233,6 +234,75 @@ const RadioTab = () => {
                   </>
                 )}
               </Button>
+            </CardContent>
+          </Card>
+
+          {/* Radio Image */}
+          <Card className="glass-card border-white/10 max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">
+                <ImageIcon className="w-5 h-5 text-secondary" />
+                Radiobild
+              </CardTitle>
+              <CardDescription>
+                Rund profilbild som visas på radiosidan (Lyssna). Beskärs automatiskt till cirkel.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {(previewRadio || (branding as any)?.radio_image_url) ? (
+                <div className="space-y-3 max-w-[280px] mx-auto">
+                  <div className="relative w-full aspect-square rounded-full overflow-hidden border-4 border-secondary/50">
+                    <img
+                      src={previewRadio || (branding as any)?.radio_image_url}
+                      alt="Radiobild"
+                      className="w-full h-full object-cover object-center"
+                    />
+                    {uploadingRadio && (
+                      <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
+                        <Loader2 className="w-6 h-6 animate-spin text-secondary" />
+                      </div>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground text-center">
+                    👆 Förhandsvisning – exakt som på sajten
+                  </p>
+                </div>
+              ) : (
+                <div className="relative w-full aspect-square max-w-[280px] mx-auto rounded-full overflow-hidden border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center gap-2">
+                  <ImageIcon className="w-10 h-10 text-muted-foreground" />
+                  <p className="text-sm text-muted-foreground font-medium">Rund profilbild</p>
+                  <p className="text-xs text-muted-foreground">1:1 format</p>
+                  {uploadingRadio && (
+                    <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
+                      <Loader2 className="w-6 h-6 animate-spin text-secondary" />
+                    </div>
+                  )}
+                </div>
+              )}
+              <input
+                ref={radioInputRef}
+                type="file"
+                accept="image/*"
+                className="hidden"
+                onChange={handleFileSelect}
+              />
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full max-w-[280px] mx-auto text-base py-6 flex"
+                onClick={() => radioInputRef.current?.click()}
+                disabled={uploadingRadio}
+              >
+                <Upload className="w-5 h-5 mr-2" />
+                {uploadingRadio ? "Laddar upp..." : "Ladda upp radiobild"}
+              </Button>
+              <div className="bg-muted/30 rounded-lg p-3 max-w-[280px] mx-auto space-y-1.5">
+                <p className="text-sm font-medium">✂️ Så funkar det</p>
+                <p className="text-xs text-muted-foreground">1. Klicka "Ladda upp radiobild"</p>
+                <p className="text-xs text-muted-foreground">2. En rund beskärare öppnas – dra och zooma för att välja motivet</p>
+                <p className="text-xs text-muted-foreground">3. Klicka "Använd beskärning" – bilden sparas direkt</p>
+                <p className="text-xs text-muted-foreground">• Max filstorlek: {MAX_FILE_SIZE_MB} MB</p>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
