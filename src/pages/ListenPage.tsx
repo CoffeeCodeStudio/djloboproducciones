@@ -106,8 +106,10 @@ const ListenPage = () => {
               alt="DJ Lobo vid mixerbordet"
               className="w-full h-full object-cover rounded-full"
               loading="eager"
+              fetchPriority="high"
+              width={224}
+              height={224}
               onError={(e) => {e.currentTarget.onerror = null;e.currentTarget.src = profileFallback;}} />
-            
           </div>
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-neon-pink/30 to-neon-cyan/30 blur-3xl -z-10 scale-110" aria-hidden="true" />
         </div>
