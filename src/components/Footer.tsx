@@ -2,6 +2,7 @@ import { forwardRef } from "react";
 import { Instagram, Facebook, Youtube, Radio as RadioIcon, Mail, Phone, MapPin } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useBranding } from "@/hooks/useBranding";
+import { optimizeLogo } from "@/lib/imageOptimizer";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const DEFAULT_SOCIAL_LINKS = {
@@ -77,14 +78,22 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
           {/* About */}
           <div className="flex flex-col">
             <div className="flex items-center gap-3 mb-4">
-              {branding?.logo_url ?
-              <img
-                alt="DJ Lobo Radio Logo"
-                className="!h-16 sm:!h-24 w-auto object-contain rounded-xl drop-shadow-[0_0_15px_rgba(0,255,255,0.3)] bg-transparent"
-                src={branding.logo_url}
-                loading="lazy"
-                width={120}
-                height={120} /> :
+              {branding?.logo_url ? (() => {
+                const logoOpt = optimizeLogo(branding.logo_url);
+                return (
+                  <img
+                    alt="DJ Lobo Radio Logo"
+                    className="!h-16 sm:!h-24 w-auto object-contain rounded-xl drop-shadow-[0_0_15px_rgba(0,255,255,0.3)] bg-transparent"
+                    src={logoOpt.src}
+                    srcSet={logoOpt.srcSet}
+                    sizes="(min-width: 640px) 96px, 64px"
+                    loading="lazy"
+                    width={120}
+                    height={120}
+                    onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = logoOpt.fallback; }}
+                  />
+                );
+              })() :
 
 
               <div className="h-16 sm:h-24 w-16 sm:w-24 flex items-center justify-center glass-card rounded-full">
