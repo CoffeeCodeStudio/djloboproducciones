@@ -103,10 +103,11 @@ const ImageCropper = ({
             minZoom={1}
             maxZoom={5}
             aspect={aspect}
+            cropShape={cropShape}
             onCropChange={setCrop}
             onZoomChange={setZoom}
             onCropComplete={onCropComplete}
-            showGrid
+            showGrid={cropShape === "rect"}
             objectFit="cover"
             restrictPosition={true}
             style={{
