@@ -24,7 +24,6 @@ const FramsidaTab = () => {
   // Cropper state
   const [cropperOpen, setCropperOpen] = useState(false);
   const [cropperSrc, setCropperSrc] = useState<string>("");
-  const heroInputRef = useRef<HTMLInputElement>(null);
 
   const currentBio = pendingChanges.bio_text ?? branding?.bio_text ?? "";
   const currentHeroUrl = previewHero || branding?.profile_image_url || null;
