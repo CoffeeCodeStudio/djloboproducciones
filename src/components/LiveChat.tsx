@@ -37,6 +37,10 @@ const chatTranslations = {
     send: "Skicka",
     chatMessages: "Chattmeddelanden",
     soundForNewMessages: "Ljud för nya meddelanden",
+    legalDisclaimer: "Genom att använda chatten godkänner du våra",
+    termsOfService: "Användarvillkor",
+    and: "och",
+    privacyPolicy: "Sekretesspolicy",
   },
   en: {
     liveChat: "LIVE CHAT",
@@ -63,6 +67,10 @@ const chatTranslations = {
     send: "Send",
     chatMessages: "Chat messages",
     soundForNewMessages: "Sound for new messages",
+    legalDisclaimer: "By using the chat, you agree to our",
+    termsOfService: "Terms of Service",
+    and: "and",
+    privacyPolicy: "Privacy Policy",
   },
   es: {
     liveChat: "CHAT EN VIVO",
@@ -89,6 +97,10 @@ const chatTranslations = {
     send: "Enviar",
     chatMessages: "Mensajes del chat",
     soundForNewMessages: "Sonido para nuevos mensajes",
+    legalDisclaimer: "Al usar el chat, aceptas nuestros",
+    termsOfService: "Términos de Servicio",
+    and: "y",
+    privacyPolicy: "Política de Privacidad",
   },
 };
 
