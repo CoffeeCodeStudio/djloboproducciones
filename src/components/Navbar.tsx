@@ -80,17 +80,18 @@ const Navbar = () => {
               className="focus-neon rounded-lg hover:scale-105 transition-transform flex-shrink-0"
               aria-label="DJ Lobo Radio - Hem"
             >
-              {!loading && branding?.logo_url ? (
+              {branding?.logo_url ? (
                 <img
                   alt="DJ Lobo Radio Logo"
-                  className="h-10 max-h-10 w-auto object-contain rounded-xl drop-shadow-[0_0_15px_rgba(0,255,255,0.3)] bg-transparent"
+                  className="h-10 max-h-10 w-auto object-contain rounded-xl drop-shadow-[0_0_15px_rgba(0,255,255,0.3)] bg-transparent animate-fade-in"
                   src={branding.logo_url}
                   loading="eager"
+                  fetchPriority="high"
                   width={120}
                   height={40}
                 />
               ) : (
-                <div className="h-10 w-10 flex items-center justify-center">
+                <div className="h-10 w-[120px] flex items-center justify-center opacity-0">
                   <Radio className="h-8 w-8 text-neon-cyan" />
                 </div>
               )}
