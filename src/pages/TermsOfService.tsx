@@ -7,76 +7,19 @@ const translations = {
     title: "Användarvillkor",
     lastUpdated: "Senast uppdaterad: Januari 2026",
     backToHome: "Tillbaka till startsidan",
-    intro: "Genom att använda DJ Lobo Radio godkänner du dessa villkor. Läs dem noggrant.",
-    
-    section1Title: "Acceptans av villkor",
-    section1Text: "När du använder vår tjänst accepterar du att följa dessa regler. Om du inte godkänner villkoren, vänligen sluta använda tjänsten.",
-    
-    section2Title: "Användning av chatten",
-    section2Text: "Vår chat är till för att sprida glädje. Respektera andra användare – hotfulla, kränkande eller olagliga meddelanden tolereras inte.",
-    
-    section3Title: "IP-blockering",
-    section3Text: "Vi kan blockera din IP-adress om du bryter mot våra regler. Detta görs för att skydda alla användare och säkerställa en trygg miljö.",
-    
-    section4Title: "Ansvarsbegränsning",
-    section4Text: "Vi gör vårt bästa för att hålla tjänsten igång, men vi kan inte garantera att allt alltid fungerar perfekt. Vi ansvarar inte för tekniska problem, avbrott eller dataförlust.",
-    
-    section5Title: "Ändringar av villkoren",
-    section5Text: "Vi kan uppdatera dessa villkor vid behov. Fortsatt användning efter ändringar innebär att du accepterar de nya villkoren.",
-    
-    section6Title: "Kontakt",
-    section6Text: "Frågor om villkoren? Kontakta oss på:",
-    contactEmail: "info@djloboproducciones.com",
+    content: "Genom att använda DJ Lobo Radio godkänner du dessa villkor. Vår chatt är till för att sprida glädje; hotfullt eller olagligt innehåll tolereras inte. Vi förbehåller oss rätten att blockera IP-adresser som bryter mot reglerna. Vi ansvarar inte för tekniska avbrott. Frågor? Kontakta info@djloboproducciones.com.",
   },
   en: {
     title: "Terms of Service",
     lastUpdated: "Last updated: January 2026",
     backToHome: "Back to homepage",
-    intro: "By using DJ Lobo Radio, you agree to these terms. Please read them carefully.",
-    
-    section1Title: "Acceptance of Terms",
-    section1Text: "By using our service, you agree to follow these rules. If you do not accept the terms, please stop using the service.",
-    
-    section2Title: "Chat Usage",
-    section2Text: "Our chat is meant to spread joy. Respect other users – threatening, offensive, or illegal messages will not be tolerated.",
-    
-    section3Title: "IP Blocking",
-    section3Text: "We may block your IP address if you violate our rules. This is done to protect all users and ensure a safe environment.",
-    
-    section4Title: "Limitation of Liability",
-    section4Text: "We do our best to keep the service running, but we cannot guarantee everything will always work perfectly. We are not responsible for technical issues, interruptions, or data loss.",
-    
-    section5Title: "Changes to Terms",
-    section5Text: "We may update these terms as needed. Continued use after changes means you accept the new terms.",
-    
-    section6Title: "Contact",
-    section6Text: "Questions about the terms? Contact us at:",
-    contactEmail: "info@djloboproducciones.com",
+    content: "By using DJ Lobo Radio, you agree to these terms. Our chat is for spreading joy; abusive or illegal content is not tolerated. We reserve the right to block IP addresses that violate these rules. We are not responsible for technical interruptions. Questions? Contact info@djloboproducciones.com.",
   },
   es: {
     title: "Términos de Servicio",
     lastUpdated: "Última actualización: Enero 2026",
     backToHome: "Volver a la página principal",
-    intro: "Al usar DJ Lobo Radio, aceptas estos términos. Por favor léelos cuidadosamente.",
-    
-    section1Title: "Aceptación de Términos",
-    section1Text: "Al usar nuestro servicio, aceptas seguir estas reglas. Si no aceptas los términos, por favor deja de usar el servicio.",
-    
-    section2Title: "Uso del Chat",
-    section2Text: "Nuestro chat está hecho para difundir alegría. Respeta a otros usuarios – mensajes amenazantes, ofensivos o ilegales no serán tolerados.",
-    
-    section3Title: "Bloqueo de IP",
-    section3Text: "Podemos bloquear tu dirección IP si violas nuestras reglas. Esto se hace para proteger a todos los usuarios y asegurar un ambiente seguro.",
-    
-    section4Title: "Limitación de Responsabilidad",
-    section4Text: "Hacemos lo posible para mantener el servicio funcionando, pero no podemos garantizar que todo funcione perfectamente siempre. No somos responsables de problemas técnicos, interrupciones o pérdida de datos.",
-    
-    section5Title: "Cambios en los Términos",
-    section5Text: "Podemos actualizar estos términos según sea necesario. El uso continuado después de los cambios significa que aceptas los nuevos términos.",
-    
-    section6Title: "Contacto",
-    section6Text: "¿Preguntas sobre los términos? Contáctanos en:",
-    contactEmail: "info@djloboproducciones.com",
+    content: "Al usar DJ Lobo Radio, usted acepta estos términos. Nuestro chat es para compartir alegría; no se tolera contenido abusivo o ilegal. Nos reservamos el derecho de bloquear direcciones IP que violen estas reglas. No nos hacemos responsables por interrupciones técnicas. ¿Preguntas? Contacte a info@djloboproducciones.com.",
   },
 };
 
