@@ -378,24 +378,24 @@ const BrandingTab = () => {
 
             {/* Custom Colors */}
             <div>
-              <Label className="text-sm font-medium mb-3 block">Egna färger</Label>
-              <div className="grid grid-cols-3 gap-4">
+              <Label className="text-xs sm:text-sm font-medium mb-2 sm:mb-3 block">Egna färger</Label>
+              <div className="grid grid-cols-3 gap-3 sm:gap-4">
                 {[
-                  { label: "Primär glöd", key: "primary_glow_color", def: "300 100% 50%" },
-                  { label: "Sekundär glöd", key: "secondary_glow_color", def: "180 100% 50%" },
+                  { label: "Primär", key: "primary_glow_color", def: "300 100% 50%" },
+                  { label: "Sekundär", key: "secondary_glow_color", def: "180 100% 50%" },
                   { label: "Accent", key: "accent_color", def: "270 100% 60%" },
                 ].map((c) => (
                   <div key={c.key}>
-                    <Label className="text-xs text-muted-foreground mb-1 block">{c.label}</Label>
-                    <div className="flex items-center gap-2">
+                    <Label className="text-[10px] sm:text-xs text-muted-foreground mb-1 block">{c.label}</Label>
+                    <div className="flex items-center gap-1.5 sm:gap-2">
                       <input
                         type="color"
                         value={hslToHex((pendingChanges as any)[c.key] || (branding as any)?.[c.key] || c.def)}
                         onChange={(e) => handleCustomColor(c.key, e.target.value)}
-                        className="w-10 h-10 rounded cursor-pointer border-0"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded cursor-pointer border-0"
                       />
                       <div 
-                        className="w-10 h-10 rounded"
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded"
                         style={{ 
                           backgroundColor: `hsl(${(pendingChanges as any)[c.key] || (branding as any)?.[c.key] || c.def})`,
                           boxShadow: `0 0 20px hsla(${(pendingChanges as any)[c.key] || (branding as any)?.[c.key] || c.def}, 0.5)`
