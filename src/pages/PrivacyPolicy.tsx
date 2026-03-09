@@ -7,67 +7,19 @@ const translations = {
     title: "Sekretesspolicy",
     lastUpdated: "Senast uppdaterad: Januari 2026",
     backToHome: "Tillbaka till startsidan",
-    intro: "Vi värnar om din integritet. Denna policy förklarar på ett enkelt sätt hur vi hanterar data på DJ Lobo Radio.",
-    
-    section1Title: "Vilken data samlar vi in?",
-    section1Text: "Vi samlar endast in IP-adresser för att skydda vår tjänst mot missbruk. Vi sparar inga namn, e-postadresser eller annan personlig information om dig.",
-    
-    section2Title: "Varför samlar vi in denna data?",
-    section2Text: "Din IP-adress används endast för säkerhet och drift – till exempel för att kunna blockera användare som bryter mot våra regler i chatten.",
-    
-    section3Title: "Hur länge sparas data?",
-    section3Text: "IP-adresser som blockerats sparas så länge blockeringen är aktiv. Efter att blockeringen löpt ut raderas informationen automatiskt.",
-    
-    section4Title: "Dina rättigheter enligt GDPR",
-    section4Text: "Du har rätt att begära information om vilken data vi har om dig, samt begära att den raderas. Kontakta oss via e-post för sådana förfrågningar.",
-    
-    section5Title: "Kontakta oss",
-    section5Text: "Har du frågor om din data eller vill begära borttagning? Kontakta oss på:",
-    contactEmail: "info@djloboproducciones.com",
+    content: "Vi värnar om din integritet. Denna policy förklarar hur vi hanterar data på DJ Lobo Radio. Vi samlar endast in IP-adresser för säkerhetsändamål, såsom att förhindra missbruk i chatten. Vi sparar ingen annan personlig information. Du har rätt att begära utdrag eller radering av data genom att kontakta oss på info@djloboproducciones.com.",
   },
   en: {
     title: "Privacy Policy",
     lastUpdated: "Last updated: January 2026",
     backToHome: "Back to homepage",
-    intro: "We care about your privacy. This policy explains in simple terms how we handle data at DJ Lobo Radio.",
-    
-    section1Title: "What data do we collect?",
-    section1Text: "We only collect IP addresses to protect our service from abuse. We do not store names, email addresses, or any other personal information about you.",
-    
-    section2Title: "Why do we collect this data?",
-    section2Text: "Your IP address is used only for security and operations – for example, to block users who violate our rules in the chat.",
-    
-    section3Title: "How long is data stored?",
-    section3Text: "Blocked IP addresses are stored as long as the block is active. After the block expires, the information is automatically deleted.",
-    
-    section4Title: "Your rights under GDPR",
-    section4Text: "You have the right to request information about what data we have about you, and to request its deletion. Contact us via email for such requests.",
-    
-    section5Title: "Contact us",
-    section5Text: "Have questions about your data or want to request deletion? Contact us at:",
-    contactEmail: "info@djloboproducciones.com",
+    content: "We value your privacy. This policy explains how we handle data at DJ Lobo Radio. We only collect IP addresses for security purposes, such as preventing abuse in the chat. We do not store any other personal information. You have the right to request access to or deletion of your data by contacting us at info@djloboproducciones.com.",
   },
   es: {
     title: "Política de Privacidad",
     lastUpdated: "Última actualización: Enero 2026",
     backToHome: "Volver a la página principal",
-    intro: "Nos importa tu privacidad. Esta política explica de forma sencilla cómo manejamos los datos en DJ Lobo Radio.",
-    
-    section1Title: "¿Qué datos recopilamos?",
-    section1Text: "Solo recopilamos direcciones IP para proteger nuestro servicio contra abusos. No guardamos nombres, correos electrónicos ni otra información personal sobre ti.",
-    
-    section2Title: "¿Por qué recopilamos estos datos?",
-    section2Text: "Tu dirección IP se usa únicamente para seguridad y operación – por ejemplo, para bloquear usuarios que violen nuestras reglas en el chat.",
-    
-    section3Title: "¿Cuánto tiempo se almacenan los datos?",
-    section3Text: "Las direcciones IP bloqueadas se almacenan mientras el bloqueo esté activo. Después de que expire, la información se elimina automáticamente.",
-    
-    section4Title: "Tus derechos según el GDPR",
-    section4Text: "Tienes derecho a solicitar información sobre qué datos tenemos sobre ti y a solicitar su eliminación. Contáctanos por correo electrónico para tales solicitudes.",
-    
-    section5Title: "Contáctanos",
-    section5Text: "¿Tienes preguntas sobre tus datos o quieres solicitar su eliminación? Contáctanos en:",
-    contactEmail: "info@djloboproducciones.com",
+    content: "Valoramos su privacidad. Esta política explica cómo manejamos los datos en DJ Lobo Radio. Solo recopilamos direcciones IP por motivos de seguridad, como evitar abusos en el chat. No almacenamos ninguna otra información personal. Usted tiene derecho a solicitar el acceso o la eliminación de sus datos contactándonos en info@djloboproducciones.com.",
   },
 };
 
