@@ -30,7 +30,7 @@ const FramsidaTab = () => {
   const currentHeroUrl = previewHero || branding?.profile_image_url || null;
   const hasPending = Object.keys(pendingChanges).length > 0;
 
-  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>, target: "profile" | "radio") => {
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     if (!file.type.startsWith("image/")) {
@@ -45,7 +45,6 @@ const FramsidaTab = () => {
     reader.onload = (ev) => {
       const src = ev.target?.result as string;
       setCropperSrc(src);
-      setCropperTarget(target);
       setCropperOpen(true);
     };
     reader.readAsDataURL(file);
