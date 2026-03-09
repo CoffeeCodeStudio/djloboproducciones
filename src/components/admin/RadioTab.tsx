@@ -13,6 +13,10 @@ import { supabase } from "@/integrations/supabase/client";
 import { usePresenceObserver } from "@/hooks/usePresence";
 import { useBranding } from "@/hooks/useBranding";
 import MixesTab from "./MixesTab";
+import ImageCropper from "./ImageCropper";
+
+const MAX_FILE_SIZE_MB = 2;
+const MAX_FILE_SIZE = MAX_FILE_SIZE_MB * 1024 * 1024;
 
 interface ChatMessage {
   id: string;
