@@ -89,7 +89,7 @@ const HeroSection = () => {
       <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5">
         <button
           onClick={scrollToBooking}
-          className="book-now-button tap-target px-8 sm:px-10 py-3.5 sm:py-4 font-display font-bold tracking-wider text-sm sm:text-base rounded-full flex items-center gap-2.5 transition-all"
+          className="book-now-button tap-target px-8 sm:px-10 py-3.5 sm:py-4 font-display font-bold tracking-wider text-sm sm:text-base rounded-full flex items-center justify-center gap-2.5 transition-all w-full sm:w-auto sm:min-w-[240px]"
         >
           <CalendarDays className="w-5 h-5" />
           {t.cta2}
@@ -97,7 +97,7 @@ const HeroSection = () => {
 
         <Link
           to="/lyssna"
-          className="permanent-neon-link tap-target px-8 sm:px-10 py-3.5 sm:py-4 font-display font-bold tracking-wider text-sm sm:text-base flex items-center gap-2.5 transition-all hover:scale-105"
+          className="permanent-neon-link tap-target px-8 sm:px-10 py-3.5 sm:py-4 font-display font-bold tracking-wider text-sm sm:text-base flex items-center justify-center gap-2.5 transition-all hover:scale-105 w-full sm:w-auto sm:min-w-[240px]"
         >
           <Headphones className="w-5 h-5" />
           DJ LOBO RADIO
