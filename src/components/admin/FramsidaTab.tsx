@@ -164,17 +164,17 @@ const FramsidaTab = () => {
           )}
           <input ref={heroInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect("hero")} />
           <div className="flex gap-2">
-            <Button size="lg" variant="outline" className="flex-1 text-base py-6" onClick={() => heroInputRef.current?.click()} disabled={uploadingType === "hero"}>
-              <Upload className="w-5 h-5 mr-2" />{uploadingType === "hero" ? "Laddar upp..." : "Ladda upp ny bakgrundsbild"}
+            <Button size="lg" variant="outline" className="flex-1 text-sm sm:text-base py-5 sm:py-6 h-auto" onClick={() => heroInputRef.current?.click()} disabled={uploadingType === "hero"}>
+              <Upload className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />{uploadingType === "hero" ? "Laddar..." : "Ladda upp"}
             </Button>
             {currentHeroUrl && (
-              <Button variant="destructive" size="icon" className="h-14 w-14" onClick={() => { setPendingChanges((prev) => ({ ...prev, hero_image_url: null })); setPreviewHero(null); }} title="Ta bort">
+              <Button variant="destructive" size="icon" className="h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0" onClick={() => { setPendingChanges((prev) => ({ ...prev, hero_image_url: null })); setPreviewHero(null); }} title="Ta bort">
                 <Trash2 className="w-5 h-5" />
               </Button>
             )}
           </div>
           <div className="bg-muted/30 rounded-lg p-3 space-y-1.5">
-            <p className="text-sm font-medium">✂️ Automatisk beskärning & optimering</p>
+            <p className="text-xs sm:text-sm font-medium">✂️ Automatisk beskärning & optimering</p>
             <p className="text-xs text-muted-foreground">• Välj motivet du vill ha i 16:9 format</p>
             <p className="text-xs text-muted-foreground">• Bilden optimeras automatiskt för snabb laddning</p>
             <p className="text-xs text-muted-foreground">• Max filstorlek: {MAX_FILE_SIZE_MB} MB</p>
