@@ -185,12 +185,12 @@ const FramsidaTab = () => {
       {/* Huvudbild (Om mig) - 4:5 */}
       <Card className="glass-card border-white/10">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-lg"><ImageIcon className="w-5 h-5 text-primary" />Huvudbild – "Om mig" (4:5)</CardTitle>
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg"><ImageIcon className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />Huvudbild – "Om mig" (4:5)</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <p className="text-sm text-muted-foreground">Visas i "Om DJ Lobo"-sektionen. <strong>4:5 stående format</strong> för professionellt utseende.</p>
+        <CardContent className="space-y-3 sm:space-y-4">
+          <p className="text-xs sm:text-sm text-muted-foreground">Visas i "Om DJ Lobo"-sektionen. <strong>4:5 stående format</strong> för professionellt utseende.</p>
           {currentProfileUrl ? (
-            <div className="space-y-3 max-w-[280px]">
+            <div className="space-y-2 sm:space-y-3 max-w-[280px]">
               <div className="relative w-full aspect-[4/5] rounded-lg overflow-hidden border-2 border-primary/50">
                 <img src={currentProfileUrl} alt="Nuvarande profilbild" className="w-full h-full object-cover object-center" />
                 {uploadingType === "profile" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}
@@ -200,27 +200,27 @@ const FramsidaTab = () => {
           ) : (
             <div className="relative w-full aspect-[4/5] max-w-[280px] rounded-lg overflow-hidden border-2 border-dashed border-border bg-muted/20 flex flex-col items-center justify-center gap-2">
               <ImageIcon className="w-10 h-10 text-muted-foreground" />
-              <p className="text-sm text-muted-foreground font-medium">4:5 stående format</p>
+              <p className="text-xs sm:text-sm text-muted-foreground font-medium">4:5 stående format</p>
               <p className="text-xs text-muted-foreground">Ladda upp profilbild här</p>
               {uploadingType === "profile" && <div className="absolute inset-0 bg-background/50 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-primary" /></div>}
             </div>
           )}
           <input ref={profileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileSelect("profile")} />
           <div className="flex gap-2 max-w-[280px]">
-            <Button size="lg" variant="outline" className="flex-1 text-base py-6" onClick={() => profileInputRef.current?.click()} disabled={uploadingType === "profile"}>
-              <Upload className="w-5 h-5 mr-2" />{uploadingType === "profile" ? "Laddar upp..." : "Ladda upp ny profilbild"}
+            <Button size="lg" variant="outline" className="flex-1 text-sm sm:text-base py-5 sm:py-6 h-auto" onClick={() => profileInputRef.current?.click()} disabled={uploadingType === "profile"}>
+              <Upload className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />{uploadingType === "profile" ? "Laddar..." : "Ladda upp"}
             </Button>
             {currentProfileUrl && (
-              <Button variant="destructive" size="icon" className="h-14 w-14" onClick={() => { setPendingChanges((prev) => ({ ...prev, profile_image_url: null })); setPreviewProfile(null); }} title="Ta bort">
+              <Button variant="destructive" size="icon" className="h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0" onClick={() => { setPendingChanges((prev) => ({ ...prev, profile_image_url: null })); setPreviewProfile(null); }} title="Ta bort">
                 <Trash2 className="w-5 h-5" />
               </Button>
             )}
           </div>
           <div className="bg-muted/30 rounded-lg p-3 max-w-[280px] space-y-1.5">
-            <p className="text-sm font-medium">✂️ Så funkar det</p>
-            <p className="text-xs text-muted-foreground">1. Klicka "Ladda upp ny profilbild"</p>
-            <p className="text-xs text-muted-foreground">2. Beskäraren öppnas – dra och zooma för att välja motivet</p>
-            <p className="text-xs text-muted-foreground">3. Klicka "Använd beskärning" – bilden sparas automatiskt</p>
+            <p className="text-xs sm:text-sm font-medium">✂️ Så funkar det</p>
+            <p className="text-xs text-muted-foreground">1. Klicka "Ladda upp"</p>
+            <p className="text-xs text-muted-foreground">2. Beskär motivet i 4:5 format</p>
+            <p className="text-xs text-muted-foreground">3. Klicka "Använd" – bilden sparas</p>
             <p className="text-xs text-muted-foreground">• Max filstorlek: {MAX_FILE_SIZE_MB} MB</p>
           </div>
         </CardContent>
