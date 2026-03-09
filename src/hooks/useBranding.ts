@@ -40,13 +40,21 @@ const DEFAULT_BRANDING: Partial<SiteBranding> = {
   tagline: "Bringing the best of 80s and 90s music",
 };
 
+const LOGO_CACHE_KEY = "djlobo_logo_url";
+
 export const useBranding = () => {
-  const [branding, setBranding] = useState<SiteBranding | null>(null);
+  const cachedLogo = typeof window !== "undefined" ? localStorage.getItem(LOGO_CACHE_KEY) : null;
+  const [branding, setBranding] = useState<SiteBranding | null>(
+    cachedLogo ? { logo_url: cachedLogo } as any : null
+  );
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const fetchBranding = async () => {
-    setLoading(true);
+    // Only set loading to true if we don't have a cached version to avoid UI flashes
+    if (!cachedLogo) {
+      setLoading(true);
+    }
     const { data, error } = await supabase
       .from("site_branding")
       .select("*")
@@ -57,6 +65,9 @@ export const useBranding = () => {
       setError(error.message);
     } else if (data) {
       setBranding(data);
+      if (data.logo_url) {
+        localStorage.setItem(LOGO_CACHE_KEY, data.logo_url);
+      }
     }
     setLoading(false);
   };

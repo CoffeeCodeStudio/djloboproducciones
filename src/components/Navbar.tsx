@@ -35,7 +35,7 @@ const languages: LanguageOption[] = [
 
 const Navbar = () => {
   const { language, setLanguage } = useLanguage();
-  const { branding } = useBranding();
+  const { branding, loading } = useBranding();
   const location = useLocation();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -80,7 +80,7 @@ const Navbar = () => {
               className="focus-neon rounded-lg hover:scale-105 transition-transform flex-shrink-0"
               aria-label="DJ Lobo Radio - Hem"
             >
-              {branding?.logo_url ? (
+              {!loading && branding?.logo_url ? (
                 <img
                   alt="DJ Lobo Radio Logo"
                   className="h-10 max-h-10 w-auto object-contain rounded-xl drop-shadow-[0_0_15px_rgba(0,255,255,0.3)] bg-transparent"
