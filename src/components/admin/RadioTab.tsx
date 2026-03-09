@@ -32,6 +32,10 @@ interface BannedUser {
 }
 
 const RadioTab = () => {
+  const { branding, updateBranding, refetch } = useBranding();
+  const { listenerCount, listeners } = usePresenceObserver();
+  const { toast } = useToast();
+  
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [bannedUsers, setBannedUsers] = useState<BannedUser[]>([]);
   const [adminMessage, setAdminMessage] = useState("");
@@ -39,10 +43,14 @@ const RadioTab = () => {
   const [loaded, setLoaded] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
-  const { listenerCount, listeners } = usePresenceObserver();
-  const { toast } = useToast();
-  const { branding, updateBranding, refetch } = useBranding();
-  const [radioSectionTitle, setRadioSectionTitle] = useState(branding?.radio_section_title || "Live Radio");
+  const [radioSectionTitle, setRadioSectionTitle] = useState("");
+
+  // Sync radioSectionTitle when branding loads
+  useEffect(() => {
+    if (branding?.radio_section_title !== undefined) {
+      setRadioSectionTitle(branding.radio_section_title || "Live Radio");
+    }
+  }, [branding?.radio_section_title]);
 
   const fetchMessages = async () => {
     setLoading(true);
