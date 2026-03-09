@@ -121,6 +121,53 @@ const RadioTab = () => {
     }
   };
 
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (!file.type.startsWith("image/")) {
+      sonnerToast.error("Fel filtyp – välj en bild (JPG, PNG eller WebP).");
+      return;
+    }
+    if (file.size > MAX_FILE_SIZE) {
+      sonnerToast.error(`Bilden är för stor (${(file.size / 1024 / 1024).toFixed(1)} MB). Välj en bild under ${MAX_FILE_SIZE_MB} MB.`);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const src = ev.target?.result as string;
+      setCropperSrc(src);
+      setCropperOpen(true);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
+  const handleCropComplete = async (croppedBlob: Blob) => {
+    setCropperOpen(false);
+    const previewUrl = URL.createObjectURL(croppedBlob);
+    setPreviewRadio(previewUrl);
+
+    const file = new File([croppedBlob], "radio-cropped.jpg", { type: "image/jpeg" });
+    setUploadingRadio(true);
+    const { url, error } = await uploadImage(file, "radio");
+    setUploadingRadio(false);
+
+    if (error) {
+      sonnerToast.error(error);
+      setPreviewRadio(null);
+      return;
+    }
+
+    const { error: updateError } = await updateBranding({ radio_image_url: url });
+    if (updateError) {
+      sonnerToast.error("Kunde inte spara: " + updateError);
+    } else {
+      sonnerToast.success("✅ Radiobild sparad!");
+      setPreviewRadio(null);
+      refetch();
+    }
+  };
+
   const formatTime = (d: string) => new Date(d).toLocaleString();
 
   return (
