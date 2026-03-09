@@ -15,6 +15,7 @@ interface ImageCropperProps {
   open: boolean;
   imageSrc: string;
   aspect?: number;
+  cropShape?: "rect" | "round";
   title?: string;
   onComplete: (croppedBlob: Blob) => void;
   onCancel: () => void;
@@ -59,6 +60,7 @@ const ImageCropper = ({
   open,
   imageSrc,
   aspect = 4 / 5,
+  cropShape = "rect",
   title = "Beskär bild",
   onComplete,
   onCancel,
@@ -101,10 +103,11 @@ const ImageCropper = ({
             minZoom={1}
             maxZoom={5}
             aspect={aspect}
+            cropShape={cropShape}
             onCropChange={setCrop}
             onZoomChange={setZoom}
             onCropComplete={onCropComplete}
-            showGrid
+            showGrid={cropShape === "rect"}
             objectFit="cover"
             restrictPosition={true}
             style={{
