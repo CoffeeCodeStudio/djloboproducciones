@@ -18,12 +18,15 @@ const FramsidaTab = () => {
   const [saved, setSaved] = useState(false);
   const [uploadingType, setUploadingType] = useState<string | null>(null);
   const [pendingChanges, setPendingChanges] = useState<Partial<SiteBranding>>({});
+  const [previewProfile, setPreviewProfile] = useState<string | null>(null);
   const [previewHero, setPreviewHero] = useState<string | null>(null);
+  const profileInputRef = useRef<HTMLInputElement>(null);
   const heroInputRef = useRef<HTMLInputElement>(null);
 
   // Cropper state
   const [cropperOpen, setCropperOpen] = useState(false);
   const [cropperSrc, setCropperSrc] = useState<string>("");
+  const [cropperTarget, setCropperTarget] = useState<"profile" | "hero">("profile");
 
   const currentBio = pendingChanges.bio_text ?? branding?.bio_text ?? "";
   const currentHeroUrl = previewHero || branding?.profile_image_url || null;
