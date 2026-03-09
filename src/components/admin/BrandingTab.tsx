@@ -235,11 +235,11 @@ const BrandingTab = () => {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-3 sm:space-y-4">
-            <p className="text-sm text-muted-foreground">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Logotypen visas i navigeringen (menyn) och i sidfoten. Den bör ha <strong>genomskinlig bakgrund</strong> (PNG) så att den smälter in i designen.
             </p>
 
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3 sm:gap-4">
               <input
                 ref={logoInputRef}
                 type="file"
@@ -251,18 +251,18 @@ const BrandingTab = () => {
                 <Button 
                   size="lg"
                   variant="outline" 
-                  className="text-base py-6 flex-1"
+                  className="text-sm sm:text-base py-5 sm:py-6 h-auto flex-1"
                   onClick={() => logoInputRef.current?.click()}
                   disabled={uploading === "logo"}
                 >
-                  <Upload className="w-5 h-5 mr-2" />
-                  {uploading === "logo" ? "Laddar upp..." : "Ladda upp logotyp"}
+                  <Upload className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
+                  {uploading === "logo" ? "Laddar..." : "Ladda upp"}
                 </Button>
                 {(getImagePreview("logo") || branding?.logo_url) && (
                   <Button 
                     variant="destructive" 
                     size="icon"
-                    className="h-14 w-14"
+                    className="h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0"
                     onClick={() => setPendingChanges((prev) => ({ ...prev, logo_url: null }))}
                     title="Ta bort logotyp"
                   >
