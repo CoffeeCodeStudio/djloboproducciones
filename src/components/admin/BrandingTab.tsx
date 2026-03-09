@@ -338,19 +338,19 @@ const BrandingTab = () => {
         {/* ===== FÄRGTEMA ===== */}
         <Card className="bg-card border border-border/50 shadow-sm">
           <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2 text-lg">
-              <Palette className="w-5 h-5 text-primary" />
+            <CardTitle className="font-display flex items-center gap-2 text-base sm:text-lg">
+              <Palette className="w-4 h-4 sm:w-5 sm:h-5 text-primary" />
               Färgtema
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-6">
-            <p className="text-sm text-muted-foreground">
+          <CardContent className="space-y-4 sm:space-y-6">
+            <p className="text-xs sm:text-sm text-muted-foreground">
               Välj ett färgtema eller skapa ett eget. Färgerna syns som neon-glöd på hela sidan.
             </p>
             {/* Presets */}
             <div>
-              <Label className="text-sm font-medium mb-3 block">Snabbval</Label>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <Label className="text-xs sm:text-sm font-medium mb-2 sm:mb-3 block">Snabbval</Label>
+              <div className="grid grid-cols-2 gap-2 sm:gap-3">
                 {COLOR_PRESETS.map((preset) => {
                   const isSelected = 
                     pendingChanges.primary_glow_color === preset.primary ||
@@ -359,17 +359,17 @@ const BrandingTab = () => {
                     <button
                       key={preset.name}
                       onClick={() => handleColorPreset(preset)}
-                      className={`relative p-4 rounded-lg border transition-all ${
+                      className={`relative p-3 sm:p-4 rounded-lg border transition-all ${
                         isSelected ? "border-primary bg-primary/10" : "border-border/50 hover:border-primary/50 bg-muted/20"
                       }`}
                     >
-                      <div className="flex gap-1 mb-2">
-                        <span className="w-6 h-6 rounded-full" style={{ backgroundColor: `hsl(${preset.primary})` }} />
-                        <span className="w-6 h-6 rounded-full" style={{ backgroundColor: `hsl(${preset.secondary})` }} />
-                        <span className="w-6 h-6 rounded-full" style={{ backgroundColor: `hsl(${preset.accent})` }} />
+                      <div className="flex gap-1 mb-1.5 sm:mb-2">
+                        <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full" style={{ backgroundColor: `hsl(${preset.primary})` }} />
+                        <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full" style={{ backgroundColor: `hsl(${preset.secondary})` }} />
+                        <span className="w-5 h-5 sm:w-6 sm:h-6 rounded-full" style={{ backgroundColor: `hsl(${preset.accent})` }} />
                       </div>
-                      <span className="text-xs font-medium">{preset.name}</span>
-                      {isSelected && <Check className="absolute top-2 right-2 w-4 h-4 text-primary" />}
+                      <span className="text-[11px] sm:text-xs font-medium">{preset.name}</span>
+                      {isSelected && <Check className="absolute top-1.5 sm:top-2 right-1.5 sm:right-2 w-3.5 h-3.5 sm:w-4 sm:h-4 text-primary" />}
                     </button>
                   );
                 })}
