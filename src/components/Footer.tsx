@@ -86,14 +86,11 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
                 width={120}
                 height={120} /> :
 
-
               <div className="h-16 sm:h-24 w-16 sm:w-24 flex items-center justify-center glass-card rounded-full">
-                  <RadioIcon className="h-10 sm:h-16 w-10 sm:w-16 text-neon-cyan" />
+                  <RadioIcon className="h-10 sm:h-16 w-10 sm:w-16 text-neon-cyan" aria-hidden="true" />
                 </div>
               }
             </div>
-            
-            
           </div>
 
           {/* Contact */}
@@ -101,15 +98,15 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <h3 className="font-display text-lg font-bold text-neon-gradient mb-4">{t.contact}</h3>
             <ul className="space-y-3">
               <li className="flex items-start gap-3 text-sm text-muted-foreground">
-                <Mail className="w-4 h-4 text-neon-cyan flex-shrink-0 mt-0.5" />
-                <a href="mailto:info@djloboproducciones.com" className="hover:text-neon-cyan transition-colors break-all">info@djloboproducciones.com</a>
+                <Mail className="w-4 h-4 text-neon-cyan flex-shrink-0 mt-0.5" aria-hidden="true" />
+                <a href="mailto:info@djloboproducciones.com" className="hover:text-neon-cyan transition-colors break-all" aria-label="Skicka e-post till info@djloboproducciones.com">info@djloboproducciones.com</a>
               </li>
               <li className="flex items-center gap-3 text-sm text-muted-foreground">
-                <Phone className="w-4 h-4 text-neon-pink flex-shrink-0" />
-                <a href="tel:+46769125260" className="hover:text-neon-pink transition-colors">+46 76 912 52 60</a>
+                <Phone className="w-4 h-4 text-neon-pink flex-shrink-0" aria-hidden="true" />
+                <a href="tel:+46769125260" className="hover:text-neon-pink transition-colors" aria-label="Ring +46 76 912 52 60">+46 76 912 52 60</a>
               </li>
               <li className="flex items-center gap-3 text-sm text-muted-foreground">
-                <MapPin className="w-4 h-4 text-neon-purple flex-shrink-0" />
+                <MapPin className="w-4 h-4 text-neon-purple flex-shrink-0" aria-hidden="true" />
                 <span>{t.location}</span>
               </li>
             </ul>
@@ -121,25 +118,25 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <nav aria-label={t.bookSection}>
               <ul className="space-y-3">
                 <li>
-                  <a href={socialLinks.facebookProd} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
+                  <a href={socialLinks.facebookProd} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo Producciones på Facebook" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                      <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" />
+                      <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" aria-hidden="true" />
                     </span>
                     <span>FB Producciones</span>
                   </a>
                 </li>
                 <li>
-                  <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
+                  <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo på Instagram" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                      <Instagram className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" />
+                      <Instagram className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" aria-hidden="true" />
                     </span>
                     <span>Instagram</span>
                   </a>
                 </li>
                 <li>
-                  <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
+                  <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo på YouTube" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                      <Youtube className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" />
+                      <Youtube className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" aria-hidden="true" />
                     </span>
                     <span>YouTube</span>
                   </a>
@@ -154,17 +151,17 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <nav aria-label={t.radioSection}>
               <ul className="space-y-3">
                 <li>
-                  <a href={socialLinks.facebookRadio} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
+                  <a href={socialLinks.facebookRadio} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo Radio på Facebook" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                      <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" />
+                      <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" aria-hidden="true" />
                     </span>
                     <span>FB Radio</span>
                   </a>
                 </li>
                 <li>
-                  <a href={socialLinks.zenoPlayer} target="_blank" rel="noopener noreferrer" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
+                  <a href={socialLinks.zenoPlayer} target="_blank" rel="noopener noreferrer" aria-label="Lyssna på DJ Lobo Radio via ZenoFM" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                      <RadioIcon className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" />
+                      <RadioIcon className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" aria-hidden="true" />
                     </span>
                     <span>ZenoFM</span>
                   </a>
@@ -176,7 +173,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
 
         {/* Bottom bar */}
         <div className="border-t border-neon-purple/20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-muted-foreground/70 text-xs">{t.copyright}</p>
+          <p className="text-muted-foreground text-xs">{t.copyright}</p>
           <nav aria-label="Juridiska länkar">
             <ul className="flex gap-4 text-xs">
               <li><Link to="/privacy" className="text-neon-cyan hover:underline">{t.privacyPolicy}</Link></li>
@@ -185,16 +182,16 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
           </nav>
         </div>
 
-        {/* Coffee Code Studio Credit */}
+        {/* Coffee Code Studio Credit — improved contrast */}
         <div className="mt-8 pt-4 border-t border-muted/10 text-center">
-          <p className="text-xs sm:text-sm text-muted-foreground/50">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             Design & Development by{" "}
             <a
               href={LINKEDIN_URL}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:text-muted-foreground/70 transition-colors underline decoration-dotted underline-offset-2">
-              
+              aria-label="Besök Coffee Code Studio på LinkedIn"
+              className="hover:text-foreground transition-colors underline decoration-dotted underline-offset-2">
               Coffee Code Studio
             </a>
             {" "}☕
@@ -202,7 +199,6 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
         </div>
       </div>
     </footer>);
-
 });
 
 Footer.displayName = "Footer";

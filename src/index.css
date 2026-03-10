@@ -143,50 +143,29 @@ body {
     backdrop-filter: blur(20px);
     border: 2px solid hsl(var(--neon-pink));
     border-radius: var(--radius);
-    box-shadow: 0 0 25px hsla(var(--neon-pink), 0.4), inset 0 0 30px hsla(var(--neon-pink), 0.15);
   }
 
-  /* Neon glow effects */
-  .neon-glow-pink {
-    box-shadow: 0 0 20px hsla(var(--neon-pink), 0.5), 0 0 40px hsla(var(--neon-pink), 0.3);
-  }
+  /* ===== GPU-FRIENDLY ANIMATIONS =====
+     All animations now use transform/opacity instead of box-shadow
+     to avoid layout/paint jank on mobile devices. */
 
-  .neon-glow-cyan {
-    box-shadow: 0 0 20px hsla(var(--neon-cyan), 0.5), 0 0 40px hsla(var(--neon-cyan), 0.3);
-  }
-
-  .neon-border-gradient {
-    position: relative;
-  }
-
-  .neon-border-gradient::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 50%;
-    padding: 4px;
-    background: linear-gradient(135deg, hsl(var(--neon-pink)), hsl(var(--neon-cyan)));
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-  }
-
-  /* On Air badge pulse */
+  /* On Air badge pulse — uses scale + opacity */
   .on-air-pulse {
     animation: pulse-glow 2s ease-in-out infinite;
   }
 
   @keyframes pulse-glow {
     0%, 100% {
-      box-shadow: 0 0 10px hsla(var(--neon-pink), 0.5), 0 0 20px hsla(var(--neon-pink), 0.3);
+      transform: scale(1);
+      opacity: 0.9;
     }
     50% {
-      box-shadow: 0 0 20px hsla(var(--neon-pink), 0.8), 0 0 40px hsla(var(--neon-pink), 0.5);
+      transform: scale(1.05);
+      opacity: 1;
     }
   }
 
-  /* Live dot pulse */
+  /* Live dot pulse — transform + opacity */
   .live-dot {
     animation: live-pulse 1.5s ease-in-out infinite;
   }
@@ -202,7 +181,7 @@ body {
     }
   }
 
-  /* Audio visualizer bars */
+  /* Audio visualizer bars — transform only */
   .visualizer-bar {
     animation: visualizer 0.5s ease-in-out infinite alternate;
   }
@@ -214,8 +193,8 @@ body {
   .visualizer-bar:nth-child(5) { animation-delay: 0.15s; }
 
   @keyframes visualizer {
-    0% { height: 8px; }
-    100% { height: 24px; }
+    0% { transform: scaleY(0.33); }
+    100% { transform: scaleY(1); }
   }
 
   /* Scroll reveal animation */
@@ -234,11 +213,9 @@ body {
   @keyframes subtleMove {
     0% {
       transform: scale(1);
-      background-position: 50% 50%;
     }
     100% {
-      transform: scale(1.1);
-      background-position: 55% 45%;
+      transform: scale(1.05);
     }
   }
 
@@ -265,35 +242,13 @@ body {
       radial-gradient(ellipse 60% 80% at 80% 70%, hsla(220, 100%, 15%, 0.5) 0%, transparent 50%),
       radial-gradient(ellipse 50% 60% at 50% 50%, hsla(260, 80%, 10%, 0.3) 0%, transparent 60%),
       radial-gradient(ellipse 70% 40% at 70% 20%, hsla(280, 100%, 15%, 0.35) 0%, transparent 50%);
-    animation: mesh-flow 25s ease-in-out infinite;
     pointer-events: none;
     z-index: 0;
-    will-change: background-position;
   }
 
-  /* Disable mesh animation on mobile for performance */
-  @media (max-width: 768px) {
-    .mesh-gradient-bg {
-      animation: none;
-    }
-  }
+  /* Disable mesh animation on all — it's a static backdrop now for perf */
 
-  @keyframes mesh-flow {
-    0%, 100% {
-      background-position: 0% 0%, 100% 100%, 50% 50%, 30% 70%;
-    }
-    25% {
-      background-position: 10% 20%, 90% 80%, 60% 40%, 40% 60%;
-    }
-    50% {
-      background-position: 20% 10%, 80% 90%, 40% 60%, 50% 50%;
-    }
-    75% {
-      background-position: 5% 15%, 95% 85%, 55% 45%, 35% 65%;
-    }
-  }
-
-  /* 124 BPM neon pulse animation (0.484s per beat) - disabled on mobile for perf */
+  /* 124 BPM neon pulse — uses transform + opacity instead of box-shadow */
   .bpm-pulse-124 {
     animation: bpm-pulse 0.484s ease-in-out infinite;
   }
@@ -301,25 +256,21 @@ body {
   @media (max-width: 768px) {
     .bpm-pulse-124 {
       animation: none;
-      box-shadow: 0 0 20px hsla(var(--neon-pink), 0.4), 0 0 40px hsla(var(--neon-cyan), 0.2);
     }
   }
 
   @keyframes bpm-pulse {
     0%, 100% {
-      box-shadow: 
-        0 0 20px hsla(var(--neon-pink), 0.4),
-        0 0 40px hsla(var(--neon-cyan), 0.2);
+      transform: scale(1);
+      opacity: 0.9;
     }
     50% {
-      box-shadow: 
-        0 0 35px hsla(var(--neon-pink), 0.7),
-        0 0 70px hsla(var(--neon-cyan), 0.4),
-        0 0 100px hsla(var(--neon-pink), 0.2);
+      transform: scale(1.03);
+      opacity: 1;
     }
   }
 
-  /* Profile image 124 BPM breathing pulse */
+  /* Profile image 124 BPM breathing pulse — opacity only */
   .profile-bpm-pulse::before {
     animation: profile-bpm-glow 0.484s ease-in-out infinite;
   }
@@ -327,15 +278,13 @@ body {
   @keyframes profile-bpm-glow {
     0%, 100% {
       opacity: 0.8;
-      filter: blur(0px);
     }
     50% {
       opacity: 1;
-      filter: blur(2px);
     }
   }
 
-  /* Card border 124 BPM pulse */
+  /* Card border 124 BPM pulse — opacity only */
   .card-bpm-pulse {
     animation: card-border-pulse 0.484s ease-in-out infinite;
     border-color: hsla(var(--neon-cyan), 0.4);
@@ -350,26 +299,16 @@ body {
 
   @keyframes card-border-pulse {
     0%, 100% {
-      border-color: hsla(var(--neon-cyan), 0.3);
-      box-shadow: 
-        0 0 10px hsla(var(--neon-cyan), 0.15),
-        inset 0 0 10px hsla(var(--neon-pink), 0.05);
+      opacity: 0.85;
     }
     50% {
-      border-color: hsla(var(--neon-pink), 0.6);
-      box-shadow: 
-        0 0 25px hsla(var(--neon-pink), 0.35),
-        0 0 50px hsla(var(--neon-cyan), 0.2),
-        inset 0 0 15px hsla(var(--neon-pink), 0.1);
+      opacity: 1;
     }
   }
 
-  /* Video card hover enhancement */
+  /* Video card hover enhancement — transform only */
   .video-card-hover:hover {
     transform: scale(1.02);
-    box-shadow: 
-      0 0 40px hsla(var(--neon-cyan), 0.5),
-      0 0 80px hsla(var(--neon-pink), 0.3);
   }
 
   /* Icon gradient backgrounds */
@@ -396,7 +335,6 @@ body {
   .focus-neon:focus-visible {
     outline: 2px solid hsl(var(--neon-cyan));
     outline-offset: 2px;
-    box-shadow: 0 0 10px hsla(var(--neon-cyan), 0.5);
   }
 
   /* Skip link for keyboard users */
@@ -472,7 +410,7 @@ body {
     }
   }
 
-  /* Loading spinner */
+  /* Loading spinner — transform only */
   .loading-spinner {
     width: 20px;
     height: 20px;
@@ -505,30 +443,30 @@ body {
     border-color: hsl(var(--neon-cyan));
   }
 
-  /* Chat bubble styles with neon glow */
+  /* Chat bubble styles */
   .chat-bubble-own {
     background: linear-gradient(135deg, hsla(var(--neon-pink), 0.15), hsla(var(--neon-cyan), 0.15));
     border: 1px solid hsla(var(--neon-cyan), 0.4);
-    box-shadow: 0 0 10px hsla(var(--neon-cyan), 0.2), inset 0 0 15px hsla(var(--neon-cyan), 0.05);
   }
 
   .chat-bubble-other {
     background: hsla(260, 30%, 15%, 0.8);
     border: 1px solid hsla(var(--neon-pink), 0.3);
-    box-shadow: 0 0 8px hsla(var(--neon-pink), 0.15), inset 0 0 12px hsla(var(--neon-pink), 0.03);
   }
 
-  /* Fire glow animation for 🔥 messages */
+  /* Fire glow animation — uses scale + opacity */
   .fire-glow {
     animation: fire-pulse 0.5s ease-in-out 3;
   }
 
   @keyframes fire-pulse {
     0%, 100% {
-      box-shadow: 0 0 10px hsla(30, 100%, 50%, 0.3), 0 0 20px hsla(15, 100%, 50%, 0.2);
+      transform: scale(1);
+      opacity: 0.9;
     }
     50% {
-      box-shadow: 0 0 20px hsla(30, 100%, 50%, 0.6), 0 0 40px hsla(15, 100%, 50%, 0.4), 0 0 60px hsla(0, 100%, 50%, 0.2);
+      transform: scale(1.04);
+      opacity: 1;
     }
   }
 
@@ -541,10 +479,6 @@ body {
     background: linear-gradient(135deg, hsla(var(--gold), 0.15), hsla(var(--electric-purple), 0.15));
     border: 2px solid hsl(var(--gold));
     color: hsl(var(--gold));
-    box-shadow: 
-      0 0 15px hsla(var(--gold), 0.3),
-      0 0 30px hsla(var(--gold), 0.15),
-      inset 0 0 20px hsla(var(--gold), 0.1);
     animation: book-now-breathe 3.5s ease-in-out infinite;
   }
 
@@ -554,11 +488,6 @@ body {
     border-color: hsl(var(--electric-purple));
     color: hsl(0, 0%, 100%);
     background: linear-gradient(135deg, hsla(var(--gold), 0.3), hsla(var(--electric-purple), 0.3));
-    box-shadow: 
-      0 0 25px hsla(var(--gold), 0.6),
-      0 0 50px hsla(var(--electric-purple), 0.4),
-      0 0 80px hsla(var(--gold), 0.2),
-      inset 0 0 30px hsla(var(--gold), 0.2);
     outline: none;
   }
 
@@ -566,24 +495,19 @@ body {
     transform: scale(1.02);
   }
 
-  /* Breathing glow animation */
+  /* Breathing animation — transform + opacity only */
   @keyframes book-now-breathe {
     0%, 100% {
-      box-shadow: 
-        0 0 10px hsla(var(--gold), 0.25),
-        0 0 20px hsla(var(--gold), 0.1),
-        inset 0 0 15px hsla(var(--gold), 0.08);
+      transform: scale(1);
+      opacity: 0.9;
     }
     50% {
-      box-shadow: 
-        0 0 20px hsla(var(--gold), 0.5),
-        0 0 40px hsla(var(--gold), 0.25),
-        0 0 60px hsla(var(--electric-purple), 0.15),
-        inset 0 0 25px hsla(var(--gold), 0.15);
+      transform: scale(1.03);
+      opacity: 1;
     }
   }
 
-  /* Shine/sheen effect that passes across */
+  /* Shine/sheen effect that passes across — transform only */
   .book-now-shine {
     background: linear-gradient(
       120deg,
@@ -609,7 +533,7 @@ body {
     }
   }
 
-  /* Profile neon aura - slow breathing glow */
+  /* Profile neon aura - slow breathing — uses scale + opacity */
   .profile-neon-aura {
     border: 2px solid hsla(var(--neon-cyan), 0.5);
     animation: neon-aura-pulse 3s ease-in-out infinite;
@@ -617,15 +541,12 @@ body {
 
   @keyframes neon-aura-pulse {
     0%, 100% {
-      box-shadow:
-        0 0 10px hsla(var(--neon-cyan), 0.3),
-        0 0 20px hsla(var(--neon-cyan), 0.15);
+      transform: scale(1);
+      opacity: 0.9;
     }
     50% {
-      box-shadow:
-        0 0 25px hsla(var(--neon-cyan), 0.6),
-        0 0 50px hsla(var(--neon-cyan), 0.35),
-        0 0 80px hsla(var(--neon-pink), 0.2);
+      transform: scale(1.02);
+      opacity: 1;
     }
   }
 
@@ -635,7 +556,7 @@ body {
     }
   }
 
-  /* Permanent gold neon flicker for 'Lyssna' nav link */
+  /* Permanent gold neon flicker for 'Lyssna' nav link — uses opacity only */
   .permanent-neon-link {
     color: #FFD700 !important;
     border: 2px solid hsla(45, 100%, 50%, 0.5);
@@ -648,22 +569,17 @@ body {
 
   @keyframes goldNeonFlickerPermanent {
     0%, 18%, 22%, 25%, 53%, 57%, 100% {
-      text-shadow: 0 0 4px hsla(0, 0%, 100%, 0.8), 0 0 11px #FFD700, 0 0 19px #FF8C00;
-      box-shadow: 0 0 8px hsla(45, 100%, 50%, 0.6), inset 0 0 8px hsla(45, 100%, 50%, 0.4);
       opacity: 1;
     }
     20%, 24%, 55% {
-      text-shadow: 0 0 2px hsla(45, 100%, 50%, 0.4), 0 0 6px hsla(45, 100%, 50%, 0.2);
-      box-shadow: none;
-      opacity: 0.85;
+      opacity: 0.8;
     }
   }
 
   .permanent-neon-link:hover {
     animation: none;
-    text-shadow: 0 0 8px #fff, 0 0 20px #FFD700, 0 0 35px #FF8C00;
-    box-shadow: 0 0 15px #FFD700, inset 0 0 15px #FFD700;
     opacity: 1;
+    transform: scale(1.05);
   }
 
   /* Respect reduced motion */
@@ -676,5 +592,31 @@ body {
       animation: none !important;
       display: none;
     }
+  }
+
+  /* Neon glow effects — kept for non-animated usage, static only */
+  .neon-glow-pink {
+    border: 1px solid hsla(var(--neon-pink), 0.5);
+  }
+
+  .neon-glow-cyan {
+    border: 1px solid hsla(var(--neon-cyan), 0.5);
+  }
+
+  .neon-border-gradient {
+    position: relative;
+  }
+
+  .neon-border-gradient::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    padding: 4px;
+    background: linear-gradient(135deg, hsl(var(--neon-pink)), hsl(var(--neon-cyan)));
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
   }
 }
