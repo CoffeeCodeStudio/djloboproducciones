@@ -53,7 +53,6 @@ const SocialGallerySection = () => {
   const [mixcloudModalOpen, setMixcloudModalOpen] = useState(false);
   const [selectedMixcloudTitle] = useState("");
 
-
   return (
     <section className="py-16 sm:py-24 px-4 sm:px-6" aria-labelledby="social-gallery-heading">
       <div className="max-w-7xl mx-auto">
@@ -74,7 +73,7 @@ const SocialGallerySection = () => {
         <div className="mb-12">
           <div className="flex items-center justify-center mb-6">
             <h3 className="font-display text-xl sm:text-2xl font-bold text-neon-cyan flex items-center gap-3">
-              <ImageIcon className="w-6 h-6" />
+              <ImageIcon className="w-6 h-6" aria-hidden="true" />
               {t.gallery}
             </h3>
           </div>
@@ -95,7 +94,7 @@ const SocialGallerySection = () => {
                 >
                   <img
                     src={optimizeGallery(image.image_url).src}
-                    alt={image.alt_text || "DJ Lobo gallery image"}
+                    alt={image.alt_text || "DJ Lobo eventbild från galleri"}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     loading="lazy"
                     width={400}
@@ -104,15 +103,12 @@ const SocialGallerySection = () => {
                   />
                   <div 
                     className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                    style={{
-                      boxShadow: "inset 0 0 30px rgba(255, 0, 255, 0.2)",
-                    }}
                   />
                 </div>
               ))
             ) : (
               <div className="col-span-full text-center py-8 text-muted-foreground">
-                <ImageIcon className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                <ImageIcon className="w-12 h-12 mx-auto mb-3 opacity-50" aria-hidden="true" />
                 <p>{t.noImages}</p>
               </div>
             )}
@@ -125,27 +121,30 @@ const SocialGallerySection = () => {
             href={SOCIAL_LINKS.instagram}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Följ DJ Lobo på Instagram"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full glass-card font-display font-bold tracking-wider text-sm hover:scale-105 transition-all text-pink-500 hover:text-neon-pink"
           >
-            <Instagram className="w-5 h-5" />
+            <Instagram className="w-5 h-5" aria-hidden="true" />
             {t.followInstagram}
           </a>
           <a
             href={SOCIAL_LINKS.facebook}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Följ DJ Lobo Radio på Facebook"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full glass-card font-display font-bold tracking-wider text-sm hover:scale-105 transition-all text-neon-cyan hover:text-neon-pink"
           >
-            <Facebook className="w-5 h-5" />
+            <Facebook className="w-5 h-5" aria-hidden="true" />
             {t.joinFacebookRadio}
           </a>
           <a
             href={SOCIAL_LINKS.youtube}
             target="_blank"
             rel="noopener noreferrer"
+            aria-label="Prenumerera på DJ Lobo YouTube-kanal"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full glass-card font-display font-bold tracking-wider text-sm hover:scale-105 transition-all text-red-500 hover:text-neon-pink"
           >
-            <Youtube className="w-5 h-5" />
+            <Youtube className="w-5 h-5" aria-hidden="true" />
             {t.subscribeYoutube}
           </a>
         </div>

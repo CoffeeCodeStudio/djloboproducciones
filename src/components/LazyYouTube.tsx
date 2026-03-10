@@ -32,14 +32,16 @@ const LazyYouTube = ({ videoId, title, className = "" }: LazyYouTubeProps) => {
       {/* YouTube thumbnail */}
       <img
         src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
-        alt={title}
+        alt={`Förhandsvisning av video: ${title}`}
         className="w-full h-full object-cover"
         loading="lazy"
+        width={480}
+        height={360}
       />
       {/* Play button overlay */}
       <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
-        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-neon-pink/90 flex items-center justify-center group-hover:scale-110 transition-transform shadow-lg shadow-neon-pink/40">
-          <Play className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1" />
+        <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-neon-pink/90 flex items-center justify-center group-hover:scale-110 transition-transform">
+          <Play className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1" aria-hidden="true" />
         </div>
       </div>
     </button>
