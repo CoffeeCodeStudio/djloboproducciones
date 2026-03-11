@@ -187,10 +187,10 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
           <p className="text-xs sm:text-sm text-muted-foreground">
             Design & Development by{" "}
             <a
-              href={LINKEDIN_URL}
+              href="https://coffeecodestudio.se"
               target="_blank"
               rel="noopener noreferrer"
-              aria-label="Besök Coffee Code Studio på LinkedIn"
+              aria-label="Besök Coffee Code Studio"
               className="hover:text-foreground transition-colors underline decoration-dotted underline-offset-2">
               Coffee Code Studio
             </a>
