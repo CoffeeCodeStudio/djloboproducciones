@@ -5,21 +5,21 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const translations = {
   sv: {
     title: "Sekretesspolicy",
-    lastUpdated: "Senast uppdaterad: Januari 2026",
+    lastUpdated: "Senast uppdaterad: Mars 2026",
     backToHome: "Tillbaka till startsidan",
-    content: "Vi värnar om din integritet. Denna policy förklarar hur vi hanterar data på DJ Lobo Radio. Vi samlar endast in IP-adresser för säkerhetsändamål, såsom att förhindra missbruk i chatten. Vi sparar ingen annan personlig information. Du har rätt att begära utdrag eller radering av data genom att kontakta oss på info@djloboproducciones.com.",
+    content: "Vi värnar om din integritet. Denna policy förklarar hur vi hanterar data på DJ Lobo Radio.\n\nVi samlar INTE in IP-adresser. För att förhindra missbruk i chatten använder vi anonyma sessions-ID som lagras lokalt i din webbläsare. Dessa kan inte kopplas till din identitet.\n\nVid bokning av DJ-tjänster sparar vi namn, e-post, telefonnummer och evenemangsdetaljer som du själv anger. Denna data används enbart för att hantera din bokning.\n\nVi använder automatisk hastighetsbegränsning (rate limiting) för att skydda chatten mot spam.\n\nDu har rätt att begära utdrag eller radering av data genom att kontakta oss på info@djloboproducciones.com.",
   },
   en: {
     title: "Privacy Policy",
-    lastUpdated: "Last updated: January 2026",
+    lastUpdated: "Last updated: March 2026",
     backToHome: "Back to homepage",
-    content: "We value your privacy. This policy explains how we handle data at DJ Lobo Radio. We only collect IP addresses for security purposes, such as preventing abuse in the chat. We do not store any other personal information. You have the right to request access to or deletion of your data by contacting us at info@djloboproducciones.com.",
+    content: "We value your privacy. This policy explains how we handle data at DJ Lobo Radio.\n\nWe do NOT collect IP addresses. To prevent abuse in the chat, we use anonymous session IDs stored locally in your browser. These cannot be linked to your identity.\n\nWhen booking DJ services, we store the name, email, phone number, and event details that you provide. This data is used solely to manage your booking.\n\nWe use automatic rate limiting to protect the chat from spam.\n\nYou have the right to request access to or deletion of your data by contacting us at info@djloboproducciones.com.",
   },
   es: {
     title: "Política de Privacidad",
-    lastUpdated: "Última actualización: Enero 2026",
+    lastUpdated: "Última actualización: Marzo 2026",
     backToHome: "Volver a la página principal",
-    content: "Valoramos su privacidad. Esta política explica cómo manejamos los datos en DJ Lobo Radio. Solo recopilamos direcciones IP por motivos de seguridad, como evitar abusos en el chat. No almacenamos ninguna otra información personal. Usted tiene derecho a solicitar el acceso o la eliminación de sus datos contactándonos en info@djloboproducciones.com.",
+    content: "Valoramos su privacidad. Esta política explica cómo manejamos los datos en DJ Lobo Radio.\n\nNO recopilamos direcciones IP. Para prevenir abusos en el chat, utilizamos identificadores de sesión anónimos almacenados localmente en su navegador. Estos no pueden vincularse a su identidad.\n\nAl reservar servicios de DJ, almacenamos el nombre, correo electrónico, número de teléfono y detalles del evento que usted proporciona. Estos datos se utilizan únicamente para gestionar su reserva.\n\nUtilizamos limitación automática de frecuencia (rate limiting) para proteger el chat contra spam.\n\nUsted tiene derecho a solicitar el acceso o la eliminación de sus datos contactándonos en info@djloboproducciones.com.",
   },
 };
 
