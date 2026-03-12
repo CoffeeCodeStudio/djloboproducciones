@@ -232,7 +232,7 @@ const NowPlayingBar = () => {
   };
 
   const handleMixesClick = () => {
-    navigate("/mixes");
+    navigate("/mixar");
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
