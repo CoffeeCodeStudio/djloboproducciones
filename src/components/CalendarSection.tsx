@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapPin, Clock, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
 
+const MINIMUM_LOADING_TIME = 3000; // 3 seconds
 
 const translations = {
   sv: {
