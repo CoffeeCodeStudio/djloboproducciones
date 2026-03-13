@@ -2,7 +2,7 @@ import { useEffect, useRef } from "react";
 import { MapPin, Clock, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
-import { Skeleton } from "@/components/ui/skeleton";
+
 
 const translations = {
   sv: {
