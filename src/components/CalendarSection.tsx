@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MapPin, Clock, AlertCircle } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
 
+const MINIMUM_LOADING_TIME = 3000; // 3 seconds
 
 const translations = {
   sv: {
@@ -76,7 +77,29 @@ const CalendarSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const { language } = useLanguage();
   const t = translations[language];
-  const { events, loading, error, refetch } = useCalendarEvents();
+  const { events, loading: apiLoading, error, refetch } = useCalendarEvents();
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Force minimum loading time of 3 seconds
+  useEffect(() => {
+    const minimumLoadingPromise = new Promise((resolve) =>
+      setTimeout(resolve, MINIMUM_LOADING_TIME)
+    );
+
+    const checkLoading = async () => {
+      await Promise.all([minimumLoadingPromise]);
+      setIsLoading(false);
+    };
+
+    checkLoading();
+  }, []);
+
+  // Update loading state when API completes
+  useEffect(() => {
+    if (!apiLoading) {
+      // isLoading will be set to false when minimum time passes
+    }
+  }, [apiLoading]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -116,13 +139,13 @@ const CalendarSection = () => {
 
         {/* Event list container */}
         <div className="scroll-reveal rounded-2xl border border-neon-cyan/20 bg-background/40 backdrop-blur-md overflow-hidden" style={{ boxShadow: '0 0 30px -10px hsla(180, 100%, 50%, 0.15)' }}>
-          {/* Skeleton loading */}
-          {loading && events.length === 0 && (
+          {/* Loading animation */}
+          {isLoading && events.length === 0 && (
             <DJLoadingAnimation />
           )}
 
           {/* Error state */}
-          {!loading && error && events.length === 0 && (
+          {!isLoading && error && events.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 gap-3">
               <AlertCircle className="w-8 h-8 text-muted-foreground/50" />
               <p className="text-muted-foreground text-sm">{t.errorMessage}</p>
@@ -136,7 +159,7 @@ const CalendarSection = () => {
           )}
 
           {/* Empty state */}
-          {!loading && !error && events.length === 0 && (
+          {!isLoading && !error && events.length === 0 && (
             <p className="text-center text-muted-foreground py-12 text-sm">
               {t.noEvents}
             </p>
