@@ -139,13 +139,13 @@ const CalendarSection = () => {
 
         {/* Event list container */}
         <div className="scroll-reveal rounded-2xl border border-neon-cyan/20 bg-background/40 backdrop-blur-md overflow-hidden" style={{ boxShadow: '0 0 30px -10px hsla(180, 100%, 50%, 0.15)' }}>
-          {/* Skeleton loading */}
-          {loading && events.length === 0 && (
+          {/* Loading animation */}
+          {isLoading && events.length === 0 && (
             <DJLoadingAnimation />
           )}
 
           {/* Error state */}
-          {!loading && error && events.length === 0 && (
+          {!isLoading && error && events.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 gap-3">
               <AlertCircle className="w-8 h-8 text-muted-foreground/50" />
               <p className="text-muted-foreground text-sm">{t.errorMessage}</p>
@@ -159,7 +159,7 @@ const CalendarSection = () => {
           )}
 
           {/* Empty state */}
-          {!loading && !error && events.length === 0 && (
+          {!isLoading && !error && events.length === 0 && (
             <p className="text-center text-muted-foreground py-12 text-sm">
               {t.noEvents}
             </p>
