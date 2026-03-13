@@ -77,7 +77,29 @@ const CalendarSection = () => {
   const sectionRef = useRef<HTMLElement>(null);
   const { language } = useLanguage();
   const t = translations[language];
-  const { events, loading, error, refetch } = useCalendarEvents();
+  const { events, loading: apiLoading, error, refetch } = useCalendarEvents();
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Force minimum loading time of 3 seconds
+  useEffect(() => {
+    const minimumLoadingPromise = new Promise((resolve) =>
+      setTimeout(resolve, MINIMUM_LOADING_TIME)
+    );
+
+    const checkLoading = async () => {
+      await Promise.all([minimumLoadingPromise]);
+      setIsLoading(false);
+    };
+
+    checkLoading();
+  }, []);
+
+  // Update loading state when API completes
+  useEffect(() => {
+    if (!apiLoading) {
+      // isLoading will be set to false when minimum time passes
+    }
+  }, [apiLoading]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
