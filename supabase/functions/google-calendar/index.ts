@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -11,11 +12,30 @@ serve(async (req) => {
   }
 
   try {
-    const { calendarId } = await req.json();
-    
+    // Fetch calendarId from database instead of accepting from caller
+    const supabase = createClient(
+      Deno.env.get('SUPABASE_URL')!,
+      Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
+    );
+
+    const { data: branding, error: dbError } = await supabase
+      .from('site_branding')
+      .select('google_calendar_id')
+      .limit(1)
+      .maybeSingle();
+
+    if (dbError) {
+      console.error('Database error:', dbError);
+      return new Response(JSON.stringify({ error: 'Failed to fetch calendar config' }), {
+        status: 500,
+        headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+      });
+    }
+
+    const calendarId = branding?.google_calendar_id;
     if (!calendarId) {
-      return new Response(JSON.stringify({ error: 'Missing calendarId' }), {
-        status: 400,
+      return new Response(JSON.stringify({ error: 'No calendar configured' }), {
+        status: 404,
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
     }

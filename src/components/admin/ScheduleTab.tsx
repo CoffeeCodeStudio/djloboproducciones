@@ -74,7 +74,7 @@ const ScheduleTab = () => {
 
     try {
       const { data, error } = await supabase.functions.invoke("google-calendar", {
-        body: { calendarId },
+        body: {},
       });
 
       if (error) {

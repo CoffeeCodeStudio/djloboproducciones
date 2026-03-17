@@ -75,7 +75,7 @@ export const useCalendarEvents = () => {
       const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
 
       const { data, error: fnError } = await supabase.functions.invoke("google-calendar", {
-        body: { calendarId: branding.google_calendar_id },
+        body: {},
       });
 
       clearTimeout(timeout);
