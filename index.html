@@ -49,30 +49,12 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 
-    <!-- Preload critical font -->
+    <!-- Preload critical Google Fonts stylesheet -->
     <link
       rel="preload"
       as="style"
-      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=Inter:wght@400;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
     />
-
-    <!-- Inline critical CSS for fonts with display=swap -->
-    <style>
-      @font-face {
-        font-family: 'Orbitron';
-        font-style: normal;
-        font-weight: 700 900;
-        font-display: swap;
-        src: url(https://fonts.gstatic.com/s/orbitron/v31/yMJMMIlzdpvBhQQL_SC3X9yhF25-T1nyKS6xpmIyXjU1pg.woff2) format('woff2');
-      }
-      @font-face {
-        font-family: 'Inter';
-        font-style: normal;
-        font-weight: 400 600;
-        font-display: swap;
-        src: url(https://fonts.gstatic.com/s/inter/v13/UcCO3FwrK3iLTeHuS_fvQtMwCp50KnMw2boKoduKmMEVuI6fAZ9hjp-Ek-_EeAmM.woff2) format('woff2');
-      }
-    </style>
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -107,17 +89,10 @@
     <script src="//widget.mixcloud.com/media/js/widgetApi.js" async defer></script>
     <script src="https://w.soundcloud.com/player/api.js" async defer></script>
 
-    <!-- Load full Google Fonts non-blocking -->
+    <!-- Google Fonts - render blocking for consistent typography -->
     <link
       rel="stylesheet"
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
-      media="print"
-      onload="this.media='all'"
     />
-    <noscript
-      ><link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
-    /></noscript>
   </body>
 </html>
