@@ -331,6 +331,7 @@ const BookingSection = () => {
                 <Link to="/privacy" className="text-neon-cyan hover:underline">{t.privacyLink}</Link>.
               </p>
             </div>
+          </form>
         </div>
 
         {/* Why Book */}

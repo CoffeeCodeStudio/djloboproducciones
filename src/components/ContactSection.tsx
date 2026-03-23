@@ -192,6 +192,7 @@ const ContactSection = () => {
               <Link to="/privacy" className="text-neon-cyan hover:underline">{t.privacyLink}</Link>.
             </p>
           </form>
+        </div>
 
         {/* Contact Info */}
         
