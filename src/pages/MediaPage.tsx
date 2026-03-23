@@ -177,7 +177,9 @@ const MediaPage = () => {
                 <div className="absolute top-2 left-2">
                   <span className="px-2 py-1 rounded text-xs font-semibold bg-background/60 text-foreground flex items-center gap-1 backdrop-blur-sm">
                     {item.mediaType === "video" ? <Play className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
-                    {item.mediaType === "video" ? "Video" : "Foto"}
+                    {item.mediaType === "video"
+                      ? (language === "en" ? "Video" : language === "es" ? "Video" : "Video")
+                      : (language === "en" ? "Photo" : language === "es" ? "Foto" : "Foto")}
                   </span>
                 </div>
 

@@ -79,7 +79,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
             <div className="flex items-center gap-3 mb-4">
               {branding?.logo_url ?
               <img
-                alt="DJ Lobo Radio Logo"
+                alt="DJ Lobo Producciones Logo"
                 className="!h-16 sm:!h-24 w-auto object-contain rounded-xl bg-transparent animate-fade-in"
                 src={branding.logo_url}
                 loading="lazy"

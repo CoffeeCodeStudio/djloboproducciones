@@ -84,7 +84,7 @@ const Navbar = () => {
               aria-label="DJ Lobo Producciones - Hem"
             >
             <img
-              alt="DJ Lobo Radio Logo"
+              alt="DJ Lobo Producciones Logo"
               className="h-10 w-[120px] object-contain rounded-full bg-background/0 animate-[fade-in_0.8s_ease-out] ring-0 border-0 outline-none shadow-none [filter:brightness(0.95)_contrast(1.05)]"
               style={{ mixBlendMode: 'normal' }}
               src={logoOpt.src || "/favicon.png"}
