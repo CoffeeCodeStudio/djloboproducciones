@@ -32,7 +32,7 @@ const translations = {
   },
 };
 
-const DJLoadingAnimation = () => (
+const DJLoadingAnimation = ({ loadingText }: { loadingText: string }) => (
   <div className="flex flex-col items-center justify-center py-12 gap-4">
     {/* DJ Silhouette SVG */}
     <div className="relative w-24 h-24 animate-pulse">
@@ -68,7 +68,7 @@ const DJLoadingAnimation = () => (
       <div className="absolute inset-2 rounded-full bg-neon-purple/10 animate-ping" style={{ animationDuration: '2.5s' }} />
     </div>
     <p className="text-sm font-display tracking-wider text-neon-pink/80 animate-pulse">
-      Laddar spelningar...
+      {loadingText}
     </p>
   </div>
 );
@@ -141,7 +141,7 @@ const CalendarSection = () => {
         <div className="scroll-reveal rounded-2xl border border-neon-cyan/20 bg-background/40 backdrop-blur-md overflow-hidden" style={{ boxShadow: '0 0 30px -10px hsla(180, 100%, 50%, 0.15)' }}>
           {/* Loading animation */}
           {isLoading && events.length === 0 && (
-            <DJLoadingAnimation />
+            <DJLoadingAnimation loadingText={language === "en" ? "Loading shows..." : language === "es" ? "Cargando shows..." : "Laddar spelningar..."} />
           )}
 
           {/* Error state */}

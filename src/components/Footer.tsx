@@ -15,7 +15,7 @@ const LINKEDIN_URL = "https://www.linkedin.com/in/rami-e-453b77330/";
 
 const translations = {
   sv: {
-    copyright: "© 2026 DJ Lobo Producciones. All rights reserved.",
+    copyright: "© 2026 DJ Lobo Producciones. Alla rättigheter förbehållna.",
     privacyPolicy: "Integritetspolicy",
     terms: "Användarvillkor",
     contact: "Kontakt",

@@ -62,17 +62,17 @@ const testimonials: Testimonial[] = [
 ];
 
 interface ClientLogo {
-  name: string;
+  name: { sv: string; en: string; es: string };
   icon: React.ElementType;
 }
 
 const clientLogos: ClientLogo[] = [
-  { name: "Företagsevent", icon: Building2 },
-  { name: "Bröllop", icon: Heart },
-  { name: "Nattklubbar", icon: Music },
-  { name: "Festivaler", icon: PartyPopper },
-  { name: "Studentevent", icon: GraduationCap },
-  { name: "Privatfester", icon: Users },
+  { name: { sv: "Företagsevent", en: "Corporate Events", es: "Eventos Corporativos" }, icon: Building2 },
+  { name: { sv: "Bröllop", en: "Weddings", es: "Bodas" }, icon: Heart },
+  { name: { sv: "Nattklubbar", en: "Nightclubs", es: "Discotecas" }, icon: Music },
+  { name: { sv: "Festivaler", en: "Festivals", es: "Festivales" }, icon: PartyPopper },
+  { name: { sv: "Studentevent", en: "Student Events", es: "Eventos Estudiantiles" }, icon: GraduationCap },
+  { name: { sv: "Privatfester", en: "Private Parties", es: "Fiestas Privadas" }, icon: Users },
 ];
 
 const translations = {
@@ -183,7 +183,7 @@ const TestimonialsSection = () => {
             >
               <client.icon className="w-8 h-8 text-muted-foreground group-hover:text-neon-cyan transition-colors" />
               <span className="text-xs text-muted-foreground group-hover:text-foreground transition-colors">
-                {client.name}
+                {client.name[language]}
               </span>
             </div>
           ))}

@@ -34,7 +34,7 @@ const BookNowButton = () => {
       {/* Button content */}
       <Calendar className="w-3.5 h-3.5 sm:w-5 sm:h-5 relative z-10 flex-shrink-0" aria-hidden="true" />
       <span className="relative z-10 hidden xs:inline">{t.bookNow}</span>
-      <span className="relative z-10 xs:hidden">BOKA</span>
+      <span className="relative z-10 xs:hidden">{language === "en" ? "BOOK" : language === "es" ? "RESERVA" : "BOKA"}</span>
     </a>
   );
 };

@@ -64,7 +64,7 @@ const translations = {
   },
   es: {
     title: "Reservar Evento",
-    subtitle: "Complete el formulario y le responderemos en 24 horas",
+    subtitle: "Completa el formulario y te responderemos en 24 horas",
     name: "Tu nombre",
     email: "Correo electrónico",
     phone: "Teléfono (opcional)",

@@ -10,7 +10,7 @@ const translations = {
     subtitle: "LATIN BEATS • HOUSE MUSIC • WORLD HITS • 80s & 90s",
     cta1: "SE SCHEMA",
     cta2: "BOKA SPELNING",
-    tagline: "Göteborg's mest anlitade DJ för fester, bröllop och företagsevent"
+    tagline: "Göteborgs mest anlitade DJ för fester, bröllop och företagsevent"
   },
   en: {
     title: "DJ LOBO",
