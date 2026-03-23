@@ -187,8 +187,11 @@ const ContactSection = () => {
                 </>
               }
             </Button>
+            <p className="text-xs text-muted-foreground mt-3">
+              {t.privacyConsent}{" "}
+              <Link to="/privacy" className="text-neon-cyan hover:underline">{t.privacyLink}</Link>.
+            </p>
           </form>
-        </div>
 
         {/* Contact Info */}
         

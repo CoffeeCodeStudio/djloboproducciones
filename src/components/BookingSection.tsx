@@ -321,7 +321,16 @@ const BookingSection = () => {
                 )}
               </Button>
             </div>
-          </form>
+            <div className="sm:col-span-2 space-y-3">
+              <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-neon-pink/70" />
+                <p>{t.disclaimer}</p>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {t.privacyConsent}{" "}
+                <Link to="/privacy" className="text-neon-cyan hover:underline">{t.privacyLink}</Link>.
+              </p>
+            </div>
         </div>
 
         {/* Why Book */}
