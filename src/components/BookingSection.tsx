@@ -1,5 +1,6 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Calendar, Clock, MapPin, Music, Send, CalendarIcon } from "lucide-react";
+import { Calendar, Clock, MapPin, Music, Send, CalendarIcon, Info } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
