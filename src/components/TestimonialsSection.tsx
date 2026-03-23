@@ -62,7 +62,7 @@ const testimonials: Testimonial[] = [
 ];
 
 interface ClientLogo {
-  name: string;
+  name: { sv: string; en: string; es: string };
   icon: React.ElementType;
 }
 
