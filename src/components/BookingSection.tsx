@@ -64,6 +64,9 @@ const translations = {
     reason2: "Professional equipment",
     reason3: "Flexible and adapts the music",
     reason4: "Competitive prices",
+    disclaimer: "A submitted request is not a confirmed booking. Price and availability will be confirmed via email.",
+    privacyConsent: "By submitting, you agree that your data is handled according to our",
+    privacyLink: "privacy policy",
   },
   es: {
     title: "Reservar Evento",
