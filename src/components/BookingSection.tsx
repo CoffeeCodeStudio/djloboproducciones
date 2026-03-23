@@ -1,5 +1,6 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Calendar, Clock, MapPin, Music, Send, CalendarIcon } from "lucide-react";
+import { Calendar, Clock, MapPin, Music, Send, CalendarIcon, Info } from "lucide-react";
+import { Link } from "react-router-dom";
 import { useState } from "react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
@@ -40,6 +41,9 @@ const translations = {
     reason2: "Professionell utrustning",
     reason3: "Flexibel och anpassar musiken",
     reason4: "Konkurrensmässiga priser",
+    disclaimer: "En inskickad förfrågan är inte en bekräftad bokning. Pris och tillgänglighet bekräftas via e-post.",
+    privacyConsent: "Genom att skicka godkänner du att din data hanteras enligt vår",
+    privacyLink: "integritetspolicy",
   },
   en: {
     title: "Book Event",
@@ -61,6 +65,9 @@ const translations = {
     reason2: "Professional equipment",
     reason3: "Flexible and adapts the music",
     reason4: "Competitive prices",
+    disclaimer: "A submitted request is not a confirmed booking. Price and availability will be confirmed via email.",
+    privacyConsent: "By submitting, you agree that your data is handled according to our",
+    privacyLink: "privacy policy",
   },
   es: {
     title: "Reservar Evento",
@@ -82,6 +89,9 @@ const translations = {
     reason2: "Equipo profesional",
     reason3: "Flexible y adapta la música",
     reason4: "Precios competitivos",
+    disclaimer: "Una solicitud enviada no es una reserva confirmada. El precio y la disponibilidad se confirman por correo electrónico.",
+    privacyConsent: "Al enviar, aceptas que tus datos se manejen según nuestra",
+    privacyLink: "política de privacidad",
   },
 };
 
@@ -310,6 +320,16 @@ const BookingSection = () => {
                   </>
                 )}
               </Button>
+            </div>
+            <div className="sm:col-span-2 space-y-3">
+              <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-neon-pink/70" />
+                <p>{t.disclaimer}</p>
+              </div>
+              <p className="text-xs text-muted-foreground">
+                {t.privacyConsent}{" "}
+                <Link to="/privacy" className="text-neon-cyan hover:underline">{t.privacyLink}</Link>.
+              </p>
             </div>
           </form>
         </div>

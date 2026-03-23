@@ -7,19 +7,19 @@ const translations = {
     title: "Användarvillkor",
     lastUpdated: "Senast uppdaterad: Mars 2026",
     backToHome: "Tillbaka till startsidan",
-    content: "Genom att använda DJ Lobo Radio godkänner du dessa villkor.\n\nVår chatt är till för att sprida glädje — hotfullt, kränkande eller olagligt innehåll tolereras inte. Vi förbehåller oss rätten att stänga av sessioner som bryter mot reglerna. Automatisk hastighetsbegränsning (max 5 meddelanden per 30 sekunder) gäller för alla användare.\n\nBokningsformuläret ska användas i god tro. Falska bokningar är inte tillåtna.\n\nVi ansvarar inte för tekniska avbrott eller innehåll från tredjepartstjänster (YouTube, Mixcloud, ZenoFM).\n\nFrågor? Kontakta info@djloboproducciones.com.",
+    content: "Genom att använda DJ Lobo Radio godkänner du dessa villkor.\n\nVår chatt är till för att sprida glädje — hotfullt, kränkande eller olagligt innehåll tolereras inte. Vi förbehåller oss rätten att stänga av sessioner som bryter mot reglerna. Automatiskt spamskydd gäller för alla användare.\n\nBokningsformuläret ska användas i god tro. Falska bokningar är inte tillåtna. En inskickad förfrågan är inte en bekräftad bokning — pris och tillgänglighet bekräftas alltid via e-post.\n\nVi ansvarar inte för tekniska avbrott eller innehåll från tredjepartstjänster (YouTube, Mixcloud, ZenoFM).\n\nFrågor? Kontakta info@djloboproducciones.com.",
   },
   en: {
     title: "Terms of Service",
     lastUpdated: "Last updated: March 2026",
     backToHome: "Back to homepage",
-    content: "By using DJ Lobo Radio, you agree to these terms.\n\nOur chat is for spreading joy — abusive, offensive, or illegal content is not tolerated. We reserve the right to suspend sessions that violate these rules. Automatic rate limiting (max 5 messages per 30 seconds) applies to all users.\n\nThe booking form must be used in good faith. Fake bookings are not permitted.\n\nWe are not responsible for technical interruptions or content from third-party services (YouTube, Mixcloud, ZenoFM).\n\nQuestions? Contact info@djloboproducciones.com.",
+    content: "By using DJ Lobo Radio, you agree to these terms.\n\nOur chat is for spreading joy — abusive, offensive, or illegal content is not tolerated. We reserve the right to suspend sessions that violate these rules. Automatic spam protection applies to all users.\n\nThe booking form must be used in good faith. Fake bookings are not permitted. A submitted request is not a confirmed booking — price and availability are always confirmed via email.\n\nWe are not responsible for technical interruptions or content from third-party services (YouTube, Mixcloud, ZenoFM).\n\nQuestions? Contact info@djloboproducciones.com.",
   },
   es: {
     title: "Términos de Servicio",
     lastUpdated: "Última actualización: Marzo 2026",
     backToHome: "Volver a la página principal",
-    content: "Al usar DJ Lobo Radio, usted acepta estos términos.\n\nNuestro chat es para compartir alegría — no se tolera contenido abusivo, ofensivo o ilegal. Nos reservamos el derecho de suspender sesiones que violen estas reglas. La limitación automática de frecuencia (máx. 5 mensajes por 30 segundos) se aplica a todos los usuarios.\n\nEl formulario de reserva debe usarse de buena fe. Las reservas falsas no están permitidas.\n\nNo nos hacemos responsables por interrupciones técnicas o contenido de servicios de terceros (YouTube, Mixcloud, ZenoFM).\n\n¿Preguntas? Contacte a info@djloboproducciones.com.",
+    content: "Al usar DJ Lobo Radio, usted acepta estos términos.\n\nNuestro chat es para compartir alegría — no se tolera contenido abusivo, ofensivo o ilegal. Nos reservamos el derecho de suspender sesiones que violen estas reglas. La protección automática contra spam se aplica a todos los usuarios.\n\nEl formulario de reserva debe usarse de buena fe. Las reservas falsas no están permitidas. Una solicitud enviada no es una reserva confirmada — el precio y la disponibilidad siempre se confirman por correo electrónico.\n\nNo nos hacemos responsables por interrupciones técnicas o contenido de servicios de terceros (YouTube, Mixcloud, ZenoFM).\n\n¿Preguntas? Contacte a info@djloboproducciones.com.",
   },
 };
 

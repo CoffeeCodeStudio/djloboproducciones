@@ -1,4 +1,5 @@
 import { useLanguage } from "@/contexts/LanguageContext";
+import { Link } from "react-router-dom";
 import { Mail, Phone, MapPin, Instagram, Youtube, Facebook, Send } from "lucide-react";
 import { useBranding } from "@/hooks/useBranding";
 import { useState } from "react";
@@ -20,7 +21,9 @@ const translations = {
     success: "Tack! Vi återkommer snart.",
     error: "Något gick fel. Försök igen.",
     followUs: "Följ oss",
-    location: "Göteborg, Sverige"
+    location: "Göteborg, Sverige",
+    privacyConsent: "Genom att skicka godkänner du att din data hanteras enligt vår",
+    privacyLink: "integritetspolicy",
   },
   en: {
     title: "Contact",
@@ -33,7 +36,9 @@ const translations = {
     success: "Thank you! We'll get back to you soon.",
     error: "Something went wrong. Please try again.",
     followUs: "Follow us",
-    location: "Gothenburg, Sweden"
+    location: "Gothenburg, Sweden",
+    privacyConsent: "By submitting, you agree that your data is handled according to our",
+    privacyLink: "privacy policy",
   },
   es: {
     title: "Contacto",
@@ -46,7 +51,9 @@ const translations = {
     success: "¡Gracias! Te responderemos pronto.",
     error: "Algo salió mal. Por favor, inténtalo de nuevo.",
     followUs: "Síguenos",
-    location: "Gotemburgo, Suecia"
+    location: "Gotemburgo, Suecia",
+    privacyConsent: "Al enviar, aceptas que tus datos se manejen según nuestra",
+    privacyLink: "política de privacidad",
   }
 };
 
@@ -180,6 +187,10 @@ const ContactSection = () => {
                 </>
               }
             </Button>
+            <p className="text-xs text-muted-foreground mt-3">
+              {t.privacyConsent}{" "}
+              <Link to="/privacy" className="text-neon-cyan hover:underline">{t.privacyLink}</Link>.
+            </p>
           </form>
         </div>
 
