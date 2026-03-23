@@ -40,6 +40,9 @@ const translations = {
     reason2: "Professionell utrustning",
     reason3: "Flexibel och anpassar musiken",
     reason4: "Konkurrensmässiga priser",
+    disclaimer: "En inskickad förfrågan är inte en bekräftad bokning. Pris och tillgänglighet bekräftas via e-post.",
+    privacyConsent: "Genom att skicka godkänner du att din data hanteras enligt vår",
+    privacyLink: "integritetspolicy",
   },
   en: {
     title: "Book Event",
