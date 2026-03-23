@@ -36,7 +36,9 @@ const translations = {
     success: "Thank you! We'll get back to you soon.",
     error: "Something went wrong. Please try again.",
     followUs: "Follow us",
-    location: "Gothenburg, Sweden"
+    location: "Gothenburg, Sweden",
+    privacyConsent: "By submitting, you agree that your data is handled according to our",
+    privacyLink: "privacy policy",
   },
   es: {
     title: "Contacto",
