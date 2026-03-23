@@ -7,7 +7,7 @@ const translations = {
     title: "Användarvillkor",
     lastUpdated: "Senast uppdaterad: Mars 2026",
     backToHome: "Tillbaka till startsidan",
-    content: "Genom att använda DJ Lobo Radio godkänner du dessa villkor.\n\nVår chatt är till för att sprida glädje — hotfullt, kränkande eller olagligt innehåll tolereras inte. Vi förbehåller oss rätten att stänga av sessioner som bryter mot reglerna. Automatiskt spamskydd gäller för alla användare.\n\nBokningsformuläret ska användas i god tro. Falska bokningar är inte tillåtna. En inskickad förfrågan är inte en bekräftad bokning — pris och tillgänglighet bekräftas alltid via e-post.\n\nVi ansvarar inte för tekniska avbrott eller innehåll från tredjepartstjänster (YouTube, Mixcloud, ZenoFM).\n\nFrågor? Kontakta info@djloboproducciones.com.",
+    content: "Genom att använda DJ Lobo Producciones tjänster godkänner du dessa villkor.\n\nVår chatt är till för att sprida glädje — hotfullt, kränkande eller olagligt innehåll tolereras inte. Vi förbehåller oss rätten att stänga av sessioner som bryter mot reglerna. Automatiskt spamskydd gäller för alla användare.\n\nBokningsformuläret ska användas i god tro. Falska bokningar är inte tillåtna. En inskickad förfrågan är inte en bekräftad bokning — pris och tillgänglighet bekräftas alltid via e-post.\n\nVi ansvarar inte för tekniska avbrott eller innehåll från tredjepartstjänster (YouTube, Mixcloud, ZenoFM).\n\nFrågor? Kontakta info@djloboproducciones.com.",
   },
   en: {
     title: "Terms of Service",
