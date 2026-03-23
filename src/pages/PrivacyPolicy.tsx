@@ -7,7 +7,7 @@ const translations = {
     title: "Sekretesspolicy",
     lastUpdated: "Senast uppdaterad: Mars 2026",
     backToHome: "Tillbaka till startsidan",
-    content: "Vi värnar om din integritet. Denna policy förklarar hur vi hanterar data på DJ Lobo Radio.\n\nVi samlar INTE in IP-adresser. För att förhindra missbruk i chatten använder vi anonyma sessions-ID som lagras lokalt i din webbläsare. Dessa kan inte kopplas till din identitet.\n\nVid bokning av DJ-tjänster sparar vi namn, e-post, telefonnummer och evenemangsdetaljer som du själv anger. Denna data används enbart för att hantera din bokning.\n\nVi använder automatisk hastighetsbegränsning (rate limiting) för att skydda chatten mot spam.\n\nDu har rätt att begära utdrag eller radering av data genom att kontakta oss på info@djloboproducciones.com.",
+    content: "Vi värnar om din integritet. Denna policy förklarar hur vi hanterar data på DJ Lobo Radio.\n\nVi samlar INTE in IP-adresser. För att förhindra missbruk i chatten använder vi anonyma sessions-ID som lagras lokalt i din webbläsare. Dessa kan inte kopplas till din identitet.\n\nVid bokning av DJ-tjänster sparar vi namn, e-post, telefonnummer och evenemangsdetaljer som du själv anger. Denna data används enbart för att hantera din bokning.\n\nNär du skickar ett meddelande via kontaktformuläret vidarebefordras det till oss via e-post genom en tredjepartstjänst (Resend). Datan lagras inte i någon databas utan existerar enbart i vårt e-postflöde.\n\nVi använder automatiskt spamskydd för att skydda chatten.\n\nDu har rätt att begära utdrag eller radering av data genom att kontakta oss på info@djloboproducciones.com.",
   },
   en: {
     title: "Privacy Policy",
