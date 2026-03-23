@@ -21,7 +21,9 @@ const translations = {
     success: "Tack! Vi återkommer snart.",
     error: "Något gick fel. Försök igen.",
     followUs: "Följ oss",
-    location: "Göteborg, Sverige"
+    location: "Göteborg, Sverige",
+    privacyConsent: "Genom att skicka godkänner du att din data hanteras enligt vår",
+    privacyLink: "integritetspolicy",
   },
   en: {
     title: "Contact",
