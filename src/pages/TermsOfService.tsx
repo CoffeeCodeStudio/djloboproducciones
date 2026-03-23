@@ -19,7 +19,7 @@ const translations = {
     title: "Términos de Servicio",
     lastUpdated: "Última actualización: Marzo 2026",
     backToHome: "Volver a la página principal",
-    content: "Al usar DJ Lobo Radio, usted acepta estos términos.\n\nNuestro chat es para compartir alegría — no se tolera contenido abusivo, ofensivo o ilegal. Nos reservamos el derecho de suspender sesiones que violen estas reglas. La limitación automática de frecuencia (máx. 5 mensajes por 30 segundos) se aplica a todos los usuarios.\n\nEl formulario de reserva debe usarse de buena fe. Las reservas falsas no están permitidas.\n\nNo nos hacemos responsables por interrupciones técnicas o contenido de servicios de terceros (YouTube, Mixcloud, ZenoFM).\n\n¿Preguntas? Contacte a info@djloboproducciones.com.",
+    content: "Al usar DJ Lobo Radio, usted acepta estos términos.\n\nNuestro chat es para compartir alegría — no se tolera contenido abusivo, ofensivo o ilegal. Nos reservamos el derecho de suspender sesiones que violen estas reglas. La protección automática contra spam se aplica a todos los usuarios.\n\nEl formulario de reserva debe usarse de buena fe. Las reservas falsas no están permitidas. Una solicitud enviada no es una reserva confirmada — el precio y la disponibilidad siempre se confirman por correo electrónico.\n\nNo nos hacemos responsables por interrupciones técnicas o contenido de servicios de terceros (YouTube, Mixcloud, ZenoFM).\n\n¿Preguntas? Contacte a info@djloboproducciones.com.",
   },
 };
 
