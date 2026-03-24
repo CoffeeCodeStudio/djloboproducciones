@@ -1,4 +1,3 @@
-import BookingSection from "@/components/BookingSection";
 import CalendarSection from "@/components/CalendarSection";
 import EquipmentSection from "@/components/EquipmentSection";
 import Footer from "@/components/Footer";
@@ -8,15 +7,15 @@ import { useLanguage } from "@/contexts/LanguageContext";
 const translations = {
   sv: {
     pageTitle: "SPELNINGAR",
-    pageSubtitle: "Kommande event, boka din spelning och se vår utrustning",
+    pageSubtitle: "Kommande event och vår utrustning",
   },
   en: {
     pageTitle: "SHOWS",
-    pageSubtitle: "Upcoming events, book your show and see our equipment",
+    pageSubtitle: "Upcoming events and our equipment",
   },
   es: {
     pageTitle: "SHOWS",
-    pageSubtitle: "Próximos eventos, reserva tu show y conoce nuestro equipo",
+    pageSubtitle: "Próximos eventos y nuestro equipo",
   },
 };
 
@@ -31,12 +30,6 @@ const SpelningarPage = () => {
       <ErrorBoundary>
         <CalendarSection />
       </ErrorBoundary>
-
-
-      {/* Booking Form */}
-      <div id="boka">
-        <BookingSection />
-      </div>
 
       {/* Equipment — bottom section */}
       <ErrorBoundary>

@@ -14,6 +14,7 @@ const MediaPage = lazy(() => import("./pages/MediaPage"));
 const MixesPage = lazy(() => import("./pages/MixesPage"));
 const ReferencesPage = lazy(() => import("./pages/ReferencesPage"));
 const SpelningarPage = lazy(() => import("./pages/SpelningarPage"));
+const PrislistaPage = lazy(() => import("./pages/PrislistaPage"));
 const Admin = lazy(() => import("./pages/Admin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
@@ -44,6 +45,7 @@ const App = () => (
                   <Route path="/media" element={<MediaPage />} />
                   <Route path="/referenser" element={<ReferencesPage />} />
                   <Route path="/spelningar" element={<SpelningarPage />} />
+                  <Route path="/prislista" element={<PrislistaPage />} />
                   {/* Legacy redirects */}
                   <Route path="/radio" element={<Navigate to="/lyssna" replace />} />
                   <Route path="/mixes" element={<Navigate to="/media" replace />} />
