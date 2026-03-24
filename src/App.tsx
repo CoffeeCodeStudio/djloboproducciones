@@ -14,6 +14,7 @@ const MediaPage = lazy(() => import("./pages/MediaPage"));
 const MixesPage = lazy(() => import("./pages/MixesPage"));
 const ReferencesPage = lazy(() => import("./pages/ReferencesPage"));
 const SpelningarPage = lazy(() => import("./pages/SpelningarPage"));
+const PrislistaPage = lazy(() => import("./pages/PrislistaPage"));
 const Admin = lazy(() => import("./pages/Admin"));
 const NotFound = lazy(() => import("./pages/NotFound"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
