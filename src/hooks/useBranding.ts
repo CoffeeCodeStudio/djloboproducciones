@@ -37,7 +37,7 @@ const DEFAULT_BRANDING: Partial<SiteBranding> = {
   primary_glow_color: "300 100% 50%",
   secondary_glow_color: "180 100% 50%",
   accent_color: "270 100% 60%",
-  site_name: "DJ Lobo Radio",
+  site_name: "DJ Lobo Producciones",
   tagline: "Bringing the best of 80s and 90s music",
 };
 

@@ -320,7 +320,7 @@ const NowPlayingBar = () => {
                     : t.radioIdle
                   : isMix && currentTrack
                   ? currentTrack.title
-                  : "DJ Lobo Radio"}
+                  : "DJ Lobo Producciones"}
               </p>
               <div className="flex items-center gap-1.5 text-xs text-muted-foreground mt-0.5">
                 {isRadio && isPlaying && !isLoading && (

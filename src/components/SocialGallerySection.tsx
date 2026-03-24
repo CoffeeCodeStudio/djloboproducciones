@@ -131,7 +131,7 @@ const SocialGallerySection = () => {
             href={SOCIAL_LINKS.facebook}
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Följ DJ Lobo Radio på Facebook"
+            aria-label="Följ DJ Lobo Producciones på Facebook"
             className="inline-flex items-center gap-2 px-6 py-3 rounded-full glass-card font-display font-bold tracking-wider text-sm hover:scale-105 transition-all text-neon-cyan hover:text-neon-pink"
           >
             <Facebook className="w-5 h-5" aria-hidden="true" />

@@ -37,7 +37,7 @@ export function useDynamicFavicon(logoUrl: string | null | undefined) {
     if (manifestLink) {
       // Generate a dynamic manifest blob
       const manifest = {
-        name: document.title || "DJ Lobo Radio",
+        name: document.title || "DJ Lobo Producciones",
         short_name: "DJ Lobo",
         icons: [
           { src: appleSrc, sizes: "192x192", type: "image/png" },

@@ -130,7 +130,7 @@ const FramsidaTab = () => {
           <p className="text-xs sm:text-sm text-muted-foreground">Sajtens namn och slogan som visas på startsidan.</p>
           <div>
             <Label htmlFor="siteName" className="text-sm">Sajtnamn</Label>
-            <Input id="siteName" value={pendingChanges.site_name ?? branding?.site_name ?? ""} onChange={(e) => setPendingChanges((prev) => ({ ...prev, site_name: e.target.value }))} placeholder="DJ Lobo Radio" className="mt-1.5 h-11 sm:h-10 text-base" />
+            <Input id="siteName" value={pendingChanges.site_name ?? branding?.site_name ?? ""} onChange={(e) => setPendingChanges((prev) => ({ ...prev, site_name: e.target.value }))} <Input id="siteName" value={pendingChanges.site_name ?? branding?.site_name ?? ""} onChange={(e) => setPendingChanges((prev) => ({ ...prev, site_name: e.target.value }))} placeholder="DJ Lobo Producciones" className="mt-1.5 h-11 sm:h-10 text-base" /> className="mt-1.5 h-11 sm:h-10 text-base" />
           </div>
           <div>
             <Label htmlFor="tagline" className="text-sm">Slogan</Label>
