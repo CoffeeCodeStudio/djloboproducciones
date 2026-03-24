@@ -36,8 +36,7 @@ const HeroSection = () => {
   const siteName = branding?.site_name || "DJ LOBO";
 
   const scrollToBooking = () => {
-    // Navigate to spelningar page
-    window.location.href = "/spelningar#boka";
+    window.location.href = "/prislista#boka";
   };
 
   return (
