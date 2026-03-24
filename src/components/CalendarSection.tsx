@@ -122,15 +122,14 @@ const CalendarSection = () => {
     <section
       ref={sectionRef}
       id="calendar"
-      className="py-12 sm:py-16 relative"
       aria-labelledby="calendar-title"
     >
-      <div className="max-w-3xl mx-auto">
+      <div>
         {/* Header */}
         <div className="text-center mb-6 sm:mb-10 scroll-reveal">
           <h2
             id="calendar-title"
-            className="font-display text-3xl sm:text-4xl md:text-5xl font-bold text-neon-gradient mb-2 italic"
+            className="font-display text-3xl sm:text-4xl font-bold text-neon-gradient mb-2"
           >
             {t.title}
           </h2>
