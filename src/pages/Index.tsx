@@ -4,6 +4,13 @@ import CalendarSection from "@/components/CalendarSection";
 import EquipmentSection from "@/components/EquipmentSection";
 import Footer from "@/components/Footer";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { useLanguage } from "@/contexts/LanguageContext";
+
+const qualityTranslations = {
+  sv: { quality: "Kvalitetsutrustning", qualityDesc: "All utrustning underhålls regelbundet för optimal prestanda" },
+  en: { quality: "Quality Equipment", qualityDesc: "All equipment is regularly maintained for optimal performance" },
+  es: { quality: "Equipo de Calidad", qualityDesc: "Todo el equipo se mantiene regularmente para un rendimiento óptimo" },
+};
 
 const Index = () => {
   return (
