@@ -311,9 +311,9 @@ const NowPlayingBar = () => {
               </div>
             )}
 
-            {/* Title + status — allow 2-line wrap on mobile */}
+            {/* Title + status */}
             <div className="min-w-0 flex-1">
-              <p className="text-sm font-medium text-foreground line-clamp-2 sm:truncate leading-tight">
+              <p className="text-xs sm:text-sm font-medium text-foreground truncate leading-tight">
                 {isRadio
                   ? isPlaying
                     ? t.radioLive
