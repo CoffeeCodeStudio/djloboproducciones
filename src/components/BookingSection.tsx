@@ -22,8 +22,8 @@ const eventTypes = [
 
 const translations = {
   sv: {
-    title: "Boka Spelning",
-    subtitle: "Fyll i formuläret så återkommer vi inom 24 timmar",
+    title: "Kontakt & Bokning",
+    subtitle: "Fyll i formuläret så återkommer vi inom 24 timmar med ett Personligt prisförslag",
     name: "Ditt namn",
     email: "E-postadress",
     phone: "Telefonnummer (valfritt)",
