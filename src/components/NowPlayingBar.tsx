@@ -274,7 +274,7 @@ const NowPlayingBar = () => {
 
       <div className="relative h-full flex flex-col">
         {/* Main control bar — mobile: taller, reorganized layout */}
-        <div className="max-w-7xl mx-auto w-full px-3 sm:px-4 py-2 md:py-2 flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-3 shrink-0">
 
           {/* === PLAY/PAUSE button (LEFT on mobile) === */}
           {isRadio && (
