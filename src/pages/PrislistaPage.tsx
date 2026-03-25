@@ -34,6 +34,9 @@ const PrislistaPage = () => {
         </p>
       </div>
 
+      {/* Pricing Grid */}
+      <PricingGrid />
+
       {/* Booking Form */}
       <div id="boka">
         <BookingSection />
