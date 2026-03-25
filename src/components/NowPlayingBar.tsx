@@ -381,10 +381,10 @@ const NowPlayingBar = () => {
             {!isRadio && (
               <button
                 onClick={handleRadioToggle}
-                className="tap-target flex items-center gap-1.5 px-3 py-2.5 rounded-full text-xs sm:text-sm font-display font-bold tracking-wide transition-all duration-200 glass-card text-muted-foreground hover:text-foreground hover:border-destructive/30"
+                className="tap-target flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-2 sm:py-2.5 rounded-full text-[10px] sm:text-sm font-display font-bold tracking-wide transition-all duration-200 glass-card text-muted-foreground hover:text-foreground hover:border-destructive/30"
                 aria-label={t.playRadio}
               >
-                <Radio className="w-4 h-4" />
+                <Radio className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 <span className="hidden sm:inline">{t.liveRadio}</span>
               </button>
             )}
