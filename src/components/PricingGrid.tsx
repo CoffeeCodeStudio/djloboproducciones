@@ -1,59 +1,76 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Clock, Speaker } from "lucide-react";
+import { Clock, Speaker, Users } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const packages = [
-  { key: "privatfest", price: "6 500", border: "neon-pink" },
-  { key: "wedding", price: "10 000", border: "neon-cyan" },
-  { key: "corporate", price: "12 000", border: "neon-pink" },
-  { key: "student", price: "10 000", border: "neon-cyan" },
+  { key: "basic", price: "6 000", border: "neon-pink" },
+  { key: "standard", price: "8 000", border: "neon-cyan" },
+  { key: "premium", price: "12 000", border: "neon-pink" },
 ] as const;
 
 const translations = {
   sv: {
-    privatfest: "PRIVATFEST",
-    wedding: "BRÖLLOP",
-    corporate: "FÖRETAG",
-    student: "STUDENT",
+    basic: "BASIC",
+    standard: "STANDARD",
+    premium: "PREMIUM",
+    basicGuests: "Upp till 60 personer",
+    standardGuests: "Upp till 80 personer",
+    premiumGuests: "100–150 personer",
+    from: "Från",
     currency: "kr",
     exclVat: "exkl. moms",
     hours: "4 timmar spelning",
     soundLight: "Ljud & ljus ingår",
     addon: "Tillägg: 1 000 kr/timme utöver 4h",
+    largeEvent: "150+ personer — Kontakta oss för offert",
     info: "Transport tillkommer vid längre avstånd · Bokning minst 2 veckor i förväg · Vi spelar även utanför Göteborg",
     cta: "BOKA NU",
     ctaText: "Vi har alltid en lösning — tveka inte att kontakta oss",
   },
   en: {
-    privatfest: "PRIVATE PARTY",
-    wedding: "WEDDING",
-    corporate: "CORPORATE",
-    student: "STUDENT",
+    basic: "BASIC",
+    standard: "STANDARD",
+    premium: "PREMIUM",
+    basicGuests: "Up to 60 guests",
+    standardGuests: "Up to 80 guests",
+    premiumGuests: "100–150 guests",
+    from: "From",
     currency: "SEK",
     exclVat: "excl. VAT",
     hours: "4 hours of performance",
     soundLight: "Sound & lights included",
     addon: "Extra: 1 000 SEK/hour beyond 4h",
+    largeEvent: "150+ guests — Contact us for a quote",
     info: "Transport costs apply for longer distances · Book at least 2 weeks in advance · We also play outside Gothenburg",
     cta: "BOOK NOW",
     ctaText: "We always find a solution — don't hesitate to contact us",
   },
   es: {
-    privatfest: "FIESTA PRIVADA",
-    wedding: "BODA",
-    corporate: "EMPRESA",
-    student: "ESTUDIANTE",
+    basic: "BÁSICO",
+    standard: "ESTÁNDAR",
+    premium: "PREMIUM",
+    basicGuests: "Hasta 60 personas",
+    standardGuests: "Hasta 80 personas",
+    premiumGuests: "100–150 personas",
+    from: "Desde",
     currency: "SEK",
     exclVat: "sin IVA",
     hours: "4 horas de actuación",
     soundLight: "Sonido e iluminación incluidos",
     addon: "Extra: 1 000 SEK/hora más allá de 4h",
+    largeEvent: "150+ personas — Contáctenos para una cotización",
     info: "Transporte adicional para largas distancias · Reserva con al menos 2 semanas de antelación · También tocamos fuera de Gotemburgo",
     cta: "RESERVAR",
     ctaText: "Siempre encontramos una solución — no dudes en contactarnos",
   },
 };
+
+const guestKeys = {
+  basic: "basicGuests",
+  standard: "standardGuests",
+  premium: "premiumGuests",
+} as const;
 
 const PricingGrid = () => {
   const { language } = useLanguage();
@@ -83,7 +100,7 @@ const PricingGrid = () => {
     <div className="px-4 sm:px-6 pb-12">
       <div
         ref={gridRef}
-        className="grid grid-cols-1 sm:grid-cols-2 gap-6 max-w-4xl mx-auto"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 max-w-5xl mx-auto"
       >
         {packages.map((pkg, i) => (
           <div
@@ -101,10 +118,15 @@ const PricingGrid = () => {
               transitionDelay: visible ? `${i * 120}ms` : "0ms",
             }}
           >
-            <h3 className="font-display uppercase text-neon-cyan text-lg sm:text-xl tracking-wider mb-3">
+            <h3 className="font-display uppercase text-neon-cyan text-lg sm:text-xl tracking-wider mb-1">
               {t[pkg.key]}
             </h3>
+            <p className="text-sm text-muted-foreground mb-4 flex items-center gap-2">
+              <Users className="w-3.5 h-3.5" />
+              {t[guestKeys[pkg.key]]}
+            </p>
             <p className="font-display font-bold text-3xl sm:text-4xl text-yellow-400 mb-5">
+              <span className="text-base font-sans font-normal text-muted-foreground">{t.from} </span>
               {pkg.price} <span className="text-base font-sans font-normal text-muted-foreground">{t.currency} {t.exclVat}</span>
             </p>
 
@@ -122,6 +144,15 @@ const PricingGrid = () => {
             <p className="text-xs text-muted-foreground">{t.addon}</p>
           </div>
         ))}
+      </div>
+
+      {/* Large event option */}
+      <div className={`text-center mt-8 max-w-5xl mx-auto transition-all duration-500 ${
+        visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      }`} style={{ transitionDelay: visible ? "360ms" : "0ms" }}>
+        <p className="font-display text-base sm:text-lg tracking-wide text-neon-cyan/90 border border-neon-cyan/30 rounded-lg py-3 px-6 inline-block bg-neon-cyan/5">
+          {t.largeEvent}
+        </p>
       </div>
 
       <div className="text-center mt-10 max-w-3xl mx-auto space-y-4">
