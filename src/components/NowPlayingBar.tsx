@@ -261,7 +261,7 @@ const NowPlayingBar = () => {
   return (
     <div
       className={`fixed bottom-0 left-0 right-0 z-40 transition-all duration-300 ${
-        showExpandedMix ? "h-[280px] sm:h-[200px]" : ""
+        showExpandedMix ? "h-[200px] sm:h-[220px] md:h-[260px]" : ""
       }`}
       role="region"
       aria-label={t.player}
