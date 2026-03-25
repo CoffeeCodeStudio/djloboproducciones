@@ -245,7 +245,7 @@ const BrandingTab = () => {
                 type="file"
                 accept="image/png,image/webp,image/svg+xml"
                 className="hidden"
-                onChange={(e) => handleFileSelect(e, "logo", "logo_url", 300)}
+                onChange={(e) => handleFileSelect(e, "logo", "logo_url", 1024)}
               />
               <div className="flex gap-2">
                 <Button 

@@ -45,6 +45,18 @@ const GalleryTab = () => {
   const handleAddVideoFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
+    if (!file.type.startsWith("video/")) {
+      const { toast } = await import("sonner");
+      toast.error("Ogiltigt filformat. Välj en videofil (t.ex. MP4).");
+      e.target.value = "";
+      return;
+    }
+    if (file.size > 2 * 1024 * 1024) {
+      const { toast } = await import("sonner");
+      toast.error(`Videon är för stor (${(file.size / 1024 / 1024).toFixed(1)} MB). Välj en fil under 2 MB.`);
+      e.target.value = "";
+      return;
+    }
     await addImage.mutateAsync({ file, mediaType: "video" });
   };
 
