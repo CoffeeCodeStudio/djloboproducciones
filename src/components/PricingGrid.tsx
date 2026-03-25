@@ -125,9 +125,9 @@ const PricingGrid = () => {
               <Users className="w-3.5 h-3.5" />
               {t[guestKeys[pkg.key]]}
             </p>
-            <p className="font-display font-bold text-3xl sm:text-4xl text-yellow-400 mb-5">
-              <span className="text-base font-sans font-normal text-muted-foreground">{t.from} </span>
-              {pkg.price} <span className="text-base font-sans font-normal text-muted-foreground">{t.currency} {t.exclVat}</span>
+            <p className="font-display font-bold text-2xl sm:text-3xl text-yellow-400 mb-5 whitespace-nowrap">
+              <span className="text-sm font-sans font-normal text-muted-foreground">{t.from} </span>
+              {pkg.price} <span className="text-sm font-sans font-normal text-muted-foreground">{t.currency} {t.exclVat}</span>
             </p>
 
             <div className="space-y-3 mb-4">
