@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Star, Home, HelpCircle } from "lucide-react";
+import { Shield, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Star, Home, HelpCircle, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import AdminLogin from "@/components/AdminLogin";
@@ -16,9 +16,10 @@ import TestimonialsTab from "@/components/admin/TestimonialsTab";
 import SpelningarTab from "@/components/admin/SpelningarTab";
 import BrandingTab from "@/components/admin/BrandingTab";
 import HelpTab from "@/components/admin/HelpTab";
+import UsersTab from "@/components/admin/UsersTab";
 
 const Admin = () => {
-  const { user, isAdmin, loading: authLoading, signIn, signUp, signOut } = useAuth();
+  const { user, isAdmin, loading: authLoading, signIn, signUp, signOut, resetPassword } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -37,7 +38,7 @@ const Admin = () => {
     );
   }
 
-  if (!user) return <AdminLogin onSignIn={signIn} onSignUp={signUp} />;
+  if (!user) return <AdminLogin onSignIn={signIn} onSignUp={signUp} onResetPassword={resetPassword} />;
 
   if (!isAdmin) {
     return (
@@ -100,7 +101,7 @@ const Admin = () => {
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 relative z-10">
         <Tabs defaultValue="framsida" className="w-full">
           {/* Mobile-first tab navigation */}
-          <TabsList className="grid w-full grid-cols-7 mb-4 sm:mb-8 glass-card h-auto p-1 gap-0.5">
+          <TabsList className="grid w-full grid-cols-8 mb-4 sm:mb-8 glass-card h-auto p-1 gap-0.5">
             <TabsTrigger value="framsida" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
               <Home className="w-4 h-4 sm:w-4 sm:h-4" />
               <span className="text-[9px] sm:text-sm leading-tight">Hem</span>
@@ -129,6 +130,10 @@ const Admin = () => {
               <HelpCircle className="w-4 h-4 sm:w-4 sm:h-4" />
               <span className="text-[9px] sm:text-sm leading-tight">Hjälp</span>
             </TabsTrigger>
+            <TabsTrigger value="anvandare" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
+              <Users className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="text-[9px] sm:text-sm leading-tight">Konto</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="framsida"><FramsidaTab /></TabsContent>
@@ -138,6 +143,7 @@ const Admin = () => {
           <TabsContent value="spelningar"><SpelningarTab /></TabsContent>
           <TabsContent value="utseende"><BrandingTab /></TabsContent>
           <TabsContent value="hjalp"><HelpTab /></TabsContent>
+          <TabsContent value="anvandare"><UsersTab currentUserId={user.id} /></TabsContent>
         </Tabs>
       </main>
     </div>
