@@ -147,7 +147,7 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
                       <Shield className="w-4 h-4 text-primary" />
                     </div>
                     <div className="min-w-0">
-                      <p className="text-sm font-medium truncate">{r.user_id.slice(0, 8)}...</p>
+                      <p className="text-sm font-medium truncate">{r.email || r.user_id.slice(0, 8) + "..."}</p>
                       <Badge variant="outline" className={`text-[10px] ${roleBadgeColor(r.role)}`}>
                         {r.role}
                       </Badge>
