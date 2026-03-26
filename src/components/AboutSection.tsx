@@ -3,7 +3,7 @@ import djLoboAboutImage from "@/assets/dj-lobo-about.jpg";
 import { Music, Headphones, Zap, Disc } from "lucide-react";
 import { useBranding } from "@/hooks/useBranding";
 import { useLanguage } from "@/contexts/LanguageContext";
-import { optimizeProfile } from "@/lib/imageOptimizer";
+import { optimizeProfile, optimizeWithFallback } from "@/lib/imageOptimizer";
 
 const translations = {
   sv: {
