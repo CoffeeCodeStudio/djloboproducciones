@@ -70,7 +70,7 @@ const handler = async (req: Request): Promise<Response> => {
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
           <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 30px 20px; border-radius: 12px 12px 0 0; text-align: center;">
-            <h1 style="color: #00d4ff; margin: 0; font-size: 24px;">🎧 Ny Bokningsförfrågan</h1>
+            <h1 style="color: #00d4ff; margin: 0; font-size: 24px;">${isInquiry ? "💬 Ny Fråga" : "🎧 Ny Bokningsförfrågan"}</h1>
           </div>
           <div style="padding: 24px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 12px 12px;">
             <table style="width: 100%; border-collapse: collapse;">
