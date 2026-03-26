@@ -54,8 +54,8 @@ const handler = async (req: Request): Promise<Response> => {
       name: sanitize(name),
       email: sanitize(email),
       phone: phone ? sanitize(phone) : null,
-      eventType: eventTypeLabels[eventType] || sanitize(eventType),
-      eventDate: sanitize(eventDate),
+      eventType: eventType ? (eventTypeLabels[eventType] || sanitize(eventType)) : null,
+      eventDate: eventDate ? sanitize(eventDate) : null,
       location: location ? sanitize(location) : null,
       message: message ? sanitize(message) : null,
     };
