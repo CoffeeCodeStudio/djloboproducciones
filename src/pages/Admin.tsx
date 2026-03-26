@@ -16,6 +16,7 @@ import TestimonialsTab from "@/components/admin/TestimonialsTab";
 import SpelningarTab from "@/components/admin/SpelningarTab";
 import BrandingTab from "@/components/admin/BrandingTab";
 import HelpTab from "@/components/admin/HelpTab";
+import UsersTab from "@/components/admin/UsersTab";
 
 const Admin = () => {
   const { user, isAdmin, loading: authLoading, signIn, signUp, signOut } = useAuth();
