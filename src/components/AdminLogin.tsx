@@ -170,7 +170,6 @@ const AdminLogin = ({ onSignIn, onSignUp, onResetPassword, loading, error }: Adm
                 OBS: Efter registrering måste en admin ge dig åtkomst.
               </p>
             )}
-            )}
           </form>
         </CardContent>
       </Card>
