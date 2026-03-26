@@ -59,7 +59,7 @@ const handler = async (req: Request): Promise<Response> => {
     const sanitizedMessage = sanitize(message);
 
     const emailResponse = await resend.emails.send({
-      from: "DJ Lobo Producciones <onboarding@resend.dev>",
+      from: "DJ Lobo Producciones <noreply@djloboproducciones.com>",
       to: ["djloboproducciones75@gmail.com"],
       reply_to: email,
       subject: `Nytt kontaktmeddelande från ${sanitizedName}`,
