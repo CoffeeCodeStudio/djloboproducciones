@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -15,8 +16,9 @@ interface ContactRequest {
   message: string;
 }
 
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
 const handler = async (req: Request): Promise<Response> => {
-  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -26,24 +28,66 @@ const handler = async (req: Request): Promise<Response> => {
 
     // Validate required fields
     if (!name || !email || !message) {
-      throw new Error("Missing required fields: name, email, and message are required");
+      return new Response(
+        JSON.stringify({ error: "Missing required fields" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
     }
 
     // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
-      throw new Error("Invalid email format");
+      return new Response(
+        JSON.stringify({ error: "Invalid email format" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
     }
 
     // Validate input lengths
     if (name.length > 100) {
-      throw new Error("Name must be less than 100 characters");
+      return new Response(
+        JSON.stringify({ error: "Name too long" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
     }
     if (email.length > 255) {
-      throw new Error("Email must be less than 255 characters");
+      return new Response(
+        JSON.stringify({ error: "Email too long" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
     }
     if (message.length > 5000) {
-      throw new Error("Message must be less than 5000 characters");
+      return new Response(
+        JSON.stringify({ error: "Message too long" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Rate limiting: max 3 submissions per email per hour
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const { count, error: countError } = await supabase
+      .from("bookings")
+      .select("id", { count: "exact", head: true })
+      .eq("email", email)
+      .gte("created_at", oneHourAgo);
+
+    if (countError) {
+      console.error("Rate limit check failed:", countError.message);
+      return new Response(
+        JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    if ((count ?? 0) >= 3) {
+      return new Response(
+        JSON.stringify({ error: "Too many submissions. Please try again later." }),
+        { status: 429, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
     }
 
     // Sanitize inputs for HTML
@@ -58,10 +102,13 @@ const handler = async (req: Request): Promise<Response> => {
     const sanitizedEmail = sanitize(email);
     const sanitizedMessage = sanitize(message);
 
+    // Sanitize reply_to email (strip newlines to prevent header injection)
+    const safeReplyTo = email.replace(/[\r\n]/g, "");
+
     const emailResponse = await resend.emails.send({
       from: "DJ Lobo Producciones <noreply@djloboproducciones.com>",
       to: ["djloboproducciones75@gmail.com"],
-      reply_to: email,
+      reply_to: safeReplyTo,
       subject: `Nytt kontaktmeddelande från ${sanitizedName}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
@@ -87,20 +134,13 @@ const handler = async (req: Request): Promise<Response> => {
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
-      headers: {
-        "Content-Type": "application/json",
-        ...corsHeaders,
-      },
+      headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error occurred";
-    console.error("Error in send-contact-email function:", errorMessage);
+    console.error("Error in send-contact-email:", error instanceof Error ? error.message : error);
     return new Response(
-      JSON.stringify({ error: errorMessage }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json", ...corsHeaders },
-      }
+      JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
+      { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }
 };

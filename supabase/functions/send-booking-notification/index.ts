@@ -1,5 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { Resend } from "https://esm.sh/resend@2.0.0";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.49.2";
 
 const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
 
@@ -8,6 +9,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers":
     "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
+
+const VALID_EVENT_TYPES = ["wedding", "corporate", "private", "club", "other", "inquiry"];
 
 const eventTypeLabels: Record<string, string> = {
   wedding: "Bröllop",
@@ -22,11 +25,16 @@ interface BookingRequest {
   name: string;
   email: string;
   phone?: string;
-  eventType: string;
-  eventDate: string;
+  eventType?: string;
+  eventDate?: string;
   location?: string;
   message?: string;
 }
+
+const sanitize = (str: string) =>
+  str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+
+const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 const handler = async (req: Request): Promise<Response> => {
   if (req.method === "OPTIONS") {
@@ -36,19 +44,88 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { name, email, phone, eventType, eventDate, location, message }: BookingRequest = await req.json();
 
+    // Validate required fields
     if (!name || !email) {
-      throw new Error("Missing required fields");
+      return new Response(
+        JSON.stringify({ error: "Missing required fields" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Validate email format
+    if (!emailRegex.test(email)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid email format" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Validate lengths
+    if (name.length > 100 || email.length > 255) {
+      return new Response(
+        JSON.stringify({ error: "Input too long" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+    if (phone && phone.length > 30) {
+      return new Response(
+        JSON.stringify({ error: "Phone number too long" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+    if (message && message.length > 5000) {
+      return new Response(
+        JSON.stringify({ error: "Message too long" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+    if (location && location.length > 200) {
+      return new Response(
+        JSON.stringify({ error: "Location too long" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Validate eventType whitelist
+    if (eventType && !VALID_EVENT_TYPES.includes(eventType)) {
+      return new Response(
+        JSON.stringify({ error: "Invalid event type" }),
+        { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    // Rate limiting: max 3 submissions per email per hour
+    const supabase = createClient(
+      Deno.env.get("SUPABASE_URL")!,
+      Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
+    );
+
+    const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
+    const { count, error: countError } = await supabase
+      .from("bookings")
+      .select("id", { count: "exact", head: true })
+      .eq("email", email)
+      .gte("created_at", oneHourAgo);
+
+    if (countError) {
+      console.error("Rate limit check failed:", countError.message);
+      return new Response(
+        JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
+        { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
+    }
+
+    if ((count ?? 0) >= 3) {
+      return new Response(
+        JSON.stringify({ error: "Too many submissions. Please try again later." }),
+        { status: 429, headers: { "Content-Type": "application/json", ...corsHeaders } }
+      );
     }
 
     const isInquiry = eventType === "inquiry" || !eventType;
 
-    // Validate lengths
-    if (name.length > 100 || email.length > 255) {
-      throw new Error("Input too long");
-    }
-
-    const sanitize = (str: string) =>
-      str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+    // Sanitize reply_to email (strip any newlines/carriage returns to prevent header injection)
+    const safeReplyTo = email.replace(/[\r\n]/g, "");
 
     const s = {
       name: sanitize(name),
@@ -63,7 +140,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailResponse = await resend.emails.send({
       from: "DJ Lobo Producciones <noreply@djloboproducciones.com>",
       to: ["djloboproducciones75@gmail.com"],
-      reply_to: email,
+      reply_to: safeReplyTo,
       subject: isInquiry
         ? `💬 Ny fråga från ${s.name}`
         : `🎧 Ny bokningsförfrågan från ${s.name} — ${s.eventType}`,
@@ -109,10 +186,9 @@ const handler = async (req: Request): Promise<Response> => {
       headers: { "Content-Type": "application/json", ...corsHeaders },
     });
   } catch (error: unknown) {
-    const errorMessage = error instanceof Error ? error.message : "Unknown error";
-    console.error("Error in send-booking-notification:", errorMessage);
+    console.error("Error in send-booking-notification:", error instanceof Error ? error.message : error);
     return new Response(
-      JSON.stringify({ error: errorMessage }),
+      JSON.stringify({ error: "An unexpected error occurred. Please try again later." }),
       { status: 500, headers: { "Content-Type": "application/json", ...corsHeaders } }
     );
   }
