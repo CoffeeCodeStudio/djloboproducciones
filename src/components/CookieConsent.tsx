@@ -48,9 +48,9 @@ const CookieConsent = () => {
     >
       <div className="max-w-lg mx-auto glass-card rounded-xl p-4 shadow-lg border border-white/10">
         <div className="flex items-start gap-3">
-          <Info className="w-5 h-5 text-neon-cyan flex-shrink-0 mt-0.5" />
+          <Info className="w-5 h-5 text-neon-cyan flex-shrink-0 mt-0.5" aria-hidden="true" />
           <div className="flex-1 min-w-0">
-            <p className="text-sm text-foreground/90 mb-2">
+            <p className="text-xs text-foreground/90 mb-2">
               {t.message}
             </p>
             <Link

@@ -96,9 +96,7 @@
     </noscript>
     <script type="module" src="/src/main.tsx"></script>
 
-    <!-- Widget APIs for volume control - non-blocking -->
-    <script src="//widget.mixcloud.com/media/js/widgetApi.js" async defer></script>
-    <script src="https://w.soundcloud.com/player/api.js" async defer></script>
+    <!-- Widget APIs removed from global scope — loaded on-demand by components -->
 
     <!-- Google Fonts - render blocking for consistent typography -->
     <link
