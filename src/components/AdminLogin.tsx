@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 interface AdminLoginProps {
   onSignIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   onSignUp: (email: string, password: string) => Promise<{ error: Error | null }>;
+  onResetPassword: (email: string) => Promise<{ error: Error | null }>;
   loading?: boolean;
   error?: string | null;
 }
