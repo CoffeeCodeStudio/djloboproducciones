@@ -1,5 +1,5 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Calendar, Clock, MapPin, Music, Send, CalendarIcon, Info } from "lucide-react";
+import { Calendar, Clock, MapPin, Music, Send, CalendarIcon, Info, MessageCircle, CalendarCheck } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { format } from "date-fns";
@@ -20,10 +20,14 @@ const eventTypes = [
   { value: "other", label: { sv: "Annat", en: "Other", es: "Otro" } },
 ];
 
+type FormMode = "question" | "booking";
+
 const translations = {
   sv: {
     title: "Kontakt & Bokning",
     subtitle: "Fyll i formuläret så återkommer vi inom 24 timmar med ett Personligt prisförslag",
+    questionTab: "Ställ en fråga",
+    bookingTab: "Boka DJ",
     name: "Ditt namn",
     email: "E-postadress",
     phone: "Telefonnummer (valfritt)",
@@ -31,9 +35,12 @@ const translations = {
     eventDate: "Datum för eventet",
     location: "Plats (stad/lokal)",
     message: "Berätta mer om ditt event",
-    submit: "Skicka bokningsförfrågan",
+    questionMessage: "Vad vill du veta?",
+    submitBooking: "Skicka bokningsförfrågan",
+    submitQuestion: "Skicka fråga",
     submitting: "Skickar...",
-    success: "Tack för din bokningsförfrågan! Vi återkommer snart.",
+    successBooking: "Tack för din bokningsförfrågan! Vi återkommer snart.",
+    successQuestion: "Tack för din fråga! Vi återkommer snart.",
     error: "Något gick fel. Vänligen försök igen.",
     selectType: "Välj eventtyp",
     whyBook: "Varför boka DJ Lobo?",
@@ -48,6 +55,8 @@ const translations = {
   en: {
     title: "Contact & Booking",
     subtitle: "Fill in the form and we'll get back to you within 24 hours with a personalized quote",
+    questionTab: "Ask a question",
+    bookingTab: "Book DJ",
     name: "Your name",
     email: "Email address",
     phone: "Phone number (optional)",
@@ -55,9 +64,12 @@ const translations = {
     eventDate: "Event date",
     location: "Location (city/venue)",
     message: "Tell us more about your event",
-    submit: "Send booking request",
+    questionMessage: "What would you like to know?",
+    submitBooking: "Send booking request",
+    submitQuestion: "Send question",
     submitting: "Sending...",
-    success: "Thank you for your booking request! We'll get back to you soon.",
+    successBooking: "Thank you for your booking request! We'll get back to you soon.",
+    successQuestion: "Thank you for your question! We'll get back to you soon.",
     error: "Something went wrong. Please try again.",
     selectType: "Select event type",
     whyBook: "Why book DJ Lobo?",
@@ -72,6 +84,8 @@ const translations = {
   es: {
     title: "Contacto y Reserva",
     subtitle: "Completa el formulario y te responderemos en 24 horas con una cotización personalizada",
+    questionTab: "Hacer una pregunta",
+    bookingTab: "Reservar DJ",
     name: "Tu nombre",
     email: "Correo electrónico",
     phone: "Teléfono (opcional)",
@@ -79,9 +93,12 @@ const translations = {
     eventDate: "Fecha del evento",
     location: "Ubicación (ciudad/local)",
     message: "Cuéntanos más sobre tu evento",
-    submit: "Enviar solicitud de reserva",
+    questionMessage: "¿Qué te gustaría saber?",
+    submitBooking: "Enviar solicitud de reserva",
+    submitQuestion: "Enviar pregunta",
     submitting: "Enviando...",
-    success: "¡Gracias por tu solicitud! Te responderemos pronto.",
+    successBooking: "¡Gracias por tu solicitud! Te responderemos pronto.",
+    successQuestion: "¡Gracias por tu pregunta! Te responderemos pronto.",
     error: "Algo salió mal. Por favor, inténtalo de nuevo.",
     selectType: "Seleccionar tipo de evento",
     whyBook: "¿Por qué reservar a DJ Lobo?",
@@ -100,6 +117,7 @@ const BookingSection = () => {
   const { toast } = useToast();
   const t = translations[language];
 
+  const [mode, setMode] = useState<FormMode>("booking");
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -117,33 +135,34 @@ const BookingSection = () => {
     setIsSubmitting(true);
 
     try {
+      const isBooking = mode === "booking";
+
       const { error } = await supabase.from("bookings").insert({
         name: formData.name,
         email: formData.email,
         phone: formData.phone || null,
-        event_type: formData.eventType,
-        event_date: formData.eventDate ? format(formData.eventDate, "yyyy-MM-dd") : "",
-        location: formData.location || null,
+        event_type: isBooking ? formData.eventType : "inquiry",
+        event_date: isBooking && formData.eventDate ? format(formData.eventDate, "yyyy-MM-dd") : null,
+        location: isBooking ? (formData.location || null) : null,
         message: formData.message || null,
       });
 
       if (error) throw error;
 
-      // Send email notification (fire-and-forget)
       supabase.functions.invoke("send-booking-notification", {
         body: {
           name: formData.name,
           email: formData.email,
           phone: formData.phone || undefined,
-          eventType: formData.eventType,
-          eventDate: formData.eventDate ? format(formData.eventDate, "yyyy-MM-dd") : "",
-          location: formData.location || undefined,
+          eventType: isBooking ? formData.eventType : "inquiry",
+          eventDate: isBooking && formData.eventDate ? format(formData.eventDate, "yyyy-MM-dd") : undefined,
+          location: isBooking ? (formData.location || undefined) : undefined,
           message: formData.message || undefined,
         },
       }).catch((err) => console.error("Booking notification failed:", err));
 
       toast({
-        title: t.success,
+        title: isBooking ? t.successBooking : t.successQuestion,
         variant: "default",
       });
 
@@ -166,6 +185,8 @@ const BookingSection = () => {
     }
   };
 
+  const isBooking = mode === "booking";
+
   return (
     <section
       id="boka"
@@ -187,6 +208,36 @@ const BookingSection = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Booking Form */}
         <div className="lg:col-span-2 glass-card p-6 sm:p-8 rounded-xl">
+          {/* Mode Toggle */}
+          <div className="flex gap-2 mb-8">
+            <button
+              type="button"
+              onClick={() => setMode("question")}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200",
+                mode === "question"
+                  ? "bg-gradient-to-r from-neon-cyan/20 to-neon-cyan/10 border border-neon-cyan/50 text-neon-cyan shadow-[0_0_15px_rgba(0,212,255,0.15)]"
+                  : "bg-background/30 border border-muted text-muted-foreground hover:border-muted-foreground/50"
+              )}
+            >
+              <MessageCircle className="w-4 h-4" />
+              {t.questionTab}
+            </button>
+            <button
+              type="button"
+              onClick={() => setMode("booking")}
+              className={cn(
+                "flex-1 flex items-center justify-center gap-2 px-4 py-3 rounded-lg font-medium text-sm transition-all duration-200",
+                mode === "booking"
+                  ? "bg-gradient-to-r from-neon-pink/20 to-neon-purple/10 border border-neon-pink/50 text-neon-pink shadow-[0_0_15px_rgba(255,0,128,0.15)]"
+                  : "bg-background/30 border border-muted text-muted-foreground hover:border-muted-foreground/50"
+              )}
+            >
+              <CalendarCheck className="w-4 h-4" />
+              {t.bookingTab}
+            </button>
+          </div>
+
           <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label htmlFor="booking-name" className="block text-sm font-medium text-foreground mb-2">
@@ -216,7 +267,7 @@ const BookingSection = () => {
               />
             </div>
 
-            <div>
+            <div className={isBooking ? "" : "sm:col-span-2"}>
               <label htmlFor="booking-phone" className="block text-sm font-medium text-foreground mb-2">
                 {t.phone}
               </label>
@@ -229,77 +280,82 @@ const BookingSection = () => {
               />
             </div>
 
-            <div>
-              <label htmlFor="booking-event-type" className="block text-sm font-medium text-foreground mb-2">
-                {t.eventType} *
-              </label>
-              <select
-                id="booking-event-type"
-                value={formData.eventType}
-                onChange={(e) => setFormData({ ...formData, eventType: e.target.value })}
-                required
-                className="w-full h-10 px-3 rounded-md bg-background/50 border border-muted focus:border-neon-pink focus:outline-none focus:ring-1 focus:ring-neon-pink text-foreground"
-              >
-                <option value="">{t.selectType}</option>
-                {eventTypes.map((type) => (
-                  <option key={type.value} value={type.value}>
-                    {type.label[language]}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-foreground mb-2">
-                {t.eventDate} *
-              </label>
-              <Popover open={dateOpen} onOpenChange={setDateOpen}>
-                <PopoverTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className={cn(
-                      "w-full justify-start text-left font-normal bg-background/50 border-muted hover:border-neon-pink",
-                      !formData.eventDate && "text-muted-foreground"
-                    )}
+            {isBooking && (
+              <>
+                <div>
+                  <label htmlFor="booking-event-type" className="block text-sm font-medium text-foreground mb-2">
+                    {t.eventType} *
+                  </label>
+                  <select
+                    id="booking-event-type"
+                    value={formData.eventType}
+                    onChange={(e) => setFormData({ ...formData, eventType: e.target.value })}
+                    required
+                    className="w-full h-10 px-3 rounded-md bg-background/50 border border-muted focus:border-neon-pink focus:outline-none focus:ring-1 focus:ring-neon-pink text-foreground"
                   >
-                    <CalendarIcon className="mr-2 h-4 w-4" />
-                    {formData.eventDate ? format(formData.eventDate, "PPP") : t.eventDate}
-                  </Button>
-                </PopoverTrigger>
-                <PopoverContent className="w-auto p-0" align="start">
-                  <CalendarPicker
-                    mode="single"
-                    selected={formData.eventDate}
-                    onSelect={(date) => { setFormData({ ...formData, eventDate: date }); setDateOpen(false); }}
-                    disabled={(date) => date < new Date()}
-                    initialFocus
-                    className={cn("p-3 pointer-events-auto")}
-                  />
-                </PopoverContent>
-              </Popover>
-            </div>
+                    <option value="">{t.selectType}</option>
+                    {eventTypes.map((type) => (
+                      <option key={type.value} value={type.value}>
+                        {type.label[language]}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-            <div>
-              <label htmlFor="booking-location" className="block text-sm font-medium text-foreground mb-2">
-                {t.location}
-              </label>
-              <Input
-                id="booking-location"
-                type="text"
-                value={formData.location}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                className="bg-background/50 border-muted focus:border-neon-pink"
-              />
-            </div>
+                <div>
+                  <label className="block text-sm font-medium text-foreground mb-2">
+                    {t.eventDate} *
+                  </label>
+                  <Popover open={dateOpen} onOpenChange={setDateOpen}>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal bg-background/50 border-muted hover:border-neon-pink",
+                          !formData.eventDate && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {formData.eventDate ? format(formData.eventDate, "PPP") : t.eventDate}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <CalendarPicker
+                        mode="single"
+                        selected={formData.eventDate}
+                        onSelect={(date) => { setFormData({ ...formData, eventDate: date }); setDateOpen(false); }}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+
+                <div>
+                  <label htmlFor="booking-location" className="block text-sm font-medium text-foreground mb-2">
+                    {t.location}
+                  </label>
+                  <Input
+                    id="booking-location"
+                    type="text"
+                    value={formData.location}
+                    onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                    className="bg-background/50 border-muted focus:border-neon-pink"
+                  />
+                </div>
+              </>
+            )}
 
             <div className="sm:col-span-2">
               <label htmlFor="booking-message" className="block text-sm font-medium text-foreground mb-2">
-                {t.message}
+                {isBooking ? t.message : t.questionMessage} {!isBooking && "*"}
               </label>
               <Textarea
                 id="booking-message"
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                required={!isBooking}
                 rows={4}
                 className="bg-background/50 border-muted focus:border-neon-pink resize-none"
               />
@@ -316,16 +372,18 @@ const BookingSection = () => {
                 ) : (
                   <>
                     <Send className="w-5 h-5 mr-2" />
-                    {t.submit}
+                    {isBooking ? t.submitBooking : t.submitQuestion}
                   </>
                 )}
               </Button>
             </div>
             <div className="sm:col-span-2 space-y-3">
-              <div className="flex items-start gap-2 text-xs text-muted-foreground">
-                <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-neon-pink/70" />
-                <p>{t.disclaimer}</p>
-              </div>
+              {isBooking && (
+                <div className="flex items-start gap-2 text-xs text-muted-foreground">
+                  <Info className="w-3.5 h-3.5 mt-0.5 flex-shrink-0 text-neon-pink/70" />
+                  <p>{t.disclaimer}</p>
+                </div>
+              )}
               <p className="text-xs text-muted-foreground">
                 {t.privacyConsent}{" "}
                 <Link to="/privacy" className="text-neon-cyan hover:underline">{t.privacyLink}</Link>.

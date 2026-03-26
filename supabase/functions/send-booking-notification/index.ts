@@ -15,6 +15,7 @@ const eventTypeLabels: Record<string, string> = {
   private: "Privatfest",
   club: "Klubb/Festival",
   other: "Annat",
+  inquiry: "Allmän fråga",
 };
 
 interface BookingRequest {
@@ -35,9 +36,11 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { name, email, phone, eventType, eventDate, location, message }: BookingRequest = await req.json();
 
-    if (!name || !email || !eventType || !eventDate) {
+    if (!name || !email) {
       throw new Error("Missing required fields");
     }
+
+    const isInquiry = eventType === "inquiry" || !eventType;
 
     // Validate lengths
     if (name.length > 100 || email.length > 255) {
@@ -61,11 +64,13 @@ const handler = async (req: Request): Promise<Response> => {
       from: "DJ Lobo Producciones <info@djloboradio.com>",
       to: ["djloboproducciones75@gmail.com"],
       reply_to: email,
-      subject: `🎧 Ny bokningsförfrågan från ${s.name} — ${s.eventType}`,
+      subject: isInquiry
+        ? `💬 Ny fråga från ${s.name}`
+        : `🎧 Ny bokningsförfrågan från ${s.name} — ${s.eventType}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
           <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 30px 20px; border-radius: 12px 12px 0 0; text-align: center;">
-            <h1 style="color: #00d4ff; margin: 0; font-size: 24px;">🎧 Ny Bokningsförfrågan</h1>
+            <h1 style="color: #00d4ff; margin: 0; font-size: 24px;">${isInquiry ? "💬 Ny Fråga" : "🎧 Ny Bokningsförfrågan"}</h1>
           </div>
           <div style="padding: 24px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 12px 12px;">
             <table style="width: 100%; border-collapse: collapse;">
@@ -78,15 +83,15 @@ const handler = async (req: Request): Promise<Response> => {
                 <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;"><a href="mailto:${s.email}" style="color: #00d4ff;">${s.email}</a></td>
               </tr>
               ${s.phone ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>Telefon</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;"><a href="tel:${s.phone}" style="color: #00d4ff;">${s.phone}</a></td></tr>` : ""}
-              <tr>
+              ${!isInquiry ? `<tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>Typ av event</strong></td>
                 <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">${s.eventType}</td>
               </tr>
-              <tr>
+              ${s.eventDate ? `<tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>Datum</strong></td>
                 <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">${s.eventDate}</td>
-              </tr>
-              ${s.location ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>Plats</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">${s.location}</td></tr>` : ""}
+              </tr>` : ""}
+              ${s.location ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>Plats</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">${s.location}</td></tr>` : ""}` : ""}
             </table>
             ${s.message ? `<div style="margin-top: 20px; padding: 16px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #00d4ff;"><h3 style="margin: 0 0 8px; color: #333; font-size: 14px;">Meddelande:</h3><p style="margin: 0; white-space: pre-wrap; line-height: 1.6; color: #555;">${s.message}</p></div>` : ""}
             <p style="color: #999; font-size: 11px; margin-top: 24px; text-align: center;">
