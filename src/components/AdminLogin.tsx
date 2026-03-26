@@ -13,12 +13,14 @@ interface AdminLoginProps {
   error?: string | null;
 }
 
-const AdminLogin = ({ onSignIn, onSignUp, loading, error }: AdminLoginProps) => {
+const AdminLogin = ({ onSignIn, onSignUp, onResetPassword, loading, error }: AdminLoginProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isSignUp, setIsSignUp] = useState(false);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [localLoading, setLocalLoading] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
+  const [resetSent, setResetSent] = useState(false);
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
