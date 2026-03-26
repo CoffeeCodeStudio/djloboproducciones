@@ -143,6 +143,7 @@ const Admin = () => {
           <TabsContent value="spelningar"><SpelningarTab /></TabsContent>
           <TabsContent value="utseende"><BrandingTab /></TabsContent>
           <TabsContent value="hjalp"><HelpTab /></TabsContent>
+          <TabsContent value="anvandare"><UsersTab currentUserId={user.id} /></TabsContent>
         </Tabs>
       </main>
     </div>
