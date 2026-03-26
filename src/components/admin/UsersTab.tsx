@@ -26,13 +26,10 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
 
   const fetchRoles = async () => {
     setLoading(true);
-    const { data, error } = await supabase
-      .from("user_roles")
-      .select("*")
-      .order("created_at", { ascending: true });
+    const { data, error } = await supabase.functions.invoke("list-admin-users");
 
     if (error) {
-      toast({ title: "Fel", description: "Kunde inte hämta roller.", variant: "destructive" });
+      toast({ title: "Fel", description: "Kunde inte hämta användare.", variant: "destructive" });
     } else {
       setRoles(data || []);
     }
