@@ -19,7 +19,7 @@ import HelpTab from "@/components/admin/HelpTab";
 import UsersTab from "@/components/admin/UsersTab";
 
 const Admin = () => {
-  const { user, isAdmin, loading: authLoading, signIn, signUp, signOut } = useAuth();
+  const { user, isAdmin, loading: authLoading, signIn, signUp, signOut, resetPassword } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
