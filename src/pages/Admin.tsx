@@ -130,6 +130,10 @@ const Admin = () => {
               <HelpCircle className="w-4 h-4 sm:w-4 sm:h-4" />
               <span className="text-[9px] sm:text-sm leading-tight">Hjälp</span>
             </TabsTrigger>
+            <TabsTrigger value="anvandare" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
+              <Users className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="text-[9px] sm:text-sm leading-tight">Konto</span>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="framsida"><FramsidaTab /></TabsContent>
