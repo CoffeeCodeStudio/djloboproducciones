@@ -64,7 +64,9 @@ const handler = async (req: Request): Promise<Response> => {
       from: "DJ Lobo Producciones <info@djloboradio.com>",
       to: ["djloboproducciones75@gmail.com"],
       reply_to: email,
-      subject: `🎧 Ny bokningsförfrågan från ${s.name} — ${s.eventType}`,
+      subject: isInquiry
+        ? `💬 Ny fråga från ${s.name}`
+        : `🎧 Ny bokningsförfrågan från ${s.name} — ${s.eventType}`,
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
           <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 30px 20px; border-radius: 12px 12px 0 0; text-align: center;">
