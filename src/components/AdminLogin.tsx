@@ -28,6 +28,17 @@ const AdminLogin = ({ onSignIn, onSignUp, onResetPassword, loading, error }: Adm
     setLocalLoading(true);
     setLocalError(null);
 
+    if (isForgotPassword) {
+      const { error } = await onResetPassword(email);
+      if (error) {
+        setLocalError(error.message);
+      } else {
+        setResetSent(true);
+      }
+      setLocalLoading(false);
+      return;
+    }
+
     const { error } = isSignUp 
       ? await onSignUp(email, password)
       : await onSignIn(email, password);
