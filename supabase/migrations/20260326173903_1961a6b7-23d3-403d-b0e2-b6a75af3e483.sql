@@ -1,0 +1,2 @@
+ALTER TABLE public.bookings DROP CONSTRAINT bookings_event_type_check;
+ALTER TABLE public.bookings ADD CONSTRAINT bookings_event_type_check CHECK (event_type IS NULL OR event_type = ANY (ARRAY['wedding', 'corporate', 'private', 'club', 'other', 'inquiry']));
