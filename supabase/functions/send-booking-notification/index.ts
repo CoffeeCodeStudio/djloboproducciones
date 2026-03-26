@@ -36,9 +36,11 @@ const handler = async (req: Request): Promise<Response> => {
   try {
     const { name, email, phone, eventType, eventDate, location, message }: BookingRequest = await req.json();
 
-    if (!name || !email || !eventType || !eventDate) {
+    if (!name || !email) {
       throw new Error("Missing required fields");
     }
+
+    const isInquiry = eventType === "inquiry" || !eventType;
 
     // Validate lengths
     if (name.length > 100 || email.length > 255) {
