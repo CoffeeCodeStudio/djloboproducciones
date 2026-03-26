@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Star, Home } from "lucide-react";
+import { Shield, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Star, Home, HelpCircle } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import AdminLogin from "@/components/AdminLogin";
@@ -15,6 +15,7 @@ import RadioTab from "@/components/admin/RadioTab";
 import TestimonialsTab from "@/components/admin/TestimonialsTab";
 import SpelningarTab from "@/components/admin/SpelningarTab";
 import BrandingTab from "@/components/admin/BrandingTab";
+import HelpTab from "@/components/admin/HelpTab";
 
 const Admin = () => {
   const { user, isAdmin, loading: authLoading, signIn, signUp, signOut } = useAuth();
@@ -99,30 +100,34 @@ const Admin = () => {
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 relative z-10">
         <Tabs defaultValue="framsida" className="w-full">
           {/* Mobile-first tab navigation */}
-          <TabsList className="grid w-full grid-cols-6 mb-4 sm:mb-8 glass-card h-auto p-1 gap-0.5">
-            <TabsTrigger value="framsida" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 min-h-[52px] sm:min-h-0">
+          <TabsList className="grid w-full grid-cols-7 mb-4 sm:mb-8 glass-card h-auto p-1 gap-0.5">
+            <TabsTrigger value="framsida" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
               <Home className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[10px] sm:text-sm leading-tight">Hem</span>
+              <span className="text-[9px] sm:text-sm leading-tight">Hem</span>
             </TabsTrigger>
-            <TabsTrigger value="media" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 min-h-[52px] sm:min-h-0">
+            <TabsTrigger value="media" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
               <ImageIcon className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[10px] sm:text-sm leading-tight">Media</span>
+              <span className="text-[9px] sm:text-sm leading-tight">Media</span>
             </TabsTrigger>
-            <TabsTrigger value="radio" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 min-h-[52px] sm:min-h-0">
+            <TabsTrigger value="radio" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
               <Radio className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[10px] sm:text-sm leading-tight">Radio</span>
+              <span className="text-[9px] sm:text-sm leading-tight">Radio</span>
             </TabsTrigger>
-            <TabsTrigger value="omdomen" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 min-h-[52px] sm:min-h-0">
+            <TabsTrigger value="omdomen" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
               <Star className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[10px] sm:text-sm leading-tight">Omdömen</span>
+              <span className="text-[9px] sm:text-sm leading-tight">Omdömen</span>
             </TabsTrigger>
-            <TabsTrigger value="spelningar" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 min-h-[52px] sm:min-h-0">
+            <TabsTrigger value="spelningar" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
               <Calendar className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[10px] sm:text-sm leading-tight">Event</span>
+              <span className="text-[9px] sm:text-sm leading-tight">Event</span>
             </TabsTrigger>
-            <TabsTrigger value="utseende" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-1 sm:px-3 min-h-[52px] sm:min-h-0">
+            <TabsTrigger value="utseende" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
               <Palette className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[10px] sm:text-sm leading-tight">Stil</span>
+              <span className="text-[9px] sm:text-sm leading-tight">Stil</span>
+            </TabsTrigger>
+            <TabsTrigger value="hjalp" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
+              <HelpCircle className="w-4 h-4 sm:w-4 sm:h-4" />
+              <span className="text-[9px] sm:text-sm leading-tight">Hjälp</span>
             </TabsTrigger>
           </TabsList>
 
@@ -132,6 +137,7 @@ const Admin = () => {
           <TabsContent value="omdomen"><TestimonialsTab /></TabsContent>
           <TabsContent value="spelningar"><SpelningarTab /></TabsContent>
           <TabsContent value="utseende"><BrandingTab /></TabsContent>
+          <TabsContent value="hjalp"><HelpTab /></TabsContent>
         </Tabs>
       </main>
     </div>
