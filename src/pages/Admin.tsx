@@ -38,7 +38,7 @@ const Admin = () => {
     );
   }
 
-  if (!user) return <AdminLogin onSignIn={signIn} onSignUp={signUp} />;
+  if (!user) return <AdminLogin onSignIn={signIn} onSignUp={signUp} onResetPassword={resetPassword} />;
 
   if (!isAdmin) {
     return (
