@@ -12,6 +12,7 @@ interface UserRole {
   user_id: string;
   role: "admin" | "moderator" | "user";
   created_at: string;
+  email: string | null;
 }
 
 const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
