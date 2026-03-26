@@ -83,15 +83,15 @@ const handler = async (req: Request): Promise<Response> => {
                 <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;"><a href="mailto:${s.email}" style="color: #00d4ff;">${s.email}</a></td>
               </tr>
               ${s.phone ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>Telefon</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;"><a href="tel:${s.phone}" style="color: #00d4ff;">${s.phone}</a></td></tr>` : ""}
-              <tr>
+              ${!isInquiry ? `<tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>Typ av event</strong></td>
                 <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">${s.eventType}</td>
               </tr>
-              <tr>
+              ${s.eventDate ? `<tr>
                 <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>Datum</strong></td>
                 <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">${s.eventDate}</td>
-              </tr>
-              ${s.location ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>Plats</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">${s.location}</td></tr>` : ""}
+              </tr>` : ""}
+              ${s.location ? `<tr><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; color: #666;"><strong>Plats</strong></td><td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0;">${s.location}</td></tr>` : ""}` : ""}
             </table>
             ${s.message ? `<div style="margin-top: 20px; padding: 16px; background: #f9f9f9; border-radius: 8px; border-left: 4px solid #00d4ff;"><h3 style="margin: 0 0 8px; color: #333; font-size: 14px;">Meddelande:</h3><p style="margin: 0; white-space: pre-wrap; line-height: 1.6; color: #555;">${s.message}</p></div>` : ""}
             <p style="color: #999; font-size: 11px; margin-top: 24px; text-align: center;">
