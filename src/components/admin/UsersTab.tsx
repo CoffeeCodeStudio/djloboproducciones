@@ -85,6 +85,28 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
     setChangingEmail(false);
   };
 
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      toast({ title: "Fel", description: "Lösenorden matchar inte.", variant: "destructive" });
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast({ title: "Fel", description: "Lösenordet måste vara minst 6 tecken.", variant: "destructive" });
+      return;
+    }
+    setChangingPassword(true);
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      toast({ title: "Fel", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Klart", description: "Lösenordet har uppdaterats." });
+      setNewPassword("");
+      setConfirmPassword("");
+    }
+    setChangingPassword(false);
+  };
+
   const roleBadgeColor = (role: string) => {
     switch (role) {
       case "admin": return "border-primary/50 text-primary";
