@@ -16,7 +16,6 @@ interface AdminLoginProps {
 const AdminLogin = ({ onSignIn, onSignUp, onResetPassword, loading, error }: AdminLoginProps) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isSignUp, setIsSignUp] = useState(false);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [localLoading, setLocalLoading] = useState(false);
   const [localError, setLocalError] = useState<string | null>(null);
@@ -39,9 +38,7 @@ const AdminLogin = ({ onSignIn, onSignUp, onResetPassword, loading, error }: Adm
       return;
     }
 
-    const { error } = isSignUp 
-      ? await onSignUp(email, password)
-      : await onSignIn(email, password);
+    const { error } = await onSignIn(email, password);
 
     if (error) {
       setLocalError(error.message);
@@ -72,14 +69,12 @@ const AdminLogin = ({ onSignIn, onSignUp, onResetPassword, loading, error }: Adm
             <Shield className="w-7 h-7 text-slate-300" />
           </div>
           <CardTitle className="text-xl font-semibold text-slate-100 tracking-tight">
-            {isForgotPassword ? "Återställ lösenord" : isSignUp ? "Skapa konto" : "Adminpanel"}
+            {isForgotPassword ? "Återställ lösenord" : "Adminpanel"}
           </CardTitle>
           <CardDescription className="text-slate-400 text-sm">
             {isForgotPassword
               ? "Ange din e-post för att få en återställningslänk"
-              : isSignUp 
-                ? "Registrera dig för att begära åtkomst" 
-                : "Logga in för att nå kontrollpanelen"}
+              : "Logga in för att nå kontrollpanelen"}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
@@ -133,8 +128,6 @@ const AdminLogin = ({ onSignIn, onSignUp, onResetPassword, loading, error }: Adm
                 <span className="loading-spinner" />
               ) : isForgotPassword ? (
                 "Skicka återställningslänk"
-              ) : isSignUp ? (
-                "Skapa konto"
               ) : (
                 "Logga in"
               )}
@@ -152,23 +145,21 @@ const AdminLogin = ({ onSignIn, onSignUp, onResetPassword, loading, error }: Adm
               </div>
             )}
 
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => { setIsSignUp(!isSignUp); setIsForgotPassword(false); setLocalError(null); setResetSent(false); }}
-                className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
-              >
-                {isForgotPassword
-                  ? "Tillbaka till inloggning"
-                  : isSignUp 
-                    ? "Har du redan ett konto? Logga in" 
-                    : "Behöver du ett konto? Registrera dig"}
-              </button>
-            </div>
+            {isForgotPassword && (
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => { setIsForgotPassword(false); setLocalError(null); setResetSent(false); }}
+                  className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+                >
+                  Tillbaka till inloggning
+                </button>
+              </div>
+            )}
 
-            {isSignUp && (
+            {!isForgotPassword && (
               <p className="text-xs text-slate-500 text-center">
-                OBS: Efter registrering måste en admin ge dig åtkomst.
+                Kontakta din administratör för att få ett konto skapat
               </p>
             )}
           </form>
