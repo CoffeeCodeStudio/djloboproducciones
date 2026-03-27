@@ -39,6 +39,10 @@ const App = () => (
           <ErrorBoundary>
             <Suspense fallback={<SuspenseFallback />}>
               <Routes>
+                {/* Standalone pages without nav/footer */}
+                <Route path="/admin" element={<Admin />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+
                 <Route element={<Layout />}>
                   <Route path="/" element={<Index />} />
                   <Route path="/lyssna" element={<ListenPage />} />
@@ -52,10 +56,8 @@ const App = () => (
                   <Route path="/mixes" element={<Navigate to="/media" replace />} />
                   <Route path="/galleri" element={<Navigate to="/media" replace />} />
                   <Route path="/utrustning" element={<Navigate to="/spelningar" replace />} />
-                  <Route path="/admin" element={<Admin />} />
                   <Route path="/privacy" element={<PrivacyPolicy />} />
                   <Route path="/terms" element={<TermsOfService />} />
-                  <Route path="/reset-password" element={<ResetPassword />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
               </Routes>
