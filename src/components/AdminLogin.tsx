@@ -131,8 +131,6 @@ const AdminLogin = ({ onSignIn, onSignUp, onResetPassword, loading, error }: Adm
                 <span className="loading-spinner" />
               ) : isForgotPassword ? (
                 "Skicka återställningslänk"
-              ) : isSignUp ? (
-                "Skapa konto"
               ) : (
                 "Logga in"
               )}
