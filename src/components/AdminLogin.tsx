@@ -152,23 +152,21 @@ const AdminLogin = ({ onSignIn, onSignUp, onResetPassword, loading, error }: Adm
               </div>
             )}
 
-            <div className="text-center">
-              <button
-                type="button"
-                onClick={() => { setIsSignUp(!isSignUp); setIsForgotPassword(false); setLocalError(null); setResetSent(false); }}
-                className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
-              >
-                {isForgotPassword
-                  ? "Tillbaka till inloggning"
-                  : isSignUp 
-                    ? "Har du redan ett konto? Logga in" 
-                    : "Behöver du ett konto? Registrera dig"}
-              </button>
-            </div>
+            {isForgotPassword && (
+              <div className="text-center">
+                <button
+                  type="button"
+                  onClick={() => { setIsForgotPassword(false); setLocalError(null); setResetSent(false); }}
+                  className="text-sm text-slate-500 hover:text-slate-300 transition-colors"
+                >
+                  Tillbaka till inloggning
+                </button>
+              </div>
+            )}
 
-            {isSignUp && (
+            {!isForgotPassword && !isSignUp && (
               <p className="text-xs text-slate-500 text-center">
-                OBS: Efter registrering måste en admin ge dig åtkomst.
+                Kontakta din administratör för att få ett konto skapat
               </p>
             )}
           </form>
