@@ -22,6 +22,10 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
   const [changingEmail, setChangingEmail] = useState(false);
   const [addingRole, setAddingRole] = useState(false);
   const [newUserEmail, setNewUserEmail] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
   const { toast } = useToast();
 
   const fetchRoles = async () => {
