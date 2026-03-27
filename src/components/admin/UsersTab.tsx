@@ -154,15 +154,44 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleChangePassword} className="space-y-3">
-            <Input
-              type="password"
-              placeholder="Nytt lösenord"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              className="bg-input border-border"
-              required
-              minLength={6}
-            />
+            <div>
+              <Input
+                type="password"
+                placeholder="Nytt lösenord"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                className="bg-input border-border"
+                required
+                minLength={6}
+              />
+              {newPassword.length > 0 && (() => {
+                const hasLength = newPassword.length >= 8;
+                const hasUpper = /[A-Z]/.test(newPassword);
+                const hasLower = /[a-z]/.test(newPassword);
+                const hasNumber = /[0-9]/.test(newPassword);
+                const hasSpecial = /[^A-Za-z0-9]/.test(newPassword);
+                const score = [hasLength, hasUpper, hasLower, hasNumber, hasSpecial].filter(Boolean).length;
+                const label = score <= 2 ? "Svagt" : score <= 3 ? "Medel" : "Starkt";
+                const color = score <= 2 ? "bg-destructive" : score <= 3 ? "bg-yellow-500" : "bg-green-500";
+                const width = score <= 2 ? "w-1/3" : score <= 3 ? "w-2/3" : "w-full";
+                return (
+                  <div className="mt-2 space-y-1">
+                    <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+                      <div className={`h-full rounded-full transition-all duration-300 ${color} ${width}`} />
+                    </div>
+                    <p className={`text-xs ${score <= 2 ? "text-destructive" : score <= 3 ? "text-yellow-500" : "text-green-500"}`}>
+                      {label} — {[
+                        !hasLength && "minst 8 tecken",
+                        !hasUpper && "stor bokstav",
+                        !hasLower && "liten bokstav",
+                        !hasNumber && "siffra",
+                        !hasSpecial && "specialtecken",
+                      ].filter(Boolean).join(", ") || "Bra lösenord!"}
+                    </p>
+                  </div>
+                );
+              })()}
+            </div>
             <Input
               type="password"
               placeholder="Bekräfta nytt lösenord"
