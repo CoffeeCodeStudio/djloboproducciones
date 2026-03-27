@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
-import { Shield, ShieldOff, Users, Mail, RefreshCw } from "lucide-react";
+import { Shield, ShieldOff, Users, Mail, RefreshCw, Lock } from "lucide-react";
 
 interface UserRole {
   id: string;
@@ -22,6 +22,10 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
   const [changingEmail, setChangingEmail] = useState(false);
   const [addingRole, setAddingRole] = useState(false);
   const [newUserEmail, setNewUserEmail] = useState("");
+  const [currentPassword, setCurrentPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [changingPassword, setChangingPassword] = useState(false);
   const { toast } = useToast();
 
   const fetchRoles = async () => {
@@ -81,6 +85,28 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
     setChangingEmail(false);
   };
 
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      toast({ title: "Fel", description: "Lösenorden matchar inte.", variant: "destructive" });
+      return;
+    }
+    if (newPassword.length < 6) {
+      toast({ title: "Fel", description: "Lösenordet måste vara minst 6 tecken.", variant: "destructive" });
+      return;
+    }
+    setChangingPassword(true);
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      toast({ title: "Fel", description: error.message, variant: "destructive" });
+    } else {
+      toast({ title: "Klart", description: "Lösenordet har uppdaterats." });
+      setNewPassword("");
+      setConfirmPassword("");
+    }
+    setChangingPassword(false);
+  };
+
   const roleBadgeColor = (role: string) => {
     switch (role) {
       case "admin": return "border-primary/50 text-primary";
@@ -112,6 +138,42 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
             />
             <Button type="submit" disabled={changingEmail} size="sm">
               {changingEmail ? <span className="loading-spinner" /> : "Byt mejl"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
+      {/* Change password */}
+      <Card className="glass-card">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Lock className="w-5 h-5" />
+            Byt lösenord
+          </CardTitle>
+          <CardDescription>Ange ett nytt lösenord (minst 6 tecken).</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleChangePassword} className="space-y-3">
+            <Input
+              type="password"
+              placeholder="Nytt lösenord"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="bg-input border-border"
+              required
+              minLength={6}
+            />
+            <Input
+              type="password"
+              placeholder="Bekräfta nytt lösenord"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="bg-input border-border"
+              required
+              minLength={6}
+            />
+            <Button type="submit" disabled={changingPassword} size="sm">
+              {changingPassword ? <span className="loading-spinner" /> : "Uppdatera lösenord"}
             </Button>
           </form>
         </CardContent>
