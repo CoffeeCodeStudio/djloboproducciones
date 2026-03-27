@@ -143,6 +143,42 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
         </CardContent>
       </Card>
 
+      {/* Change password */}
+      <Card className="glass-card">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2 text-lg">
+            <Lock className="w-5 h-5" />
+            Byt lösenord
+          </CardTitle>
+          <CardDescription>Ange ett nytt lösenord (minst 6 tecken).</CardDescription>
+        </CardHeader>
+        <CardContent>
+          <form onSubmit={handleChangePassword} className="space-y-3">
+            <Input
+              type="password"
+              placeholder="Nytt lösenord"
+              value={newPassword}
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="bg-input border-border"
+              required
+              minLength={6}
+            />
+            <Input
+              type="password"
+              placeholder="Bekräfta nytt lösenord"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="bg-input border-border"
+              required
+              minLength={6}
+            />
+            <Button type="submit" disabled={changingPassword} size="sm">
+              {changingPassword ? <span className="loading-spinner" /> : "Uppdatera lösenord"}
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+
       {/* User roles list */}
       <Card className="glass-card">
         <CardHeader>
