@@ -62,6 +62,7 @@ const MixCardGrid = () => {
   const [mixes, setMixes] = useState<UnifiedMix[]>([]);
   const [loading, setLoading] = useState(true);
   const { playMix, currentTrack } = usePlayerStore();
+  const { hasConsented, acceptCookies } = useCookieConsent();
 
   useEffect(() => {
     const fetchAll = async () => {
