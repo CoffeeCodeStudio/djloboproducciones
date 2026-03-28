@@ -1,5 +1,7 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X } from "lucide-react";
+import { useCookieConsent } from "@/contexts/CookieConsentContext";
+import EmbedBlockedNotice from "@/components/EmbedBlockedNotice";
 
 interface MediaLightboxProps {
   open: boolean;
