@@ -180,9 +180,18 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
         <div className="border-t border-neon-purple/20 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
           <p className="text-muted-foreground text-xs">{t.copyright}</p>
           <nav aria-label="Juridiska länkar">
-            <ul className="flex gap-4 text-xs">
+            <ul className="flex gap-4 text-xs items-center">
               <li><Link to="/privacy" className="text-neon-cyan hover:underline">{t.privacyPolicy}</Link></li>
               <li><Link to="/terms" className="text-neon-cyan hover:underline">{t.terms}</Link></li>
+              <li>
+                <button
+                  onClick={resetConsent}
+                  className="text-muted-foreground hover:text-neon-cyan transition-colors flex items-center gap-1"
+                >
+                  <Cookie className="w-3 h-3" aria-hidden="true" />
+                  {t.cookieSettings}
+                </button>
+              </li>
             </ul>
           </nav>
         </div>
