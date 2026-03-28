@@ -31,6 +31,11 @@ export const CookieConsentProvider = ({ children }: { children: ReactNode }) => 
     setConsent("declined");
   };
 
+  const resetConsent = () => {
+    localStorage.removeItem(CONSENT_KEY);
+    setConsent("pending");
+  };
+
   return (
     <CookieConsentContext.Provider
       value={{ consent, acceptCookies, declineCookies, hasConsented: consent === "accepted" }}
