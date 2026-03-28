@@ -7,6 +7,14 @@ import EmbedBlockedNotice from "@/components/EmbedBlockedNotice";
 const GlobalMiniPlayer = () => {
   const { currentTrack, isPlaying, isMinimized, stop, toggleMinimize } = usePlayerStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
+  const { hasConsented } = useCookieConsent();
+
+  // Stop playback if consent is revoked
+  useEffect(() => {
+    if (!hasConsented && currentTrack) {
+      stop();
+    }
+  }, [hasConsented, currentTrack, stop]);
 
   const getEmbedUrl = () => {
     if (!currentTrack) return "";
