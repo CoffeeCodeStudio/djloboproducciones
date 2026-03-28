@@ -34,13 +34,17 @@ const MediaLightbox = ({ open, onClose, type, src, alt, isYouTube }: MediaLightb
           />
         ) : isYouTube ? (
           <div className="aspect-video w-full">
-            <iframe
-              src={`https://www.youtube.com/embed/${src}?rel=0&modestbranding=1&autoplay=1`}
-              title={alt || "Video"}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full"
-            />
+            {hasConsented ? (
+              <iframe
+                src={`https://www.youtube.com/embed/${src}?rel=0&modestbranding=1&autoplay=1`}
+                title={alt || "Video"}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            ) : (
+              <EmbedBlockedNotice className="w-full h-full" />
+            )}
           </div>
         ) : (
           <div className="aspect-video w-full">
