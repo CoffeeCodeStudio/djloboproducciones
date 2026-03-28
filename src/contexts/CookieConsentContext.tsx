@@ -6,6 +6,7 @@ interface CookieConsentContextType {
   consent: ConsentStatus;
   acceptCookies: () => void;
   declineCookies: () => void;
+  resetConsent: () => void;
   hasConsented: boolean;
 }
 
