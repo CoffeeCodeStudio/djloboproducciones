@@ -59,6 +59,7 @@ const translations = {
 const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { language } = useLanguage();
   const { branding } = useBranding();
+  const { resetConsent } = useCookieConsent();
   const t = translations[language];
 
   const socialLinks = {
