@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { Play } from "lucide-react";
+import { useCookieConsent } from "@/contexts/CookieConsentContext";
+import EmbedBlockedNotice from "@/components/EmbedBlockedNotice";
 
 interface LazyYouTubeProps {
   videoId: string;
@@ -9,6 +11,11 @@ interface LazyYouTubeProps {
 
 const LazyYouTube = ({ videoId, title, className = "" }: LazyYouTubeProps) => {
   const [loaded, setLoaded] = useState(false);
+  const { hasConsented } = useCookieConsent();
+
+  if (!hasConsented) {
+    return <EmbedBlockedNotice className={className} />;
+  }
 
   if (loaded) {
     return (
@@ -29,7 +36,6 @@ const LazyYouTube = ({ videoId, title, className = "" }: LazyYouTubeProps) => {
       className={`w-full h-full relative group cursor-pointer bg-black ${className}`}
       aria-label={`Spela video: ${title}`}
     >
-      {/* YouTube thumbnail */}
       <img
         src={`https://img.youtube.com/vi/${videoId}/hqdefault.jpg`}
         alt={`Förhandsvisning av video: ${title}`}
@@ -38,7 +44,6 @@ const LazyYouTube = ({ videoId, title, className = "" }: LazyYouTubeProps) => {
         width={480}
         height={360}
       />
-      {/* Play button overlay */}
       <div className="absolute inset-0 flex items-center justify-center bg-black/30 group-hover:bg-black/40 transition-colors">
         <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-neon-pink/90 flex items-center justify-center group-hover:scale-110 transition-transform">
           <Play className="w-8 h-8 sm:w-10 sm:h-10 text-white ml-1" aria-hidden="true" />
