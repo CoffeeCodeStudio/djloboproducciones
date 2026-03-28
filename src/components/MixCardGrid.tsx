@@ -123,6 +123,18 @@ const MixCardGrid = () => {
   }, []);
 
   const handlePlay = (mix: UnifiedMix) => {
+    if (!hasConsented) {
+      toast({
+        title: language === "sv" ? "Cookies krävs" : language === "es" ? "Se requieren cookies" : "Cookies required",
+        description: language === "sv"
+          ? "Du måste acceptera cookies för att spela inbäddat innehåll."
+          : language === "es"
+          ? "Debes aceptar las cookies para reproducir contenido incrustado."
+          : "You must accept cookies to play embedded content.",
+        variant: "destructive",
+      });
+      return;
+    }
     const track: MixTrack = {
       id: mix.id,
       title: mix.title,

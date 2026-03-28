@@ -96,15 +96,19 @@ const GlobalMiniPlayer = () => {
         {/* Embed iframe — hidden when minimized */}
         {!isMinimized && (
           <div className="flex-1 px-3 sm:px-4 pb-2 sm:pb-3 min-h-0">
-            <iframe
-              ref={iframeRef}
-              src={embedUrl}
-              width="100%"
-              height="100%"
-              className="rounded-lg border border-primary/10"
-              allow="autoplay"
-              title={`Spelar: ${currentTrack.title}`}
-            />
+            {hasConsented ? (
+              <iframe
+                ref={iframeRef}
+                src={embedUrl}
+                width="100%"
+                height="100%"
+                className="rounded-lg border border-primary/10"
+                allow="autoplay"
+                title={`Spelar: ${currentTrack.title}`}
+              />
+            ) : (
+              <EmbedBlockedNotice className="h-full rounded-lg" />
+            )}
           </div>
         )}
       </div>
