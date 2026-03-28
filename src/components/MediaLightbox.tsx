@@ -13,6 +13,7 @@ interface MediaLightboxProps {
 }
 
 const MediaLightbox = ({ open, onClose, type, src, alt, isYouTube }: MediaLightboxProps) => {
+  const { hasConsented } = useCookieConsent();
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="max-w-4xl w-[95vw] p-0 bg-background/95 backdrop-blur-xl border-primary/20 overflow-hidden [&>button]:hidden">
