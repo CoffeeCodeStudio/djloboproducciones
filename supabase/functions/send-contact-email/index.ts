@@ -62,7 +62,7 @@ const handler = async (req: Request): Promise<Response> => {
       );
     }
 
-    // Rate limiting: max 3 submissions per email per hour
+    // Rate limiting: max 3 contact submissions per email per hour
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
@@ -70,7 +70,7 @@ const handler = async (req: Request): Promise<Response> => {
 
     const oneHourAgo = new Date(Date.now() - 60 * 60 * 1000).toISOString();
     const { count, error: countError } = await supabase
-      .from("bookings")
+      .from("contact_submissions")
       .select("id", { count: "exact", head: true })
       .eq("email", email)
       .gte("created_at", oneHourAgo);
@@ -89,6 +89,9 @@ const handler = async (req: Request): Promise<Response> => {
         { status: 429, headers: { "Content-Type": "application/json", ...corsHeaders } }
       );
     }
+
+    // Record this contact submission for rate limiting
+    await supabase.from("contact_submissions").insert({ email });
 
     // Sanitize inputs for HTML
     const sanitize = (str: string) => str

@@ -1,5 +1,7 @@
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { X } from "lucide-react";
+import { useCookieConsent } from "@/contexts/CookieConsentContext";
+import EmbedBlockedNotice from "@/components/EmbedBlockedNotice";
 
 interface MediaLightboxProps {
   open: boolean;
@@ -11,6 +13,7 @@ interface MediaLightboxProps {
 }
 
 const MediaLightbox = ({ open, onClose, type, src, alt, isYouTube }: MediaLightboxProps) => {
+  const { hasConsented } = useCookieConsent();
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent className="max-w-4xl w-[95vw] p-0 bg-background/95 backdrop-blur-xl border-primary/20 overflow-hidden [&>button]:hidden">
@@ -31,13 +34,17 @@ const MediaLightbox = ({ open, onClose, type, src, alt, isYouTube }: MediaLightb
           />
         ) : isYouTube ? (
           <div className="aspect-video w-full">
-            <iframe
-              src={`https://www.youtube.com/embed/${src}?rel=0&modestbranding=1&autoplay=1`}
-              title={alt || "Video"}
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full"
-            />
+            {hasConsented ? (
+              <iframe
+                src={`https://www.youtube.com/embed/${src}?rel=0&modestbranding=1&autoplay=1`}
+                title={alt || "Video"}
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            ) : (
+              <EmbedBlockedNotice className="w-full h-full" />
+            )}
           </div>
         ) : (
           <div className="aspect-video w-full">

@@ -1,6 +1,8 @@
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { X } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCookieConsent } from "@/contexts/CookieConsentContext";
+import EmbedBlockedNotice from "@/components/EmbedBlockedNotice";
 
 const translations = {
   sv: {
@@ -26,6 +28,7 @@ interface MixcloudModalProps {
 
 const MixcloudModal = ({ isOpen, onClose, title, mixcloudUrl }: MixcloudModalProps) => {
   const { language } = useLanguage();
+  const { hasConsented } = useCookieConsent();
   const t = translations[language];
 
   // Convert profile URL to embed format
@@ -48,15 +51,19 @@ const MixcloudModal = ({ isOpen, onClose, title, mixcloudUrl }: MixcloudModalPro
         </DialogHeader>
         
         <div className="w-full aspect-video bg-black/50">
-          <iframe
-            width="100%"
-            height="100%"
-            src={embedUrl}
-            frameBorder="0"
-            allow="autoplay"
-            title={`Mixcloud Player - ${title}`}
-            className="w-full h-full min-h-[400px]"
-          />
+          {hasConsented ? (
+            <iframe
+              width="100%"
+              height="100%"
+              src={embedUrl}
+              frameBorder="0"
+              allow="autoplay"
+              title={`Mixcloud Player - ${title}`}
+              className="w-full h-full min-h-[400px]"
+            />
+          ) : (
+            <EmbedBlockedNotice className="w-full h-full min-h-[400px]" />
+          )}
         </div>
 
         <div className="p-4 text-center">

@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Music, Headphones } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useCookieConsent } from "@/contexts/CookieConsentContext";
+import EmbedBlockedNotice from "@/components/EmbedBlockedNotice";
 
 const translations = {
   sv: {
@@ -39,6 +41,7 @@ interface LazyEmbedProps {
 const LazyEmbed = ({ title, embedUrl, loadingText }: LazyEmbedProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const { hasConsented } = useCookieConsent();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -65,7 +68,9 @@ const LazyEmbed = ({ title, embedUrl, loadingText }: LazyEmbedProps) => {
         <span className="font-display text-sm font-bold text-[#FFD700] truncate">{title}</span>
       </div>
       <div className="aspect-video sm:aspect-[16/7] relative">
-        {visible ?
+        {!hasConsented ? (
+          <EmbedBlockedNotice className="absolute inset-0" />
+        ) : visible ?
         <iframe
           src={embedUrl}
           width="100%"
@@ -74,7 +79,6 @@ const LazyEmbed = ({ title, embedUrl, loadingText }: LazyEmbedProps) => {
           allow="autoplay"
           loading="lazy"
           title={title} /> :
-
 
         <div className="absolute inset-0 flex items-center justify-center text-muted-foreground text-sm">
             <Headphones className="w-5 h-5 mr-2 text-neon-cyan animate-pulse" />
