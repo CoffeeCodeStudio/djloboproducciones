@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 import { Disc3, Headphones } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { supabase } from "@/integrations/supabase/client";
+import { useCookieConsent } from "@/contexts/CookieConsentContext";
+import EmbedBlockedNotice from "@/components/EmbedBlockedNotice";
 
 const translations = {
   sv: {
