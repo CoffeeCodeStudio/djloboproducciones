@@ -22,6 +22,43 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+    // --- Auth check: verify caller is admin ---
+    const authHeader = req.headers.get("Authorization");
+    if (!authHeader) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const anonClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!, {
+      global: { headers: { Authorization: authHeader } },
+    });
+
+    const { data: { user }, error: userError } = await anonClient.auth.getUser();
+    if (userError || !user) {
+      return new Response(JSON.stringify({ error: "Unauthorized" }), {
+        status: 401,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    const { data: roleData } = await anonClient
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", user.id)
+      .eq("role", "admin")
+      .maybeSingle();
+
+    if (!roleData) {
+      return new Response(JSON.stringify({ error: "Forbidden" }), {
+        status: 403,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+    // --- End auth check ---
+
     const supabase = createClient(supabaseUrl, serviceRoleKey);
 
     const MIXCLOUD_USERNAME = "DjLobo75";
@@ -41,7 +78,6 @@ Deno.serve(async (req) => {
     for (const cast of cloudcasts) {
       const externalId = cast.key;
 
-      // Check if already exists
       const { data: existing } = await supabase
         .from("mixcloud_mixes")
         .select("id, mixcloud_created_time")
@@ -63,7 +99,6 @@ Deno.serve(async (req) => {
         });
         if (!error) inserted++;
       } else if (!existing.mixcloud_created_time && cast.created_time) {
-        // Backfill created_time for existing rows that don't have it
         await supabase
           .from("mixcloud_mixes")
           .update({ mixcloud_created_time: cast.created_time })
