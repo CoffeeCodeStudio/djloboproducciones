@@ -53,6 +53,7 @@ const buildMixcloudEmbedUrl = (url: string): string => {
 const LazyMixcloudEmbed = ({ title, mixcloudUrl, loadingText }: LazyMixcloudEmbedProps) => {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const { hasConsented } = useCookieConsent();
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -80,7 +81,9 @@ const LazyMixcloudEmbed = ({ title, mixcloudUrl, loadingText }: LazyMixcloudEmbe
         <span className="font-display text-sm font-bold text-primary truncate">{title}</span>
       </div>
       <div className="h-[120px] relative">
-        {visible ? (
+        {!hasConsented ? (
+          <EmbedBlockedNotice className="absolute inset-0" />
+        ) : visible ? (
           <iframe
             src={embedUrl}
             width="100%"
