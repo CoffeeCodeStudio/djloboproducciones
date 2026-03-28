@@ -49,7 +49,7 @@ NO recopilamos direcciones IP. Para prevenir abusos en el chat, utilizamos ident
 
 Al reservar servicios de DJ, almacenamos el nombre, correo electrónico, número de teléfono y detalles del evento que usted proporciona en nuestra base de datos. Estos datos se utilizan únicamente para gestionar su reserva y se conservan por un máximo de 24 meses, tras lo cual se eliminan automáticamente. Puede solicitar la eliminación de sus datos de reserva en cualquier momento.
 
-Cuando envía un mensaje a través del formulario de contacto, se reenvía a nosotros por correo electrónico mediante Resend, un servicio de entrega de correo electrónico con sede en EE.UU. Los datos del formulario de contacto no se almacenan en ninguna base de datos y solo existen en nuestro flujo de correo electrónico. Resend procesa los datos de acuerdo con sus términos de privacidad.
+Cuando envía un mensaje a través del formulario de contacto, se reenvía a nosotros por correo electrónico mediante Resend, un servicio de entrega de correo electrónico con sede en EE.UU. Los datos del formulario de contacto no se almacenan en ninguna base de datos y solo existen en nuestro flujo de correo electrónico. Su dirección de correo electrónico se almacena temporalmente durante un máximo de 1 hora para prevenir spam, y luego se elimina automáticamente. Resend procesa los datos de acuerdo con sus términos de privacidad.
 
 El contenido incrustado de YouTube, Mixcloud y SoundCloud solo se carga después de que usted acepte activamente las cookies a través de nuestro banner de consentimiento. Estos servicios de terceros pueden establecer sus propias cookies cuando se muestra el contenido.
 
