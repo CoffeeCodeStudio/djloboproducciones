@@ -13,7 +13,7 @@ Vi samlar INTE in IP-adresser. För att förhindra missbruk i chatten använder 
 
 Vid bokning av DJ-tjänster sparar vi namn, e-post, telefonnummer och evenemangsdetaljer som du själv anger i vår databas. Denna data används enbart för att hantera din bokning och lagras i högst 24 månader, varefter den raderas automatiskt. Du kan begära radering av dina bokningsuppgifter när som helst.
 
-När du skickar ett meddelande via kontaktformuläret vidarebefordras det till oss via e-post genom Resend, en USA-baserad e-postleverantör. Kontaktformulärdata lagras inte i någon databas utan existerar enbart i vårt e-postflöde. Resend behandlar data i enlighet med sina integritetsvillkor.
+När du skickar ett meddelande via kontaktformuläret vidarebefordras det till oss via e-post genom Resend, en USA-baserad e-postleverantör. Kontaktformulärdata lagras inte i någon databas utan existerar enbart i vårt e-postflöde. Din e-postadress lagras tillfälligt i upp till 1 timme för att förhindra spam, och raderas sedan automatiskt. Resend behandlar data i enlighet med sina integritetsvillkor.
 
 Inbäddat innehåll från YouTube, Mixcloud och SoundCloud laddas först efter att du aktivt har accepterat cookies via vår samtyckesbanner. Dessa tredjepartstjänster kan sätta egna cookies när innehållet visas.
 
