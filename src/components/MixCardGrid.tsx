@@ -1,8 +1,10 @@
 import { useEffect, useState } from "react";
-import { Play, Disc3, Music, Pin, Calendar } from "lucide-react";
+import { Play, Disc3, Music, Pin, Calendar, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlayerStore, MixTrack } from "@/stores/usePlayerStore";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useCookieConsent } from "@/contexts/CookieConsentContext";
+import { toast } from "@/hooks/use-toast";
 
 const translations = {
   sv: {
@@ -60,6 +62,7 @@ const MixCardGrid = () => {
   const [mixes, setMixes] = useState<UnifiedMix[]>([]);
   const [loading, setLoading] = useState(true);
   const { playMix, currentTrack } = usePlayerStore();
+  const { hasConsented, acceptCookies } = useCookieConsent();
 
   useEffect(() => {
     const fetchAll = async () => {
@@ -120,6 +123,18 @@ const MixCardGrid = () => {
   }, []);
 
   const handlePlay = (mix: UnifiedMix) => {
+    if (!hasConsented) {
+      toast({
+        title: language === "sv" ? "Cookies krävs" : language === "es" ? "Se requieren cookies" : "Cookies required",
+        description: language === "sv"
+          ? "Du måste acceptera cookies för att spela inbäddat innehåll."
+          : language === "es"
+          ? "Debes aceptar las cookies para reproducir contenido incrustado."
+          : "You must accept cookies to play embedded content.",
+        variant: "destructive",
+      });
+      return;
+    }
     const track: MixTrack = {
       id: mix.id,
       title: mix.title,
