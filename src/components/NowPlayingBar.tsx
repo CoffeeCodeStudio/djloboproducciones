@@ -157,50 +157,28 @@ const NowPlayingBar = () => {
     });
   }, []);
 
-  // Initialize Mixcloud/SoundCloud widget when iframe loads
+  // Initialize Mixcloud widget when iframe loads
   const handleMixIframeLoad = useCallback(async () => {
     const iframe = mixIframeRef.current;
     if (!iframe || !currentTrack) return;
 
-    if (currentTrack.source === "mixcloud") {
-      await loadWidgetApi("mixcloud");
-      if ((window as any).Mixcloud) {
-        try {
-          console.info("[NowPlayingBar] Initializing Mixcloud widget...");
-          const widget = (window as any).Mixcloud.PlayerWidget(iframe);
-          widget.ready.then(() => {
-            console.info("[NowPlayingBar] Mixcloud widget ready");
-            mixcloudWidgetRef.current = widget;
-            const vol = isMuted ? 0 : volume / 100;
-            widget.setVolume(vol);
-            widget.play();
-            console.info("[NowPlayingBar] Mixcloud widget.play() called");
-          }).catch((err: any) => {
-            console.error("[NowPlayingBar] Mixcloud widget.ready failed:", err);
-          });
-        } catch (e) {
-          console.error("[NowPlayingBar] Mixcloud widget init error:", e);
-        }
-      }
-    } else if (currentTrack.source === "soundcloud") {
-      await loadWidgetApi("soundcloud");
-      if ((window as any).SC) {
-        try {
-          console.info("[NowPlayingBar] Initializing SoundCloud widget...");
-          const widget = (window as any).SC.Widget(iframe);
-          widget.bind((window as any).SC.Widget.Events.READY, () => {
-            console.info("[NowPlayingBar] SoundCloud widget ready");
-            scWidgetRef.current = widget;
-            widget.setVolume(isMuted ? 0 : volume);
-            widget.play();
-            console.info("[NowPlayingBar] SoundCloud widget.play() called");
-          });
-          widget.bind((window as any).SC.Widget.Events.ERROR, (err: any) => {
-            console.error("[NowPlayingBar] SoundCloud widget error:", err);
-          });
-        } catch (e) {
-          console.error("[NowPlayingBar] SoundCloud widget init error:", e);
-        }
+    await loadWidgetApi();
+    if ((window as any).Mixcloud) {
+      try {
+        console.info("[NowPlayingBar] Initializing Mixcloud widget...");
+        const widget = (window as any).Mixcloud.PlayerWidget(iframe);
+        widget.ready.then(() => {
+          console.info("[NowPlayingBar] Mixcloud widget ready");
+          mixcloudWidgetRef.current = widget;
+          const vol = isMuted ? 0 : volume / 100;
+          widget.setVolume(vol);
+          widget.play();
+          console.info("[NowPlayingBar] Mixcloud widget.play() called");
+        }).catch((err: any) => {
+          console.error("[NowPlayingBar] Mixcloud widget.ready failed:", err);
+        });
+      } catch (e) {
+        console.error("[NowPlayingBar] Mixcloud widget init error:", e);
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -211,13 +189,9 @@ const NowPlayingBar = () => {
     if (!isMix || !currentTrack) return;
     const effectiveVolume = isMuted ? 0 : volume / 100;
 
-    if (currentTrack.source === "mixcloud" && mixcloudWidgetRef.current) {
+    if (mixcloudWidgetRef.current) {
       try {
         mixcloudWidgetRef.current.setVolume(effectiveVolume);
-      } catch { /* ignore */ }
-    } else if (currentTrack.source === "soundcloud" && scWidgetRef.current) {
-      try {
-        scWidgetRef.current.setVolume(isMuted ? 0 : volume);
       } catch { /* ignore */ }
     }
   }, [volume, isMuted, isMix, currentTrack]);
@@ -225,7 +199,6 @@ const NowPlayingBar = () => {
   // Reset widget refs when track changes
   useEffect(() => {
     mixcloudWidgetRef.current = null;
-    scWidgetRef.current = null;
   }, [currentTrack?.id]);
 
   // Audio element event listeners
