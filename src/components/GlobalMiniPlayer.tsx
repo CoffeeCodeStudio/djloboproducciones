@@ -36,11 +36,11 @@ const GlobalMiniPlayer = () => {
     try {
       // Mixcloud sends JSON strings
       if (typeof event.data === "string" && event.data.includes("mixcloud")) {
-        logger.info("[GlobalMiniPlayer] Mixcloud widget event:", event.data);
+        console.info("[GlobalMiniPlayer] Mixcloud widget event:", event.data);
       }
       // SoundCloud sends objects
       if (typeof event.data === "object" && event.data?.method) {
-        logger.info("[GlobalMiniPlayer] SoundCloud widget event:", event.data.method);
+        console.info("[GlobalMiniPlayer] SoundCloud widget event:", event.data.method);
       }
     } catch { /* ignore non-widget messages */ }
   }, []);
@@ -53,7 +53,7 @@ const GlobalMiniPlayer = () => {
   // Log track changes and embed URL
   useEffect(() => {
     if (currentTrack) {
-      logger.info("[GlobalMiniPlayer] Track changed:", {
+      console.info("[GlobalMiniPlayer] Track changed:", {
         id: currentTrack.id,
         title: currentTrack.title,
         source: currentTrack.source,
@@ -64,7 +64,7 @@ const GlobalMiniPlayer = () => {
   if (!currentTrack) return null;
 
   const embedUrl = getEmbedUrl();
-  logger.info("[GlobalMiniPlayer] Embed URL:", embedUrl);
+  console.info("[GlobalMiniPlayer] Embed URL:", embedUrl);
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 h-16 sm:h-[4.5rem]">
