@@ -141,21 +141,18 @@ const NowPlayingBar = () => {
 
   // Mixcloud widget instance ref
   const mixcloudWidgetRef = useRef<any>(null);
-  const scWidgetRef = useRef<any>(null);
+  
 
-  // Dynamically load widget APIs on demand
-  const loadWidgetApi = useCallback((source: "mixcloud" | "soundcloud"): Promise<void> => {
-    if (source === "mixcloud" && (window as any).Mixcloud) return Promise.resolve();
-    if (source === "soundcloud" && (window as any).SC) return Promise.resolve();
+  // Dynamically load Mixcloud widget API on demand
+  const loadWidgetApi = useCallback((): Promise<void> => {
+    if ((window as any).Mixcloud) return Promise.resolve();
 
     return new Promise((resolve) => {
       const script = document.createElement("script");
-      script.src = source === "mixcloud"
-        ? "https://widget.mixcloud.com/media/js/widgetApi.js"
-        : "https://w.soundcloud.com/player/api.js";
+      script.src = "https://widget.mixcloud.com/media/js/widgetApi.js";
       script.async = true;
       script.onload = () => resolve();
-      script.onerror = () => resolve(); // fail silently
+      script.onerror = () => resolve();
       document.head.appendChild(script);
     });
   }, []);
