@@ -137,7 +137,8 @@ const handler = async (req: Request): Promise<Response> => {
       message: message ? sanitize(message) : null,
     };
 
-    const emailResponse = await resend.emails.send({
+    // 1. Send notification to DJ Lobo (existing)
+    const adminEmailResponse = await resend.emails.send({
       from: "DJ Lobo Producciones <noreply@djloboproducciones.com>",
       to: ["djloboproducciones75@gmail.com"],
       reply_to: safeReplyTo,
@@ -179,7 +180,77 @@ const handler = async (req: Request): Promise<Response> => {
       `,
     });
 
-    console.log("Booking notification sent:", emailResponse);
+    console.log("Admin notification sent:", adminEmailResponse);
+
+    // 2. Send confirmation email to customer
+    const customerEmailResponse = await resend.emails.send({
+      from: "DJ Lobo Producciones <noreply@djloboproducciones.com>",
+      to: [safeReplyTo],
+      subject: isInquiry
+        ? "Tack för din fråga — DJ Lobo Producciones"
+        : "Tack för din bokningsförfrågan — DJ Lobo Producciones",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; background: #ffffff;">
+          <div style="background: linear-gradient(135deg, #1a1a2e, #16213e); padding: 30px 20px; border-radius: 12px 12px 0 0; text-align: center;">
+            <h1 style="color: #00d4ff; margin: 0; font-size: 24px;">Tack för din ${isInquiry ? "fråga" : "bokningsförfrågan"}!</h1>
+          </div>
+          <div style="padding: 24px; border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 12px 12px;">
+            <p style="font-size: 16px; color: #333; line-height: 1.6; margin: 0 0 20px;">
+              Hej <strong>${s.name}</strong>,
+            </p>
+            <p style="font-size: 15px; color: #555; line-height: 1.6; margin: 0 0 20px;">
+              Vi har tagit emot ${isInquiry ? "din fråga" : "din bokningsförfrågan"} och återkommer inom <strong>24 timmar</strong>.
+            </p>
+
+            ${!isInquiry ? `
+            <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0;">
+              <h2 style="font-size: 16px; color: #1a1a2e; margin: 0 0 12px;">📋 Sammanfattning</h2>
+              <table style="width: 100%; border-collapse: collapse;">
+                <tr>
+                  <td style="padding: 6px 0; color: #666; width: 130px;">Typ av event:</td>
+                  <td style="padding: 6px 0; color: #333; font-weight: 500;">${s.eventType}</td>
+                </tr>
+                ${s.eventDate ? `<tr>
+                  <td style="padding: 6px 0; color: #666;">Datum:</td>
+                  <td style="padding: 6px 0; color: #333; font-weight: 500;">${s.eventDate}</td>
+                </tr>` : ""}
+                ${s.location ? `<tr>
+                  <td style="padding: 6px 0; color: #666;">Plats:</td>
+                  <td style="padding: 6px 0; color: #333; font-weight: 500;">${s.location}</td>
+                </tr>` : ""}
+              </table>
+              ${s.message ? `<div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #e0e0e0;">
+                <p style="color: #666; font-size: 13px; margin: 0 0 4px;">Ditt meddelande:</p>
+                <p style="color: #333; font-size: 14px; margin: 0; white-space: pre-wrap; line-height: 1.5;">${s.message}</p>
+              </div>` : ""}
+            </div>
+            ` : `${s.message ? `
+            <div style="background: #f8f9fa; border-radius: 8px; padding: 20px; margin: 20px 0;">
+              <h2 style="font-size: 16px; color: #1a1a2e; margin: 0 0 12px;">📋 Din fråga</h2>
+              <p style="color: #333; font-size: 14px; margin: 0; white-space: pre-wrap; line-height: 1.5;">${s.message}</p>
+            </div>` : ""}`}
+
+            <div style="background: #1a1a2e; border-radius: 8px; padding: 20px; margin: 20px 0; text-align: center;">
+              <p style="color: #ffffff; font-size: 14px; margin: 0 0 8px;">📞 Kontakta oss</p>
+              <p style="margin: 0;">
+                <a href="mailto:info@djloboproducciones.com" style="color: #00d4ff; text-decoration: none; font-size: 14px;">info@djloboproducciones.com</a>
+              </p>
+              <p style="margin: 4px 0 0;">
+                <a href="tel:+46769125260" style="color: #00d4ff; text-decoration: none; font-size: 14px;">+46 76 912 52 60</a>
+              </p>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #eee; margin: 24px 0;" />
+            <p style="color: #999; font-size: 11px; text-align: center; margin: 0; line-height: 1.5;">
+              Detta är en automatisk bekräftelse från DJ Lobo Producciones.<br/>
+              Du behöver inte svara på detta meddelande.
+            </p>
+          </div>
+        </div>
+      `,
+    });
+
+    console.log("Customer confirmation sent:", customerEmailResponse);
 
     return new Response(JSON.stringify({ success: true }), {
       status: 200,
