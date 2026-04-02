@@ -174,6 +174,7 @@ const NowPlayingBar = () => {
             mixcloudWidgetRef.current = widget;
             const vol = isMuted ? 0 : volume / 100;
             widget.setVolume(vol);
+            widget.play();
           });
         } catch (e) {
           logger.error("Mixcloud widget init error:", e);
@@ -184,8 +185,11 @@ const NowPlayingBar = () => {
       if ((window as any).SC) {
         try {
           const widget = (window as any).SC.Widget(iframe);
-          scWidgetRef.current = widget;
-          widget.setVolume(isMuted ? 0 : volume);
+          widget.bind((window as any).SC.Widget.Events.READY, () => {
+            scWidgetRef.current = widget;
+            widget.setVolume(isMuted ? 0 : volume);
+            widget.play();
+          });
         } catch (e) {
           logger.error("SoundCloud widget init error:", e);
         }
