@@ -248,20 +248,13 @@ const NowPlayingBar = () => {
     if (isMuted && Number(e.target.value) > 0) setIsMuted(false);
   };
 
-  // Build Mixcloud/SoundCloud embed URL
+  // Build Mixcloud embed URL
   const getMixEmbedUrl = () => {
     if (!currentTrack) return "";
-    if (currentTrack.source === "mixcloud") {
-      const path = currentTrack.originalUrl
-        .replace(/https?:\/\/(www\.)?mixcloud\.com/, "")
-        .replace(/\/$/, "");
-      return `https://www.mixcloud.com/widget/iframe/?dark=1&hide_cover=0&mini=0&autoplay=1&feed=${encodeURIComponent(path + "/")}`;
-    }
-    if (currentTrack.embedUrl?.includes("w.soundcloud.com")) {
-      return currentTrack.embedUrl.replace("auto_play=false", "auto_play=true");
-    }
-    const encoded = encodeURIComponent(currentTrack.originalUrl.trim());
-    return `https://w.soundcloud.com/player/?url=${encoded}&color=%2300e5ff&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true`;
+    const path = currentTrack.originalUrl
+      .replace(/https?:\/\/(www\.)?mixcloud\.com/, "")
+      .replace(/\/$/, "");
+    return `https://www.mixcloud.com/widget/iframe/?dark=1&hide_cover=0&mini=0&autoplay=1&feed=${encodeURIComponent(path + "/")}`;
   };
 
   const showExpandedMix = isMix && currentTrack && !isMinimized;

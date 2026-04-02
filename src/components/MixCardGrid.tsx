@@ -33,7 +33,7 @@ interface UnifiedMix {
   url: string;
   embedUrl: string;
   coverArt?: string;
-  source: "mixcloud" | "soundcloud";
+  source: "mixcloud";
   pinned: boolean;
   sortOrder: number;
   createdTime?: string;
