@@ -66,47 +66,25 @@ const MixCardGrid = () => {
 
   useEffect(() => {
     const fetchAll = async () => {
-      const [scRes, mcRes] = await Promise.all([
-        supabase
-          .from("soundcloud_mixes")
-          .select("id, title, soundcloud_url, cover_art_url, pinned, hidden, sort_order")
-          .eq("hidden", false)
-          .order("sort_order", { ascending: true }),
-        supabase
-          .from("mixcloud_mixes")
-          .select("id, title, mixcloud_url, cover_art_url, pinned, hidden, sort_order, mixcloud_created_time")
-          .eq("hidden", false)
-          .order("sort_order", { ascending: true }),
-      ]);
+      const { data } = await supabase
+        .from("mixcloud_mixes")
+        .select("id, title, mixcloud_url, cover_art_url, pinned, hidden, sort_order, mixcloud_created_time")
+        .eq("hidden", false)
+        .order("sort_order", { ascending: true });
 
-      const scMixes: UnifiedMix[] = (scRes.data || []).map((m, i) => ({
-        id: m.id,
-        title: m.title,
-        url: m.soundcloud_url,
-        embedUrl: m.soundcloud_url,
-        coverArt: m.cover_art_url || DEFAULT_COVERS[i % DEFAULT_COVERS.length],
-        source: "soundcloud" as const,
-        pinned: m.pinned ?? false,
-        sortOrder: m.sort_order,
-      }));
-
-      const mcMixes: UnifiedMix[] = (mcRes.data || []).map((m, i) => ({
+      const all: UnifiedMix[] = (data || []).map((m, i) => ({
         id: m.id,
         title: m.title,
         url: m.mixcloud_url,
         embedUrl: m.mixcloud_url,
-        coverArt: m.cover_art_url || DEFAULT_COVERS[(i + 2) % DEFAULT_COVERS.length],
+        coverArt: m.cover_art_url || DEFAULT_COVERS[i % DEFAULT_COVERS.length],
         source: "mixcloud" as const,
         pinned: m.pinned ?? false,
         sortOrder: m.sort_order,
         createdTime: (m as any).mixcloud_created_time || undefined,
-      }));
-
-      // Combine: pinned first, then by created_time (newest first), fallback to sort_order
-      const all = [...scMixes, ...mcMixes].sort((a, b) => {
+      })).sort((a, b) => {
         if (a.pinned && !b.pinned) return -1;
         if (!a.pinned && b.pinned) return 1;
-        // Sort by createdTime descending (newest first)
         if (a.createdTime && b.createdTime) {
           return new Date(b.createdTime).getTime() - new Date(a.createdTime).getTime();
         }
