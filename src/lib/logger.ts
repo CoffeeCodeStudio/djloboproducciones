@@ -1,21 +1,24 @@
 /**
  * Production-safe logger utility
- * Logs are only shown in development mode to prevent information disclosure
+ * Logs are shown in development mode OR when ?debug=true is in the URL
  */
 
 const isDev = import.meta.env.DEV;
+const isDebug = typeof window !== "undefined" && new URLSearchParams(window.location.search).has("debug");
+
+const enabled = isDev || isDebug;
 
 export const logger = {
   error: (...args: unknown[]) => {
-    if (isDev) console.error(...args);
+    if (enabled) console.error(...args);
   },
   log: (...args: unknown[]) => {
-    if (isDev) console.log(...args);
+    if (enabled) console.log(...args);
   },
   warn: (...args: unknown[]) => {
-    if (isDev) console.warn(...args);
+    if (enabled) console.warn(...args);
   },
   info: (...args: unknown[]) => {
-    if (isDev) console.info(...args);
+    if (enabled) console.info(...args);
   },
 };
