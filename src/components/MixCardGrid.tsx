@@ -192,13 +192,9 @@ const MixCardGrid = () => {
 
                   {/* Source badge */}
                   <div className="absolute top-2 right-2 z-10">
-                    <span className={`px-2 py-1 rounded-lg text-[10px] font-bold backdrop-blur-sm flex items-center gap-1 ${
-                      mix.source === "mixcloud"
-                        ? "bg-accent/80 text-accent-foreground"
-                        : "bg-secondary/80 text-secondary-foreground"
-                    }`}>
+                    <span className="px-2 py-1 rounded-lg text-[10px] font-bold backdrop-blur-sm flex items-center gap-1 bg-accent/80 text-accent-foreground">
                       <Disc3 className="w-3 h-3" />
-                      {mix.source === "mixcloud" ? "Mixcloud" : "SoundCloud"}
+                      Mixcloud
                     </span>
                   </div>
 
