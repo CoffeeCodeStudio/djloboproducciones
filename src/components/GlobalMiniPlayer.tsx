@@ -1,7 +1,8 @@
 import { usePlayerStore } from "@/stores/usePlayerStore";
 import { X, Disc3, Music } from "lucide-react";
-import { useRef, useEffect } from "react";
+import { useRef, useEffect, useCallback } from "react";
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
+import { logger } from "@/lib/logger";
 
 const GlobalMiniPlayer = () => {
   const { currentTrack, isPlaying, stop } = usePlayerStore();
@@ -30,9 +31,40 @@ const GlobalMiniPlayer = () => {
     return `https://w.soundcloud.com/player/?url=${encoded}&color=%2300e5ff&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false`;
   };
 
+  // Log widget ready/play events via postMessage
+  const handleWidgetMessage = useCallback((event: MessageEvent) => {
+    try {
+      // Mixcloud sends JSON strings
+      if (typeof event.data === "string" && event.data.includes("mixcloud")) {
+        logger.info("[GlobalMiniPlayer] Mixcloud widget event:", event.data);
+      }
+      // SoundCloud sends objects
+      if (typeof event.data === "object" && event.data?.method) {
+        logger.info("[GlobalMiniPlayer] SoundCloud widget event:", event.data.method);
+      }
+    } catch { /* ignore non-widget messages */ }
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("message", handleWidgetMessage);
+    return () => window.removeEventListener("message", handleWidgetMessage);
+  }, [handleWidgetMessage]);
+
+  // Log track changes and embed URL
+  useEffect(() => {
+    if (currentTrack) {
+      logger.info("[GlobalMiniPlayer] Track changed:", {
+        id: currentTrack.id,
+        title: currentTrack.title,
+        source: currentTrack.source,
+      });
+    }
+  }, [currentTrack?.id]);
+
   if (!currentTrack) return null;
 
   const embedUrl = getEmbedUrl();
+  logger.info("[GlobalMiniPlayer] Embed URL:", embedUrl);
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 h-16 sm:h-[4.5rem]">
