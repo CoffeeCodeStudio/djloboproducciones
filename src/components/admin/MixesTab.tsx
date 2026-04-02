@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Switch } from "@/components/ui/switch";
 import { Trash2, Plus, Pencil, Check, X, Music, Pin, EyeOff, Eye, RefreshCw, Disc3 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
@@ -16,7 +15,6 @@ interface Mix {
   pinned: boolean;
   hidden: boolean;
   source: string;
-  table: "soundcloud" | "mixcloud";
 }
 
 const MixesTab = () => {
@@ -35,24 +33,12 @@ const MixesTab = () => {
 
   const fetchMixes = async () => {
     setLoading(true);
-    const [scRes, mcRes] = await Promise.all([
-      supabase.from("soundcloud_mixes").select("*").order("sort_order", { ascending: true }),
-      supabase.from("mixcloud_mixes").select("*").order("sort_order", { ascending: true }),
-    ]);
+    const { data } = await supabase
+      .from("mixcloud_mixes")
+      .select("*")
+      .order("sort_order", { ascending: true });
 
-    const scMixes: Mix[] = (scRes.data || []).map((m) => ({
-      id: m.id,
-      title: m.title,
-      url: m.soundcloud_url,
-      cover_art_url: m.cover_art_url,
-      sort_order: m.sort_order,
-      pinned: m.pinned ?? false,
-      hidden: m.hidden ?? false,
-      source: m.source ?? "manual",
-      table: "soundcloud" as const,
-    }));
-
-    const mcMixes: Mix[] = (mcRes.data || []).map((m) => ({
+    const all: Mix[] = (data || []).map((m) => ({
       id: m.id,
       title: m.title,
       url: m.mixcloud_url,
@@ -61,10 +47,7 @@ const MixesTab = () => {
       pinned: m.pinned ?? false,
       hidden: m.hidden ?? false,
       source: m.source ?? "manual",
-      table: "mixcloud" as const,
-    }));
-
-    const all = [...scMixes, ...mcMixes].sort((a, b) => {
+    })).sort((a, b) => {
       if (a.pinned && !b.pinned) return -1;
       if (!a.pinned && b.pinned) return 1;
       return a.sort_order - b.sort_order;
@@ -72,18 +55,6 @@ const MixesTab = () => {
 
     setMixes(all);
     setLoading(false);
-  };
-
-  const detectSource = (url: string): "soundcloud" | "mixcloud" | null => {
-    if (url.includes("soundcloud.com")) return "soundcloud";
-    if (url.includes("mixcloud.com")) return "mixcloud";
-    return null;
-  };
-
-  const buildSoundCloudEmbedUrl = (rawUrl: string): string => {
-    if (rawUrl.includes("w.soundcloud.com/player")) return rawUrl;
-    const encoded = encodeURIComponent(rawUrl.trim());
-    return `https://w.soundcloud.com/player/?url=${encoded}&color=%2300e5ff&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true`;
   };
 
   const handleAdd = async () => {
@@ -94,48 +65,34 @@ const MixesTab = () => {
       return;
     }
 
-    const source = detectSource(trimmedUrl);
-    if (!source) {
-      toast({ title: "Ogiltig URL", description: "Ange en SoundCloud eller Mixcloud-länk", variant: "destructive" });
+    if (!trimmedUrl.includes("mixcloud.com")) {
+      toast({ title: "Ogiltig URL", description: "Ange en Mixcloud-länk", variant: "destructive" });
       return;
     }
 
     setAdding(true);
     const nextOrder = mixes.length > 0 ? Math.max(...mixes.map(m => m.sort_order)) + 1 : 0;
 
-    if (source === "soundcloud") {
-      const { error } = await supabase.from("soundcloud_mixes").insert({
-        title: trimmedTitle,
-        soundcloud_url: buildSoundCloudEmbedUrl(trimmedUrl),
-        sort_order: nextOrder,
-        source: "manual",
-      });
-      if (error) toast({ title: "Fel", description: error.message, variant: "destructive" });
-      else { toast({ title: "✅ Mix tillagd!" }); setNewTitle(""); setNewUrl(""); fetchMixes(); }
-    } else {
-      const { error } = await supabase.from("mixcloud_mixes").insert({
-        title: trimmedTitle,
-        mixcloud_url: trimmedUrl,
-        sort_order: nextOrder,
-        source: "manual",
-      });
-      if (error) toast({ title: "Fel", description: error.message, variant: "destructive" });
-      else { toast({ title: "✅ Set tillagt!" }); setNewTitle(""); setNewUrl(""); fetchMixes(); }
-    }
+    const { error } = await supabase.from("mixcloud_mixes").insert({
+      title: trimmedTitle,
+      mixcloud_url: trimmedUrl,
+      sort_order: nextOrder,
+      source: "manual",
+    });
+    if (error) toast({ title: "Fel", description: error.message, variant: "destructive" });
+    else { toast({ title: "✅ Mix tillagd!" }); setNewTitle(""); setNewUrl(""); fetchMixes(); }
     setAdding(false);
   };
 
   const handleDelete = async (mix: Mix) => {
     if (!window.confirm(`Ta bort "${mix.title}"?`)) return;
-    const table = mix.table === "soundcloud" ? "soundcloud_mixes" : "mixcloud_mixes";
-    const { error } = await supabase.from(table).delete().eq("id", mix.id);
+    const { error } = await supabase.from("mixcloud_mixes").delete().eq("id", mix.id);
     if (error) toast({ title: "Fel", description: error.message, variant: "destructive" });
     else { toast({ title: "Borttagen" }); setMixes(prev => prev.filter(m => m.id !== mix.id)); }
   };
 
   const togglePin = async (mix: Mix) => {
-    const table = mix.table === "soundcloud" ? "soundcloud_mixes" : "mixcloud_mixes";
-    const { error } = await supabase.from(table).update({ pinned: !mix.pinned }).eq("id", mix.id);
+    const { error } = await supabase.from("mixcloud_mixes").update({ pinned: !mix.pinned }).eq("id", mix.id);
     if (!error) {
       setMixes(prev => prev.map(m => m.id === mix.id ? { ...m, pinned: !m.pinned } : m));
       toast({ title: mix.pinned ? "Avpinnad" : "📌 Pinnad!" });
@@ -143,8 +100,7 @@ const MixesTab = () => {
   };
 
   const toggleHidden = async (mix: Mix) => {
-    const table = mix.table === "soundcloud" ? "soundcloud_mixes" : "mixcloud_mixes";
-    const { error } = await supabase.from(table).update({ hidden: !mix.hidden }).eq("id", mix.id);
+    const { error } = await supabase.from("mixcloud_mixes").update({ hidden: !mix.hidden }).eq("id", mix.id);
     if (!error) {
       setMixes(prev => prev.map(m => m.id === mix.id ? { ...m, hidden: !m.hidden } : m));
       toast({ title: mix.hidden ? "Synlig igen" : "🙈 Dold" });
@@ -177,19 +133,13 @@ const MixesTab = () => {
 
   const saveEdit = async () => {
     if (!editingId) return;
-    const mix = mixes.find(m => m.id === editingId);
-    if (!mix) return;
     const trimmedTitle = editTitle.trim();
     const trimmedUrl = editUrl.trim();
     if (!trimmedTitle || !trimmedUrl) { toast({ title: "Fyll i alla fält", variant: "destructive" }); return; }
 
-    const table = mix.table === "soundcloud" ? "soundcloud_mixes" : "mixcloud_mixes";
-    const urlField = mix.table === "soundcloud" ? "soundcloud_url" : "mixcloud_url";
-    const finalUrl = mix.table === "soundcloud" ? buildSoundCloudEmbedUrl(trimmedUrl) : trimmedUrl;
-
     const { error } = await supabase
-      .from(table)
-      .update({ title: trimmedTitle, [urlField]: finalUrl })
+      .from("mixcloud_mixes")
+      .update({ title: trimmedTitle, mixcloud_url: trimmedUrl })
       .eq("id", editingId);
 
     if (error) toast({ title: "Fel", description: error.message, variant: "destructive" });
@@ -243,7 +193,7 @@ const MixesTab = () => {
               <Plus className="w-5 h-5 text-primary" />
               Lägg till mix manuellt
             </CardTitle>
-            <CardDescription>SoundCloud eller Mixcloud — detekteras automatiskt</CardDescription>
+            <CardDescription>Klistra in en Mixcloud-länk</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <Input
@@ -256,7 +206,7 @@ const MixesTab = () => {
             <Input
               value={newUrl}
               onChange={(e) => setNewUrl(e.target.value)}
-              placeholder="https://soundcloud.com/... eller https://mixcloud.com/..."
+              placeholder="https://www.mixcloud.com/DjLobo75/..."
               className="bg-input border-border h-11"
             />
             <Button
@@ -271,14 +221,14 @@ const MixesTab = () => {
         </Card>
       </div>
 
-      {/* Unified mix list */}
+      {/* Mix list */}
       <Card className="glass-card">
         <CardHeader>
           <CardTitle className="font-display flex items-center gap-2">
             <Music className="w-5 h-5 text-secondary" />
             Alla mixar ({mixes.length})
           </CardTitle>
-          <CardDescription>Hantera alla SoundCloud & Mixcloud-mixar. Pinna, dölj eller ta bort.</CardDescription>
+          <CardDescription>Hantera alla Mixcloud-mixar. Pinna, dölj eller ta bort.</CardDescription>
         </CardHeader>
         <CardContent>
           {loading ? (
@@ -324,10 +274,8 @@ const MixesTab = () => {
                           {mix.pinned && <Pin className="w-3 h-3 text-primary shrink-0" />}
                         </div>
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
-                          <span className={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${
-                            mix.table === "mixcloud" ? "bg-accent/20 text-accent" : "bg-secondary/20 text-secondary"
-                          }`}>
-                            {mix.table === "mixcloud" ? "MC" : "SC"}
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold bg-accent/20 text-accent">
+                            MC
                           </span>
                           <span className="truncate">{mix.source === "auto" ? "Auto-fetched" : "Manuell"}</span>
                         </div>

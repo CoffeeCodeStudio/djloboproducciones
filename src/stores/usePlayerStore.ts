@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-export type MixSource = "mixcloud" | "soundcloud";
+export type MixSource = "mixcloud";
 export type PlayerMode = "radio" | "mix" | null;
 
 export interface MixTrack {

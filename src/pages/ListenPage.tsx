@@ -1,6 +1,5 @@
 import { Radio, Headphones, Loader2, WifiOff } from "lucide-react";
 import djLoboImage from "@/assets/dj-lobo-real.jpg";
-import SoundCloudMixes from "@/components/SoundCloudMixes";
 import LiveChat from "@/components/LiveChat";
 import Footer from "@/components/Footer";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -134,10 +133,8 @@ const ListenPage = () => {
         </p>
       </section>
 
-      {/* SoundCloud Mixes */}
-      <ErrorBoundary>
-        <SoundCloudMixes />
-      </ErrorBoundary>
+
+
 
       <LiveChat />
       <Footer />

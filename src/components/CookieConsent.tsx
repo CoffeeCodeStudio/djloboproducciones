@@ -7,21 +7,21 @@ import { Link } from "react-router-dom";
 const translations = {
   sv: {
     title: "Cookiemedgivande",
-    message: "Denna sajt använder cookies från tredjeparter (YouTube, Mixcloud, SoundCloud) för att visa inbäddat innehåll. Genom att acceptera tillåter du dessa tjänster att sätta cookies i din webbläsare.",
+    message: "Denna sajt använder cookies från tredjeparter (YouTube, Mixcloud) för att visa inbäddat innehåll. Genom att acceptera tillåter du dessa tjänster att sätta cookies i din webbläsare.",
     accept: "Acceptera",
     decline: "Avvisa",
     learnMore: "Läs vår sekretesspolicy",
   },
   en: {
     title: "Cookie Consent",
-    message: "This site uses third-party cookies (YouTube, Mixcloud, SoundCloud) to display embedded content. By accepting, you allow these services to set cookies in your browser.",
+    message: "This site uses third-party cookies (YouTube, Mixcloud) to display embedded content. By accepting, you allow these services to set cookies in your browser.",
     accept: "Accept",
     decline: "Decline",
     learnMore: "Read our privacy policy",
   },
   es: {
     title: "Consentimiento de cookies",
-    message: "Este sitio utiliza cookies de terceros (YouTube, Mixcloud, SoundCloud) para mostrar contenido incrustado. Al aceptar, permites que estos servicios establezcan cookies en tu navegador.",
+    message: "Este sitio utiliza cookies de terceros (YouTube, Mixcloud) para mostrar contenido incrustado. Al aceptar, permites que estos servicios establezcan cookies en tu navegador.",
     accept: "Aceptar",
     decline: "Rechazar",
     learnMore: "Leer nuestra política de privacidad",

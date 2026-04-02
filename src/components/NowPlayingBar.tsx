@@ -141,69 +141,44 @@ const NowPlayingBar = () => {
 
   // Mixcloud widget instance ref
   const mixcloudWidgetRef = useRef<any>(null);
-  const scWidgetRef = useRef<any>(null);
+  
 
-  // Dynamically load widget APIs on demand
-  const loadWidgetApi = useCallback((source: "mixcloud" | "soundcloud"): Promise<void> => {
-    if (source === "mixcloud" && (window as any).Mixcloud) return Promise.resolve();
-    if (source === "soundcloud" && (window as any).SC) return Promise.resolve();
+  // Dynamically load Mixcloud widget API on demand
+  const loadWidgetApi = useCallback((): Promise<void> => {
+    if ((window as any).Mixcloud) return Promise.resolve();
 
     return new Promise((resolve) => {
       const script = document.createElement("script");
-      script.src = source === "mixcloud"
-        ? "https://widget.mixcloud.com/media/js/widgetApi.js"
-        : "https://w.soundcloud.com/player/api.js";
+      script.src = "https://widget.mixcloud.com/media/js/widgetApi.js";
       script.async = true;
       script.onload = () => resolve();
-      script.onerror = () => resolve(); // fail silently
+      script.onerror = () => resolve();
       document.head.appendChild(script);
     });
   }, []);
 
-  // Initialize Mixcloud/SoundCloud widget when iframe loads
+  // Initialize Mixcloud widget when iframe loads
   const handleMixIframeLoad = useCallback(async () => {
     const iframe = mixIframeRef.current;
     if (!iframe || !currentTrack) return;
 
-    if (currentTrack.source === "mixcloud") {
-      await loadWidgetApi("mixcloud");
-      if ((window as any).Mixcloud) {
-        try {
-          console.info("[NowPlayingBar] Initializing Mixcloud widget...");
-          const widget = (window as any).Mixcloud.PlayerWidget(iframe);
-          widget.ready.then(() => {
-            console.info("[NowPlayingBar] Mixcloud widget ready");
-            mixcloudWidgetRef.current = widget;
-            const vol = isMuted ? 0 : volume / 100;
-            widget.setVolume(vol);
-            widget.play();
-            console.info("[NowPlayingBar] Mixcloud widget.play() called");
-          }).catch((err: any) => {
-            console.error("[NowPlayingBar] Mixcloud widget.ready failed:", err);
-          });
-        } catch (e) {
-          console.error("[NowPlayingBar] Mixcloud widget init error:", e);
-        }
-      }
-    } else if (currentTrack.source === "soundcloud") {
-      await loadWidgetApi("soundcloud");
-      if ((window as any).SC) {
-        try {
-          console.info("[NowPlayingBar] Initializing SoundCloud widget...");
-          const widget = (window as any).SC.Widget(iframe);
-          widget.bind((window as any).SC.Widget.Events.READY, () => {
-            console.info("[NowPlayingBar] SoundCloud widget ready");
-            scWidgetRef.current = widget;
-            widget.setVolume(isMuted ? 0 : volume);
-            widget.play();
-            console.info("[NowPlayingBar] SoundCloud widget.play() called");
-          });
-          widget.bind((window as any).SC.Widget.Events.ERROR, (err: any) => {
-            console.error("[NowPlayingBar] SoundCloud widget error:", err);
-          });
-        } catch (e) {
-          console.error("[NowPlayingBar] SoundCloud widget init error:", e);
-        }
+    await loadWidgetApi();
+    if ((window as any).Mixcloud) {
+      try {
+        console.info("[NowPlayingBar] Initializing Mixcloud widget...");
+        const widget = (window as any).Mixcloud.PlayerWidget(iframe);
+        widget.ready.then(() => {
+          console.info("[NowPlayingBar] Mixcloud widget ready");
+          mixcloudWidgetRef.current = widget;
+          const vol = isMuted ? 0 : volume / 100;
+          widget.setVolume(vol);
+          widget.play();
+          console.info("[NowPlayingBar] Mixcloud widget.play() called");
+        }).catch((err: any) => {
+          console.error("[NowPlayingBar] Mixcloud widget.ready failed:", err);
+        });
+      } catch (e) {
+        console.error("[NowPlayingBar] Mixcloud widget init error:", e);
       }
     }
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -214,13 +189,9 @@ const NowPlayingBar = () => {
     if (!isMix || !currentTrack) return;
     const effectiveVolume = isMuted ? 0 : volume / 100;
 
-    if (currentTrack.source === "mixcloud" && mixcloudWidgetRef.current) {
+    if (mixcloudWidgetRef.current) {
       try {
         mixcloudWidgetRef.current.setVolume(effectiveVolume);
-      } catch { /* ignore */ }
-    } else if (currentTrack.source === "soundcloud" && scWidgetRef.current) {
-      try {
-        scWidgetRef.current.setVolume(isMuted ? 0 : volume);
       } catch { /* ignore */ }
     }
   }, [volume, isMuted, isMix, currentTrack]);
@@ -228,7 +199,6 @@ const NowPlayingBar = () => {
   // Reset widget refs when track changes
   useEffect(() => {
     mixcloudWidgetRef.current = null;
-    scWidgetRef.current = null;
   }, [currentTrack?.id]);
 
   // Audio element event listeners
@@ -278,20 +248,13 @@ const NowPlayingBar = () => {
     if (isMuted && Number(e.target.value) > 0) setIsMuted(false);
   };
 
-  // Build Mixcloud/SoundCloud embed URL
+  // Build Mixcloud embed URL
   const getMixEmbedUrl = () => {
     if (!currentTrack) return "";
-    if (currentTrack.source === "mixcloud") {
-      const path = currentTrack.originalUrl
-        .replace(/https?:\/\/(www\.)?mixcloud\.com/, "")
-        .replace(/\/$/, "");
-      return `https://www.mixcloud.com/widget/iframe/?dark=1&hide_cover=0&mini=0&autoplay=1&feed=${encodeURIComponent(path + "/")}`;
-    }
-    if (currentTrack.embedUrl?.includes("w.soundcloud.com")) {
-      return currentTrack.embedUrl.replace("auto_play=false", "auto_play=true");
-    }
-    const encoded = encodeURIComponent(currentTrack.originalUrl.trim());
-    return `https://w.soundcloud.com/player/?url=${encoded}&color=%2300e5ff&auto_play=true&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=true`;
+    const path = currentTrack.originalUrl
+      .replace(/https?:\/\/(www\.)?mixcloud\.com/, "")
+      .replace(/\/$/, "");
+    return `https://www.mixcloud.com/widget/iframe/?dark=1&hide_cover=0&mini=0&autoplay=1&feed=${encodeURIComponent(path + "/")}`;
   };
 
   const showExpandedMix = isMix && currentTrack && !isMinimized;

@@ -26,7 +26,7 @@ Lagringstid: Meddelanden vidarebefordras via e-post och lagras INTE i någon dat
 
 c) Cookies och inbäddat innehåll
 Laglig grund: Samtycke (GDPR art. 6.1 a).
-Inbäddat innehåll från YouTube, Mixcloud och SoundCloud laddas först efter att du aktivt har accepterat cookies via vår samtyckesbanner. Dessa tredjepartstjänster kan sätta egna cookies. YouTube-embeds använder den integritetsförbättrade domänen youtube-nocookie.com.
+Inbäddat innehåll från YouTube och Mixcloud laddas först efter att du aktivt har accepterat cookies via vår samtyckesbanner. Dessa tredjepartstjänster kan sätta egna cookies. YouTube-embeds använder den integritetsförbättrade domänen youtube-nocookie.com.
 
 d) Livechatt
 Vi samlar INTE in IP-adresser. För att förhindra missbruk i chatten använder vi anonyma sessions-ID som lagras lokalt i din webbläsare. Dessa kan inte kopplas till din identitet. Vi använder automatiskt spamskydd.
@@ -80,7 +80,7 @@ Retention: Messages are forwarded via email and are NOT stored in any database. 
 
 c) Cookies and embedded content
 Legal basis: Consent (GDPR Art. 6.1 a).
-Embedded content from YouTube, Mixcloud, and SoundCloud is only loaded after you actively accept cookies via our consent banner. These third-party services may set their own cookies. YouTube embeds use the privacy-enhanced domain youtube-nocookie.com.
+Embedded content from YouTube and Mixcloud is only loaded after you actively accept cookies via our consent banner. These third-party services may set their own cookies. YouTube embeds use the privacy-enhanced domain youtube-nocookie.com.
 
 d) Live chat
 We do NOT collect IP addresses. To prevent abuse in the chat, we use anonymous session IDs stored locally in your browser. These cannot be linked to your identity. We use automatic spam protection.
@@ -134,7 +134,7 @@ Retención: Los mensajes se reenvían por correo electrónico y NO se almacenan 
 
 c) Cookies y contenido incrustado
 Base legal: Consentimiento (RGPD art. 6.1 a).
-El contenido incrustado de YouTube, Mixcloud y SoundCloud solo se carga después de que usted acepte activamente las cookies a través de nuestro banner de consentimiento. Estos servicios de terceros pueden establecer sus propias cookies. Los embeds de YouTube utilizan el dominio mejorado de privacidad youtube-nocookie.com.
+El contenido incrustado de YouTube y Mixcloud solo se carga después de que usted acepte activamente las cookies a través de nuestro banner de consentimiento. Estos servicios de terceros pueden establecer sus propias cookies. Los embeds de YouTube utilizan el dominio mejorado de privacidad youtube-nocookie.com.
 
 d) Chat en vivo
 NO recopilamos direcciones IP. Para prevenir abusos en el chat, utilizamos identificadores de sesión anónimos almacenados localmente en su navegador. Estos no pueden vincularse a su identidad. Utilizamos protección automática contra spam.
