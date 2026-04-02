@@ -368,48 +368,6 @@ export type Database = {
         }
         Relationships: []
       }
-      soundcloud_mixes: {
-        Row: {
-          cover_art_url: string | null
-          created_at: string
-          external_id: string | null
-          hidden: boolean
-          id: string
-          pinned: boolean
-          sort_order: number
-          soundcloud_url: string
-          source: string
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          cover_art_url?: string | null
-          created_at?: string
-          external_id?: string | null
-          hidden?: boolean
-          id?: string
-          pinned?: boolean
-          sort_order?: number
-          soundcloud_url: string
-          source?: string
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          cover_art_url?: string | null
-          created_at?: string
-          external_id?: string | null
-          hidden?: boolean
-          id?: string
-          pinned?: boolean
-          sort_order?: number
-          soundcloud_url?: string
-          source?: string
-          title?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       user_roles: {
         Row: {
           created_at: string
