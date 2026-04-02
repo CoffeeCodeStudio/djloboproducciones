@@ -9,19 +9,19 @@ import { toast } from "@/hooks/use-toast";
 const translations = {
   sv: {
     title: "MIXAR & SETS",
-    subtitle: "Lyssna på DJ Lobos senaste mixar från SoundCloud & Mixcloud",
+    subtitle: "Lyssna på DJ Lobos senaste mixar från Mixcloud",
     empty: "Inga mixar tillgängliga just nu.",
     pinned: "Pinnad",
   },
   en: {
     title: "MIXES & SETS",
-    subtitle: "Listen to DJ Lobo's latest mixes from SoundCloud & Mixcloud",
+    subtitle: "Listen to DJ Lobo's latest mixes from Mixcloud",
     empty: "No mixes available right now.",
     pinned: "Pinned",
   },
   es: {
     title: "MEZCLAS Y SETS",
-    subtitle: "Escucha las últimas mezclas de DJ Lobo en SoundCloud y Mixcloud",
+    subtitle: "Escucha las últimas mezclas de DJ Lobo en Mixcloud",
     empty: "No hay mezclas disponibles en este momento.",
     pinned: "Fijado",
   },
