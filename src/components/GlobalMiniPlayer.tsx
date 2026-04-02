@@ -80,15 +80,17 @@ const GlobalMiniPlayer = () => {
         </button>
       </div>
 
-      {/* Hidden iframe for audio playback — positioned off-screen so embeds still load and autoplay */}
+      {/* Hidden iframe for audio playback — visually hidden but in-DOM so autoplay works */}
       {hasConsented && (
         <iframe
           ref={iframeRef}
+          key={currentTrack.id}
           src={embedUrl}
-          width="1"
-          height="1"
-          className="absolute -left-[9999px] -top-[9999px]"
-          allow="autoplay"
+          width="300"
+          height="150"
+          className="absolute opacity-0 pointer-events-none"
+          style={{ position: 'absolute', bottom: 0, left: 0, zIndex: -1 }}
+          allow="autoplay; encrypted-media"
           title={`Spelar: ${currentTrack.title}`}
         />
       )}
