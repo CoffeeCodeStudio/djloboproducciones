@@ -21,7 +21,7 @@ const GlobalMiniPlayer = () => {
       const path = currentTrack.originalUrl
         .replace(/https?:\/\/(www\.)?mixcloud\.com/, "")
         .replace(/\/$/, "");
-      return `https://www.mixcloud.com/widget/iframe/?dark=1&hide_cover=1&mini=1&autoplay=1&feed=${encodeURIComponent(path + "/")}`;
+      return `https://www.mixcloud.com/widget/iframe/?dark=1&hide_cover=1&hide_artwork=1&autoplay=1&feed=${encodeURIComponent(path + "/")}`;
     }
     if (currentTrack.embedUrl.includes("w.soundcloud.com")) {
       return currentTrack.embedUrl.replace("auto_play=false", "auto_play=true");
