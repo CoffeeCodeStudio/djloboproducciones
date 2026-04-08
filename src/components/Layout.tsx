@@ -11,7 +11,7 @@ const Layout = () => {
   const location = useLocation();
   const [fadeKey, setFadeKey] = useState(location.key);
   const { branding } = useBranding();
-  useDynamicFavicon(branding?.logo_url);
+  
 
   useEffect(() => {
     setFadeKey(location.key);
