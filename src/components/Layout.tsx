@@ -5,7 +5,7 @@ import NowPlayingBar from "@/components/NowPlayingBar";
 import FloatingChatButton from "@/components/FloatingChatButton";
 import CookieConsent from "@/components/CookieConsent";
 import { useBranding } from "@/hooks/useBranding";
-import { useDynamicFavicon } from "@/hooks/useDynamicFavicon";
+
 
 const Layout = () => {
   const location = useLocation();
