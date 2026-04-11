@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, Radio, Globe, ChevronDown, Home, Star, Film, Disc3, BadgeDollarSign } from "lucide-react";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
-import { useBranding } from "@/hooks/useBranding";
-import { optimizeLogo } from "@/lib/imageOptimizer";
 import { Link, useLocation } from "react-router-dom";
 import {
   DropdownMenu,
@@ -38,8 +36,7 @@ const languages: LanguageOption[] = [
 
 const Navbar = () => {
   const { language, setLanguage } = useLanguage();
-  const { branding, loading } = useBranding();
-  const logoOpt = optimizeLogo(branding?.logo_url);
+  const logoSrc = "/favicon.png";
   const location = useLocation();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -84,18 +81,15 @@ const Navbar = () => {
               className="focus-neon rounded-lg hover:scale-105 transition-transform flex-shrink-0"
               aria-label="DJ Lobo Producciones - Hem"
             >
-            {logoOpt.src && (
-              <img
-                alt="DJ Lobo Producciones Logo"
-                className="h-12 sm:h-14 w-auto max-w-[180px] object-contain animate-[fade-in_0.8s_ease-out] ring-0 border-0 outline-none shadow-none [filter:brightness(1.2)_contrast(1.1)_saturate(1.2)] drop-shadow-[0_0_10px_rgba(255,255,255,0.35)]"
-                src={logoOpt.src}
-                loading="eager"
-                fetchPriority="high"
-                width={180}
-                height={56}
-                onError={(e) => { if (logoOpt.fallback) { e.currentTarget.onerror = null; e.currentTarget.src = logoOpt.fallback; } }}
-              />
-            )}
+            <img
+              alt="DJ Lobo Producciones Logo"
+              className="h-14 sm:h-16 w-auto max-w-[200px] object-contain animate-[fade-in_0.8s_ease-out] ring-0 border-0 outline-none shadow-none drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] brightness-125 contrast-110"
+              src={logoSrc}
+              loading="eager"
+              fetchPriority="high"
+              width={200}
+              height={64}
+            />
             </Link>
 
             {/* Desktop Navigation — 5 items, RADIO centered */}
