@@ -87,12 +87,11 @@ const Navbar = () => {
             {logoOpt.src && (
               <img
                 alt="DJ Lobo Producciones Logo"
-                className="h-14 w-[168px] object-contain rounded-full bg-background/0 animate-[fade-in_0.8s_ease-out] ring-0 border-0 outline-none shadow-none [filter:brightness(1.15)_contrast(1.1)] drop-shadow-[0_0_8px_rgba(255,255,255,0.3)]"
-                style={{ mixBlendMode: 'normal' }}
+                className="h-12 sm:h-14 w-auto max-w-[180px] object-contain animate-[fade-in_0.8s_ease-out] ring-0 border-0 outline-none shadow-none [filter:brightness(1.2)_contrast(1.1)_saturate(1.2)] drop-shadow-[0_0_10px_rgba(255,255,255,0.35)]"
                 src={logoOpt.src}
                 loading="eager"
                 fetchPriority="high"
-                width={168}
+                width={180}
                 height={56}
                 onError={(e) => { if (logoOpt.fallback) { e.currentTarget.onerror = null; e.currentTarget.src = logoOpt.fallback; } }}
               />
