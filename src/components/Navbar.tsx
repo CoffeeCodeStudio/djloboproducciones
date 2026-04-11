@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, Radio, Globe, ChevronDown, Home, Star, Film, Disc3, BadgeDollarSign } from "lucide-react";
-import { useLanguage } from "@/contexts/LanguageContext";
+import { useLanguage, Language } from "@/contexts/LanguageContext";
 import { Link, useLocation } from "react-router-dom";
 import {
   DropdownMenu,
@@ -35,7 +35,7 @@ const languages: LanguageOption[] = [
 ];
 
 const Navbar = () => {
-  const { language } = useLanguage();
+  const { language, setLanguage } = useLanguage();
   const logoSrc = "/favicon.png";
   const location = useLocation();
   const [isLangOpen, setIsLangOpen] = useState(false);
