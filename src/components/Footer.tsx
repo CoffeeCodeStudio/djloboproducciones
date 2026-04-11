@@ -57,7 +57,7 @@ const translations = {
 
 const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { language } = useLanguage();
-  const logoSrc = "/favicon.png";
+  const logoSrc = "/logo-neon.png";
   const { resetConsent } = useCookieConsent();
   const t = translations[language];
 
@@ -79,11 +79,11 @@ const socialLinks = {
             <div className="flex items-center gap-3 mb-4">
               <img
                 alt="DJ Lobo Producciones Logo"
-                className="h-16 sm:h-24 w-auto object-contain rounded-xl bg-transparent animate-fade-in drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] brightness-125 contrast-110"
+                className="h-8 sm:h-10 w-auto object-contain bg-transparent animate-fade-in drop-shadow-[0_0_10px_rgba(0,255,255,0.3)]"
                 src={logoSrc}
                 loading="lazy"
-                width={120}
-                height={120}
+                width={200}
+                height={50}
               />
             </div>
           </div>
