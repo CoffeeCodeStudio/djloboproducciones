@@ -30,7 +30,7 @@ const Layout = () => {
         key={fadeKey}
         id="main-content"
         tabIndex={-1}
-        className="page-fade-in px-4 sm:px-6 pb-20 relative z-10"
+        className="page-fade-in px-4 sm:px-6 pb-36 relative z-10"
       >
         <Outlet />
       </main>

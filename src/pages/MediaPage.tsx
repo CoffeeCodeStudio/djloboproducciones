@@ -173,15 +173,15 @@ const MediaPage = () => {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                {/* Type badge */}
-                <div className="absolute top-2 left-2">
-                  <span className="px-2 py-1 rounded text-xs font-semibold bg-background/60 text-foreground flex items-center gap-1 backdrop-blur-sm">
-                    {item.mediaType === "video" ? <Play className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
-                    {item.mediaType === "video"
-                      ? (language === "en" ? "Video" : language === "es" ? "Video" : "Video")
-                      : (language === "en" ? "Photo" : language === "es" ? "Foto" : "Foto")}
-                  </span>
-                </div>
+                {/* Type badge — only for videos */}
+                {item.mediaType === "video" && (
+                  <div className="absolute top-2 left-2">
+                    <span className="px-2 py-1 rounded text-xs font-semibold bg-background/60 text-foreground flex items-center gap-1 backdrop-blur-sm">
+                      <Play className="w-3 h-3" />
+                      Video
+                    </span>
+                  </div>
+                )}
 
                 {/* Play overlay for videos */}
                 {item.mediaType === "video" && (
