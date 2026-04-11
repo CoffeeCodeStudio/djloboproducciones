@@ -87,13 +87,12 @@ const Navbar = () => {
             {logoOpt.src && (
               <img
                 alt="DJ Lobo Producciones Logo"
-                className="h-10 w-[120px] object-contain rounded-full bg-background/0 animate-[fade-in_0.8s_ease-out] ring-0 border-0 outline-none shadow-none [filter:brightness(0.95)_contrast(1.05)]"
-                style={{ mixBlendMode: 'normal' }}
+                className="h-12 sm:h-14 w-auto max-w-[180px] object-contain animate-[fade-in_0.8s_ease-out] ring-0 border-0 outline-none shadow-none [filter:brightness(1.2)_contrast(1.1)_saturate(1.2)] drop-shadow-[0_0_10px_rgba(255,255,255,0.35)]"
                 src={logoOpt.src}
                 loading="eager"
                 fetchPriority="high"
-                width={120}
-                height={40}
+                width={180}
+                height={56}
                 onError={(e) => { if (logoOpt.fallback) { e.currentTarget.onerror = null; e.currentTarget.src = logoOpt.fallback; } }}
               />
             )}
@@ -106,10 +105,10 @@ const Navbar = () => {
                   key={item.id}
                   to={item.href}
                   className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-2 ${
-                    item.highlight
-                      ? "permanent-neon-link font-bold text-neon-pink bg-neon-pink/10 border border-neon-pink/40 shadow-[0_0_15px_rgba(255,0,128,0.3)] hover:shadow-[0_0_25px_rgba(255,0,128,0.5)]"
-                      : isActive(item)
+                    isActive(item)
                       ? "text-neon-cyan bg-neon-cyan/10 shadow-[0_0_10px_rgba(0,255,255,0.3)]"
+                      : item.highlight
+                      ? "text-neon-pink hover:bg-neon-pink/10 font-bold"
                       : "text-foreground/80 hover:text-neon-cyan hover:bg-neon-cyan/5"
                   }`}
                 >

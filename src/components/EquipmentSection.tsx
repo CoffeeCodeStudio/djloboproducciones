@@ -77,11 +77,12 @@ const EquipmentSection = () => {
       {loading ? (
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {Array.from({ length: 8 }).map((_, i) => (
+
             <div key={i} className="h-40 rounded-xl animate-pulse bg-muted/20" />
           ))}
         </div>
       ) : (
-        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-6">
           {items.map((item) => {
             const IconComp = ICON_MAP[item.icon] || Disc3;
             return (

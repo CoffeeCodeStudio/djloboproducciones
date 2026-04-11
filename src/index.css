@@ -88,6 +88,11 @@ body {
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
+    scroll-padding-top: 5rem;
+  }
+
+  section[id] {
+    scroll-margin-top: 5.5rem;
   }
 
   body {
@@ -109,6 +114,7 @@ body {
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
+    filter: drop-shadow(0 0 12px hsla(var(--neon-pink), 0.5)) drop-shadow(0 0 24px hsla(var(--neon-cyan), 0.3));
   }
 
   .text-neon-pink-cyan {
