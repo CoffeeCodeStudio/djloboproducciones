@@ -1,7 +1,6 @@
 import { forwardRef } from "react";
 import { Instagram, Facebook, Youtube, Radio as RadioIcon, Mail, Phone, MapPin, Cookie } from "lucide-react";
 import { Link } from "react-router-dom";
-import { useBranding } from "@/hooks/useBranding";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
 
@@ -58,17 +57,13 @@ const translations = {
 
 const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { language } = useLanguage();
-  const { branding } = useBranding();
+  const logoSrc = "/favicon.png";
   const { resetConsent } = useCookieConsent();
   const t = translations[language];
 
-  const socialLinks = {
-    instagram: branding?.instagram_username ?
-    `https://www.instagram.com/${branding.instagram_username}` :
-    DEFAULT_SOCIAL_LINKS.instagram,
-    youtube: branding?.youtube_channel_id ?
-    `https://www.youtube.com/${branding.youtube_channel_id.startsWith("@") ? branding.youtube_channel_id : `channel/${branding.youtube_channel_id}`}` :
-    DEFAULT_SOCIAL_LINKS.youtube,
+const socialLinks = {
+    instagram: DEFAULT_SOCIAL_LINKS.instagram,
+    youtube: DEFAULT_SOCIAL_LINKS.youtube,
     facebookRadio: DEFAULT_SOCIAL_LINKS.facebookRadio,
     facebookProd: DEFAULT_SOCIAL_LINKS.facebookProd,
     zenoPlayer: DEFAULT_SOCIAL_LINKS.zenoPlayer
@@ -82,19 +77,14 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
           {/* About */}
           <div className="flex flex-col">
             <div className="flex items-center gap-3 mb-4">
-              {branding?.logo_url ?
               <img
                 alt="DJ Lobo Producciones Logo"
-                className="!h-16 sm:!h-24 w-auto object-contain rounded-xl bg-transparent animate-fade-in"
-                src={branding.logo_url}
+                className="h-16 sm:h-24 w-auto object-contain rounded-xl bg-transparent animate-fade-in drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] brightness-125 contrast-110"
+                src={logoSrc}
                 loading="lazy"
                 width={120}
-                height={120} /> :
-
-              <div className="h-16 sm:h-24 w-16 sm:w-24 flex items-center justify-center glass-card rounded-full">
-                  <RadioIcon className="h-10 sm:h-16 w-10 sm:w-16 text-neon-cyan" aria-hidden="true" />
-                </div>
-              }
+                height={120}
+              />
             </div>
           </div>
 
