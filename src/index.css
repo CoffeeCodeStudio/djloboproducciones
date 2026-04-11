@@ -88,11 +88,6 @@ body {
   html {
     scroll-behavior: smooth;
     overflow-x: hidden;
-    scroll-padding-top: 5rem;
-  }
-
-  section[id] {
-    scroll-margin-top: 5.5rem;
   }
 
   body {
