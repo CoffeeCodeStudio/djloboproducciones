@@ -101,7 +101,7 @@ const Navbar = () => {
             </Link>
 
             {/* Desktop Navigation — 5 items, RADIO centered */}
-            <div className="hidden lg:flex items-center gap-1">
+            <div className="hidden md:flex items-center gap-0.5 lg:gap-1">
               {navItems.map((item) => (
                 <Link
                   key={item.id}
@@ -176,7 +176,7 @@ const Navbar = () => {
               <DropdownMenu modal={false}>
                 <DropdownMenuTrigger asChild>
                   <button
-                    className="lg:hidden tap-target glass-card p-2 rounded-lg focus-neon hover:border-neon-purple/50 transition-colors"
+                    className="md:hidden tap-target glass-card p-2 rounded-lg focus-neon hover:border-neon-purple/50 transition-colors"
                     aria-label="Öppna meny"
                   >
                     <Menu className="w-6 h-6 text-foreground" />
