@@ -23,11 +23,20 @@ const navItems: NavItem[] = [
   { id: "media", href: "/media", label: { sv: "Media", en: "Media", es: "Media" }, icon: Film },
   { id: "radio", href: "/lyssna", label: { sv: "Radio", en: "Radio", es: "Radio" }, icon: Radio, highlight: true },
   { id: "referenser", href: "/referenser", label: { sv: "Omdömen", en: "Reviews", es: "Reseñas" }, icon: Star },
-  
-  { id: "prislista", href: "/prislista", label: { sv: "Prislista", en: "Pricing", es: "Precios" }, icon: BadgeDollarSign },
+
+  {
+    id: "prislista",
+    href: "/prislista",
+    label: { sv: "Prislista", en: "Pricing", es: "Precios" },
+    icon: BadgeDollarSign,
+  },
 ];
 
-interface LanguageOption { code: Language; flag: string; label: string; }
+interface LanguageOption {
+  code: Language;
+  flag: string;
+  label: string;
+}
 const languages: LanguageOption[] = [
   { code: "sv", flag: "🇸🇪", label: "Svenska" },
   { code: "en", flag: "🇬🇧", label: "English" },
@@ -56,7 +65,6 @@ const Navbar = () => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-
   const isActive = (item: NavItem) => {
     if (item.href === "/") return location.pathname === "/";
     return location.pathname.startsWith(item.href);
@@ -81,15 +89,15 @@ const Navbar = () => {
               className="focus-neon rounded-lg hover:scale-105 transition-transform flex-shrink-0"
               aria-label="DJ Lobo Producciones - Hem"
             >
-            <img
-              alt="DJ Lobo Producciones Logo"
-              className="h-10 sm:h-12 w-auto max-w-[280px] object-contain animate-[fade-in_0.8s_ease-out] ring-0 border-0 outline-none shadow-none drop-shadow-[0_0_12px_rgba(0,255,255,0.4)]"
-              src={logoSrc}
-              loading="eager"
-              fetchPriority="high"
-              width={280}
-              height={48}
-            />
+              <img
+                alt="DJ Lobo Producciones Logo"
+                className="h-10 sm:h-12 w-auto max-w-[280px] object-contain animate-[fade-in_0.8s_ease-out] ring-0 border-0 outline-none shadow-none drop-shadow-[0_0_12px_rgba(0,255,255,0.4)]"
+                src={logoSrc}
+                loading="eager"
+                fetchPriority="high"
+                width={400}
+                height={48}
+              />
             </Link>
 
             {/* Desktop Navigation — 5 items, RADIO centered */}
@@ -102,8 +110,8 @@ const Navbar = () => {
                     isActive(item)
                       ? "text-neon-cyan bg-neon-cyan/10 shadow-[0_0_10px_rgba(0,255,255,0.3)]"
                       : item.highlight
-                      ? "text-neon-pink hover:bg-neon-pink/10 font-bold"
-                      : "text-foreground/80 hover:text-neon-cyan hover:bg-neon-cyan/5"
+                        ? "text-neon-pink hover:bg-neon-pink/10 font-bold"
+                        : "text-foreground/80 hover:text-neon-cyan hover:bg-neon-cyan/5"
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
@@ -123,15 +131,37 @@ const Navbar = () => {
                   className="tap-target glass-card px-2 sm:px-3 py-2 flex items-center gap-1.5 hover:border-neon-cyan/50 transition-colors focus-neon rounded-lg"
                 >
                   <Globe className="w-4 h-4 text-foreground" aria-hidden="true" />
-                  <span className="text-sm font-medium" aria-hidden="true">{currentLang.flag}</span>
-                  <ChevronDown className={`w-3 h-3 text-muted-foreground transition-transform ${isLangOpen ? "rotate-180" : ""}`} aria-hidden="true" />
+                  <span className="text-sm font-medium" aria-hidden="true">
+                    {currentLang.flag}
+                  </span>
+                  <ChevronDown
+                    className={`w-3 h-3 text-muted-foreground transition-transform ${isLangOpen ? "rotate-180" : ""}`}
+                    aria-hidden="true"
+                  />
                 </button>
                 {isLangOpen && (
-                  <ul role="listbox" aria-label="Välj språk" className="absolute right-0 mt-2 w-40 rounded-lg overflow-hidden py-1 shadow-lg border border-neon-cyan/20 z-[60] bg-background/95 backdrop-blur-xl">
+                  <ul
+                    role="listbox"
+                    aria-label="Välj språk"
+                    className="absolute right-0 mt-2 w-40 rounded-lg overflow-hidden py-1 shadow-lg border border-neon-cyan/20 z-[60] bg-background/95 backdrop-blur-xl"
+                  >
                     {languages.map((lang) => (
-                      <li key={lang.code} role="option" aria-selected={language === lang.code} tabIndex={0}
-                        onClick={() => { setLanguage(lang.code); setIsLangOpen(false); }}
-                        onKeyDown={(e) => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); setLanguage(lang.code); setIsLangOpen(false); } }}
+                      <li
+                        key={lang.code}
+                        role="option"
+                        aria-selected={language === lang.code}
+                        tabIndex={0}
+                        onClick={() => {
+                          setLanguage(lang.code);
+                          setIsLangOpen(false);
+                        }}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter" || e.key === " ") {
+                            e.preventDefault();
+                            setLanguage(lang.code);
+                            setIsLangOpen(false);
+                          }
+                        }}
                         className={`flex items-center gap-3 px-4 py-2.5 cursor-pointer transition-colors focus-neon ${language === lang.code ? "bg-neon-cyan/10 text-neon-cyan" : "hover:bg-muted/50 text-foreground"}`}
                       >
                         <span aria-hidden="true">{lang.flag}</span>
@@ -152,7 +182,10 @@ const Navbar = () => {
                     <Menu className="w-6 h-6 text-foreground" />
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 glass-card border-neon-purple/30 bg-background/95 backdrop-blur-xl">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-56 glass-card border-neon-purple/30 bg-background/95 backdrop-blur-xl"
+                >
                   {navItems.map((item) => (
                     <DropdownMenuItem key={item.id} asChild>
                       <Link
@@ -161,8 +194,8 @@ const Navbar = () => {
                           item.highlight
                             ? "text-neon-pink font-bold"
                             : isActive(item)
-                            ? "text-neon-cyan"
-                            : "text-foreground/90"
+                              ? "text-neon-cyan"
+                              : "text-foreground/90"
                         }`}
                       >
                         <item.icon className="w-4 h-4" />
