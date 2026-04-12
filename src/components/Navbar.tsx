@@ -106,7 +106,7 @@ const Navbar = () => {
                 <Link
                   key={item.id}
                   to={item.href}
-                  className={`px-4 py-2 text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-2 ${
+                  className={`px-2.5 lg:px-4 py-2 text-xs lg:text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-1.5 lg:gap-2 ${
                     isActive(item)
                       ? "text-neon-cyan bg-neon-cyan/10 shadow-[0_0_10px_rgba(0,255,255,0.3)]"
                       : item.highlight
