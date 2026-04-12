@@ -79,11 +79,11 @@ const socialLinks = {
             <div className="flex items-center gap-3 mb-4">
               <img
                 alt="DJ Lobo Producciones Logo"
-                className="h-12 w-auto object-contain bg-transparent animate-fade-in drop-shadow-[0_0_12px_rgba(0,255,255,0.4)] brightness-150 saturate-150"
+                className="h-8 sm:h-10 w-auto object-contain bg-transparent animate-fade-in drop-shadow-[0_0_10px_rgba(0,255,255,0.3)]"
                 src={logoSrc}
                 loading="lazy"
-                width={240}
-                height={60}
+                width={200}
+                height={50}
               />
             </div>
           </div>

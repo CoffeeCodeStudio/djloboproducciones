@@ -83,12 +83,12 @@ const Navbar = () => {
             >
             <img
               alt="DJ Lobo Producciones Logo"
-              className="h-14 w-auto max-w-[320px] object-contain animate-[fade-in_0.8s_ease-out] ring-0 border-0 outline-none shadow-none drop-shadow-[0_0_16px_rgba(0,255,255,0.5)] brightness-150 saturate-150"
+              className="h-10 sm:h-12 w-auto max-w-[280px] object-contain animate-[fade-in_0.8s_ease-out] ring-0 border-0 outline-none shadow-none drop-shadow-[0_0_12px_rgba(0,255,255,0.4)]"
               src={logoSrc}
               loading="eager"
               fetchPriority="high"
-              width={320}
-              height={56}
+              width={280}
+              height={48}
             />
             </Link>
 
