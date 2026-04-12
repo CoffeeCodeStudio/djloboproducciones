@@ -73,7 +73,18 @@ const socialLinks = {
     <footer ref={ref} className="py-12 sm:py-16 px-4 sm:px-6 pb-32 sm:pb-36 relative border-t border-neon-purple/20">
       <div className="max-w-7xl mx-auto">
         {/* Grid: About + Contact + Social */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10 md:gap-8 mb-10">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-8 mb-10">
+          {/* Logo */}
+          <div className="flex flex-col justify-start">
+            <img
+              alt="DJ Lobo Producciones Logo"
+              className="h-14 sm:h-16 w-auto object-contain bg-transparent animate-fade-in drop-shadow-[0_0_10px_rgba(0,255,255,0.3)]"
+              src={logoSrc}
+              loading="lazy"
+              width={320}
+              height={80}
+            />
+          </div>
 
           {/* Contact */}
           <div className="flex flex-col">
