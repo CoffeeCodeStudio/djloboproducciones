@@ -86,6 +86,7 @@ const MediaPage = () => {
         alt: img.alt_text || "DJ Lobo event",
         videoUrl: img.video_url,
         youtubeId: ytId,
+        createdAt: img.created_at,
       };
     });
 
@@ -176,10 +177,13 @@ const MediaPage = () => {
                 <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                 {/* Type badge */}
-                <div className="absolute top-2 left-2">
+                <div className="absolute top-2 left-2 flex flex-col gap-1">
                   <span className="px-2 py-1 rounded text-xs font-semibold bg-background/60 text-foreground flex items-center gap-1 backdrop-blur-sm">
                     {item.mediaType === "video" ? <Play className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
                     {item.mediaType === "video" ? "Video" : (language === "en" ? "Photo" : "Foto")}
+                  </span>
+                  <span className="px-2 py-0.5 rounded text-[10px] font-medium bg-background/60 text-muted-foreground backdrop-blur-sm">
+                    {new Date(item.createdAt).toLocaleDateString(language === "en" ? "en-GB" : language === "es" ? "es-ES" : "sv-SE", { year: "numeric", month: "short", day: "numeric" })}
                   </span>
                 </div>
 
