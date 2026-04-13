@@ -45,7 +45,7 @@ const languages: LanguageOption[] = [
 
 const Navbar = () => {
   const { language, setLanguage } = useLanguage();
-  const logoSrc = "/logo-neon.png";
+  const logoSrc = "/logo-neon.webp";
   const location = useLocation();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);

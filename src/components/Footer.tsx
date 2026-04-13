@@ -57,7 +57,7 @@ const translations = {
 
 const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { language } = useLanguage();
-  const logoSrc = "/logo-neon.png";
+  const logoSrc = "/logo-neon.webp";
   const { resetConsent } = useCookieConsent();
   const t = translations[language];
 
