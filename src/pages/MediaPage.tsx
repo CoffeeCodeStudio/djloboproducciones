@@ -86,6 +86,7 @@ const MediaPage = () => {
         alt: img.alt_text || "DJ Lobo event",
         videoUrl: img.video_url,
         youtubeId: ytId,
+        createdAt: img.created_at,
       };
     });
 
