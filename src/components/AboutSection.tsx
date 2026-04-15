@@ -74,8 +74,18 @@ const AboutSection = () => {
 
   // Use profile image for About section — stable reference to avoid blinking
   const profileUrl = branding?.profile_image_url;
-  const aboutImage = profileUrl || djLoboAboutImage;
   const aboutFallback = djLoboAboutImage;
+
+  // Optimize Supabase profile image for displayed size (~560px wide)
+  const { aboutImage, aboutSrcSet } = useMemo(() => {
+    if (!profileUrl) return { aboutImage: djLoboAboutImage, aboutSrcSet: undefined };
+    const opt560 = optimizeWithFallback(profileUrl, 560);
+    const opt800 = optimizeWithFallback(profileUrl, 800);
+    return {
+      aboutImage: opt560.src,
+      aboutSrcSet: `${opt560.src} 560w, ${opt800.src} 800w`,
+    };
+  }, [profileUrl]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
