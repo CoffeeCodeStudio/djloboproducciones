@@ -197,11 +197,13 @@ const AboutSection = () => {
             <div className="scroll-reveal glass-card overflow-hidden aspect-[4/5] max-w-xs mx-auto">
               <img
                 src={aboutImage}
+                srcSet={aboutSrcSet}
+                sizes="(max-width: 640px) 280px, 560px"
                 alt="DJ Lobo spelar latinmusik live"
                 className="w-full h-full object-cover object-center"
                 loading="lazy"
-                width={400}
-                height={500}
+                width={560}
+                height={700}
                 onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = aboutFallback; }}
               />
             </div>
