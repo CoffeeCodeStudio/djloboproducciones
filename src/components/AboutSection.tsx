@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import djLoboAboutImage from "@/assets/dj-lobo-about.webp";
 import { Music, Headphones, Zap, Disc } from "lucide-react";
 import { useBranding } from "@/hooks/useBranding";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { optimizeWithFallback } from "@/lib/imageOptimizer";
 
 
 const translations = {
