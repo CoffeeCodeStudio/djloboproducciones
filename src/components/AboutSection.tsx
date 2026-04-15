@@ -204,7 +204,7 @@ const AboutSection = () => {
                 loading="lazy"
                 width={560}
                 height={700}
-                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = aboutFallback; }}
+                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.srcset = ""; e.currentTarget.src = aboutFallback; }}
               />
             </div>
 
