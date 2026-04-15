@@ -54,6 +54,10 @@
     <style>
       html, body { background-color: #000; color: #fff; margin: 0; }
       #root { min-height: 100vh; }
+      #lcp-hero { display:flex; flex-direction:column; align-items:center; justify-content:center; min-height:80vh; text-align:center; padding:1rem; }
+      #lcp-hero h1 { font-family:'Orbitron',sans-serif; font-size:clamp(1.8rem,7vw,7rem); font-weight:900; letter-spacing:.1em; background:linear-gradient(135deg,#ff00ff,#00e5ff); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; margin:0; line-height:1.1; }
+      #lcp-hero p { font-family:'Orbitron',sans-serif; font-size:clamp(.7rem,2vw,1.25rem); letter-spacing:.3em; color:rgba(0,229,255,.8); margin:.75rem 0 0; }
+      .app-loaded #lcp-hero { display:none; }
     </style>
 
     <!-- Preload critical Google Fonts stylesheet -->
@@ -91,6 +95,10 @@
   </head>
 
   <body>
+    <div id="lcp-hero" aria-hidden="true">
+      <h1>DJ LOBO PRODUCCIONES</h1>
+      <p>LATIN BEATS • HOUSE MUSIC • WORLD HITS • 80s &amp; 90s</p>
+    </div>
     <div id="root"></div>
     
     <!-- Static SEO content for crawlers (hidden when JS renders the app) -->
