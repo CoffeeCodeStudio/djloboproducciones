@@ -1,8 +1,9 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useMemo } from "react";
 import djLoboAboutImage from "@/assets/dj-lobo-about.webp";
 import { Music, Headphones, Zap, Disc } from "lucide-react";
 import { useBranding } from "@/hooks/useBranding";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { optimizeWithFallback } from "@/lib/imageOptimizer";
 
 
 const translations = {
@@ -73,8 +74,18 @@ const AboutSection = () => {
 
   // Use profile image for About section — stable reference to avoid blinking
   const profileUrl = branding?.profile_image_url;
-  const aboutImage = profileUrl || djLoboAboutImage;
   const aboutFallback = djLoboAboutImage;
+
+  // Optimize Supabase profile image for displayed size (~560px wide)
+  const { aboutImage, aboutSrcSet } = useMemo(() => {
+    if (!profileUrl) return { aboutImage: djLoboAboutImage, aboutSrcSet: undefined };
+    const opt560 = optimizeWithFallback(profileUrl, 560);
+    const opt800 = optimizeWithFallback(profileUrl, 800);
+    return {
+      aboutImage: opt560.src,
+      aboutSrcSet: `${opt560.src} 560w, ${opt800.src} 800w`,
+    };
+  }, [profileUrl]);
 
   useEffect(() => {
     const observer = new IntersectionObserver(
@@ -186,11 +197,13 @@ const AboutSection = () => {
             <div className="scroll-reveal glass-card overflow-hidden aspect-[4/5] max-w-xs mx-auto">
               <img
                 src={aboutImage}
+                srcSet={aboutSrcSet}
+                sizes="(max-width: 640px) 280px, 560px"
                 alt="DJ Lobo spelar latinmusik live"
                 className="w-full h-full object-cover object-center"
                 loading="lazy"
-                width={400}
-                height={500}
+                width={560}
+                height={700}
                 onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = aboutFallback; }}
               />
             </div>

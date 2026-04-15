@@ -81,8 +81,8 @@ const socialLinks = {
               className="h-14 sm:h-16 w-auto object-contain bg-transparent animate-fade-in drop-shadow-[0_0_10px_rgba(0,255,255,0.3)]"
               src={logoSrc}
               loading="lazy"
-              width={320}
-              height={80}
+              width={176}
+              height={44}
             />
           </div>
 
