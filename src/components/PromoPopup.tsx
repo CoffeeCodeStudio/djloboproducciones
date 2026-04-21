@@ -75,14 +75,19 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
       useWorker: true,
     });
 
-    const fire = () => {
+    // Detect reduced-motion preference
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const fireFull = () => {
       myConfetti({
         particleCount: 140,
         spread: 90,
         startVelocity: 45,
         origin: { y: 0.35, x: 0.5 },
         colors: COLORS,
-        disableForReducedMotion: true,
       });
       const t2 = window.setTimeout(() => {
         myConfetti({
@@ -91,11 +96,27 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
           startVelocity: 35,
           origin: { y: 0.4, x: 0.5 },
           colors: COLORS,
-          disableForReducedMotion: true,
         });
       }, 180);
       timersRef.current.push(t2);
     };
+
+    // Reduced-motion alternative: a single, gentle, low-particle "sparkle"
+    // burst with low velocity and quick fade. No second wave, no fast spread.
+    const fireSparkle = () => {
+      myConfetti({
+        particleCount: 24,
+        spread: 50,
+        startVelocity: 12,
+        gravity: 0.5,
+        ticks: 80,
+        scalar: 0.8,
+        origin: { y: 0.4, x: 0.5 },
+        colors: COLORS,
+      });
+    };
+
+    const fire = prefersReducedMotion ? fireSparkle : fireFull;
 
     const t1 = window.setTimeout(fire, 220);
     timersRef.current.push(t1);
