@@ -298,16 +298,58 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
 
       <DialogContent
         className="p-0 overflow-visible max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow promo-popup-enter"
-        style={{ zIndex: 100 }}
+        style={{ zIndex: 100, cursor: "auto" }}
       >
-        {/* Vinyl-record close button — rotates slowly */}
+        {/* Ambient outer aura — pulsing radial glow behind the modal */}
+        <span aria-hidden="true" className="promo-aura" />
+
+        {/* Sound-wave ripples — 3 expanding neon rings behind the modal */}
+        <span
+          aria-hidden="true"
+          className="promo-ripple"
+          style={{
+            width: "100%",
+            height: "100%",
+            borderColor: "hsla(var(--neon-pink), 0.7)",
+            animationDelay: "0s",
+          }}
+        />
+        <span
+          aria-hidden="true"
+          className="promo-ripple"
+          style={{
+            width: "100%",
+            height: "100%",
+            borderColor: "hsla(var(--neon-cyan), 0.6)",
+            animationDelay: "1.1s",
+          }}
+        />
+        <span
+          aria-hidden="true"
+          className="promo-ripple"
+          style={{
+            width: "100%",
+            height: "100%",
+            borderColor: "hsla(var(--neon-pink), 0.5)",
+            animationDelay: "2.2s",
+          }}
+        />
+
+        {/* Vinyl-record close button — spinning record with bold centered white X */}
         <button
           type="button"
           onClick={onClose}
           aria-label="Stäng"
-          className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 z-30 rounded-full bg-background/60 backdrop-blur-md border-2 border-primary p-2 text-foreground shadow-[0_0_16px_hsl(var(--primary)/0.9)] hover:bg-primary hover:text-primary-foreground transition-colors group"
+          className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 z-30 w-11 h-11 rounded-full bg-background/70 backdrop-blur-md border-2 border-primary shadow-[0_0_16px_hsl(var(--primary)/0.9)] hover:shadow-[0_0_28px_hsl(var(--primary))] hover:scale-110 active:scale-95 transition-all group flex items-center justify-center"
         >
-          <Disc3 className="h-5 w-5 vinyl-spin group-hover:[animation-duration:1.5s]" />
+          <Disc3
+            className="absolute inset-0 m-auto h-9 w-9 vinyl-spin text-primary/80 group-hover:[animation-duration:1.2s]"
+            aria-hidden="true"
+          />
+          <X
+            className="relative h-5 w-5 text-white drop-shadow-[0_0_6px_hsl(var(--primary))] group-hover:scale-125 group-hover:drop-shadow-[0_0_10px_hsl(var(--neon-cyan))] transition-transform"
+            strokeWidth={3.5}
+          />
         </button>
 
         {/* Scrollable area: media + text */}
