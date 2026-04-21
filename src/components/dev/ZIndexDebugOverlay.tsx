@@ -8,6 +8,18 @@ interface RuntimeCheck {
   violations: string[];
 }
 
+interface ClippingAncestor {
+  tag: string;
+  classes: string;
+  overflow: string;
+  reason: string;
+}
+
+interface OverflowReport {
+  /** Ancestors that clip the mini-player or establish a containing block + clip. */
+  clipping: ClippingAncestor[];
+}
+
 /**
  * Reads the computed z-index of an element matching `selector`.
  * Walks up the DOM if the immediate match has `z-index: auto` so we
