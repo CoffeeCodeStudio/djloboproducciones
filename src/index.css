@@ -744,7 +744,10 @@ body {
         0 0 40px 8px hsla(var(--neon-cyan), 0.5) !important;
     }
     .promo-popup-enter,
-    .promo-cta-pulse {
+    .promo-cta-pulse,
+    .eq-bar,
+    .vinyl-spin,
+    .drift-particle {
       animation: none !important;
     }
   }
