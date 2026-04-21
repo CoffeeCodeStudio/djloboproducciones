@@ -51,6 +51,7 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
       {visible && (
         <motion.div
           key="promo-mini"
+          data-zlayer="promo-mini-player"
           initial={{ x: 400, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 500, opacity: 0 }}

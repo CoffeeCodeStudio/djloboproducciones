@@ -261,6 +261,7 @@ const NowPlayingBar = () => {
 
   return (
     <div
+      data-zlayer="now-playing-bar"
       className={`fixed bottom-0 left-0 right-0 z-40 transition-all duration-300 ${
         showExpandedMix ? "h-[200px] sm:h-[220px] md:h-[260px]" : ""
       }`}
