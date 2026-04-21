@@ -792,6 +792,18 @@ body {
     animation: promo-cta-pulse 2.4s ease-in-out infinite;
   }
 
+  /* Ken Burns slow zoom for image-only Mini-Player so it's never fully static */
+  @keyframes promo-ken-burns {
+    0% { transform: scale(1) translate(0, 0); }
+    50% { transform: scale(1.12) translate(-1.5%, 1%); }
+    100% { transform: scale(1) translate(0, 0); }
+  }
+
+  .promo-ken-burns {
+    animation: promo-ken-burns 14s ease-in-out infinite;
+    will-change: transform;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .promo-neon-glow {
       animation: none !important;
@@ -802,7 +814,8 @@ body {
     .promo-popup-enter,
     .promo-cta-pulse,
     .eq-bar,
-    .vinyl-spin {
+    .vinyl-spin,
+    .promo-ken-burns {
       animation: none !important;
     }
     /* Hide motion-only decorative layers entirely — keeps the UI calm */

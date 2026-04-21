@@ -3,7 +3,11 @@ import { useActivePromo } from "@/hooks/useActivePromo";
 import PromoPopup from "./PromoPopup";
 import PromoMiniCard from "./PromoMiniCard";
 
-const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
+// Session-only key for Mini "hide" (cleared when the tab/browser session ends)
+const MINI_SESSION_HIDDEN_KEY = (id: string) => `promo_mini_session_hidden_${id}`;
+const SEEN_KEY = (id: string) => `promo_seen_${id}`;
+const PERMANENT_DISMISS_KEY = (id: string) => `promo_permanent_dismissed_${id}`;
 
 const PromoManager = () => {
   const { promo } = useActivePromo();
@@ -18,24 +22,24 @@ const PromoManager = () => {
 
     const id = promo.id;
     try {
-      if (localStorage.getItem(`promo_permanent_dismissed_${id}`)) {
+      // Hard dismiss ("Visa inte igen") — never show either variant
+      if (localStorage.getItem(PERMANENT_DISMISS_KEY(id))) {
         setMode("hidden");
         return;
       }
-      const seen = localStorage.getItem(`promo_seen_${id}`);
-      if (seen) {
-        const miniDismissed = localStorage.getItem(`promo_mini_dismissed_${id}`);
-        if (miniDismissed) {
-          const ts = parseInt(miniDismissed, 10);
-          if (!isNaN(ts) && Date.now() - ts < SEVEN_DAYS_MS) {
-            setMode("hidden");
-            return;
-          }
-        }
-        setMode("mini");
-      } else {
-        setMode("popup");
+
+      // Session-only hide (Mini X) — gone until next browser session
+      if (sessionStorage.getItem(MINI_SESSION_HIDDEN_KEY(id))) {
+        setMode("hidden");
+        return;
       }
+
+      // Has the user seen the Large version recently (24h)?
+      const seenRaw = localStorage.getItem(SEEN_KEY(id));
+      const seenAt = seenRaw ? parseInt(seenRaw, 10) : NaN;
+      const seenRecently = !isNaN(seenAt) && Date.now() - seenAt < TWENTY_FOUR_HOURS_MS;
+
+      setMode(seenRecently ? "mini" : "popup");
     } catch {
       setMode("popup");
     }
@@ -45,23 +49,27 @@ const PromoManager = () => {
 
   const handlePopupClose = () => {
     try {
-      if (reopenedFromMini) {
-        localStorage.setItem(`promo_mini_dismissed_${promo.id}`, Date.now().toString());
-        setReopenedFromMini(false);
-        setMode("hidden");
-      } else {
-        localStorage.setItem(`promo_seen_${promo.id}`, "1");
-        setMode("mini");
-      }
+      // Mark Large as seen with a fresh 24h window
+      localStorage.setItem(SEEN_KEY(promo.id), Date.now().toString());
     } catch {
-      setMode("hidden");
+      /* ignore */
+    }
+    if (reopenedFromMini) {
+      // User expanded from Mini and closed again — return to Mini view
+      setReopenedFromMini(false);
+      setMode("mini");
+    } else {
+      // First-time Large was shown — switch to Mini for subsequent visits in the 24h window
+      setMode("mini");
     }
   };
 
   const handleMiniDismiss = () => {
     try {
-      localStorage.setItem(`promo_mini_dismissed_${promo.id}`, Date.now().toString());
-    } catch {}
+      sessionStorage.setItem(MINI_SESSION_HIDDEN_KEY(promo.id), "1");
+    } catch {
+      /* ignore */
+    }
     setMode("hidden");
   };
 
@@ -72,8 +80,10 @@ const PromoManager = () => {
 
   const handlePermanentDismiss = () => {
     try {
-      localStorage.setItem(`promo_permanent_dismissed_${promo.id}`, "1");
-    } catch {}
+      localStorage.setItem(PERMANENT_DISMISS_KEY(promo.id), "1");
+    } catch {
+      /* ignore */
+    }
     setMode("hidden");
   };
 
