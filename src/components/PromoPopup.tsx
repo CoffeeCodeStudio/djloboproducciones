@@ -401,8 +401,9 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
       )}
 
       <DialogContent
+        data-zlayer="promo-popup-content"
         className="p-0 overflow-visible max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow promo-popup-enter"
-        style={{ zIndex: 100, cursor: "auto" }}
+        style={{ zIndex: 9999, cursor: "auto" }}
       >
         {/* Ambient outer aura — pulsing radial glow behind the modal */}
         <span aria-hidden="true" className="promo-aura" />
