@@ -5,6 +5,7 @@ import NowPlayingBar from "@/components/NowPlayingBar";
 import FloatingChatButton from "@/components/FloatingChatButton";
 import CookieConsent from "@/components/CookieConsent";
 import PromoManager from "@/components/PromoManager";
+import ZIndexDebugOverlay from "@/components/dev/ZIndexDebugOverlay";
 import { useBranding } from "@/hooks/useBranding";
 
 
