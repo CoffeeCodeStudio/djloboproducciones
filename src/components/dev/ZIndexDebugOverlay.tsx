@@ -8,6 +8,18 @@ interface RuntimeCheck {
   violations: string[];
 }
 
+interface ClippingAncestor {
+  tag: string;
+  classes: string;
+  overflow: string;
+  reason: string;
+}
+
+interface OverflowReport {
+  /** Ancestors that clip the mini-player or establish a containing block + clip. */
+  clipping: ClippingAncestor[];
+}
+
 /**
  * Reads the computed z-index of an element matching `selector`.
  * Walks up the DOM if the immediate match has `z-index: auto` so we
@@ -74,6 +86,61 @@ function runRuntimeZIndexCheck(): RuntimeCheck {
 }
 
 /**
+ * Walks ancestors of the mini-player and reports any that would clip it.
+ * A `position: fixed` element is normally viewport-relative, BUT any
+ * ancestor with `transform`, `filter`, `perspective`, `backdrop-filter`,
+ * `contain: paint/layout/strict`, or `will-change: transform` becomes its
+ * containing block — and if that ancestor also has `overflow: hidden`/clip,
+ * the mini-player gets clipped.
+ *
+ * We also report any direct ancestor with `overflow: hidden` regardless of
+ * containing-block status, since that's the most common foot-gun.
+ */
+function checkOverflowClipping(): OverflowReport {
+  const el = document.querySelector<HTMLElement>('[data-zlayer="promo-mini-player"]');
+  if (!el) return { clipping: [] };
+
+  const clipping: ClippingAncestor[] = [];
+  let cursor: HTMLElement | null = el.parentElement;
+
+  while (cursor && cursor !== document.documentElement) {
+    const cs = getComputedStyle(cursor);
+    const overflow = `${cs.overflowX}/${cs.overflowY}`;
+    const clipsOverflow =
+      cs.overflowX === "hidden" ||
+      cs.overflowY === "hidden" ||
+      cs.overflowX === "clip" ||
+      cs.overflowY === "clip";
+
+    if (clipsOverflow) {
+      const establishesContainingBlock =
+        cs.transform !== "none" ||
+        cs.filter !== "none" ||
+        cs.perspective !== "none" ||
+        (cs.willChange && /transform|filter|perspective/.test(cs.willChange)) ||
+        cs.contain === "paint" ||
+        cs.contain === "layout" ||
+        cs.contain === "strict" ||
+        cs.contain.includes("paint");
+
+      const reason = establishesContainingBlock
+        ? "establishes containing block + clips overflow → fixed child WILL be clipped"
+        : "ancestor clips overflow (low risk for fixed child unless containing block)";
+
+      clipping.push({
+        tag: cursor.tagName.toLowerCase(),
+        classes: cursor.className?.toString().slice(0, 80) ?? "",
+        overflow,
+        reason,
+      });
+    }
+    cursor = cursor.parentElement;
+  }
+
+  return { clipping };
+}
+
+/**
  * Dev-only on-screen overlay. Combines:
  *  1. Static layer-map assertion (`assertMiniPlayerLayering` from constants)
  *  2. Live DOM runtime check via `getComputedStyle` (re-runs every 1.5s)
@@ -82,6 +149,7 @@ function runRuntimeZIndexCheck(): RuntimeCheck {
 const ZIndexDebugOverlay = () => {
   const [staticReport, setStaticReport] = useState<MiniPlayerLayeringReport | null>(null);
   const [runtime, setRuntime] = useState<RuntimeCheck | null>(null);
+  const [overflow, setOverflow] = useState<OverflowReport | null>(null);
 
   useEffect(() => {
     if (!import.meta.env.DEV) return;
@@ -101,6 +169,16 @@ const ZIndexDebugOverlay = () => {
         // eslint-disable-next-line no-console
         console.error("[z-index] runtime DOM check failed:", rt.violations, rt.measured);
       }
+
+      const ov = checkOverflowClipping();
+      setOverflow(ov);
+      if (ov.clipping.some((c) => c.reason.includes("WILL be clipped"))) {
+        // eslint-disable-next-line no-console
+        console.error(
+          "[z-index] mini-player has clipping ancestor — fixed positioning is being trapped:",
+          ov.clipping
+        );
+      }
     };
     tick();
     const id = window.setInterval(tick, 1500);
@@ -111,7 +189,8 @@ const ZIndexDebugOverlay = () => {
 
   const staticBad = staticReport && !staticReport.ok;
   const runtimeBad = runtime && runtime.violations.length > 0;
-  if (!staticBad && !runtimeBad) return null;
+  const overflowBad = overflow && overflow.clipping.length > 0;
+  if (!staticBad && !runtimeBad && !overflowBad) return null;
 
   return (
     <div
@@ -169,11 +248,29 @@ const ZIndexDebugOverlay = () => {
       )}
 
       {runtimeBad && (
-        <div style={{ borderTop: "1px solid hsl(0 84% 40%)", paddingTop: 6 }}>
+        <div style={{ borderTop: "1px solid hsl(0 84% 40%)", paddingTop: 6, marginBottom: 6 }}>
           <strong>Runtime violations:</strong>
           <ul style={{ margin: "4px 0 0 18px", padding: 0 }}>
             {runtime!.violations.map((v) => (
               <li key={v}>{v}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {overflowBad && (
+        <div style={{ borderTop: "1px solid hsl(0 84% 40%)", paddingTop: 6 }}>
+          <strong>Clipping ancestors of mini-player:</strong>
+          <ul style={{ margin: "4px 0 0 18px", padding: 0 }}>
+            {overflow!.clipping.map((c, i) => (
+              <li key={i} style={{ marginBottom: 4 }}>
+                &lt;{c.tag}&gt; overflow={c.overflow}
+                {c.classes && (
+                  <span style={{ opacity: 0.75 }}> · class="{c.classes}"</span>
+                )}
+                <br />
+                <span style={{ opacity: 0.85 }}>↳ {c.reason}</span>
+              </li>
             ))}
           </ul>
         </div>
