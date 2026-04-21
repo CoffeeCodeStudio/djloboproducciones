@@ -1,0 +1,505 @@
+import { useEffect, useMemo, useState } from "react";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+  DialogDescription,
+} from "@/components/ui/dialog";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Calendar } from "@/components/ui/calendar";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { CalendarIcon, Loader2, Upload, X } from "lucide-react";
+import { format } from "date-fns";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { supabase } from "@/integrations/supabase/client";
+import ImageCropper from "./ImageCropper";
+import { usePromosAdmin } from "@/hooks/usePromosAdmin";
+import { useUpcomingEvents } from "@/hooks/useUpcomingEvents";
+import type { Promo } from "@/hooks/useActivePromo";
+
+interface PromoEditorProps {
+  open: boolean;
+  onClose: () => void;
+  promo?: Promo;
+}
+
+function getYouTubeId(url: string): string | null {
+  if (!url) return null;
+  const m = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/|v\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+  return m ? m[1] : null;
+}
+
+async function uploadPromoFlyer(blob: Blob): Promise<string> {
+  const fileName = `promos/${crypto.randomUUID()}.jpg`;
+  const { error: upErr } = await supabase.storage
+    .from("branding")
+    .upload(fileName, blob, { upsert: true, contentType: "image/jpeg" });
+  if (upErr) throw upErr;
+  const { data } = supabase.storage.from("branding").getPublicUrl(fileName);
+  return data.publicUrl;
+}
+
+const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
+  const isEdit = !!promo;
+  const { createPromo, updatePromo } = usePromosAdmin();
+  const { events, isLoading: eventsLoading } = useUpcomingEvents();
+
+  const [title, setTitle] = useState("");
+  const [subtitle, setSubtitle] = useState("");
+  const [flyerUrl, setFlyerUrl] = useState<string | null>(null);
+  const [youtubeUrl, setYoutubeUrl] = useState("");
+  const [ctaText, setCtaText] = useState("");
+  const [ctaUrl, setCtaUrl] = useState("");
+  const [source, setSource] = useState<"calendar" | "manual">("manual");
+  const [googleEventId, setGoogleEventId] = useState<string | null>(null);
+  const [activeFrom, setActiveFrom] = useState<Date | undefined>();
+  const [activeTo, setActiveTo] = useState<Date | undefined>();
+  const [priority, setPriority] = useState(0);
+  const [isActive, setIsActive] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
+  // Cropper state
+  const [rawImage, setRawImage] = useState<string | null>(null);
+  const [cropOpen, setCropOpen] = useState(false);
+  const [uploadingFlyer, setUploadingFlyer] = useState(false);
+
+  // Reset form when opening
+  useEffect(() => {
+    if (!open) return;
+    if (promo) {
+      setTitle(promo.title);
+      setSubtitle(promo.subtitle ?? "");
+      setFlyerUrl(promo.flyer_image_url);
+      setYoutubeUrl(promo.youtube_url ?? "");
+      setCtaText(promo.cta_text ?? "");
+      setCtaUrl(promo.cta_url ?? "");
+      setSource(promo.source);
+      setGoogleEventId(promo.google_event_id);
+      setActiveFrom(new Date(promo.active_from));
+      setActiveTo(new Date(promo.active_to));
+      setPriority(promo.priority);
+      setIsActive(promo.is_active);
+    } else {
+      setTitle("");
+      setSubtitle("");
+      setFlyerUrl(null);
+      setYoutubeUrl("");
+      setCtaText("");
+      setCtaUrl("");
+      setSource("manual");
+      setGoogleEventId(null);
+      setActiveFrom(undefined);
+      setActiveTo(undefined);
+      setPriority(0);
+      setIsActive(true);
+    }
+  }, [open, promo]);
+
+  const ytId = useMemo(() => getYouTubeId(youtubeUrl), [youtubeUrl]);
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      toast.error("Filen är för stor (max 5 MB)");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      setRawImage(reader.result as string);
+      setCropOpen(true);
+    };
+    reader.readAsDataURL(file);
+    e.target.value = "";
+  };
+
+  const handleCropComplete = async (blob: Blob) => {
+    setCropOpen(false);
+    setUploadingFlyer(true);
+    try {
+      const url = await uploadPromoFlyer(blob);
+      setFlyerUrl(url);
+      toast.success("Flyer uppladdad!");
+    } catch (err: any) {
+      toast.error("Uppladdning misslyckades", { description: err.message });
+    } finally {
+      setUploadingFlyer(false);
+      setRawImage(null);
+    }
+  };
+
+  const handleEventSelect = (eventId: string) => {
+    const ev = events.find((e) => e.id === eventId);
+    if (!ev) return;
+    setGoogleEventId(eventId);
+    const startDate = new Date(ev.start);
+    const from = new Date(startDate);
+    from.setDate(from.getDate() - 14);
+    const to = new Date(startDate);
+    to.setDate(to.getDate() + 1);
+    setActiveFrom(from);
+    setActiveTo(to);
+  };
+
+  const handleSubmit = async () => {
+    // Validation
+    if (!title.trim()) {
+      toast.error("Titel krävs");
+      return;
+    }
+    if (title.length > 80) {
+      toast.error("Titel max 80 tecken");
+      return;
+    }
+    if (source === "calendar" && !googleEventId) {
+      toast.error("Välj ett kalender-event");
+      return;
+    }
+    if (!activeFrom || !activeTo) {
+      toast.error("Datum krävs");
+      return;
+    }
+    if (activeTo <= activeFrom) {
+      toast.error("Slutdatum måste vara efter startdatum");
+      return;
+    }
+
+    const payload = {
+      title: title.trim(),
+      subtitle: subtitle.trim() || null,
+      flyer_image_url: flyerUrl,
+      youtube_url: youtubeUrl.trim() || null,
+      cta_text: ctaText.trim() || null,
+      cta_url: ctaUrl.trim() || null,
+      source,
+      google_event_id: source === "calendar" ? googleEventId : null,
+      active_from: activeFrom.toISOString(),
+      active_to: activeTo.toISOString(),
+      priority,
+      is_active: isActive,
+    };
+
+    setSubmitting(true);
+    try {
+      if (isEdit && promo) {
+        await updatePromo.mutateAsync({ id: promo.id, updates: payload as any });
+      } else {
+        await createPromo.mutateAsync(payload as any);
+      }
+      onClose();
+    } catch {
+      // toast handled by hook
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <>
+      <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{isEdit ? "Redigera kampanj" : "Skapa ny kampanj"}</DialogTitle>
+            <DialogDescription>
+              Fyll i informationen för din reklamkampanj nedan.
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-6 py-2">
+            {/* SECTION 1: Innehåll */}
+            <section className="space-y-4">
+              <h3 className="text-sm font-semibold text-primary uppercase tracking-wide">Innehåll</h3>
+
+              <div className="space-y-2">
+                <Label htmlFor="title">Titel *</Label>
+                <Input
+                  id="title"
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
+                  maxLength={80}
+                  placeholder="t.ex. Sommarfest på Stranden"
+                />
+                <p className="text-xs text-muted-foreground">{title.length}/80</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="subtitle">Undertitel</Label>
+                <Input
+                  id="subtitle"
+                  value={subtitle}
+                  onChange={(e) => setSubtitle(e.target.value)}
+                  maxLength={120}
+                  placeholder="t.ex. Lördag 15 juni - Köp biljett nu!"
+                />
+                <p className="text-xs text-muted-foreground">{subtitle.length}/120</p>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Flyer-bild (1:1)</Label>
+                <div className="flex items-center gap-3">
+                  {flyerUrl ? (
+                    <div className="relative w-24 h-24 rounded-md overflow-hidden border border-border">
+                      <img src={flyerUrl} alt="Flyer" className="w-full h-full object-cover" />
+                      <Button
+                        type="button"
+                        variant="destructive"
+                        size="icon"
+                        className="absolute top-1 right-1 h-6 w-6"
+                        onClick={() => setFlyerUrl(null)}
+                      >
+                        <X className="w-3 h-3" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <div className="w-24 h-24 rounded-md border-2 border-dashed border-border flex items-center justify-center text-muted-foreground">
+                      <Upload className="w-5 h-5" />
+                    </div>
+                  )}
+                  <div>
+                    <input
+                      id="flyer-upload"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleFileSelect}
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => document.getElementById("flyer-upload")?.click()}
+                      disabled={uploadingFlyer}
+                    >
+                      {uploadingFlyer ? (
+                        <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                      ) : (
+                        <Upload className="w-4 h-4 mr-1" />
+                      )}
+                      {flyerUrl ? "Byt bild" : "Ladda upp"}
+                    </Button>
+                  </div>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="youtube">YouTube-länk</Label>
+                <Input
+                  id="youtube"
+                  value={youtubeUrl}
+                  onChange={(e) => setYoutubeUrl(e.target.value)}
+                  placeholder="https://youtube.com/watch?v=..."
+                />
+                {ytId && (
+                  <img
+                    src={`https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`}
+                    alt="YouTube-förhandsvisning"
+                    className="mt-2 rounded-md w-40 border border-border"
+                  />
+                )}
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label htmlFor="cta-text">CTA-knapp text</Label>
+                  <Input
+                    id="cta-text"
+                    value={ctaText}
+                    onChange={(e) => setCtaText(e.target.value)}
+                    maxLength={30}
+                    placeholder="Köp biljett"
+                  />
+                </div>
+                <div className="space-y-2">
+                  <Label htmlFor="cta-url">CTA-knapp URL</Label>
+                  <Input
+                    id="cta-url"
+                    value={ctaUrl}
+                    onChange={(e) => setCtaUrl(e.target.value)}
+                    placeholder="https://..."
+                  />
+                </div>
+              </div>
+            </section>
+
+            {/* SECTION 2: Tids-styrning */}
+            <section className="space-y-4">
+              <h3 className="text-sm font-semibold text-primary uppercase tracking-wide">Tids-styrning</h3>
+
+              <RadioGroup value={source} onValueChange={(v) => setSource(v as any)}>
+                <div className="flex items-start space-x-2">
+                  <RadioGroupItem value="calendar" id="src-cal" className="mt-1" />
+                  <div className="flex-1 space-y-2">
+                    <Label htmlFor="src-cal" className="font-medium cursor-pointer">
+                      Koppla till Google Calendar-event
+                    </Label>
+                    {source === "calendar" && (
+                      <>
+                        <Select
+                          value={googleEventId ?? undefined}
+                          onValueChange={handleEventSelect}
+                          disabled={eventsLoading}
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={eventsLoading ? "Laddar..." : "Välj event"} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            {events.length === 0 ? (
+                              <div className="p-2 text-sm text-muted-foreground">Inga kommande event</div>
+                            ) : (
+                              events.map((ev) => (
+                                <SelectItem key={ev.id} value={ev.id}>
+                                  {ev.summary} — {format(new Date(ev.start), "d MMM yyyy")}
+                                </SelectItem>
+                              ))
+                            )}
+                          </SelectContent>
+                        </Select>
+                        <p className="text-xs text-muted-foreground">
+                          Datum synkas automatiskt med kalendern
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+
+                <div className="flex items-start space-x-2 mt-3">
+                  <RadioGroupItem value="manual" id="src-man" className="mt-1" />
+                  <Label htmlFor="src-man" className="font-medium cursor-pointer">
+                    Ange datum manuellt
+                  </Label>
+                </div>
+              </RadioGroup>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="space-y-2">
+                  <Label>Aktiv från</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !activeFrom && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {activeFrom ? format(activeFrom, "PPP") : "Välj datum"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={activeFrom}
+                        onSelect={setActiveFrom}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+                <div className="space-y-2">
+                  <Label>Aktiv till</Label>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "w-full justify-start text-left font-normal",
+                          !activeTo && "text-muted-foreground"
+                        )}
+                      >
+                        <CalendarIcon className="mr-2 h-4 w-4" />
+                        {activeTo ? format(activeTo, "PPP") : "Välj datum"}
+                      </Button>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={activeTo}
+                        onSelect={setActiveTo}
+                        initialFocus
+                        className={cn("p-3 pointer-events-auto")}
+                      />
+                    </PopoverContent>
+                  </Popover>
+                </div>
+              </div>
+            </section>
+
+            {/* SECTION 3: Inställningar */}
+            <section className="space-y-4">
+              <h3 className="text-sm font-semibold text-primary uppercase tracking-wide">Inställningar</h3>
+
+              <div className="space-y-2">
+                <Label htmlFor="priority">Prioritet</Label>
+                <Input
+                  id="priority"
+                  type="number"
+                  min={0}
+                  max={100}
+                  value={priority}
+                  onChange={(e) => setPriority(Number(e.target.value) || 0)}
+                />
+                <p className="text-xs text-muted-foreground">
+                  Högre prioritet visas först om flera kampanjer är aktiva samtidigt
+                </p>
+              </div>
+
+              <div className="flex items-center justify-between rounded-lg border border-border p-3">
+                <div>
+                  <Label htmlFor="active-toggle" className="font-medium">
+                    {isActive ? "Aktiv" : "Pausad"}
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    {isActive ? "Kampanjen visas för besökare under aktiv period" : "Kampanjen visas inte"}
+                  </p>
+                </div>
+                <Switch id="active-toggle" checked={isActive} onCheckedChange={setIsActive} />
+              </div>
+            </section>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={onClose} disabled={submitting}>
+              Avbryt
+            </Button>
+            <Button onClick={handleSubmit} disabled={submitting}>
+              {submitting && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
+              Spara
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {rawImage && (
+        <ImageCropper
+          open={cropOpen}
+          imageSrc={rawImage}
+          aspect={1}
+          cropShape="rect"
+          title="Beskär flyer (1:1)"
+          onComplete={handleCropComplete}
+          onCancel={() => {
+            setCropOpen(false);
+            setRawImage(null);
+          }}
+        />
+      )}
+    </>
+  );
+};
+
+export default PromoEditor;
