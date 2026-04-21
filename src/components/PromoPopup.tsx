@@ -503,13 +503,18 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
               >
                 {promo.title}
               </h2>
-              {/* 5-bar live EQ */}
+              {/* 5-bar live EQ — driven by Web Audio analyser via rAF */}
               <div className="flex items-end gap-[3px] h-5 pt-2 shrink-0" aria-hidden="true">
-                {[0.0, 0.15, 0.3, 0.45, 0.2].map((d, i) => (
+                {[0, 1, 2, 3, 4].map((i) => (
                   <span
                     key={i}
+                    ref={(el) => { eqBarRefs.current[i] = el; }}
                     className="eq-bar"
-                    style={{ animationDelay: `${d}s`, animationDuration: `${0.7 + (i % 3) * 0.2}s` }}
+                    style={{
+                      animation: "none",
+                      transform: "scaleY(0.4)",
+                      transition: "transform 60ms linear",
+                    }}
                   />
                 ))}
               </div>
