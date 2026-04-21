@@ -802,11 +802,20 @@ body {
     .promo-popup-enter,
     .promo-cta-pulse,
     .eq-bar,
-    .vinyl-spin,
+    .vinyl-spin {
+      animation: none !important;
+    }
+    /* Hide motion-only decorative layers entirely — keeps the UI calm */
     .drift-particle,
-    .promo-ripple,
+    .promo-ripple {
+      animation: none !important;
+      display: none !important;
+    }
+    /* Static soft aura instead of pulsing radial glow */
     .promo-aura {
       animation: none !important;
+      opacity: 0.5 !important;
+      transform: translate(-50%, -50%) scale(1) !important;
     }
   }
 }
