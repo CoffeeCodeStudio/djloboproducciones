@@ -71,11 +71,10 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
       return;
     }
 
-    // Debounce: ignore re-runs that happen within 250ms of the last fire
-    // (handles open prop flickering during preview mount/unmount)
+    // Throttle: max one confetti burst per 3 seconds, regardless of open toggles
     const now = Date.now();
     if (firedForThisOpenRef.current) return;
-    if (now - lastFiredAtRef.current < 250) return;
+    if (now - lastFiredAtRef.current < 3000) return;
 
     firedForThisOpenRef.current = true;
     lastFiredAtRef.current = now;
