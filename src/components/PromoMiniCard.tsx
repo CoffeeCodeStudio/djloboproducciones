@@ -55,14 +55,19 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 500, opacity: 0 }}
           transition={{ type: "spring", stiffness: 240, damping: 26 }}
-          className="fixed bottom-24 right-6 w-[280px] max-w-[calc(100vw-3rem)]"
-          style={{ zIndex: 60 }}
+          className="w-[280px] max-w-[calc(100vw-2rem)]"
+          style={{
+            position: "fixed",
+            right: "max(1rem, env(safe-area-inset-right))",
+            bottom: "max(1rem, env(safe-area-inset-bottom))",
+            zIndex: 100,
+          }}
         >
           <button
             type="button"
             onClick={onClick}
             aria-label={`Öppna kampanj: ${promo.title}`}
-            className="group relative block w-full aspect-video overflow-hidden rounded-xl border-2 border-primary/70 bg-black promo-neon-glow hover:scale-[1.03] transition-transform"
+            className="group relative block w-full aspect-video overflow-hidden rounded-xl border-2 border-primary/70 bg-black/40 backdrop-blur-md promo-neon-glow hover:scale-[1.03] transition-transform"
           >
             {hasVideo ? (
               <video
@@ -89,7 +94,8 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
                 className="absolute inset-0 w-full h-full object-cover promo-ken-burns pointer-events-none"
               />
             )}
-            <span className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/20 pointer-events-none" />
+            {/* Glassmorphism veil — sharpens away on hover */}
+            <span className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/20 backdrop-blur-[2px] group-hover:backdrop-blur-0 transition-[backdrop-filter] duration-300 pointer-events-none" />
           </button>
 
           {/* Dismiss button — always above the video iframe */}
@@ -98,7 +104,7 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
             onClick={handleDismiss}
             aria-label="Stäng mini-spelare"
             className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-background/80 backdrop-blur-md border-2 border-primary text-white shadow-[0_0_12px_hsl(var(--primary)/0.9)] hover:bg-primary hover:scale-110 transition-all flex items-center justify-center"
-            style={{ zIndex: 70 }}
+            style={{ zIndex: 110 }}
           >
             <X className="w-4 h-4" strokeWidth={3.5} />
           </button>
