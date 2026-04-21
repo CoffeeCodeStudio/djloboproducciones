@@ -46,12 +46,12 @@ const HeroSection = () => {
       
       {/* Hero Background Image */}
       {branding?.hero_image_url &&
-      <div className="absolute inset-0 -z-10 overflow-hidden flex items-center">
+      <div className="absolute inset-0 -z-10 overflow-hidden">
           <img
           src={heroOpt.src}
           alt=""
           aria-hidden="true"
-          className="block w-full h-auto max-h-none object-cover object-center opacity-40"
+          className="w-full h-full object-cover object-center opacity-40"
           loading="eager"
           fetchPriority="high"
           width={1920}
