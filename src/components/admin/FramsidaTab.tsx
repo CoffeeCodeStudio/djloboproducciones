@@ -208,9 +208,9 @@ const FramsidaTab = () => {
       <ImageCropper
         open={cropperOpen}
         imageSrc={cropperSrc}
-        aspect={cropperTarget === "hero" ? 16 / 9 : 4 / 5}
+        aspect={cropperTarget === "hero" ? 16 / 9 : 1}
         cropShape="rect"
-        title={cropperTarget === "hero" ? "Beskär hero-bakgrundsbild (16:9)" : "Beskär profilbild (4:5)"}
+        title={cropperTarget === "hero" ? "Beskär hero-bakgrundsbild (16:9)" : "Beskär profilbild (1:1)"}
         onComplete={handleCropComplete}
         onCancel={() => setCropperOpen(false)}
       />
