@@ -51,7 +51,7 @@ function runRuntimeZIndexCheck(): RuntimeCheck {
     globalMiniPlayer: '[data-zlayer="global-mini-player"]',
     cookieConsent: '[data-zlayer="cookie-consent"]',
     footer: "footer",
-    promoPopupContent: '[role="dialog"][data-state="open"]',
+    promoPopupContent: '[data-zlayer="promo-popup-content"]',
   };
 
   const measured: Record<string, number | null> = {};
