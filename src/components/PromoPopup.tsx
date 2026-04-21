@@ -244,27 +244,24 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   useEffect(() => {
     // Reset the per-open guard the moment the popup closes
     if (!open) {
-      firedForThisOpenRef.current = false;
+      resetOpenCycle(throttleStateRef.current);
       return;
     }
 
-    // Throttle: max one confetti burst per 3 seconds, regardless of open toggles
-    const now = Date.now();
-    if (firedForThisOpenRef.current) {
-      logger.log("[PromoPopup] Confetti blocked: already fired for this open cycle");
-      return;
-    }
-    if (now - lastFiredAtRef.current < 3000) {
-      logger.log("[PromoPopup] Confetti blocked by throttle (3s cooldown)", {
-        timeSinceLast: now - lastFiredAtRef.current,
-      });
+    // Throttle: max one burst per cooldown, plus once-per-open-cycle guard
+    const decision = shouldFireConfetti(throttleStateRef.current, Date.now());
+    if (!decision.fire) {
+      if (decision.reason === "already-fired-this-open") {
+        logger.log("[PromoPopup] Confetti blocked: already fired for this open cycle");
+      } else {
+        logger.log("[PromoPopup] Confetti blocked by throttle (3s cooldown)", {
+          timeSinceLast: decision.timeSinceLast,
+        });
+      }
       return;
     }
 
     logger.log("[PromoPopup] Confetti firing now");
-
-    firedForThisOpenRef.current = true;
-    lastFiredAtRef.current = now;
 
     // Create a dedicated full-screen canvas just for this open cycle
     const canvas = document.createElement("canvas");
@@ -274,7 +271,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
     canvas.style.height = "100vh";
     canvas.style.pointerEvents = "none";
     // Sit clearly above Radix Dialog overlay/content and any modal
-    canvas.style.zIndex = "99999";
+    canvas.style.zIndex = String(CONFETTI_CANVAS_Z_INDEX);
     canvas.setAttribute("data-promo-confetti", "true");
     document.body.appendChild(canvas);
 
