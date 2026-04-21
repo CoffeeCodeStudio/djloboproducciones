@@ -1,4 +1,4 @@
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
@@ -33,28 +33,37 @@ function getYouTubeEmbedUrl(url: string): string | null {
 
 function fireConfetti() {
   const colors = ["#ff00ff", "#00ffff", "#ff0080", "#9d4edd"];
+  // Two bursts for a richer effect
   confetti({
-    particleCount: 120,
-    spread: 80,
-    origin: { y: 0.3 },
+    particleCount: 140,
+    spread: 90,
+    startVelocity: 45,
+    origin: { y: 0.35, x: 0.5 },
     colors,
-    zIndex: 9999,
+    zIndex: 10000,
     disableForReducedMotion: true,
   });
+  setTimeout(() => {
+    confetti({
+      particleCount: 80,
+      spread: 120,
+      startVelocity: 35,
+      origin: { y: 0.4, x: 0.5 },
+      colors,
+      zIndex: 10000,
+      disableForReducedMotion: true,
+    });
+  }, 180);
 }
 
 const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProps) => {
   const ytEmbed = promo.youtube_url ? getYouTubeEmbedUrl(promo.youtube_url) : null;
-  const firedRef = useRef(false);
 
+  // Fire confetti EVERY time the popup opens (not just first time)
   useEffect(() => {
-    if (open && !firedRef.current) {
-      firedRef.current = true;
-      // small delay to let the modal animate in
-      const t = setTimeout(fireConfetti, 200);
-      return () => clearTimeout(t);
-    }
-    if (!open) firedRef.current = false;
+    if (!open) return;
+    const t = setTimeout(() => fireConfetti(), 220);
+    return () => clearTimeout(t);
   }, [open]);
 
   const handleCta = () => {

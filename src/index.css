@@ -621,32 +621,35 @@ body {
     mask-composite: exclude;
   }
 
-  /* Promo popup pulsating neon border glow */
+  /* Promo popup pulsating neon border glow — bold/visible */
   @keyframes promo-neon-pulse {
     0%, 100% {
       box-shadow:
-        0 0 12px hsla(var(--neon-pink), 0.45),
-        0 0 28px hsla(var(--neon-cyan), 0.30),
-        0 0 60px hsla(var(--neon-pink), 0.15);
+        0 0 0 1px hsla(var(--neon-pink), 0.8),
+        0 0 20px 4px hsla(var(--neon-pink), 0.7),
+        0 0 40px 8px hsla(var(--neon-cyan), 0.5),
+        0 0 80px 12px hsla(var(--neon-pink), 0.35);
     }
     50% {
       box-shadow:
-        0 0 20px hsla(var(--neon-pink), 0.75),
-        0 0 44px hsla(var(--neon-cyan), 0.55),
-        0 0 90px hsla(var(--neon-pink), 0.30);
+        0 0 0 2px hsla(var(--neon-cyan), 0.9),
+        0 0 30px 6px hsla(var(--neon-cyan), 0.85),
+        0 0 60px 14px hsla(var(--neon-pink), 0.7),
+        0 0 110px 20px hsla(var(--neon-cyan), 0.45);
     }
   }
 
   .promo-neon-glow {
-    animation: promo-neon-pulse 2.6s ease-in-out infinite;
+    animation: promo-neon-pulse 2.4s ease-in-out infinite !important;
+    border-color: hsla(var(--neon-pink), 0.7) !important;
   }
 
   @media (prefers-reduced-motion: reduce) {
     .promo-neon-glow {
       animation: none !important;
       box-shadow:
-        0 0 18px hsla(var(--neon-pink), 0.5),
-        0 0 36px hsla(var(--neon-cyan), 0.35);
+        0 0 20px 4px hsla(var(--neon-pink), 0.7),
+        0 0 40px 8px hsla(var(--neon-cyan), 0.5) !important;
     }
   }
 }
