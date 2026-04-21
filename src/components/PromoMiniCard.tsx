@@ -59,7 +59,7 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
           style={{
             position: "fixed",
             right: "max(1rem, env(safe-area-inset-right))",
-            bottom: "max(1rem, env(safe-area-inset-bottom))",
+            bottom: "calc(5rem + max(1rem, env(safe-area-inset-bottom)))",
             zIndex: 100,
           }}
         >
