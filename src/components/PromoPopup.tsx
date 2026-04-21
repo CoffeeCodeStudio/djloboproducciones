@@ -35,14 +35,22 @@ function getYouTubeEmbedUrl(url: string): string | null {
 const COLORS = ["#ff00ff", "#00ffff", "#ff0080", "#9d4edd"];
 
 // Lightweight "woosh/pop" via Web Audio API — no asset needed.
-function playOpenSound() {
+// Routes through an AnalyserNode so the EQ bars can react to the actual sound.
+// Returns a getter that reports current intensity (0..1) for ~400ms after play.
+function playOpenSound(): (() => number) | null {
   try {
     const AudioCtx =
       window.AudioContext ||
       (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    if (!AudioCtx) return;
+    if (!AudioCtx) return null;
     const ctx = new AudioCtx();
     const now = ctx.currentTime;
+
+    // Analyser shared by both sources so we can read combined intensity
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.6;
+    const buffer = new Uint8Array(analyser.frequencyBinCount);
 
     // Quick pop: sine sweep 880Hz -> 220Hz
     const osc = ctx.createOscillator();
@@ -53,7 +61,9 @@ function playOpenSound() {
     gain.gain.setValueAtTime(0.0001, now);
     gain.gain.exponentialRampToValueAtTime(0.25, now + 0.02);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
-    osc.connect(gain).connect(ctx.destination);
+    osc.connect(gain);
+    gain.connect(analyser);
+    gain.connect(ctx.destination);
     osc.start(now);
     osc.stop(now + 0.24);
 
@@ -72,13 +82,32 @@ function playOpenSound() {
     const filter = ctx.createBiquadFilter();
     filter.type = "highpass";
     filter.frequency.value = 1200;
-    noise.connect(filter).connect(noiseGain).connect(ctx.destination);
+    noise.connect(filter).connect(noiseGain);
+    noiseGain.connect(analyser);
+    noiseGain.connect(ctx.destination);
     noise.start(now);
     noise.stop(now + 0.2);
 
-    setTimeout(() => ctx.close().catch(() => {}), 400);
+    let closed = false;
+    setTimeout(() => {
+      closed = true;
+      ctx.close().catch(() => {});
+    }, 500);
+
+    // Intensity getter: averages the analyser frequency bins, normalized 0..1
+    return () => {
+      if (closed) return 0;
+      try {
+        analyser.getByteFrequencyData(buffer);
+        let sum = 0;
+        for (let i = 0; i < buffer.length; i++) sum += buffer[i];
+        return Math.min(1, sum / buffer.length / 180);
+      } catch {
+        return 0;
+      }
+    };
   } catch {
-    /* noop */
+    return null;
   }
 }
 
@@ -91,25 +120,97 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   const firedForThisOpenRef = useRef<boolean>(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const ctaAnchorRef = useRef<HTMLDivElement | null>(null);
+  // Live audio intensity getter (returns 0..1) — set when sound is played
+  const intensityGetterRef = useRef<(() => number) | null>(null);
+  const intensityActiveUntilRef = useRef<number>(0);
+  // Refs for the 5 EQ bars so we can drive scaleY directly
+  const eqBarRefs = useRef<Array<HTMLSpanElement | null>>([]);
 
   // Play "woosh/pop" on open — once per session for visitors,
   // every time when previewing from admin (promo.id === "preview").
   useEffect(() => {
     if (!open) return;
     const isPreview = promo.id === "preview";
+    const trigger = () => {
+      const getter = playOpenSound();
+      if (getter) {
+        intensityGetterRef.current = getter;
+        // Reactive window: ~500ms while the woosh plays out
+        intensityActiveUntilRef.current = performance.now() + 500;
+      }
+    };
     if (isPreview) {
-      playOpenSound();
+      trigger();
       return;
     }
     try {
       if (!sessionStorage.getItem(SOUND_SESSION_KEY)) {
-        playOpenSound();
+        trigger();
         sessionStorage.setItem(SOUND_SESSION_KEY, "1");
       }
     } catch {
       /* sessionStorage may be unavailable */
     }
   }, [open, promo.id]);
+
+  // EQ driver: rAF loop that reads live audio intensity and drives bar scaleY.
+  // While sound is active, bars react to the analyser. Otherwise, gentle idle pulse.
+  useEffect(() => {
+    if (!open) return;
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      // Static low height for reduced motion
+      eqBarRefs.current.forEach((el) => {
+        if (el) el.style.transform = "scaleY(0.4)";
+      });
+      return;
+    }
+
+    let raf = 0;
+    // Per-bar phase offsets so idle motion isn't uniform
+    const phaseOffsets = [0, 0.6, 1.2, 0.3, 0.9];
+    // Per-bar intensity multipliers (mids/highs vary)
+    const barWeights = [0.85, 1.1, 1.25, 1.0, 0.7];
+
+    const tick = () => {
+      const now = performance.now();
+      const audioActive = now < intensityActiveUntilRef.current;
+      const liveIntensity = audioActive && intensityGetterRef.current
+        ? intensityGetterRef.current()
+        : 0;
+
+      eqBarRefs.current.forEach((el, i) => {
+        if (!el) return;
+        let scale: number;
+        if (audioActive && liveIntensity > 0.01) {
+          // Reactive: amplify per-bar weight + small idle jitter so each bar differs
+          const jitter = 0.08 * Math.sin(now / 90 + phaseOffsets[i] * 4);
+          scale = Math.max(0.25, Math.min(1, liveIntensity * barWeights[i] * 2.2 + jitter));
+        } else {
+          // Idle: gentle multi-frequency bounce so it never looks dead
+          const t = now / 1000;
+          const wave =
+            0.55 +
+            0.35 * Math.sin(t * 2.8 + phaseOffsets[i]) *
+              Math.cos(t * 1.3 + phaseOffsets[i] * 0.7);
+          scale = Math.max(0.22, Math.min(1, wave));
+        }
+        el.style.transform = `scaleY(${scale.toFixed(3)})`;
+      });
+
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      intensityGetterRef.current = null;
+      intensityActiveUntilRef.current = 0;
+    };
+  }, [open]);
+
 
   // Auto-scroll the inner content so the title/CTA area is reachable
   // immediately on open (helps when media is tall).
@@ -402,13 +503,18 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
               >
                 {promo.title}
               </h2>
-              {/* 5-bar live EQ */}
+              {/* 5-bar live EQ — driven by Web Audio analyser via rAF */}
               <div className="flex items-end gap-[3px] h-5 pt-2 shrink-0" aria-hidden="true">
-                {[0.0, 0.15, 0.3, 0.45, 0.2].map((d, i) => (
+                {[0, 1, 2, 3, 4].map((i) => (
                   <span
                     key={i}
+                    ref={(el) => { eqBarRefs.current[i] = el; }}
                     className="eq-bar"
-                    style={{ animationDelay: `${d}s`, animationDuration: `${0.7 + (i % 3) * 0.2}s` }}
+                    style={{
+                      animation: "none",
+                      transform: "scaleY(0.4)",
+                      transition: "transform 60ms linear",
+                    }}
                   />
                 ))}
               </div>
