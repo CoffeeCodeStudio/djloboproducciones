@@ -1,0 +1,30 @@
+name: Mini-Player Z-Index Layering
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  zindex-tests:
+    name: Verify mini-player layering invariants
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Run mini-player z-index layering tests
+        # Runs only the layering describe blocks from confettiThrottle.test.ts.
+        # Fails the PR if the mini-player ever sits below footer chrome or
+        # above the main PromoPopup modal.
+        run: npx vitest run src/lib/__tests__/confettiThrottle.test.ts -t "z-index layering|mini-player z-index layering"
