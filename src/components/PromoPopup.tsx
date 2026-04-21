@@ -34,6 +34,56 @@ function getYouTubeEmbedUrl(url: string): string | null {
 
 const COLORS = ["#ff00ff", "#00ffff", "#ff0080", "#9d4edd"];
 
+// Lightweight "woosh/pop" via Web Audio API — no asset needed.
+function playOpenSound() {
+  try {
+    const AudioCtx =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+
+    // Quick pop: sine sweep 880Hz -> 220Hz
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(880, now);
+    osc.frequency.exponentialRampToValueAtTime(220, now + 0.18);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.25, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.24);
+
+    // Soft noise "woosh" tail
+    const bufferSize = Math.floor(ctx.sampleRate * 0.18);
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = noiseBuffer;
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.08, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+    const filter = ctx.createBiquadFilter();
+    filter.type = "highpass";
+    filter.frequency.value = 1200;
+    noise.connect(filter).connect(noiseGain).connect(ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.2);
+
+    setTimeout(() => ctx.close().catch(() => {}), 400);
+  } catch {
+    /* noop */
+  }
+}
+
+const SOUND_SESSION_KEY = "promo-popup-sound-played";
+
 const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProps) => {
   const ytEmbed = promo.youtube_url ? getYouTubeEmbedUrl(promo.youtube_url) : null;
   const timersRef = useRef<number[]>([]);
@@ -41,6 +91,25 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   const firedForThisOpenRef = useRef<boolean>(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const ctaAnchorRef = useRef<HTMLDivElement | null>(null);
+
+  // Play "woosh/pop" on open — once per session for visitors,
+  // every time when previewing from admin (promo.id === "preview").
+  useEffect(() => {
+    if (!open) return;
+    const isPreview = promo.id === "preview";
+    if (isPreview) {
+      playOpenSound();
+      return;
+    }
+    try {
+      if (!sessionStorage.getItem(SOUND_SESSION_KEY)) {
+        playOpenSound();
+        sessionStorage.setItem(SOUND_SESSION_KEY, "1");
+      }
+    } catch {
+      /* sessionStorage may be unavailable */
+    }
+  }, [open, promo.id]);
 
   // Auto-scroll the inner content so the title/CTA area is reachable
   // immediately on open (helps when media is tall).
@@ -176,15 +245,15 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        className="p-0 overflow-hidden max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow"
+        className="p-0 overflow-hidden max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow promo-popup-enter"
         style={{ zIndex: 100 }}
       >
-        {/* Floating Close button - always visible, distinct over any media */}
+        {/* Floating Close button — blurred circle backdrop for visibility over any media */}
         <button
           type="button"
           onClick={onClose}
           aria-label="Stäng"
-          className="absolute -top-3 -right-3 sm:top-2 sm:right-2 z-30 rounded-full bg-background border-2 border-primary p-2 text-foreground shadow-[0_0_12px_hsl(var(--primary)/0.8)] hover:bg-primary hover:text-primary-foreground transition-colors"
+          className="absolute -top-3 -right-3 sm:top-2 sm:right-2 z-30 rounded-full bg-background/40 backdrop-blur-md border-2 border-primary p-2 text-foreground shadow-[0_0_12px_hsl(var(--primary)/0.8)] hover:bg-primary hover:text-primary-foreground transition-colors"
         >
           <X className="h-4 w-4" />
         </button>
@@ -224,13 +293,26 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
             </div>
           )}
 
-          {/* Text — auto-scroll target so it's visible right above the sticky CTA */}
-          <div ref={ctaAnchorRef} className="px-6 pt-5 pb-2 space-y-1">
-            <h2 className="text-2xl font-bold neon-gradient bg-clip-text text-transparent">
+          {/* Text — glassmorphism container with neon border */}
+          <div
+            ref={ctaAnchorRef}
+            className="px-6 pt-5 pb-4 space-y-2 bg-black/60 backdrop-blur-md border-t border-b border-primary/40"
+          >
+            <h2
+              className="text-3xl font-bold bg-clip-text text-transparent"
+              style={{
+                backgroundImage:
+                  "linear-gradient(90deg, hsl(var(--neon-pink)), hsl(var(--neon-cyan)))",
+                textShadow: "0 2px 6px rgba(0,0,0,0.85)",
+                filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.8))",
+              }}
+            >
               {promo.title}
             </h2>
             {promo.subtitle && (
-              <p className="text-sm text-muted-foreground">{promo.subtitle}</p>
+              <p className="text-sm text-foreground/90" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
+                {promo.subtitle}
+              </p>
             )}
           </div>
         </div>
@@ -238,7 +320,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
         {/* Sticky footer: CTA always visible */}
         <div className="px-6 py-4 space-y-3 border-t border-border/40 bg-background/80 backdrop-blur-sm flex-shrink-0">
           {promo.cta_text && promo.cta_url && (
-            <Button onClick={handleCta} className="w-full" size="lg">
+            <Button onClick={handleCta} className="w-full promo-cta-pulse" size="lg">
               {promo.cta_text}
             </Button>
           )}
