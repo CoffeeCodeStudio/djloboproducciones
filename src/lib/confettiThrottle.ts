@@ -17,6 +17,47 @@ export const CONFETTI_CANVAS_Z_INDEX = 99999;
 /** Z-index for the ambient drifting-particle layer inside PromoPopup. */
 export const PROMO_PARTICLE_LAYER_Z_INDEX = 40;
 
+/**
+ * Z-index layer map for fixed/floating UI. Ordered low → high.
+ * Used by `assertMiniPlayerLayering` to guarantee the mini-player sits
+ * above footer/player chrome but below the main promo modal.
+ */
+export const Z_LAYERS = {
+  footer: 10,
+  nowPlayingBar: 50,
+  globalMiniPlayer: 50,
+  cookieConsent: 60,
+  promoMiniPlayer: 100,
+  promoPopupBackdrop: 9998,
+  promoPopupContent: 9999,
+  confettiCanvas: CONFETTI_CANVAS_Z_INDEX,
+} as const;
+
+export interface MiniPlayerLayeringReport {
+  ok: boolean;
+  violations: string[];
+}
+
+/**
+ * Pure assertion: mini-player must be strictly above all footer/chrome
+ * layers and strictly below the main PromoPopup modal layers.
+ */
+export function assertMiniPlayerLayering(
+  layers: typeof Z_LAYERS = Z_LAYERS
+): MiniPlayerLayeringReport {
+  const violations: string[] = [];
+  const mp = layers.promoMiniPlayer;
+
+  (["footer", "nowPlayingBar", "globalMiniPlayer", "cookieConsent"] as const).forEach((k) => {
+    if (mp <= layers[k]) violations.push(`mini-player (${mp}) must be > ${k} (${layers[k]})`);
+  });
+  (["promoPopupBackdrop", "promoPopupContent"] as const).forEach((k) => {
+    if (mp >= layers[k]) violations.push(`mini-player (${mp}) must be < ${k} (${layers[k]})`);
+  });
+
+  return { ok: violations.length === 0, violations };
+}
+
 export interface ConfettiThrottleState {
   firedForThisOpen: boolean;
   hasEverFired: boolean;
