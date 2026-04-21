@@ -38,6 +38,29 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   const timersRef = useRef<number[]>([]);
   const lastFiredAtRef = useRef<number>(0);
   const firedForThisOpenRef = useRef<boolean>(false);
+  const scrollRef = useRef<HTMLDivElement | null>(null);
+  const ctaAnchorRef = useRef<HTMLDivElement | null>(null);
+
+  // Auto-scroll the inner content so the title/CTA area is reachable
+  // immediately on open (helps when media is tall).
+  useEffect(() => {
+    if (!open) return;
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const t = window.setTimeout(() => {
+      const scroller = scrollRef.current;
+      const anchor = ctaAnchorRef.current;
+      if (!scroller || !anchor) return;
+      // Scroll so the text/CTA anchor is visible near the bottom of the scroller
+      anchor.scrollIntoView({
+        behavior: prefersReducedMotion ? "auto" : "smooth",
+        block: "end",
+      });
+    }, 350);
+    return () => window.clearTimeout(t);
+  }, [open]);
 
   // Mount a FRESH canvas + confetti instance every time the popup opens.
   // Tear it down on close so no stale DOM/timers can suppress later bursts.
@@ -157,7 +180,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
         </button>
 
         {/* Scrollable area: media + text */}
-        <div className="flex-1 min-h-0 overflow-y-auto">
+        <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto scroll-smooth">
           {/* Media — contained, never pushes content off-screen */}
           {(promo.video_file_url || ytEmbed || promo.flyer_image_url) && (
             <div className="relative w-full bg-black flex items-center justify-center" style={{ maxHeight: "55vh" }}>
@@ -191,8 +214,8 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
             </div>
           )}
 
-          {/* Text */}
-          <div className="px-6 pt-5 pb-2 space-y-1">
+          {/* Text — auto-scroll target so it's visible right above the sticky CTA */}
+          <div ref={ctaAnchorRef} className="px-6 pt-5 pb-2 space-y-1">
             <h2 className="text-2xl font-bold neon-gradient bg-clip-text text-transparent">
               {promo.title}
             </h2>
