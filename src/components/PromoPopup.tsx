@@ -36,11 +36,26 @@ const COLORS = ["#ff00ff", "#00ffff", "#ff0080", "#9d4edd"];
 const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProps) => {
   const ytEmbed = promo.youtube_url ? getYouTubeEmbedUrl(promo.youtube_url) : null;
   const timersRef = useRef<number[]>([]);
+  const lastFiredAtRef = useRef<number>(0);
+  const firedForThisOpenRef = useRef<boolean>(false);
 
   // Mount a FRESH canvas + confetti instance every time the popup opens.
   // Tear it down on close so no stale DOM/timers can suppress later bursts.
   useEffect(() => {
-    if (!open) return;
+    // Reset the per-open guard the moment the popup closes
+    if (!open) {
+      firedForThisOpenRef.current = false;
+      return;
+    }
+
+    // Debounce: ignore re-runs that happen within 250ms of the last fire
+    // (handles open prop flickering during preview mount/unmount)
+    const now = Date.now();
+    if (firedForThisOpenRef.current) return;
+    if (now - lastFiredAtRef.current < 250) return;
+
+    firedForThisOpenRef.current = true;
+    lastFiredAtRef.current = now;
 
     // Create a dedicated full-screen canvas just for this open cycle
     const canvas = document.createElement("canvas");
