@@ -26,7 +26,6 @@ const Index = () => {
       </div>
 
       <Footer />
-      <PromoManager />
     </div>
   );
 };
