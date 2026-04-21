@@ -63,6 +63,17 @@ Hybrid persistence model — pick the right storage for the right lifetime:
 - **Zustand (`usePlayerStore`)**: In-memory global radio player state (current mix, play/pause).
 - **TanStack Query**: Server state (promos, gallery, mixes, calendar) with `staleTime` tuned per resource.
 
+## ⚖️ Compliance & Privacy
+- **Storage Transparency**: The app uses `localStorage` and `sessionStorage` for functional UI state only — no personally identifiable information (PII) is stored client-side.
+  - `promo_seen_<id>` — 24h timestamp to throttle popup frequency.
+  - `promo_mini_session_hidden_<id>` — session-only mini-player hide flag.
+  - `promo_permanent_dismissed_<id>` — persistent "do not show again" preference.
+  - `cookie_consent` — user's choice for third-party embeds (YouTube, Mixcloud).
+- **Privacy-by-Design**: All YouTube embeds use the `youtube-nocookie.com` domain, which prevents marketing/tracking cookies from being set until the user actively presses Play.
+- **Third-Party Embeds**: Mixcloud (audio) and YouTube (video) iframes are gated behind the cookie consent banner (`CookieConsent.tsx`) — nothing loads from third parties until the user accepts.
+- **GDPR Ready**: Dismissal actions ("Visa inte igen") are stored locally on the user's device and never transmitted to the server. Server-side data (bookings, contact submissions, chat messages) is auto-purged via `pg_cron` jobs per the retention policy.
+- **No Analytics Cookies**: The site ships without Google Analytics, Meta Pixel, or other tracking SDKs.
+
 ## 💼 Coffee Code Studio
 Levererat av Coffee Code Studio som en del av vårt 
 "Digital Upgrade"-paket — från legacy till modern 
