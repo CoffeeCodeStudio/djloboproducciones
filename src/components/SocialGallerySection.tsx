@@ -95,7 +95,7 @@ const SocialGallerySection = () => {
                   <img
                     src={optimizeGallery(image.image_url).src}
                     alt={image.alt_text || "DJ Lobo eventbild från galleri"}
-                    className="w-full h-auto block bg-background/40"
+                    className="block w-full h-auto max-h-none object-center bg-background/40"
                     loading="lazy"
                     onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = optimizeGallery(image.image_url).fallback; }}
                   />
