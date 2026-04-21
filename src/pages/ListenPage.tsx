@@ -103,7 +103,7 @@ const ListenPage = () => {
             <img
               src={profileImage}
               alt="DJ Lobo vid mixerbordet"
-              className="w-full h-full object-contain bg-background/40 rounded-full"
+              className="w-full h-full object-cover rounded-full"
               loading="eager"
               fetchPriority="high"
               width={224}

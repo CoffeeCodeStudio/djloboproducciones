@@ -380,13 +380,6 @@ body {
       transition: none;
     }
 
-    .page-fade-in,
-    .page-fade-in > * {
-      animation: none !important;
-      opacity: 1 !important;
-      transform: none !important;
-    }
-
     * {
       transition-duration: 0.01ms !important;
       animation-duration: 0.01ms !important;
@@ -404,38 +397,17 @@ body {
 
   /* Page fade-in transition for route changes */
   .page-fade-in {
-    animation: pageFadeIn 0.6s ease-out both;
+    animation: pageFadeIn 0.2s ease-out both;
   }
 
   @keyframes pageFadeIn {
     from {
       opacity: 0;
-      transform: translateY(12px);
+      transform: scale(0.98);
     }
     to {
       opacity: 1;
-      transform: translateY(0);
-    }
-  }
-
-  /* Staggered fade-in for child sections — opacity guarded with fallback */
-  .page-fade-in > * {
-    animation: pageFadeIn 0.6s ease-out both;
-  }
-  .page-fade-in > *:nth-child(1) { animation-delay: 0s; }
-  .page-fade-in > *:nth-child(2) { animation-delay: 0.1s; }
-  .page-fade-in > *:nth-child(3) { animation-delay: 0.2s; }
-  .page-fade-in > *:nth-child(4) { animation-delay: 0.3s; }
-  .page-fade-in > *:nth-child(5) { animation-delay: 0.4s; }
-  .page-fade-in > *:nth-child(6) { animation-delay: 0.5s; }
-  .page-fade-in > *:nth-child(7) { animation-delay: 0.6s; }
-  .page-fade-in > *:nth-child(8) { animation-delay: 0.7s; }
-
-  /* Safety net: if animations are disabled or fail, content must remain visible */
-  @supports not (animation: pageFadeIn 0.6s) {
-    .page-fade-in,
-    .page-fade-in > * {
-      opacity: 1 !important;
+      transform: scale(1);
     }
   }
 

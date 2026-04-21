@@ -173,7 +173,7 @@ const MixCardGrid = () => {
                   <img
                     src={mix.coverArt}
                     alt={mix.title}
-                    className="absolute inset-0 w-full h-full object-contain bg-background/40 transition-opacity duration-300"
+                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                     loading="lazy"
                   />
 

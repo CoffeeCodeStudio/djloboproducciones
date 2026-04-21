@@ -57,7 +57,7 @@ const translations = {
 
 const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { language } = useLanguage();
-  const logoSrc = "/logo-neon.webp";
+  const logoSrc = "/favicon.png";
   const { resetConsent } = useCookieConsent();
   const t = translations[language];
 
@@ -74,16 +74,18 @@ const socialLinks = {
       <div className="max-w-7xl mx-auto">
         {/* Grid: About + Contact + Social */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-10 md:gap-8 mb-10">
-          {/* Logo */}
-          <div className="flex flex-col justify-start">
-            <img
-              alt="DJ Lobo Producciones Logo"
-              className="h-14 sm:h-16 w-auto object-contain bg-transparent animate-fade-in drop-shadow-[0_0_10px_rgba(0,255,255,0.3)]"
-              src={logoSrc}
-              loading="lazy"
-              width={176}
-              height={44}
-            />
+          {/* About */}
+          <div className="flex flex-col">
+            <div className="flex items-center gap-3 mb-4">
+              <img
+                alt="DJ Lobo Producciones Logo"
+                className="h-16 sm:h-24 w-auto object-contain rounded-xl bg-transparent animate-fade-in drop-shadow-[0_0_15px_rgba(255,255,255,0.4)] brightness-125 contrast-110"
+                src={logoSrc}
+                loading="lazy"
+                width={120}
+                height={120}
+              />
+            </div>
           </div>
 
           {/* Contact */}
