@@ -1,5 +1,4 @@
 import HeroSection from "@/components/HeroSection";
-import PromoManager from "@/components/PromoManager";
 import AboutSection from "@/components/AboutSection";
 import CalendarSection from "@/components/CalendarSection";
 import EquipmentSection from "@/components/EquipmentSection";
@@ -27,7 +26,6 @@ const Index = () => {
       </div>
 
       <Footer />
-      <PromoManager />
     </div>
   );
 };

@@ -4,6 +4,7 @@ import Navbar from "@/components/Navbar";
 import NowPlayingBar from "@/components/NowPlayingBar";
 import FloatingChatButton from "@/components/FloatingChatButton";
 import CookieConsent from "@/components/CookieConsent";
+import PromoManager from "@/components/PromoManager";
 import { useBranding } from "@/hooks/useBranding";
 
 
@@ -36,6 +37,7 @@ const Layout = () => {
       </main>
       <NowPlayingBar />
       {location.pathname === "/lyssna" && <FloatingChatButton />}
+      <PromoManager />
       <CookieConsent />
     </div>
   );
