@@ -100,7 +100,7 @@ const ImageCropper = ({
             image={imageSrc}
             crop={crop}
             zoom={zoom}
-            minZoom={0.5}
+            minZoom={1}
             maxZoom={5}
             aspect={aspect}
             cropShape={cropShape}
@@ -108,8 +108,8 @@ const ImageCropper = ({
             onZoomChange={setZoom}
             onCropComplete={onCropComplete}
             showGrid={cropShape === "rect"}
-            objectFit="contain"
-            restrictPosition={false}
+            objectFit="horizontal-cover"
+            restrictPosition={true}
             style={{
               containerStyle: { width: "100%", height: "100%" },
             }}
@@ -120,7 +120,7 @@ const ImageCropper = ({
         <div className="px-4 py-3 flex items-center gap-3">
           <ZoomOut className="w-4 h-4 text-muted-foreground shrink-0" />
           <Slider
-            min={0.5}
+            min={1}
             max={5}
             step={0.05}
             value={[zoom]}
