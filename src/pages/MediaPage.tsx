@@ -165,7 +165,7 @@ const MediaPage = () => {
                 <img
                   src={item.src}
                   alt={item.alt}
-                  className="w-full h-full object-cover object-center bg-background/40"
+                  className="w-full h-full object-contain object-center bg-background/40"
                   loading="lazy"
                   width={400}
                   height={400}
