@@ -245,6 +245,60 @@ export type Database = {
         }
         Relationships: []
       }
+      promos: {
+        Row: {
+          active_from: string
+          active_to: string
+          created_at: string
+          cta_text: string | null
+          cta_url: string | null
+          flyer_image_url: string | null
+          google_event_id: string | null
+          id: string
+          is_active: boolean
+          priority: number
+          source: string
+          subtitle: string | null
+          title: string
+          updated_at: string
+          youtube_url: string | null
+        }
+        Insert: {
+          active_from: string
+          active_to: string
+          created_at?: string
+          cta_text?: string | null
+          cta_url?: string | null
+          flyer_image_url?: string | null
+          google_event_id?: string | null
+          id?: string
+          is_active?: boolean
+          priority?: number
+          source: string
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Update: {
+          active_from?: string
+          active_to?: string
+          created_at?: string
+          cta_text?: string | null
+          cta_url?: string | null
+          flyer_image_url?: string | null
+          google_event_id?: string | null
+          id?: string
+          is_active?: boolean
+          priority?: number
+          source?: string
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
       site_branding: {
         Row: {
           accent_color: string | null
