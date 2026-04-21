@@ -86,6 +86,61 @@ function runRuntimeZIndexCheck(): RuntimeCheck {
 }
 
 /**
+ * Walks ancestors of the mini-player and reports any that would clip it.
+ * A `position: fixed` element is normally viewport-relative, BUT any
+ * ancestor with `transform`, `filter`, `perspective`, `backdrop-filter`,
+ * `contain: paint/layout/strict`, or `will-change: transform` becomes its
+ * containing block — and if that ancestor also has `overflow: hidden`/clip,
+ * the mini-player gets clipped.
+ *
+ * We also report any direct ancestor with `overflow: hidden` regardless of
+ * containing-block status, since that's the most common foot-gun.
+ */
+function checkOverflowClipping(): OverflowReport {
+  const el = document.querySelector<HTMLElement>('[data-zlayer="promo-mini-player"]');
+  if (!el) return { clipping: [] };
+
+  const clipping: ClippingAncestor[] = [];
+  let cursor: HTMLElement | null = el.parentElement;
+
+  while (cursor && cursor !== document.documentElement) {
+    const cs = getComputedStyle(cursor);
+    const overflow = `${cs.overflowX}/${cs.overflowY}`;
+    const clipsOverflow =
+      cs.overflowX === "hidden" ||
+      cs.overflowY === "hidden" ||
+      cs.overflowX === "clip" ||
+      cs.overflowY === "clip";
+
+    if (clipsOverflow) {
+      const establishesContainingBlock =
+        cs.transform !== "none" ||
+        cs.filter !== "none" ||
+        cs.perspective !== "none" ||
+        (cs.willChange && /transform|filter|perspective/.test(cs.willChange)) ||
+        cs.contain === "paint" ||
+        cs.contain === "layout" ||
+        cs.contain === "strict" ||
+        cs.contain.includes("paint");
+
+      const reason = establishesContainingBlock
+        ? "establishes containing block + clips overflow → fixed child WILL be clipped"
+        : "ancestor clips overflow (low risk for fixed child unless containing block)";
+
+      clipping.push({
+        tag: cursor.tagName.toLowerCase(),
+        classes: cursor.className?.toString().slice(0, 80) ?? "",
+        overflow,
+        reason,
+      });
+    }
+    cursor = cursor.parentElement;
+  }
+
+  return { clipping };
+}
+
+/**
  * Dev-only on-screen overlay. Combines:
  *  1. Static layer-map assertion (`assertMiniPlayerLayering` from constants)
  *  2. Live DOM runtime check via `getComputedStyle` (re-runs every 1.5s)
