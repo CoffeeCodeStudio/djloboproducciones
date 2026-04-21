@@ -245,15 +245,15 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        className="p-0 overflow-hidden max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow"
+        className="p-0 overflow-hidden max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow promo-popup-enter"
         style={{ zIndex: 100 }}
       >
-        {/* Floating Close button - always visible, distinct over any media */}
+        {/* Floating Close button — blurred circle backdrop for visibility over any media */}
         <button
           type="button"
           onClick={onClose}
           aria-label="Stäng"
-          className="absolute -top-3 -right-3 sm:top-2 sm:right-2 z-30 rounded-full bg-background border-2 border-primary p-2 text-foreground shadow-[0_0_12px_hsl(var(--primary)/0.8)] hover:bg-primary hover:text-primary-foreground transition-colors"
+          className="absolute -top-3 -right-3 sm:top-2 sm:right-2 z-30 rounded-full bg-background/40 backdrop-blur-md border-2 border-primary p-2 text-foreground shadow-[0_0_12px_hsl(var(--primary)/0.8)] hover:bg-primary hover:text-primary-foreground transition-colors"
         >
           <X className="h-4 w-4" />
         </button>
@@ -293,13 +293,26 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
             </div>
           )}
 
-          {/* Text — auto-scroll target so it's visible right above the sticky CTA */}
-          <div ref={ctaAnchorRef} className="px-6 pt-5 pb-2 space-y-1">
-            <h2 className="text-2xl font-bold neon-gradient bg-clip-text text-transparent">
+          {/* Text — glassmorphism container with neon border */}
+          <div
+            ref={ctaAnchorRef}
+            className="px-6 pt-5 pb-4 space-y-2 bg-black/60 backdrop-blur-md border-t border-b border-primary/40"
+          >
+            <h2
+              className="text-3xl font-bold bg-clip-text text-transparent"
+              style={{
+                backgroundImage:
+                  "linear-gradient(90deg, hsl(var(--neon-pink)), hsl(var(--neon-cyan)))",
+                textShadow: "0 2px 6px rgba(0,0,0,0.85)",
+                filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.8))",
+              }}
+            >
               {promo.title}
             </h2>
             {promo.subtitle && (
-              <p className="text-sm text-muted-foreground">{promo.subtitle}</p>
+              <p className="text-sm text-foreground/90" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
+                {promo.subtitle}
+              </p>
             )}
           </div>
         </div>
@@ -307,7 +320,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
         {/* Sticky footer: CTA always visible */}
         <div className="px-6 py-4 space-y-3 border-t border-border/40 bg-background/80 backdrop-blur-sm flex-shrink-0">
           {promo.cta_text && promo.cta_url && (
-            <Button onClick={handleCta} className="w-full" size="lg">
+            <Button onClick={handleCta} className="w-full promo-cta-pulse" size="lg">
               {promo.cta_text}
             </Button>
           )}
