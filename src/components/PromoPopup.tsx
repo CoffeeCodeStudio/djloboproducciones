@@ -3,6 +3,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import confetti from "canvas-confetti";
+import { logger } from "@/lib/logger";
 import type { Promo } from "@/hooks/useActivePromo";
 
 interface PromoPopupProps {
