@@ -814,7 +814,8 @@ body {
     .promo-popup-enter,
     .promo-cta-pulse,
     .eq-bar,
-    .vinyl-spin {
+    .vinyl-spin,
+    .promo-ken-burns {
       animation: none !important;
     }
     /* Hide motion-only decorative layers entirely — keeps the UI calm */
