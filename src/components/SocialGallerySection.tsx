@@ -95,7 +95,7 @@ const SocialGallerySection = () => {
                   <img
                     src={optimizeGallery(image.image_url).src}
                     alt={image.alt_text || "DJ Lobo eventbild från galleri"}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-contain bg-background/40 transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
                     width={400}
                     height={400}
