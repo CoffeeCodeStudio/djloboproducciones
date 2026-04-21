@@ -803,7 +803,9 @@ body {
     .promo-cta-pulse,
     .eq-bar,
     .vinyl-spin,
-    .drift-particle {
+    .drift-particle,
+    .promo-ripple,
+    .promo-aura {
       animation: none !important;
     }
   }
