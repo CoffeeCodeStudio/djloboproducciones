@@ -383,7 +383,8 @@ body {
     .page-fade-in,
     .page-fade-in > * {
       animation: none !important;
-      opacity: 1;
+      opacity: 1 !important;
+      transform: none !important;
     }
 
     * {
