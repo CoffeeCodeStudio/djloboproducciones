@@ -30,6 +30,7 @@ import ImageCropper from "./ImageCropper";
 import { usePromosAdmin } from "@/hooks/usePromosAdmin";
 import { useUpcomingEvents } from "@/hooks/useUpcomingEvents";
 import type { Promo } from "@/hooks/useActivePromo";
+import PromoPopup from "@/components/PromoPopup";
 
 interface PromoEditorProps {
   open: boolean;
@@ -108,6 +109,9 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
   const [videoFileName, setVideoFileName] = useState<string | null>(null);
   const [videoFileSize, setVideoFileSize] = useState<number | null>(null);
   const [uploadingVideo, setUploadingVideo] = useState(false);
+
+  // Preview state
+  const [previewOpen, setPreviewOpen] = useState(false);
 
   // Reset form when opening
   useEffect(() => {
@@ -642,9 +646,23 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
             </section>
           </div>
 
-          <DialogFooter>
+          <DialogFooter className="gap-2 sm:gap-2">
             <Button variant="outline" onClick={onClose} disabled={submitting}>
               Avbryt
+            </Button>
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                if (!title.trim()) {
+                  toast.error("Lägg till en titel för att förhandsgranska");
+                  return;
+                }
+                setPreviewOpen(true);
+              }}
+              disabled={submitting}
+            >
+              Förhandsgranska
             </Button>
             <Button onClick={handleSubmit} disabled={submitting}>
               {submitting && <Loader2 className="w-4 h-4 mr-1 animate-spin" />}
