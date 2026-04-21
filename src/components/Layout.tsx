@@ -40,6 +40,7 @@ const Layout = () => {
       {location.pathname === "/lyssna" && <FloatingChatButton />}
       <PromoManager />
       <CookieConsent />
+      <ZIndexDebugOverlay />
     </div>
   );
 };
