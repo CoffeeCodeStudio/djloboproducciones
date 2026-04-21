@@ -46,7 +46,7 @@ const CookieConsent = () => {
   return (
     <div
       data-zlayer="cookie-consent"
-      className="fixed bottom-20 sm:bottom-24 left-4 right-4 z-50 animate-fade-in"
+      className="fixed bottom-20 sm:bottom-24 left-4 right-4 z-[60] animate-fade-in"
       role="dialog"
       aria-label={t.title}
     >

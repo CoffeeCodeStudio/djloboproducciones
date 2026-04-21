@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { X } from "lucide-react";
 import type { Promo } from "@/hooks/useActivePromo";
@@ -46,7 +47,11 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
     setVisible(false);
   };
 
-  return (
+  // Render into document.body via portal so the fixed mini-player escapes
+  // any ancestor that establishes a containing block / clips overflow.
+  if (typeof document === "undefined") return null;
+
+  return createPortal(
     <AnimatePresence onExitComplete={onDismiss}>
       {visible && (
         <motion.div
@@ -95,10 +100,6 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
                 className="absolute inset-0 w-full h-full object-cover promo-ken-burns pointer-events-none"
               />
             )}
-            {/* Glassmorphism veil — cross-fade two opacity layers instead of
-                animating backdrop-filter directly. Opacity transitions are
-                GPU-accelerated everywhere; animating backdrop-filter is
-                unreliable on iOS Safari and stutters on low-end Androids. */}
             <span
               className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/20 opacity-100 group-hover:opacity-0 transition-opacity duration-300 pointer-events-none will-change-[opacity]"
               style={{
@@ -106,11 +107,9 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
                 WebkitBackdropFilter: "blur(2px)",
               }}
             />
-            {/* Sharp overlay revealed on hover — no blur, just a soft gradient */}
             <span className="absolute inset-0 bg-gradient-to-b from-black/10 via-transparent to-black/10 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none will-change-[opacity]" />
           </button>
 
-          {/* Dismiss button — always above the video iframe */}
           <button
             type="button"
             onClick={handleDismiss}
@@ -122,7 +121,8 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
           </button>
         </motion.div>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 };
 
