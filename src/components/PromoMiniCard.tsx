@@ -55,7 +55,7 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 500, opacity: 0 }}
           transition={{ type: "spring", stiffness: 240, damping: 26 }}
-          className="w-[280px] max-w-[calc(100vw-2rem)]"
+          className="w-[280px] max-w-[calc(100vw-2rem)] pointer-events-auto"
           style={{
             position: "fixed",
             right: "max(1rem, env(safe-area-inset-right))",
@@ -67,7 +67,7 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
             type="button"
             onClick={onClick}
             aria-label={`Öppna kampanj: ${promo.title}`}
-            className="group relative block w-full aspect-video overflow-hidden rounded-xl border-2 border-primary/70 bg-black/40 backdrop-blur-md promo-neon-glow hover:scale-[1.03] transition-transform"
+            className="group relative block w-full aspect-video overflow-hidden rounded-xl border-2 border-primary/70 bg-black/40 backdrop-blur-md promo-neon-glow hover:scale-[1.03] transition-transform pointer-events-auto cursor-pointer"
           >
             {hasVideo ? (
               <video
