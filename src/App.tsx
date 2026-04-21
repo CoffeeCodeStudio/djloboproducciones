@@ -45,6 +45,7 @@ const App = () => (
                 {/* Standalone pages without nav/footer */}
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/dev/zstack" element={<DevZStack />} />
 
                 <Route element={<Layout />}>
                   <Route path="/" element={<Index />} />
