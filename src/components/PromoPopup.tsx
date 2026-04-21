@@ -40,35 +40,37 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="max-w-[500px] p-0 overflow-hidden glass-card border-primary/40">
+      <DialogContent className="p-0 overflow-hidden max-w-md glass-card border-primary/40">
         {/* Media */}
-        {promo.video_file_url ? (
-          <video
-            src={promo.video_file_url}
-            poster={promo.flyer_image_url ?? undefined}
-            controls
-            autoPlay
-            muted
-            playsInline
-            className="w-full aspect-video bg-black object-contain"
-          />
-        ) : ytEmbed ? (
-          <div className="w-full aspect-video bg-black">
-            <iframe
-              src={ytEmbed}
-              title={promo.title}
-              allow="autoplay; encrypted-media; picture-in-picture"
-              allowFullScreen
-              className="w-full h-full"
+        <div className="relative w-full aspect-square overflow-hidden bg-black">
+          {promo.video_file_url ? (
+            <video
+              src={promo.video_file_url}
+              poster={promo.flyer_image_url ?? undefined}
+              controls
+              autoPlay
+              muted
+              playsInline
+              className="w-full h-full object-cover"
             />
-          </div>
-        ) : promo.flyer_image_url ? (
-          <img
-            src={promo.flyer_image_url}
-            alt={promo.title}
-            className="w-full max-h-[60vh] object-contain bg-black"
-          />
-        ) : null}
+          ) : ytEmbed ? (
+            <div className="absolute inset-0 w-full h-full">
+              <iframe
+                src={ytEmbed}
+                title={promo.title}
+                allow="autoplay; encrypted-media; picture-in-picture"
+                allowFullScreen
+                className="w-full h-full"
+              />
+            </div>
+          ) : promo.flyer_image_url ? (
+            <img
+              src={promo.flyer_image_url}
+              alt={promo.title}
+              className="w-full h-full object-cover object-center"
+            />
+          ) : null}
+        </div>
 
         {/* Content */}
         <div className="p-6 space-y-4">
