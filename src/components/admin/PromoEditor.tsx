@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Loader2, Upload, X } from "lucide-react";
+import { CalendarIcon, Loader2, Upload, X, ImageIcon, Youtube, Video, FileVideo } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -52,6 +52,31 @@ async function uploadPromoFlyer(blob: Blob): Promise<string> {
   const { data } = supabase.storage.from("branding").getPublicUrl(fileName);
   return data.publicUrl;
 }
+
+const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
+
+async function uploadPromoVideo(file: File): Promise<string> {
+  const fileName = `promos/videos/${crypto.randomUUID()}.mp4`;
+  const { error: upErr } = await supabase.storage
+    .from("branding")
+    .upload(fileName, file, { upsert: true, contentType: file.type || "video/mp4" });
+  if (upErr) {
+    const msg = upErr.message?.toLowerCase() ?? "";
+    if (msg.includes("payload") || msg.includes("too large") || msg.includes("size")) {
+      throw new Error("Videon är för stor. Max 50 MB. Använd YouTube-länk istället.");
+    }
+    throw upErr;
+  }
+  const { data } = supabase.storage.from("branding").getPublicUrl(fileName);
+  return data.publicUrl;
+}
+
+function isYouTubeUrl(url: string): boolean {
+  if (!url.trim()) return false;
+  return /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//i.test(url.trim());
+}
+
+type MediaType = "none" | "video" | "youtube";
 
 const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
   const isEdit = !!promo;
