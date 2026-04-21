@@ -51,7 +51,7 @@ const HeroSection = () => {
           src={heroOpt.src}
           alt=""
           aria-hidden="true"
-          className="w-full h-full object-cover opacity-40"
+          className="w-full h-full object-cover object-center opacity-40"
           loading="eager"
           fetchPriority="high"
           width={1920}
