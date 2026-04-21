@@ -4,6 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Disc3, X } from "lucide-react";
 import confetti from "canvas-confetti";
 import { logger } from "@/lib/logger";
+import {
+  CONFETTI_CANVAS_Z_INDEX,
+  PROMO_PARTICLE_LAYER_Z_INDEX,
+  createConfettiThrottleState,
+  resetOpenCycle,
+  shouldFireConfetti,
+} from "@/lib/confettiThrottle";
 import type { Promo } from "@/hooks/useActivePromo";
 
 interface PromoPopupProps {
@@ -116,8 +123,7 @@ const SOUND_SESSION_KEY = "promo-popup-sound-played";
 const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProps) => {
   const ytEmbed = promo.youtube_url ? getYouTubeEmbedUrl(promo.youtube_url) : null;
   const timersRef = useRef<number[]>([]);
-  const lastFiredAtRef = useRef<number>(0);
-  const firedForThisOpenRef = useRef<boolean>(false);
+  const throttleStateRef = useRef(createConfettiThrottleState());
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const ctaAnchorRef = useRef<HTMLDivElement | null>(null);
   // Live audio intensity getter (returns 0..1) — set when sound is played
