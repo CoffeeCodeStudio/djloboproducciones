@@ -120,25 +120,97 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   const firedForThisOpenRef = useRef<boolean>(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const ctaAnchorRef = useRef<HTMLDivElement | null>(null);
+  // Live audio intensity getter (returns 0..1) — set when sound is played
+  const intensityGetterRef = useRef<(() => number) | null>(null);
+  const intensityActiveUntilRef = useRef<number>(0);
+  // Refs for the 5 EQ bars so we can drive scaleY directly
+  const eqBarRefs = useRef<Array<HTMLSpanElement | null>>([]);
 
   // Play "woosh/pop" on open — once per session for visitors,
   // every time when previewing from admin (promo.id === "preview").
   useEffect(() => {
     if (!open) return;
     const isPreview = promo.id === "preview";
+    const trigger = () => {
+      const getter = playOpenSound();
+      if (getter) {
+        intensityGetterRef.current = getter;
+        // Reactive window: ~500ms while the woosh plays out
+        intensityActiveUntilRef.current = performance.now() + 500;
+      }
+    };
     if (isPreview) {
-      playOpenSound();
+      trigger();
       return;
     }
     try {
       if (!sessionStorage.getItem(SOUND_SESSION_KEY)) {
-        playOpenSound();
+        trigger();
         sessionStorage.setItem(SOUND_SESSION_KEY, "1");
       }
     } catch {
       /* sessionStorage may be unavailable */
     }
   }, [open, promo.id]);
+
+  // EQ driver: rAF loop that reads live audio intensity and drives bar scaleY.
+  // While sound is active, bars react to the analyser. Otherwise, gentle idle pulse.
+  useEffect(() => {
+    if (!open) return;
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (prefersReducedMotion) {
+      // Static low height for reduced motion
+      eqBarRefs.current.forEach((el) => {
+        if (el) el.style.transform = "scaleY(0.4)";
+      });
+      return;
+    }
+
+    let raf = 0;
+    // Per-bar phase offsets so idle motion isn't uniform
+    const phaseOffsets = [0, 0.6, 1.2, 0.3, 0.9];
+    // Per-bar intensity multipliers (mids/highs vary)
+    const barWeights = [0.85, 1.1, 1.25, 1.0, 0.7];
+
+    const tick = () => {
+      const now = performance.now();
+      const audioActive = now < intensityActiveUntilRef.current;
+      const liveIntensity = audioActive && intensityGetterRef.current
+        ? intensityGetterRef.current()
+        : 0;
+
+      eqBarRefs.current.forEach((el, i) => {
+        if (!el) return;
+        let scale: number;
+        if (audioActive && liveIntensity > 0.01) {
+          // Reactive: amplify per-bar weight + small idle jitter so each bar differs
+          const jitter = 0.08 * Math.sin(now / 90 + phaseOffsets[i] * 4);
+          scale = Math.max(0.25, Math.min(1, liveIntensity * barWeights[i] * 2.2 + jitter));
+        } else {
+          // Idle: gentle multi-frequency bounce so it never looks dead
+          const t = now / 1000;
+          const wave =
+            0.55 +
+            0.35 * Math.sin(t * 2.8 + phaseOffsets[i]) *
+              Math.cos(t * 1.3 + phaseOffsets[i] * 0.7);
+          scale = Math.max(0.22, Math.min(1, wave));
+        }
+        el.style.transform = `scaleY(${scale.toFixed(3)})`;
+      });
+
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+    return () => {
+      cancelAnimationFrame(raf);
+      intensityGetterRef.current = null;
+      intensityActiveUntilRef.current = 0;
+    };
+  }, [open]);
+
 
   // Auto-scroll the inner content so the title/CTA area is reachable
   // immediately on open (helps when media is tall).
