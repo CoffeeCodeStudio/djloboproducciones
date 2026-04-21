@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
@@ -31,39 +31,68 @@ function getYouTubeEmbedUrl(url: string): string | null {
   }
 }
 
-function fireConfetti() {
-  const colors = ["#ff00ff", "#00ffff", "#ff0080", "#9d4edd"];
-  // Two bursts for a richer effect
-  confetti({
-    particleCount: 140,
-    spread: 90,
-    startVelocity: 45,
-    origin: { y: 0.35, x: 0.5 },
-    colors,
-    zIndex: 10000,
-    disableForReducedMotion: true,
-  });
-  setTimeout(() => {
-    confetti({
-      particleCount: 80,
-      spread: 120,
-      startVelocity: 35,
-      origin: { y: 0.4, x: 0.5 },
-      colors,
-      zIndex: 10000,
-      disableForReducedMotion: true,
-    });
-  }, 180);
-}
+const COLORS = ["#ff00ff", "#00ffff", "#ff0080", "#9d4edd"];
 
 const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProps) => {
   const ytEmbed = promo.youtube_url ? getYouTubeEmbedUrl(promo.youtube_url) : null;
+  const timersRef = useRef<number[]>([]);
 
-  // Fire confetti EVERY time the popup opens (not just first time)
+  // Mount a FRESH canvas + confetti instance every time the popup opens.
+  // Tear it down on close so no stale DOM/timers can suppress later bursts.
   useEffect(() => {
     if (!open) return;
-    const t = setTimeout(() => fireConfetti(), 220);
-    return () => clearTimeout(t);
+
+    // Create a dedicated full-screen canvas just for this open cycle
+    const canvas = document.createElement("canvas");
+    canvas.style.position = "fixed";
+    canvas.style.inset = "0";
+    canvas.style.width = "100vw";
+    canvas.style.height = "100vh";
+    canvas.style.pointerEvents = "none";
+    canvas.style.zIndex = "10000";
+    document.body.appendChild(canvas);
+
+    // Bind a fresh confetti instance to this canvas
+    const myConfetti = confetti.create(canvas, {
+      resize: true,
+      useWorker: true,
+    });
+
+    const fire = () => {
+      myConfetti({
+        particleCount: 140,
+        spread: 90,
+        startVelocity: 45,
+        origin: { y: 0.35, x: 0.5 },
+        colors: COLORS,
+        disableForReducedMotion: true,
+      });
+      const t2 = window.setTimeout(() => {
+        myConfetti({
+          particleCount: 80,
+          spread: 120,
+          startVelocity: 35,
+          origin: { y: 0.4, x: 0.5 },
+          colors: COLORS,
+          disableForReducedMotion: true,
+        });
+      }, 180);
+      timersRef.current.push(t2);
+    };
+
+    const t1 = window.setTimeout(fire, 220);
+    timersRef.current.push(t1);
+
+    return () => {
+      timersRef.current.forEach((id) => window.clearTimeout(id));
+      timersRef.current = [];
+      try {
+        myConfetti.reset();
+      } catch {
+        /* noop */
+      }
+      if (canvas.parentNode) canvas.parentNode.removeChild(canvas);
+    };
   }, [open]);
 
   const handleCta = () => {
