@@ -1,5 +1,8 @@
+import { useEffect, useRef } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { X } from "lucide-react";
+import confetti from "canvas-confetti";
 import type { Promo } from "@/hooks/useActivePromo";
 
 interface PromoPopupProps {
@@ -28,8 +31,31 @@ function getYouTubeEmbedUrl(url: string): string | null {
   }
 }
 
+function fireConfetti() {
+  const colors = ["#ff00ff", "#00ffff", "#ff0080", "#9d4edd"];
+  confetti({
+    particleCount: 120,
+    spread: 80,
+    origin: { y: 0.3 },
+    colors,
+    zIndex: 9999,
+    disableForReducedMotion: true,
+  });
+}
+
 const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProps) => {
   const ytEmbed = promo.youtube_url ? getYouTubeEmbedUrl(promo.youtube_url) : null;
+  const firedRef = useRef(false);
+
+  useEffect(() => {
+    if (open && !firedRef.current) {
+      firedRef.current = true;
+      // small delay to let the modal animate in
+      const t = setTimeout(fireConfetti, 200);
+      return () => clearTimeout(t);
+    }
+    if (!open) firedRef.current = false;
+  }, [open]);
 
   const handleCta = () => {
     if (promo.cta_url) {
@@ -40,7 +66,19 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
 
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent className="p-0 overflow-hidden max-w-md glass-card border-primary/40">
+      <DialogContent
+        className="p-0 overflow-hidden max-w-md max-h-[90vh] overflow-y-auto glass-card border-primary/40 promo-neon-glow"
+      >
+        {/* Floating Close button - always visible over media */}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="Stäng"
+          className="absolute top-3 right-3 z-20 rounded-full bg-black/70 backdrop-blur-sm p-2 text-white border border-white/30 shadow-lg hover:bg-black/90 transition-colors"
+        >
+          <X className="h-4 w-4" />
+        </button>
+
         {/* Media */}
         <div className="relative w-full aspect-square overflow-hidden bg-black">
           {promo.video_file_url ? (
