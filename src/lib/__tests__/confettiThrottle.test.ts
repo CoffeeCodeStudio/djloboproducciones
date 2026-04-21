@@ -3,6 +3,8 @@ import {
   CONFETTI_CANVAS_Z_INDEX,
   CONFETTI_COOLDOWN_MS,
   PROMO_PARTICLE_LAYER_Z_INDEX,
+  Z_LAYERS,
+  assertMiniPlayerLayering,
   createConfettiThrottleState,
   resetOpenCycle,
   shouldFireConfetti,
