@@ -19,11 +19,12 @@ export const PROMO_PARTICLE_LAYER_Z_INDEX = 40;
 
 export interface ConfettiThrottleState {
   firedForThisOpen: boolean;
+  hasEverFired: boolean;
   lastFiredAt: number;
 }
 
 export function createConfettiThrottleState(): ConfettiThrottleState {
-  return { firedForThisOpen: false, lastFiredAt: 0 };
+  return { firedForThisOpen: false, hasEverFired: false, lastFiredAt: 0 };
 }
 
 export type ConfettiDecision =
@@ -48,14 +49,14 @@ export function shouldFireConfetti(
       timeSinceLast: now - state.lastFiredAt,
     };
   }
-  // `lastFiredAt === 0` means we have never fired — always allow the first burst.
-  if (state.lastFiredAt !== 0) {
+  if (state.hasEverFired) {
     const elapsed = now - state.lastFiredAt;
     if (elapsed < cooldownMs) {
       return { fire: false, reason: "cooldown", timeSinceLast: elapsed };
     }
   }
   state.firedForThisOpen = true;
+  state.hasEverFired = true;
   state.lastFiredAt = now;
   return { fire: true };
 }
