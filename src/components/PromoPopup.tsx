@@ -166,8 +166,8 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
     canvas.style.width = "100vw";
     canvas.style.height = "100vh";
     canvas.style.pointerEvents = "none";
-    // Sit clearly above Radix Dialog overlay/content (which use z-50)
-    canvas.style.zIndex = "2147483646";
+    // Sit clearly above Radix Dialog overlay/content and any modal
+    canvas.style.zIndex = "99999";
     canvas.setAttribute("data-promo-confetti", "true");
     document.body.appendChild(canvas);
 
