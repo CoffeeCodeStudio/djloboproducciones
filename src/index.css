@@ -620,4 +620,33 @@ body {
     -webkit-mask-composite: xor;
     mask-composite: exclude;
   }
+
+  /* Promo popup pulsating neon border glow */
+  @keyframes promo-neon-pulse {
+    0%, 100% {
+      box-shadow:
+        0 0 12px hsla(var(--neon-pink), 0.45),
+        0 0 28px hsla(var(--neon-cyan), 0.30),
+        0 0 60px hsla(var(--neon-pink), 0.15);
+    }
+    50% {
+      box-shadow:
+        0 0 20px hsla(var(--neon-pink), 0.75),
+        0 0 44px hsla(var(--neon-cyan), 0.55),
+        0 0 90px hsla(var(--neon-pink), 0.30);
+    }
+  }
+
+  .promo-neon-glow {
+    animation: promo-neon-pulse 2.6s ease-in-out infinite;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .promo-neon-glow {
+      animation: none !important;
+      box-shadow:
+        0 0 18px hsla(var(--neon-pink), 0.5),
+        0 0 36px hsla(var(--neon-cyan), 0.35);
+    }
+  }
 }
