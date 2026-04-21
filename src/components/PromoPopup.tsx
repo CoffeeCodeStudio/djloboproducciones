@@ -35,14 +35,22 @@ function getYouTubeEmbedUrl(url: string): string | null {
 const COLORS = ["#ff00ff", "#00ffff", "#ff0080", "#9d4edd"];
 
 // Lightweight "woosh/pop" via Web Audio API — no asset needed.
-function playOpenSound() {
+// Routes through an AnalyserNode so the EQ bars can react to the actual sound.
+// Returns a getter that reports current intensity (0..1) for ~400ms after play.
+function playOpenSound(): (() => number) | null {
   try {
     const AudioCtx =
       window.AudioContext ||
       (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
-    if (!AudioCtx) return;
+    if (!AudioCtx) return null;
     const ctx = new AudioCtx();
     const now = ctx.currentTime;
+
+    // Analyser shared by both sources so we can read combined intensity
+    const analyser = ctx.createAnalyser();
+    analyser.fftSize = 256;
+    analyser.smoothingTimeConstant = 0.6;
+    const buffer = new Uint8Array(analyser.frequencyBinCount);
 
     // Quick pop: sine sweep 880Hz -> 220Hz
     const osc = ctx.createOscillator();
@@ -53,7 +61,9 @@ function playOpenSound() {
     gain.gain.setValueAtTime(0.0001, now);
     gain.gain.exponentialRampToValueAtTime(0.25, now + 0.02);
     gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
-    osc.connect(gain).connect(ctx.destination);
+    osc.connect(gain);
+    gain.connect(analyser);
+    gain.connect(ctx.destination);
     osc.start(now);
     osc.stop(now + 0.24);
 
@@ -72,13 +82,32 @@ function playOpenSound() {
     const filter = ctx.createBiquadFilter();
     filter.type = "highpass";
     filter.frequency.value = 1200;
-    noise.connect(filter).connect(noiseGain).connect(ctx.destination);
+    noise.connect(filter).connect(noiseGain);
+    noiseGain.connect(analyser);
+    noiseGain.connect(ctx.destination);
     noise.start(now);
     noise.stop(now + 0.2);
 
-    setTimeout(() => ctx.close().catch(() => {}), 400);
+    let closed = false;
+    setTimeout(() => {
+      closed = true;
+      ctx.close().catch(() => {});
+    }, 500);
+
+    // Intensity getter: averages the analyser frequency bins, normalized 0..1
+    return () => {
+      if (closed) return 0;
+      try {
+        analyser.getByteFrequencyData(buffer);
+        let sum = 0;
+        for (let i = 0; i < buffer.length; i++) sum += buffer[i];
+        return Math.min(1, sum / buffer.length / 180);
+      } catch {
+        return 0;
+      }
+    };
   } catch {
-    /* noop */
+    return null;
   }
 }
 
