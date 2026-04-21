@@ -257,12 +257,17 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       toast.error("Slutdatum måste vara efter startdatum");
       return;
     }
+    if (mediaType === "youtube" && youtubeUrl.trim() && !isYouTubeUrl(youtubeUrl)) {
+      toast.error("Ogiltig YouTube-länk");
+      return;
+    }
 
     const payload = {
       title: title.trim(),
       subtitle: subtitle.trim() || null,
       flyer_image_url: flyerUrl,
-      youtube_url: youtubeUrl.trim() || null,
+      youtube_url: mediaType === "youtube" ? (youtubeUrl.trim() || null) : null,
+      video_file_url: mediaType === "video" ? videoFileUrl : null,
       cta_text: ctaText.trim() || null,
       cta_url: ctaUrl.trim() || null,
       source,
