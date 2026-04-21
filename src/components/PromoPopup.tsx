@@ -34,6 +34,56 @@ function getYouTubeEmbedUrl(url: string): string | null {
 
 const COLORS = ["#ff00ff", "#00ffff", "#ff0080", "#9d4edd"];
 
+// Lightweight "woosh/pop" via Web Audio API — no asset needed.
+function playOpenSound() {
+  try {
+    const AudioCtx =
+      window.AudioContext ||
+      (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+    if (!AudioCtx) return;
+    const ctx = new AudioCtx();
+    const now = ctx.currentTime;
+
+    // Quick pop: sine sweep 880Hz -> 220Hz
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(880, now);
+    osc.frequency.exponentialRampToValueAtTime(220, now + 0.18);
+    gain.gain.setValueAtTime(0.0001, now);
+    gain.gain.exponentialRampToValueAtTime(0.25, now + 0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.22);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(now);
+    osc.stop(now + 0.24);
+
+    // Soft noise "woosh" tail
+    const bufferSize = Math.floor(ctx.sampleRate * 0.18);
+    const noiseBuffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+    const data = noiseBuffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) {
+      data[i] = (Math.random() * 2 - 1) * (1 - i / bufferSize);
+    }
+    const noise = ctx.createBufferSource();
+    noise.buffer = noiseBuffer;
+    const noiseGain = ctx.createGain();
+    noiseGain.gain.setValueAtTime(0.08, now);
+    noiseGain.gain.exponentialRampToValueAtTime(0.0001, now + 0.18);
+    const filter = ctx.createBiquadFilter();
+    filter.type = "highpass";
+    filter.frequency.value = 1200;
+    noise.connect(filter).connect(noiseGain).connect(ctx.destination);
+    noise.start(now);
+    noise.stop(now + 0.2);
+
+    setTimeout(() => ctx.close().catch(() => {}), 400);
+  } catch {
+    /* noop */
+  }
+}
+
+const SOUND_SESSION_KEY = "promo-popup-sound-played";
+
 const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProps) => {
   const ytEmbed = promo.youtube_url ? getYouTubeEmbedUrl(promo.youtube_url) : null;
   const timersRef = useRef<number[]>([]);
@@ -41,6 +91,25 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   const firedForThisOpenRef = useRef<boolean>(false);
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const ctaAnchorRef = useRef<HTMLDivElement | null>(null);
+
+  // Play "woosh/pop" on open — once per session for visitors,
+  // every time when previewing from admin (promo.id === "preview").
+  useEffect(() => {
+    if (!open) return;
+    const isPreview = promo.id === "preview";
+    if (isPreview) {
+      playOpenSound();
+      return;
+    }
+    try {
+      if (!sessionStorage.getItem(SOUND_SESSION_KEY)) {
+        playOpenSound();
+        sessionStorage.setItem(SOUND_SESSION_KEY, "1");
+      }
+    } catch {
+      /* sessionStorage may be unavailable */
+    }
+  }, [open, promo.id]);
 
   // Auto-scroll the inner content so the title/CTA area is reachable
   // immediately on open (helps when media is tall).
