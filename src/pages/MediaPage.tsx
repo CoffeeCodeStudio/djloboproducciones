@@ -168,7 +168,7 @@ const MediaPage = () => {
                   <img
                     src={item.src}
                     alt={item.alt}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-contain bg-background/40 transition-transform duration-500 group-hover:scale-105"
                     loading="lazy"
                     width={400}
                     height={400}
