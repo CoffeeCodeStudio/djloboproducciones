@@ -163,12 +163,12 @@ const MediaPage = () => {
               <div key={item.id} className="flex flex-col gap-1.5">
                 <button
                   onClick={() => openLightbox(item)}
-                  className="w-full glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
+                  className="aspect-[4/3] w-full glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
                 >
                   <img
                     src={item.src}
                     alt={item.alt}
-                    className="block w-full h-auto object-cover object-center bg-background/40"
+                    className="w-full h-full object-cover object-center bg-background/40"
                     loading="lazy"
                     onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = item.fallback; }}
                   />
