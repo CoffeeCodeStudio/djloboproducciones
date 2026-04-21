@@ -368,7 +368,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
         <div
           aria-hidden="true"
           className="fixed inset-0 pointer-events-none overflow-hidden"
-          style={{ zIndex: 60 }}
+          style={{ zIndex: 40 }}
         >
           {particles.map((p) => (
             <span
