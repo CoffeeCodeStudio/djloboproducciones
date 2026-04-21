@@ -225,14 +225,68 @@ const ZIndexDebugOverlay = () => {
 
       {runtime && (
         <div style={{ marginBottom: 8 }}>
-          <strong>Runtime computed:</strong>
-          <ul style={{ margin: "4px 0 0 18px", padding: 0 }}>
-            {Object.entries(runtime.measured).map(([k, v]) => (
-              <li key={k}>
-                {k}: {v == null ? "—" : v}
-              </li>
-            ))}
-          </ul>
+          <strong>Expected vs measured z-index:</strong>
+          <table
+            style={{
+              width: "100%",
+              marginTop: 4,
+              borderCollapse: "collapse",
+              fontSize: 11,
+            }}
+          >
+            <thead>
+              <tr style={{ textAlign: "left", opacity: 0.85 }}>
+                <th style={{ padding: "2px 6px 2px 0" }}>Layer</th>
+                <th style={{ padding: "2px 6px", textAlign: "right" }}>Expected</th>
+                <th style={{ padding: "2px 6px", textAlign: "right" }}>Measured</th>
+                <th style={{ padding: "2px 0 2px 6px", textAlign: "right" }}>Δ</th>
+              </tr>
+            </thead>
+            <tbody>
+              {(
+                [
+                  ["miniPlayer", "promoMiniPlayer"],
+                  ["nowPlayingBar", "nowPlayingBar"],
+                  ["globalMiniPlayer", "globalMiniPlayer"],
+                  ["cookieConsent", "cookieConsent"],
+                  ["footer", "footer"],
+                  ["promoPopupContent", "promoPopupContent"],
+                ] as Array<[string, keyof typeof Z_LAYERS]>
+              ).map(([measuredKey, constKey]) => {
+                const expected = Z_LAYERS[constKey];
+                const measured = runtime.measured[measuredKey];
+                const delta = measured == null ? null : measured - expected;
+                const mismatch = delta != null && delta !== 0;
+                return (
+                  <tr
+                    key={measuredKey}
+                    style={{
+                      background: mismatch ? "hsl(0 84% 30% / 0.5)" : undefined,
+                      borderTop: "1px solid hsl(0 84% 40% / 0.4)",
+                    }}
+                  >
+                    <td style={{ padding: "2px 6px 2px 0" }}>
+                      {measuredKey}
+                      <span style={{ opacity: 0.6 }}> ({constKey})</span>
+                    </td>
+                    <td style={{ padding: "2px 6px", textAlign: "right" }}>{expected}</td>
+                    <td style={{ padding: "2px 6px", textAlign: "right" }}>
+                      {measured == null ? "—" : measured}
+                    </td>
+                    <td
+                      style={{
+                        padding: "2px 0 2px 6px",
+                        textAlign: "right",
+                        fontWeight: mismatch ? 700 : 400,
+                      }}
+                    >
+                      {delta == null ? "—" : delta === 0 ? "✓" : delta > 0 ? `+${delta}` : delta}
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </table>
         </div>
       )}
 
