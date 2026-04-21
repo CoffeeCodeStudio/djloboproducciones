@@ -55,7 +55,7 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 500, opacity: 0 }}
           transition={{ type: "spring", stiffness: 240, damping: 26 }}
-          className="w-[280px] max-w-[calc(100vw-2rem)]"
+          className="w-[280px] max-w-[calc(100vw-2rem)] pointer-events-auto"
           style={{
             position: "fixed",
             right: "max(1rem, env(safe-area-inset-right))",
@@ -67,7 +67,7 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
             type="button"
             onClick={onClick}
             aria-label={`Öppna kampanj: ${promo.title}`}
-            className="group relative block w-full aspect-video overflow-hidden rounded-xl border-2 border-primary/70 bg-black/40 backdrop-blur-md promo-neon-glow hover:scale-[1.03] transition-transform"
+            className="group relative block w-full aspect-video overflow-hidden rounded-xl border-2 border-primary/70 bg-black/40 backdrop-blur-md promo-neon-glow hover:scale-[1.03] transition-transform pointer-events-auto cursor-pointer"
           >
             {hasVideo ? (
               <video
@@ -103,7 +103,7 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
             type="button"
             onClick={handleDismiss}
             aria-label="Stäng mini-spelare"
-            className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-background/80 backdrop-blur-md border-2 border-primary text-white shadow-[0_0_12px_hsl(var(--primary)/0.9)] hover:bg-primary hover:scale-110 transition-all flex items-center justify-center"
+            className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-background/80 backdrop-blur-md border-2 border-primary text-white shadow-[0_0_12px_hsl(var(--primary)/0.9)] hover:bg-primary hover:scale-110 transition-all flex items-center justify-center pointer-events-auto cursor-pointer"
             style={{ zIndex: 110 }}
           >
             <X className="w-4 h-4" strokeWidth={3.5} />
