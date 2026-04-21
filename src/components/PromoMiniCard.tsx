@@ -103,7 +103,7 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
             type="button"
             onClick={handleDismiss}
             aria-label="Stäng mini-spelare"
-            className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-background/80 backdrop-blur-md border-2 border-primary text-white shadow-[0_0_12px_hsl(var(--primary)/0.9)] hover:bg-primary hover:scale-110 transition-all flex items-center justify-center"
+            className="absolute -top-2 -right-2 w-8 h-8 rounded-full bg-background/80 backdrop-blur-md border-2 border-primary text-white shadow-[0_0_12px_hsl(var(--primary)/0.9)] hover:bg-primary hover:scale-110 transition-all flex items-center justify-center pointer-events-auto cursor-pointer"
             style={{ zIndex: 110 }}
           >
             <X className="w-4 h-4" strokeWidth={3.5} />
