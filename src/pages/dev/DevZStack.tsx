@@ -56,11 +56,11 @@ const LayerLegend = () => (
 );
 
 const DevZStack = () => {
-  // Block this route in production builds.
-  if (!import.meta.env.DEV) return <Navigate to="/" replace />;
-
   const [showMini, setShowMini] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
+
+  // Block this route in production builds.
+  if (!import.meta.env.DEV) return <Navigate to="/" replace />;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
