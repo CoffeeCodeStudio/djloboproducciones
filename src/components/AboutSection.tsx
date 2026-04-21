@@ -200,7 +200,7 @@ const AboutSection = () => {
                 srcSet={aboutSrcSet}
                 sizes="(max-width: 640px) 280px, 560px"
                 alt="DJ Lobo spelar latinmusik live"
-                className="w-full h-full object-cover object-center"
+                className="w-full h-full object-contain bg-background/40"
                 loading="lazy"
                 width={560}
                 height={700}
