@@ -248,11 +248,29 @@ const ZIndexDebugOverlay = () => {
       )}
 
       {runtimeBad && (
-        <div style={{ borderTop: "1px solid hsl(0 84% 40%)", paddingTop: 6 }}>
+        <div style={{ borderTop: "1px solid hsl(0 84% 40%)", paddingTop: 6, marginBottom: 6 }}>
           <strong>Runtime violations:</strong>
           <ul style={{ margin: "4px 0 0 18px", padding: 0 }}>
             {runtime!.violations.map((v) => (
               <li key={v}>{v}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      {overflowBad && (
+        <div style={{ borderTop: "1px solid hsl(0 84% 40%)", paddingTop: 6 }}>
+          <strong>Clipping ancestors of mini-player:</strong>
+          <ul style={{ margin: "4px 0 0 18px", padding: 0 }}>
+            {overflow!.clipping.map((c, i) => (
+              <li key={i} style={{ marginBottom: 4 }}>
+                &lt;{c.tag}&gt; overflow={c.overflow}
+                {c.classes && (
+                  <span style={{ opacity: 0.75 }}> · class="{c.classes}"</span>
+                )}
+                <br />
+                <span style={{ opacity: 0.85 }}>↳ {c.reason}</span>
+              </li>
             ))}
           </ul>
         </div>
