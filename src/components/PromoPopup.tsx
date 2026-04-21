@@ -49,7 +49,9 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
     canvas.style.width = "100vw";
     canvas.style.height = "100vh";
     canvas.style.pointerEvents = "none";
-    canvas.style.zIndex = "10000";
+    // Sit clearly above Radix Dialog overlay/content (which use z-50)
+    canvas.style.zIndex = "2147483646";
+    canvas.setAttribute("data-promo-confetti", "true");
     document.body.appendChild(canvas);
 
     // Bind a fresh confetti instance to this canvas
@@ -105,7 +107,8 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        className="p-0 overflow-hidden max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-primary/40 promo-neon-glow"
+        className="p-0 overflow-hidden max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow"
+        style={{ zIndex: 100 }}
       >
         {/* Floating Close button - always visible, distinct over any media */}
         <button
