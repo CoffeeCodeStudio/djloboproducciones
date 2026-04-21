@@ -149,6 +149,7 @@ function checkOverflowClipping(): OverflowReport {
 const ZIndexDebugOverlay = () => {
   const [staticReport, setStaticReport] = useState<MiniPlayerLayeringReport | null>(null);
   const [runtime, setRuntime] = useState<RuntimeCheck | null>(null);
+  const [overflow, setOverflow] = useState<OverflowReport | null>(null);
 
   useEffect(() => {
     if (!import.meta.env.DEV) return;
@@ -168,6 +169,16 @@ const ZIndexDebugOverlay = () => {
         // eslint-disable-next-line no-console
         console.error("[z-index] runtime DOM check failed:", rt.violations, rt.measured);
       }
+
+      const ov = checkOverflowClipping();
+      setOverflow(ov);
+      if (ov.clipping.some((c) => c.reason.includes("WILL be clipped"))) {
+        // eslint-disable-next-line no-console
+        console.error(
+          "[z-index] mini-player has clipping ancestor — fixed positioning is being trapped:",
+          ov.clipping
+        );
+      }
     };
     tick();
     const id = window.setInterval(tick, 1500);
@@ -178,7 +189,8 @@ const ZIndexDebugOverlay = () => {
 
   const staticBad = staticReport && !staticReport.ok;
   const runtimeBad = runtime && runtime.violations.length > 0;
-  if (!staticBad && !runtimeBad) return null;
+  const overflowBad = overflow && overflow.clipping.length > 0;
+  if (!staticBad && !runtimeBad && !overflowBad) return null;
 
   return (
     <div
