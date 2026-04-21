@@ -686,6 +686,32 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
           }}
         />
       )}
+
+      {previewOpen && (
+        <PromoPopup
+          promo={{
+            id: "preview",
+            title: title || "Förhandsvisning",
+            subtitle: subtitle || null,
+            flyer_image_url: flyerUrl,
+            youtube_url: mediaType === "youtube" ? (youtubeUrl.trim() || null) : null,
+            video_file_url: mediaType === "video" ? videoFileUrl : null,
+            cta_text: ctaText.trim() || null,
+            cta_url: ctaUrl.trim() || null,
+            source,
+            google_event_id: googleEventId,
+            active_from: (activeFrom ?? new Date()).toISOString(),
+            active_to: (activeTo ?? new Date()).toISOString(),
+            priority,
+            is_active: isActive,
+            created_at: new Date().toISOString(),
+            updated_at: new Date().toISOString(),
+          }}
+          open={previewOpen}
+          onClose={() => setPreviewOpen(false)}
+          onPermanentDismiss={() => setPreviewOpen(false)}
+        />
+      )}
     </>
   );
 };
