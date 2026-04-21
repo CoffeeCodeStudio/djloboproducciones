@@ -48,9 +48,12 @@ export function shouldFireConfetti(
       timeSinceLast: now - state.lastFiredAt,
     };
   }
-  const elapsed = now - state.lastFiredAt;
-  if (elapsed < cooldownMs) {
-    return { fire: false, reason: "cooldown", timeSinceLast: elapsed };
+  // `lastFiredAt === 0` means we have never fired — always allow the first burst.
+  if (state.lastFiredAt !== 0) {
+    const elapsed = now - state.lastFiredAt;
+    if (elapsed < cooldownMs) {
+      return { fire: false, reason: "cooldown", timeSinceLast: elapsed };
+    }
   }
   state.firedForThisOpen = true;
   state.lastFiredAt = now;
