@@ -250,7 +250,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
 
     // Throttle: max one burst per cooldown, plus once-per-open-cycle guard
     const decision = shouldFireConfetti(throttleStateRef.current, Date.now());
-    if (!decision.fire) {
+    if (decision.fire === false) {
       if (decision.reason === "already-fired-this-open") {
         logger.log("[PromoPopup] Confetti blocked: already fired for this open cycle");
       } else {
