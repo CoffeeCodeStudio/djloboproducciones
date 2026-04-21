@@ -21,7 +21,7 @@ import {
 } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { CalendarIcon, Loader2, Upload, X } from "lucide-react";
+import { CalendarIcon, Loader2, Upload, X, ImageIcon, Youtube, Video, FileVideo } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
@@ -53,6 +53,31 @@ async function uploadPromoFlyer(blob: Blob): Promise<string> {
   return data.publicUrl;
 }
 
+const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
+
+async function uploadPromoVideo(file: File): Promise<string> {
+  const fileName = `promos/videos/${crypto.randomUUID()}.mp4`;
+  const { error: upErr } = await supabase.storage
+    .from("branding")
+    .upload(fileName, file, { upsert: true, contentType: file.type || "video/mp4" });
+  if (upErr) {
+    const msg = upErr.message?.toLowerCase() ?? "";
+    if (msg.includes("payload") || msg.includes("too large") || msg.includes("size")) {
+      throw new Error("Videon är för stor. Max 50 MB. Använd YouTube-länk istället.");
+    }
+    throw upErr;
+  }
+  const { data } = supabase.storage.from("branding").getPublicUrl(fileName);
+  return data.publicUrl;
+}
+
+function isYouTubeUrl(url: string): boolean {
+  if (!url.trim()) return false;
+  return /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\//i.test(url.trim());
+}
+
+type MediaType = "none" | "video" | "youtube";
+
 const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
   const isEdit = !!promo;
   const { createPromo, updatePromo } = usePromosAdmin();
@@ -77,6 +102,13 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
   const [cropOpen, setCropOpen] = useState(false);
   const [uploadingFlyer, setUploadingFlyer] = useState(false);
 
+  // Video state
+  const [mediaType, setMediaType] = useState<MediaType>("none");
+  const [videoFileUrl, setVideoFileUrl] = useState<string | null>(null);
+  const [videoFileName, setVideoFileName] = useState<string | null>(null);
+  const [videoFileSize, setVideoFileSize] = useState<number | null>(null);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+
   // Reset form when opening
   useEffect(() => {
     if (!open) return;
@@ -85,6 +117,12 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       setSubtitle(promo.subtitle ?? "");
       setFlyerUrl(promo.flyer_image_url);
       setYoutubeUrl(promo.youtube_url ?? "");
+      setVideoFileUrl(promo.video_file_url ?? null);
+      setVideoFileName(null);
+      setVideoFileSize(null);
+      if (promo.video_file_url) setMediaType("video");
+      else if (promo.youtube_url) setMediaType("youtube");
+      else setMediaType("none");
       setCtaText(promo.cta_text ?? "");
       setCtaUrl(promo.cta_url ?? "");
       setSource(promo.source);
@@ -98,6 +136,10 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       setSubtitle("");
       setFlyerUrl(null);
       setYoutubeUrl("");
+      setVideoFileUrl(null);
+      setVideoFileName(null);
+      setVideoFileSize(null);
+      setMediaType("none");
       setCtaText("");
       setCtaUrl("");
       setSource("manual");
@@ -114,8 +156,8 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Filen är för stor (max 5 MB)");
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Bilden är för stor (max 2 MB)");
       return;
     }
     const reader = new FileReader();
@@ -139,6 +181,44 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
     } finally {
       setUploadingFlyer(false);
       setRawImage(null);
+    }
+  };
+
+  const handleVideoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("video/") && !file.name.toLowerCase().endsWith(".mp4")) {
+      toast.error("Endast MP4-videofiler tillåtna");
+      return;
+    }
+    if (file.size > MAX_VIDEO_BYTES) {
+      toast.error("Videon är för stor. Max 50 MB. Använd YouTube-länk istället.");
+      return;
+    }
+    setUploadingVideo(true);
+    try {
+      const url = await uploadPromoVideo(file);
+      setVideoFileUrl(url);
+      setVideoFileName(file.name);
+      setVideoFileSize(file.size);
+      toast.success("Video uppladdad!");
+    } catch (err: any) {
+      toast.error(err.message || "Uppladdning misslyckades");
+    } finally {
+      setUploadingVideo(false);
+    }
+  };
+
+  const handleMediaTypeChange = (next: MediaType) => {
+    setMediaType(next);
+    if (next !== "video") {
+      setVideoFileUrl(null);
+      setVideoFileName(null);
+      setVideoFileSize(null);
+    }
+    if (next !== "youtube") {
+      setYoutubeUrl("");
     }
   };
 
@@ -177,12 +257,17 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       toast.error("Slutdatum måste vara efter startdatum");
       return;
     }
+    if (mediaType === "youtube" && youtubeUrl.trim() && !isYouTubeUrl(youtubeUrl)) {
+      toast.error("Ogiltig YouTube-länk");
+      return;
+    }
 
     const payload = {
       title: title.trim(),
       subtitle: subtitle.trim() || null,
       flyer_image_url: flyerUrl,
-      youtube_url: youtubeUrl.trim() || null,
+      youtube_url: mediaType === "youtube" ? (youtubeUrl.trim() || null) : null,
+      video_file_url: mediaType === "video" ? videoFileUrl : null,
       cta_text: ctaText.trim() || null,
       cta_url: ctaUrl.trim() || null,
       source,
@@ -294,20 +379,105 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <Label htmlFor="youtube">YouTube-länk</Label>
-                <Input
-                  id="youtube"
-                  value={youtubeUrl}
-                  onChange={(e) => setYoutubeUrl(e.target.value)}
-                  placeholder="https://youtube.com/watch?v=..."
-                />
-                {ytId && (
-                  <img
-                    src={`https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`}
-                    alt="YouTube-förhandsvisning"
-                    className="mt-2 rounded-md w-40 border border-border"
-                  />
+              <div className="space-y-3">
+                <Label>Media-typ</Label>
+                <div className="grid grid-cols-3 gap-2">
+                  {([
+                    { key: "none", label: "Ingen video", Icon: ImageIcon },
+                    { key: "video", label: "Ladda upp video", Icon: Upload },
+                    { key: "youtube", label: "YouTube-länk", Icon: Youtube },
+                  ] as const).map(({ key, label, Icon }) => {
+                    const active = mediaType === key;
+                    return (
+                      <button
+                        key={key}
+                        type="button"
+                        onClick={() => handleMediaTypeChange(key)}
+                        className={cn(
+                          "flex flex-col items-center justify-center gap-1.5 p-3 rounded-md border text-xs font-medium transition-colors",
+                          active
+                            ? "border-primary bg-primary/10 text-foreground"
+                            : "border-border bg-card/40 text-muted-foreground hover:bg-card/60"
+                        )}
+                      >
+                        <Icon className="w-5 h-5" />
+                        {label}
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {mediaType === "video" && (
+                  <div className="space-y-2 rounded-md border border-border p-3 bg-card/30">
+                    {videoFileUrl ? (
+                      <div className="flex items-center gap-3">
+                        <FileVideo className="w-5 h-5 text-primary flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <div className="text-sm truncate">{videoFileName ?? "Uppladdad video"}</div>
+                          {videoFileSize !== null && (
+                            <div className="text-xs text-muted-foreground">
+                              {(videoFileSize / 1024 / 1024).toFixed(1)} MB
+                            </div>
+                          )}
+                        </div>
+                        <Button
+                          type="button"
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 flex-shrink-0"
+                          onClick={() => {
+                            setVideoFileUrl(null);
+                            setVideoFileName(null);
+                            setVideoFileSize(null);
+                          }}
+                        >
+                          <X className="w-4 h-4" />
+                        </Button>
+                      </div>
+                    ) : (
+                      <>
+                        <input
+                          id="video-upload"
+                          type="file"
+                          accept="video/mp4,video/*"
+                          className="hidden"
+                          onChange={handleVideoSelect}
+                        />
+                        <Button
+                          type="button"
+                          variant="outline"
+                          onClick={() => document.getElementById("video-upload")?.click()}
+                          disabled={uploadingVideo}
+                          className="w-full"
+                        >
+                          {uploadingVideo ? (
+                            <Loader2 className="w-4 h-4 mr-1 animate-spin" />
+                          ) : (
+                            <Video className="w-4 h-4 mr-1" />
+                          )}
+                          {uploadingVideo ? "Laddar upp..." : "Välj MP4-fil (max 50 MB)"}
+                        </Button>
+                      </>
+                    )}
+                  </div>
+                )}
+
+                {mediaType === "youtube" && (
+                  <div className="space-y-2 rounded-md border border-border p-3 bg-card/30">
+                    <Input
+                      id="youtube"
+                      value={youtubeUrl}
+                      onChange={(e) => setYoutubeUrl(e.target.value)}
+                      placeholder="https://youtube.com/watch?v=..."
+                    />
+                    {ytId && (
+                      <img
+                        src={`https://i.ytimg.com/vi/${ytId}/mqdefault.jpg`}
+                        alt="YouTube-förhandsvisning"
+                        className="mt-2 rounded-md w-40 border border-border"
+                      />
+                    )}
+                  </div>
                 )}
               </div>
 
