@@ -43,7 +43,7 @@ export interface MiniPlayerLayeringReport {
  * layers and strictly below the main PromoPopup modal layers.
  */
 export function assertMiniPlayerLayering(
-  layers: typeof Z_LAYERS = Z_LAYERS
+  layers: Record<keyof typeof Z_LAYERS, number> = Z_LAYERS
 ): MiniPlayerLayeringReport {
   const violations: string[] = [];
   const mp = layers.promoMiniPlayer;
