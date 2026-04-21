@@ -1,7 +1,7 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
+import { Disc3 } from "lucide-react";
 import confetti from "canvas-confetti";
 import { logger } from "@/lib/logger";
 import type { Promo } from "@/hooks/useActivePromo";
@@ -166,8 +166,8 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
     canvas.style.width = "100vw";
     canvas.style.height = "100vh";
     canvas.style.pointerEvents = "none";
-    // Sit clearly above Radix Dialog overlay/content (which use z-50)
-    canvas.style.zIndex = "2147483646";
+    // Sit clearly above Radix Dialog overlay/content and any modal
+    canvas.style.zIndex = "99999";
     canvas.setAttribute("data-promo-confetti", "true");
     document.body.appendChild(canvas);
 
@@ -242,24 +242,76 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
     onClose();
   };
 
+  // Pre-compute drifting musical particles (notes + vinyls) — outside modal edges
+  const particles = useMemo(() => {
+    const symbols = ["♪", "♫", "♩", "♬", "𝄞", "●"];
+    return Array.from({ length: 18 }).map((_, i) => {
+      const symbol = symbols[i % symbols.length];
+      const isVinyl = symbol === "●";
+      return {
+        key: i,
+        symbol,
+        isVinyl,
+        left: Math.random() * 100,
+        delay: Math.random() * 8,
+        duration: 12 + Math.random() * 14,
+        size: 14 + Math.random() * 22,
+      };
+    });
+  }, []);
+
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+      {/* Ambient drifting musical particles — fixed full-screen, behind dialog content */}
+      {open && (
+        <div
+          aria-hidden="true"
+          className="fixed inset-0 pointer-events-none overflow-hidden"
+          style={{ zIndex: 60 }}
+        >
+          {particles.map((p) => (
+            <span
+              key={p.key}
+              className="drift-particle"
+              style={{
+                left: `${p.left}%`,
+                bottom: 0,
+                fontSize: `${p.size}px`,
+                animationDelay: `${p.delay}s`,
+                animationDuration: `${p.duration}s`,
+                opacity: 0.3,
+              }}
+            >
+              {p.isVinyl ? (
+                <Disc3
+                  size={p.size}
+                  className="vinyl-spin"
+                  style={{ color: "hsl(var(--neon-pink))" }}
+                />
+              ) : (
+                p.symbol
+              )}
+            </span>
+          ))}
+        </div>
+      )}
+
       <DialogContent
-        className="p-0 overflow-hidden max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow promo-popup-enter"
+        className="p-0 overflow-visible max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow promo-popup-enter"
         style={{ zIndex: 100 }}
       >
-        {/* Floating Close button — blurred circle backdrop for visibility over any media */}
+        {/* Vinyl-record close button — rotates slowly */}
         <button
           type="button"
           onClick={onClose}
           aria-label="Stäng"
-          className="absolute -top-3 -right-3 sm:top-2 sm:right-2 z-30 rounded-full bg-background/40 backdrop-blur-md border-2 border-primary p-2 text-foreground shadow-[0_0_12px_hsl(var(--primary)/0.8)] hover:bg-primary hover:text-primary-foreground transition-colors"
+          className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 z-30 rounded-full bg-background/60 backdrop-blur-md border-2 border-primary p-2 text-foreground shadow-[0_0_16px_hsl(var(--primary)/0.9)] hover:bg-primary hover:text-primary-foreground transition-colors group"
         >
-          <X className="h-4 w-4" />
+          <Disc3 className="h-5 w-5 vinyl-spin group-hover:[animation-duration:1.5s]" />
         </button>
 
         {/* Scrollable area: media + text */}
-        <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto scroll-smooth">
+        <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth rounded-[inherit]">
           {/* Media — contained, never pushes content off-screen */}
           {(promo.video_file_url || ytEmbed || promo.flyer_image_url) && (
             <div className="relative w-full bg-black flex items-center justify-center" style={{ maxHeight: "55vh" }}>
@@ -293,22 +345,32 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
             </div>
           )}
 
-          {/* Text — glassmorphism container with neon border */}
+          {/* Text — glassmorphism container with neon border + live EQ */}
           <div
             ref={ctaAnchorRef}
-            className="px-6 pt-5 pb-4 space-y-2 bg-black/60 backdrop-blur-md border-t border-b border-primary/40"
+            className="px-6 pt-5 pb-4 space-y-3 bg-black/60 backdrop-blur-xl border-t border-b border-primary/40"
           >
-            <h2
-              className="text-3xl font-bold bg-clip-text text-transparent"
-              style={{
-                backgroundImage:
-                  "linear-gradient(90deg, hsl(var(--neon-pink)), hsl(var(--neon-cyan)))",
-                textShadow: "0 2px 6px rgba(0,0,0,0.85)",
-                filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.8))",
-              }}
-            >
-              {promo.title}
-            </h2>
+            <div className="flex items-start justify-between gap-3">
+              <h2
+                className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-cyan-400 bg-clip-text text-transparent leading-tight"
+                style={{
+                  textShadow: "0 2px 6px rgba(0,0,0,0.85)",
+                  filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.8))",
+                }}
+              >
+                {promo.title}
+              </h2>
+              {/* 5-bar live EQ */}
+              <div className="flex items-end gap-[3px] h-5 pt-2 shrink-0" aria-hidden="true">
+                {[0.0, 0.15, 0.3, 0.45, 0.2].map((d, i) => (
+                  <span
+                    key={i}
+                    className="eq-bar"
+                    style={{ animationDelay: `${d}s`, animationDuration: `${0.7 + (i % 3) * 0.2}s` }}
+                  />
+                ))}
+              </div>
+            </div>
             {promo.subtitle && (
               <p className="text-sm text-foreground/90" style={{ textShadow: "0 1px 3px rgba(0,0,0,0.8)" }}>
                 {promo.subtitle}
@@ -318,7 +380,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
         </div>
 
         {/* Sticky footer: CTA always visible */}
-        <div className="px-6 py-4 space-y-3 border-t border-border/40 bg-background/80 backdrop-blur-sm flex-shrink-0">
+        <div className="px-6 py-4 space-y-3 border-t border-border/40 bg-background/80 backdrop-blur-sm flex-shrink-0 rounded-b-[inherit]">
           {promo.cta_text && promo.cta_url && (
             <Button onClick={handleCta} className="w-full promo-cta-pulse" size="lg">
               {promo.cta_text}
