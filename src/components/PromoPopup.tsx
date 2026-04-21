@@ -4,6 +4,13 @@ import { Button } from "@/components/ui/button";
 import { Disc3, X } from "lucide-react";
 import confetti from "canvas-confetti";
 import { logger } from "@/lib/logger";
+import {
+  CONFETTI_CANVAS_Z_INDEX,
+  PROMO_PARTICLE_LAYER_Z_INDEX,
+  createConfettiThrottleState,
+  resetOpenCycle,
+  shouldFireConfetti,
+} from "@/lib/confettiThrottle";
 import type { Promo } from "@/hooks/useActivePromo";
 
 interface PromoPopupProps {
@@ -116,8 +123,7 @@ const SOUND_SESSION_KEY = "promo-popup-sound-played";
 const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProps) => {
   const ytEmbed = promo.youtube_url ? getYouTubeEmbedUrl(promo.youtube_url) : null;
   const timersRef = useRef<number[]>([]);
-  const lastFiredAtRef = useRef<number>(0);
-  const firedForThisOpenRef = useRef<boolean>(false);
+  const throttleStateRef = useRef(createConfettiThrottleState());
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const ctaAnchorRef = useRef<HTMLDivElement | null>(null);
   // Live audio intensity getter (returns 0..1) — set when sound is played
@@ -238,27 +244,24 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   useEffect(() => {
     // Reset the per-open guard the moment the popup closes
     if (!open) {
-      firedForThisOpenRef.current = false;
+      resetOpenCycle(throttleStateRef.current);
       return;
     }
 
-    // Throttle: max one confetti burst per 3 seconds, regardless of open toggles
-    const now = Date.now();
-    if (firedForThisOpenRef.current) {
-      logger.log("[PromoPopup] Confetti blocked: already fired for this open cycle");
-      return;
-    }
-    if (now - lastFiredAtRef.current < 3000) {
-      logger.log("[PromoPopup] Confetti blocked by throttle (3s cooldown)", {
-        timeSinceLast: now - lastFiredAtRef.current,
-      });
+    // Throttle: max one burst per cooldown, plus once-per-open-cycle guard
+    const decision = shouldFireConfetti(throttleStateRef.current, Date.now());
+    if (decision.fire === false) {
+      if (decision.reason === "already-fired-this-open") {
+        logger.log("[PromoPopup] Confetti blocked: already fired for this open cycle");
+      } else {
+        logger.log("[PromoPopup] Confetti blocked by throttle (3s cooldown)", {
+          timeSinceLast: decision.timeSinceLast,
+        });
+      }
       return;
     }
 
     logger.log("[PromoPopup] Confetti firing now");
-
-    firedForThisOpenRef.current = true;
-    lastFiredAtRef.current = now;
 
     // Create a dedicated full-screen canvas just for this open cycle
     const canvas = document.createElement("canvas");
@@ -268,7 +271,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
     canvas.style.height = "100vh";
     canvas.style.pointerEvents = "none";
     // Sit clearly above Radix Dialog overlay/content and any modal
-    canvas.style.zIndex = "99999";
+    canvas.style.zIndex = String(CONFETTI_CANVAS_Z_INDEX);
     canvas.setAttribute("data-promo-confetti", "true");
     document.body.appendChild(canvas);
 
