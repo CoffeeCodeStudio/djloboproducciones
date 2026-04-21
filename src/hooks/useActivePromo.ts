@@ -7,6 +7,7 @@ export interface Promo {
   subtitle: string | null;
   flyer_image_url: string | null;
   youtube_url: string | null;
+  video_file_url: string | null;
   cta_text: string | null;
   cta_url: string | null;
   source: "calendar" | "manual";
