@@ -21,6 +21,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const DevZStack = lazy(() => import("./pages/dev/DevZStack"));
 
 const queryClient = new QueryClient();
 
