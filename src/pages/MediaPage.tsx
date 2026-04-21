@@ -168,7 +168,7 @@ const MediaPage = () => {
                   <img
                     src={item.src}
                     alt={item.alt}
-                    className="block w-full h-auto max-h-none object-center bg-background/40"
+                    className="block w-full h-auto object-cover object-center bg-background/40"
                     loading="lazy"
                     onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = item.fallback; }}
                   />
