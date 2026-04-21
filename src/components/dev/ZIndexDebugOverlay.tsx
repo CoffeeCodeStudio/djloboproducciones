@@ -161,8 +161,7 @@ const ZIndexDebugOverlay = () => {
       console.error("[z-index] static layering assertion failed:", r.violations);
     }
 
-    // Poll the DOM every 1.5s — cheap, only runs in dev.
-    const tick = () => {
+    const runChecks = () => {
       const rt = runRuntimeZIndexCheck();
       setRuntime(rt);
       if (rt.violations.length > 0) {
@@ -180,9 +179,61 @@ const ZIndexDebugOverlay = () => {
         );
       }
     };
-    tick();
-    const id = window.setInterval(tick, 1500);
-    return () => window.clearInterval(id);
+
+    // Coalesce bursts of mutations into one rAF-scheduled check so quick
+    // mount/unmount flashes still register but we don't thrash the DOM.
+    let scheduled = false;
+    const scheduleRun = () => {
+      if (scheduled) return;
+      scheduled = true;
+      requestAnimationFrame(() => {
+        scheduled = false;
+        runChecks();
+      });
+    };
+
+    // Initial check.
+    runChecks();
+
+    // Event-driven triggers (replaces 1.5s polling):
+    //  1. MutationObserver — fires whenever any element with [data-zlayer]
+    //     is added/removed or its style/class changes (covers PromoPopup
+    //     open/close and mini-player mount/unmount precisely).
+    //  2. visibilitychange — re-check when tab returns from background.
+    //  3. resize — viewport changes can swap responsive z-index classes.
+    const observer = new MutationObserver((mutations) => {
+      const relevant = mutations.some((m) => {
+        if (m.type === "attributes") {
+          const target = m.target as HTMLElement;
+          return target.hasAttribute?.("data-zlayer");
+        }
+        // childList: any added/removed node tagged with data-zlayer
+        const nodes = [...m.addedNodes, ...m.removedNodes];
+        return nodes.some((n) => {
+          if (!(n instanceof HTMLElement)) return false;
+          return n.hasAttribute("data-zlayer") || n.querySelector?.("[data-zlayer]");
+        });
+      });
+      if (relevant) scheduleRun();
+    });
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["style", "class", "data-state", "data-zlayer"],
+    });
+
+    const onVisibility = () => {
+      if (document.visibilityState === "visible") scheduleRun();
+    };
+    document.addEventListener("visibilitychange", onVisibility);
+    window.addEventListener("resize", scheduleRun, { passive: true });
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", onVisibility);
+      window.removeEventListener("resize", scheduleRun);
+    };
   }, []);
 
   if (!import.meta.env.DEV) return null;
