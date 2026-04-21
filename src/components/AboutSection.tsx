@@ -194,13 +194,13 @@ const AboutSection = () => {
           {/* Right Column - Image and Features */}
           <div className="space-y-4 sm:space-y-6">
             {/* DJ Image */}
-            <div className="scroll-reveal glass-card overflow-hidden w-full max-w-md mx-auto">
+            <div className="scroll-reveal glass-card overflow-hidden w-full max-w-md mx-auto aspect-[4/5]">
               <img
                 src={aboutImage}
                 srcSet={aboutSrcSet}
                 sizes="(max-width: 640px) 100vw, 560px"
                 alt="DJ Lobo spelar latinmusik live"
-                className="w-full h-auto block"
+                className="w-full h-full object-cover block"
                 loading="lazy"
                 width={560}
                 height={700}
