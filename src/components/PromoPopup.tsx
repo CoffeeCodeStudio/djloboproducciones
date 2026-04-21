@@ -67,52 +67,55 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
       <DialogContent
-        className="p-0 overflow-hidden max-w-md max-h-[90vh] overflow-y-auto glass-card border-primary/40 promo-neon-glow"
+        className="p-0 overflow-hidden max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-primary/40 promo-neon-glow"
       >
-        {/* Floating Close button - always visible over media */}
+        {/* Floating Close button - always visible, distinct over any media */}
         <button
           type="button"
           onClick={onClose}
           aria-label="Stäng"
-          className="absolute top-3 right-3 z-20 rounded-full bg-black/70 backdrop-blur-sm p-2 text-white border border-white/30 shadow-lg hover:bg-black/90 transition-colors"
+          className="absolute -top-3 -right-3 sm:top-2 sm:right-2 z-30 rounded-full bg-background border-2 border-primary p-2 text-foreground shadow-[0_0_12px_hsl(var(--primary)/0.8)] hover:bg-primary hover:text-primary-foreground transition-colors"
         >
           <X className="h-4 w-4" />
         </button>
 
-        {/* Media */}
-        <div className="relative w-full aspect-square overflow-hidden bg-black">
-          {promo.video_file_url ? (
-            <video
-              src={promo.video_file_url}
-              poster={promo.flyer_image_url ?? undefined}
-              controls
-              autoPlay
-              muted
-              playsInline
-              className="w-full h-full object-cover"
-            />
-          ) : ytEmbed ? (
-            <div className="absolute inset-0 w-full h-full">
-              <iframe
-                src={ytEmbed}
-                title={promo.title}
-                allow="autoplay; encrypted-media; picture-in-picture"
-                allowFullScreen
-                className="w-full h-full"
-              />
+        {/* Scrollable area: media + text */}
+        <div className="flex-1 min-h-0 overflow-y-auto">
+          {/* Media — contained, never pushes content off-screen */}
+          {(promo.video_file_url || ytEmbed || promo.flyer_image_url) && (
+            <div className="relative w-full bg-black flex items-center justify-center" style={{ maxHeight: "55vh" }}>
+              {promo.video_file_url ? (
+                <video
+                  src={promo.video_file_url}
+                  poster={promo.flyer_image_url ?? undefined}
+                  controls
+                  autoPlay
+                  muted
+                  playsInline
+                  className="w-full h-auto max-h-[55vh] object-contain"
+                />
+              ) : ytEmbed ? (
+                <div className="relative w-full aspect-video">
+                  <iframe
+                    src={ytEmbed}
+                    title={promo.title}
+                    allow="autoplay; encrypted-media; picture-in-picture"
+                    allowFullScreen
+                    className="absolute inset-0 w-full h-full"
+                  />
+                </div>
+              ) : promo.flyer_image_url ? (
+                <img
+                  src={promo.flyer_image_url}
+                  alt={promo.title}
+                  className="w-full h-auto max-h-[55vh] object-contain"
+                />
+              ) : null}
             </div>
-          ) : promo.flyer_image_url ? (
-            <img
-              src={promo.flyer_image_url}
-              alt={promo.title}
-              className="w-full h-full object-cover object-center"
-            />
-          ) : null}
-        </div>
+          )}
 
-        {/* Content */}
-        <div className="p-6 space-y-4">
-          <div className="space-y-1">
+          {/* Text */}
+          <div className="px-6 pt-5 pb-2 space-y-1">
             <h2 className="text-2xl font-bold neon-gradient bg-clip-text text-transparent">
               {promo.title}
             </h2>
@@ -120,14 +123,16 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
               <p className="text-sm text-muted-foreground">{promo.subtitle}</p>
             )}
           </div>
+        </div>
 
+        {/* Sticky footer: CTA always visible */}
+        <div className="px-6 py-4 space-y-3 border-t border-border/40 bg-background/80 backdrop-blur-sm flex-shrink-0">
           {promo.cta_text && promo.cta_url && (
             <Button onClick={handleCta} className="w-full" size="lg">
               {promo.cta_text}
             </Button>
           )}
-
-          <div className="text-center pt-1">
+          <div className="text-center">
             <button
               onClick={onPermanentDismiss}
               className="text-xs text-muted-foreground underline hover:text-foreground transition-colors"
