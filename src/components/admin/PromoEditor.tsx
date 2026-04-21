@@ -102,6 +102,13 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
   const [cropOpen, setCropOpen] = useState(false);
   const [uploadingFlyer, setUploadingFlyer] = useState(false);
 
+  // Video state
+  const [mediaType, setMediaType] = useState<MediaType>("none");
+  const [videoFileUrl, setVideoFileUrl] = useState<string | null>(null);
+  const [videoFileName, setVideoFileName] = useState<string | null>(null);
+  const [videoFileSize, setVideoFileSize] = useState<number | null>(null);
+  const [uploadingVideo, setUploadingVideo] = useState(false);
+
   // Reset form when opening
   useEffect(() => {
     if (!open) return;
@@ -110,6 +117,12 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       setSubtitle(promo.subtitle ?? "");
       setFlyerUrl(promo.flyer_image_url);
       setYoutubeUrl(promo.youtube_url ?? "");
+      setVideoFileUrl(promo.video_file_url ?? null);
+      setVideoFileName(null);
+      setVideoFileSize(null);
+      if (promo.video_file_url) setMediaType("video");
+      else if (promo.youtube_url) setMediaType("youtube");
+      else setMediaType("none");
       setCtaText(promo.cta_text ?? "");
       setCtaUrl(promo.cta_url ?? "");
       setSource(promo.source);
@@ -123,6 +136,10 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       setSubtitle("");
       setFlyerUrl(null);
       setYoutubeUrl("");
+      setVideoFileUrl(null);
+      setVideoFileName(null);
+      setVideoFileSize(null);
+      setMediaType("none");
       setCtaText("");
       setCtaUrl("");
       setSource("manual");
@@ -139,8 +156,8 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      toast.error("Filen är för stor (max 5 MB)");
+    if (file.size > 2 * 1024 * 1024) {
+      toast.error("Bilden är för stor (max 2 MB)");
       return;
     }
     const reader = new FileReader();
@@ -164,6 +181,44 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
     } finally {
       setUploadingFlyer(false);
       setRawImage(null);
+    }
+  };
+
+  const handleVideoSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    e.target.value = "";
+    if (!file) return;
+    if (!file.type.startsWith("video/") && !file.name.toLowerCase().endsWith(".mp4")) {
+      toast.error("Endast MP4-videofiler tillåtna");
+      return;
+    }
+    if (file.size > MAX_VIDEO_BYTES) {
+      toast.error("Videon är för stor. Max 50 MB. Använd YouTube-länk istället.");
+      return;
+    }
+    setUploadingVideo(true);
+    try {
+      const url = await uploadPromoVideo(file);
+      setVideoFileUrl(url);
+      setVideoFileName(file.name);
+      setVideoFileSize(file.size);
+      toast.success("Video uppladdad!");
+    } catch (err: any) {
+      toast.error(err.message || "Uppladdning misslyckades");
+    } finally {
+      setUploadingVideo(false);
+    }
+  };
+
+  const handleMediaTypeChange = (next: MediaType) => {
+    setMediaType(next);
+    if (next !== "video") {
+      setVideoFileUrl(null);
+      setVideoFileName(null);
+      setVideoFileSize(null);
+    }
+    if (next !== "youtube") {
+      setYoutubeUrl("");
     }
   };
 
