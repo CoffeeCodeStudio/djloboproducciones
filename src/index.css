@@ -644,20 +644,76 @@ body {
     border-color: hsla(var(--neon-pink), 0.7) !important;
   }
 
-  /* Spring entrance for promo popup */
+  /* Bass-drop spring entrance: scale 0.8 -> 1.05 -> 1.0 with subtle shake on landing */
   @keyframes promo-popup-enter {
     0% {
-      transform: scale(0.9);
+      transform: scale(0.8) translateX(0);
       opacity: 0;
     }
+    60% {
+      transform: scale(1.05) translateX(0);
+      opacity: 1;
+    }
+    75% {
+      transform: scale(1) translateX(-3px);
+    }
+    82% {
+      transform: scale(1) translateX(3px);
+    }
+    89% {
+      transform: scale(1) translateX(-2px);
+    }
     100% {
-      transform: scale(1);
+      transform: scale(1) translateX(0);
       opacity: 1;
     }
   }
 
   .promo-popup-enter {
-    animation: promo-popup-enter 0.35s cubic-bezier(0.22, 1.2, 0.36, 1) both;
+    animation: promo-popup-enter 0.55s cubic-bezier(0.22, 1.2, 0.36, 1) both;
+  }
+
+  /* 5-bar EQ animation */
+  @keyframes eq-bounce {
+    0%, 100% { transform: scaleY(0.3); }
+    50% { transform: scaleY(1); }
+  }
+
+  .eq-bar {
+    display: inline-block;
+    width: 3px;
+    height: 16px;
+    background: linear-gradient(to top, hsl(var(--neon-pink)), hsl(var(--neon-cyan)));
+    border-radius: 2px;
+    transform-origin: bottom;
+    animation: eq-bounce 0.9s ease-in-out infinite;
+    box-shadow: 0 0 6px hsla(var(--neon-cyan), 0.7);
+  }
+
+  /* Slow vinyl spin for close button */
+  @keyframes vinyl-spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .vinyl-spin {
+    animation: vinyl-spin 6s linear infinite;
+  }
+
+  /* Drifting musical particles */
+  @keyframes drift-up {
+    0% { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.3; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-10vh) translateX(40px) rotate(360deg); opacity: 0; }
+  }
+
+  .drift-particle {
+    position: absolute;
+    animation: drift-up linear infinite;
+    color: hsl(var(--neon-cyan));
+    filter: drop-shadow(0 0 6px hsla(var(--neon-pink), 0.6));
+    will-change: transform, opacity;
   }
 
   /* Slow attention-pulse for CTA button */
