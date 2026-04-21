@@ -71,24 +71,21 @@ const MediaPage = () => {
   };
 
   // Build unified media items from gallery_images (which now have media_type)
-  const allItems = [...(images || [])]
-    .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-    .map((img) => {
-      const isVideo = img.media_type === "video";
-      const opt = optimizeGallery(img.image_url);
-      const ytId = isVideo && img.video_url ? extractYouTubeId(img.video_url) : null;
+  const allItems = (images || []).map((img) => {
+    const isVideo = img.media_type === "video";
+    const opt = optimizeGallery(img.image_url);
+    const ytId = isVideo && img.video_url ? extractYouTubeId(img.video_url) : null;
 
-      return {
-        id: img.id,
-        mediaType: isVideo ? ("video" as const) : ("photo" as const),
-        src: opt.src,
-        fallback: opt.fallback,
-        alt: img.alt_text || "DJ Lobo event",
-        videoUrl: img.video_url,
-        youtubeId: ytId,
-        createdAt: img.created_at,
-      };
-    });
+    return {
+      id: img.id,
+      mediaType: isVideo ? ("video" as const) : ("photo" as const),
+      src: opt.src,
+      fallback: opt.fallback,
+      alt: img.alt_text || "DJ Lobo event",
+      videoUrl: img.video_url,
+      youtubeId: ytId,
+    };
+  });
 
   const filtered = filter === "all" ? allItems : allItems.filter((i) => i.mediaType === filter);
 
@@ -160,42 +157,39 @@ const MediaPage = () => {
         ) : filtered.length > 0 ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
             {filtered.map((item) => (
-              <div key={item.id} className="flex flex-col gap-1.5">
-                <button
-                  onClick={() => openLightbox(item)}
-                  className="aspect-[4/3] w-full glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
-                >
-                  <img
-                    src={item.src}
-                    alt={item.alt}
-                    className="w-full h-full object-cover object-center bg-background/40"
-                    loading="lazy"
-                    onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = item.fallback; }}
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+              <button
+                key={item.id}
+                onClick={() => openLightbox(item)}
+                className="aspect-square glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left"
+              >
+                <img
+                  src={item.src}
+                  alt={item.alt}
+                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                  loading="lazy"
+                  width={400}
+                  height={400}
+                  onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = item.fallback; }}
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                  {/* Type badge */}
-                  <div className="absolute top-2 left-2">
-                    <span className="px-2 py-1 rounded text-xs font-semibold bg-background/60 text-foreground flex items-center gap-1 backdrop-blur-sm">
-                      {item.mediaType === "video" ? <Play className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
-                      {item.mediaType === "video" ? "Video" : (language === "en" ? "Photo" : "Foto")}
-                    </span>
-                  </div>
+                {/* Type badge */}
+                <div className="absolute top-2 left-2">
+                  <span className="px-2 py-1 rounded text-xs font-semibold bg-background/60 text-foreground flex items-center gap-1 backdrop-blur-sm">
+                    {item.mediaType === "video" ? <Play className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
+                    {item.mediaType === "video" ? "Video" : (language === "en" ? "Photo" : "Foto")}
+                  </span>
+                </div>
 
-                  {/* Play overlay for videos */}
-                  {item.mediaType === "video" && (
-                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                      <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-primary/80 flex items-center justify-center opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all shadow-lg shadow-primary/30">
-                        <Play className="w-7 h-7 sm:w-8 sm:h-8 text-primary-foreground ml-1" />
-                      </div>
+                {/* Play overlay for videos */}
+                {item.mediaType === "video" && (
+                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                    <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-primary/80 flex items-center justify-center opacity-80 group-hover:opacity-100 group-hover:scale-110 transition-all shadow-lg shadow-primary/30">
+                      <Play className="w-7 h-7 sm:w-8 sm:h-8 text-primary-foreground ml-1" />
                     </div>
-                  )}
-                </button>
-                <span className="text-[11px] text-muted-foreground px-1">
-                  {language === "en" ? "Uploaded" : language === "es" ? "Subido" : "Uppladdat"}{" "}
-                  {new Date(item.createdAt).toLocaleDateString(language === "en" ? "en-GB" : language === "es" ? "es-ES" : "sv-SE", { year: "numeric", month: "short", day: "numeric" })}
-                </span>
-              </div>
+                  </div>
+                )}
+              </button>
             ))}
           </div>
         ) : (

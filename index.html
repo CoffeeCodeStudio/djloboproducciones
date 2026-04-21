@@ -50,19 +50,12 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link rel="preconnect" href="https://gzdnxaseaimdobahilyc.supabase.co" crossorigin />
 
-    <style>
-      html, body { background-color: #000; color: #fff; margin: 0; }
-      #root { min-height: 100vh; }
-    </style>
-
     <!-- Preload critical Google Fonts stylesheet -->
     <link
       rel="preload"
       as="style"
       href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
-      onload="this.onload=null;this.rel='stylesheet'"
     />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap" /></noscript>
 
     <!-- JSON-LD Structured Data -->
     <script type="application/ld+json">
@@ -105,6 +98,10 @@
 
     <!-- Widget APIs removed from global scope — loaded on-demand by components -->
 
-    <!-- Google Fonts loaded non-blocking via preload+onload in <head> -->
+    <!-- Google Fonts - render blocking for consistent typography -->
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Inter:wght@300;400;500;600&display=swap"
+    />
   </body>
 </html>

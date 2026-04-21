@@ -41,17 +41,17 @@ const HeroSection = () => {
 
   return (
     <section
-      className="flex flex-col items-center justify-center px-4 sm:px-6 py-12 sm:py-16 md:py-20 relative overflow-hidden"
+      className="h-[calc(100vh-5rem)] flex flex-col items-center justify-center px-4 sm:px-6 pt-4 pb-20 relative overflow-hidden"
       aria-labelledby="hero-title">
       
       {/* Hero Background Image */}
       {branding?.hero_image_url &&
-      <div className="absolute inset-0 -z-10 overflow-hidden">
+      <div className="absolute inset-0 -z-10">
           <img
           src={heroOpt.src}
           alt=""
           aria-hidden="true"
-          className="w-full h-full object-cover object-center opacity-40"
+          className="w-full h-full object-cover opacity-40"
           loading="eager"
           fetchPriority="high"
           width={1920}
