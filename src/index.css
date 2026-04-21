@@ -700,7 +700,63 @@ body {
     animation: vinyl-spin 6s linear infinite;
   }
 
-  /* Drifting musical particles */
+  /* Outer ripples — expanding neon rings simulating sound waves */
+  @keyframes promo-ripple {
+    0% {
+      transform: translate(-50%, -50%) scale(0.6);
+      opacity: 0.7;
+      border-width: 2px;
+    }
+    100% {
+      transform: translate(-50%, -50%) scale(2.4);
+      opacity: 0;
+      border-width: 1px;
+    }
+  }
+
+  .promo-ripple {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    border-style: solid;
+    border-radius: 9999px;
+    pointer-events: none;
+    animation: promo-ripple 3.4s ease-out infinite;
+    will-change: transform, opacity;
+  }
+
+  /* Ambient outer aura — synced pulsing glow around the modal */
+  @keyframes promo-aura {
+    0%, 100% {
+      opacity: 0.55;
+      transform: translate(-50%, -50%) scale(1);
+    }
+    50% {
+      opacity: 0.95;
+      transform: translate(-50%, -50%) scale(1.08);
+    }
+  }
+
+  .promo-aura {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 120%;
+    height: 120%;
+    border-radius: 9999px;
+    pointer-events: none;
+    background:
+      radial-gradient(ellipse at center, hsla(var(--neon-cyan), 0.45) 0%, hsla(var(--neon-pink), 0.25) 40%, transparent 70%);
+    filter: blur(40px);
+    animation: promo-aura 3.2s ease-in-out infinite;
+    will-change: opacity, transform;
+  }
+
+  /* Close-cursor on the dialog overlay so users know clicking outside dismisses */
+  [data-radix-dialog-overlay] {
+    cursor: zoom-out;
+  }
+
   @keyframes drift-up {
     0% { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
     10% { opacity: 0.3; }
