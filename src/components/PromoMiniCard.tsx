@@ -55,7 +55,7 @@ const PromoMiniCard = ({ promo, onClick, onDismiss }: PromoMiniCardProps) => {
           animate={{ x: 0, opacity: 1 }}
           exit={{ x: 500, opacity: 0 }}
           transition={{ type: "spring", stiffness: 240, damping: 26 }}
-          className="fixed bottom-6 right-6 w-[280px] max-w-[calc(100vw-3rem)]"
+          className="fixed bottom-24 right-6 w-[280px] max-w-[calc(100vw-3rem)]"
           style={{ zIndex: 60 }}
         >
           <button
