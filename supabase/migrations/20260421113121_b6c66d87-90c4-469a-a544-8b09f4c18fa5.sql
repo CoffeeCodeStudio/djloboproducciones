@@ -1,0 +1,1 @@
+ALTER TABLE public.promos ADD COLUMN video_file_url text;
