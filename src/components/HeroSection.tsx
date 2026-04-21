@@ -41,7 +41,7 @@ const HeroSection = () => {
 
   return (
     <section
-      className="h-[calc(100vh-5rem)] flex flex-col items-center justify-center px-4 sm:px-6 pt-4 pb-20 relative overflow-hidden"
+      className="flex flex-col items-center justify-center px-4 sm:px-6 py-12 sm:py-16 md:py-20 relative overflow-hidden"
       aria-labelledby="hero-title">
       
       {/* Hero Background Image */}
