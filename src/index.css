@@ -644,12 +644,52 @@ body {
     border-color: hsla(var(--neon-pink), 0.7) !important;
   }
 
+  /* Spring entrance for promo popup */
+  @keyframes promo-popup-enter {
+    0% {
+      transform: scale(0.9);
+      opacity: 0;
+    }
+    100% {
+      transform: scale(1);
+      opacity: 1;
+    }
+  }
+
+  .promo-popup-enter {
+    animation: promo-popup-enter 0.35s cubic-bezier(0.22, 1.2, 0.36, 1) both;
+  }
+
+  /* Slow attention-pulse for CTA button */
+  @keyframes promo-cta-pulse {
+    0%, 100% {
+      box-shadow:
+        0 0 0 0 hsla(var(--neon-pink), 0.55),
+        0 0 18px 2px hsla(var(--neon-cyan), 0.45);
+      transform: scale(1);
+    }
+    50% {
+      box-shadow:
+        0 0 0 6px hsla(var(--neon-pink), 0),
+        0 0 28px 6px hsla(var(--neon-cyan), 0.75);
+      transform: scale(1.02);
+    }
+  }
+
+  .promo-cta-pulse {
+    animation: promo-cta-pulse 2.4s ease-in-out infinite;
+  }
+
   @media (prefers-reduced-motion: reduce) {
     .promo-neon-glow {
       animation: none !important;
       box-shadow:
         0 0 20px 4px hsla(var(--neon-pink), 0.7),
         0 0 40px 8px hsla(var(--neon-cyan), 0.5) !important;
+    }
+    .promo-popup-enter,
+    .promo-cta-pulse {
+      animation: none !important;
     }
   }
 }
