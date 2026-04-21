@@ -3,6 +3,7 @@ import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { X } from "lucide-react";
 import confetti from "canvas-confetti";
+import { logger } from "@/lib/logger";
 import type { Promo } from "@/hooks/useActivePromo";
 
 interface PromoPopupProps {
@@ -73,8 +74,18 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
 
     // Throttle: max one confetti burst per 3 seconds, regardless of open toggles
     const now = Date.now();
-    if (firedForThisOpenRef.current) return;
-    if (now - lastFiredAtRef.current < 3000) return;
+    if (firedForThisOpenRef.current) {
+      logger.log("[PromoPopup] Confetti blocked: already fired for this open cycle");
+      return;
+    }
+    if (now - lastFiredAtRef.current < 3000) {
+      logger.log("[PromoPopup] Confetti blocked by throttle (3s cooldown)", {
+        timeSinceLast: now - lastFiredAtRef.current,
+      });
+      return;
+    }
+
+    logger.log("[PromoPopup] Confetti firing now");
 
     firedForThisOpenRef.current = true;
     lastFiredAtRef.current = now;
