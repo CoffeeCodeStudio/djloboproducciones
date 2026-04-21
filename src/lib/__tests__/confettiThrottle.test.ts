@@ -117,3 +117,39 @@ describe("z-index layering", () => {
     expect(CONFETTI_CANVAS_Z_INDEX).toBeGreaterThan(PROMO_PARTICLE_LAYER_Z_INDEX);
   });
 });
+
+describe("mini-player z-index layering", () => {
+  it("default layer map passes the layering assertion", () => {
+    const report = assertMiniPlayerLayering();
+    expect(report.violations).toEqual([]);
+    expect(report.ok).toBe(true);
+  });
+
+  it("mini-player sits ABOVE every footer/chrome layer", () => {
+    const mp = Z_LAYERS.promoMiniPlayer;
+    expect(mp).toBeGreaterThan(Z_LAYERS.footer);
+    expect(mp).toBeGreaterThan(Z_LAYERS.nowPlayingBar);
+    expect(mp).toBeGreaterThan(Z_LAYERS.globalMiniPlayer);
+    expect(mp).toBeGreaterThan(Z_LAYERS.cookieConsent);
+  });
+
+  it("mini-player sits BELOW the main PromoPopup modal layers", () => {
+    const mp = Z_LAYERS.promoMiniPlayer;
+    expect(mp).toBeLessThan(Z_LAYERS.promoPopupBackdrop);
+    expect(mp).toBeLessThan(Z_LAYERS.promoPopupContent);
+  });
+
+  it("flags a violation if mini-player is dropped below the footer", () => {
+    const broken = { ...Z_LAYERS, promoMiniPlayer: 5 };
+    const report = assertMiniPlayerLayering(broken);
+    expect(report.ok).toBe(false);
+    expect(report.violations.join(" ")).toContain("footer");
+  });
+
+  it("flags a violation if mini-player is raised above the modal", () => {
+    const broken = { ...Z_LAYERS, promoMiniPlayer: 99999 };
+    const report = assertMiniPlayerLayering(broken);
+    expect(report.ok).toBe(false);
+    expect(report.violations.join(" ")).toContain("promoPopupContent");
+  });
+});
