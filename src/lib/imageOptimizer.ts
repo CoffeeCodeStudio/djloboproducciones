@@ -28,8 +28,7 @@ export function optimizeWithFallback(
   width: number = 800
 ): { src: string; fallback: string } {
   const original = url || "";
-  const optimized = buildOptimizedUrl(original, width);
-  return { src: optimized, fallback: original };
+  return { src: original, fallback: original };
 }
 
 export function optimizeLogo(url: string | null | undefined) {
