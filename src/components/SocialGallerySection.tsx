@@ -90,12 +90,12 @@ const SocialGallerySection = () => {
               images.map((image) => (
                 <div
                   key={image.id}
-                  className="aspect-square glass-card overflow-hidden group relative hover:border-neon-pink/50 transition-all duration-300"
+                  className="w-full aspect-square overflow-hidden glass-card group relative hover:border-neon-pink/50 transition-all duration-300 block"
                 >
                   <img
                     src={optimizeGallery(image.image_url).src}
                     alt={image.alt_text || "DJ Lobo eventbild från galleri"}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="w-full h-full object-cover object-center bg-background/40"
                     loading="lazy"
                     width={400}
                     height={400}
