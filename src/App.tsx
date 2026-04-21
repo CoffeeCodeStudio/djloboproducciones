@@ -21,6 +21,7 @@ const NotFound = lazy(() => import("./pages/NotFound"));
 const PrivacyPolicy = lazy(() => import("./pages/PrivacyPolicy"));
 const TermsOfService = lazy(() => import("./pages/TermsOfService"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
+const DevZStack = lazy(() => import("./pages/dev/DevZStack"));
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ const App = () => (
                 {/* Standalone pages without nav/footer */}
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/dev/zstack" element={<DevZStack />} />
 
                 <Route element={<Layout />}>
                   <Route path="/" element={<Index />} />
