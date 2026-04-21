@@ -43,7 +43,7 @@ describe("confetti throttle", () => {
     expect(shouldFireConfetti(state, 0).fire).toBe(true);
     const second = shouldFireConfetti(state, 100);
     expect(second.fire).toBe(false);
-    if (!second.fire) expect(second.reason).toBe("already-fired-this-open");
+    expect(second).toMatchObject({ fire: false, reason: "already-fired-this-open" });
   });
 
   it("blocks rapid open/close/open inside the cooldown window", () => {
