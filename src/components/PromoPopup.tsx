@@ -491,11 +491,11 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
           {/* Text — glassmorphism container with neon border + live EQ */}
           <div
             ref={ctaAnchorRef}
-            className="px-6 pt-5 pb-4 space-y-3 bg-black/60 backdrop-blur-xl border-t border-b border-primary/40"
+            className="px-4 sm:px-6 pt-5 pr-12 sm:pr-6 pb-4 space-y-3 bg-black/60 backdrop-blur-xl border-t border-b border-primary/40"
           >
-            <div className="flex items-start justify-between gap-3">
+            <div className="flex items-start justify-between gap-2 sm:gap-3">
               <h2
-                className="text-3xl font-bold bg-gradient-to-r from-pink-500 to-cyan-400 bg-clip-text text-transparent leading-tight"
+                className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-pink-500 to-cyan-400 bg-clip-text text-transparent leading-tight break-words min-w-0"
                 style={{
                   textShadow: "0 2px 6px rgba(0,0,0,0.85)",
                   filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.8))",
@@ -504,7 +504,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
                 {promo.title}
               </h2>
               {/* 5-bar live EQ — driven by Web Audio analyser via rAF */}
-              <div className="flex items-end gap-[3px] h-5 pt-2 shrink-0" aria-hidden="true">
+              <div className="hidden sm:flex items-end gap-[3px] h-5 pt-2 shrink-0" aria-hidden="true">
                 {[0, 1, 2, 3, 4].map((i) => (
                   <span
                     key={i}
