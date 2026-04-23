@@ -127,7 +127,7 @@ const goToBooking = () => {
           {t.subtitle}
         </p>
       </div>
-
+)
       {/* Testimonials Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
         {testimonials.map((testimonial, index) => (
