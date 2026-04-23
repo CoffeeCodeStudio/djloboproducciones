@@ -101,11 +101,12 @@ const TestimonialsSection = () => {
   const t = translations[language];
 
   const goToBooking = () => {
-    const bokaEl = document.getElementById("boka");
+    const bokaEl =
+      document.getElementById("boka") || document.getElementById("kontakt");
     if (bokaEl) {
       bokaEl.scrollIntoView({ behavior: "smooth" });
     } else {
-      window.location.href = "/prislista#kontakt";
+      window.location.href = "/prislista#boka";
     }
   };
 
