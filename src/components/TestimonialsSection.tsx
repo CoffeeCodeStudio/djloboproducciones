@@ -105,7 +105,7 @@ const TestimonialsSection = () => {
     if (bokaEl) {
       bokaEl.scrollIntoView({ behavior: "smooth" });
     } else {
-      window.location.href = "/spelningar#boka";
+      window.location.href = "/prislista#kontakt";
     }
   };
 
