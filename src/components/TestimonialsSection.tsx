@@ -100,14 +100,15 @@ const TestimonialsSection = () => {
   const { language } = useLanguage();
   const t = translations[language];
 
-  const goToBooking = () => {
-    const bokaEl = document.getElementById("boka");
-    if (bokaEl) {
-      bokaEl.scrollIntoView({ behavior: "smooth" });
-    } else {
-      window.location.href = "/spelningar#boka";
-    }
-  };
+const goToBooking = () => {
+  const bokaEl = 
+    document.getElementById("boka") || document.getElementById("kontakt");
+  if (bokaEl) {
+    bokaEl.scrollIntoView({ behavior: "smooth" });
+  } else {
+    window.location.href = "/prislista#boka";
+  }
+};
 
   return (
     <section
