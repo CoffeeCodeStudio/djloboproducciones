@@ -85,6 +85,39 @@ const StatusBadge = ({ status }: { status: PromoStatus }) => {
   );
 };
 
+/**
+ * Compute the display order of currently-active promos using the same
+ * pinned-first + strategy logic as the public site (mirrors useActivePromo).
+ * Returns a Map from promo.id → 1-based rank for quick lookup.
+ */
+function computeActiveQueue(promos: Promo[], strategy: PromoSortStrategy): Promo[] {
+  const active = promos.filter((p) => getStatus(p) === "active");
+  const pinned = active.filter((p) => p.pinned_to_top);
+  const rest = active.filter((p) => !p.pinned_to_top);
+  const sortFn = (a: Promo, b: Promo) => {
+    switch (strategy) {
+      case "priority":
+        return (
+          b.priority - a.priority ||
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+      case "nearest_end":
+        return (
+          new Date(a.active_to).getTime() - new Date(b.active_to).getTime() ||
+          b.priority - a.priority
+        );
+      case "nearest_start":
+        return (
+          new Date(b.active_from).getTime() - new Date(a.active_from).getTime() ||
+          b.priority - a.priority
+        );
+      case "rotation":
+        return a.id.localeCompare(b.id);
+    }
+  };
+  return [...pinned.sort(sortFn), ...rest.sort(sortFn)];
+}
+
 const PromosTab = () => {
   const { promos, isLoading, deletePromo, togglePromoActive, duplicatePromo } = usePromosAdmin();
   const { strategy, setStrategy, isSaving } = usePromoSortStrategy();
