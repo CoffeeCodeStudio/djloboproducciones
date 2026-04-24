@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { MapPin, Clock, AlertCircle, Radio } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const MINIMUM_LOADING_TIME = 3000; // 3 seconds
 
@@ -77,7 +78,7 @@ const DJLoadingAnimation = ({ loadingText }: { loadingText: string }) => (
 );
 
 const CalendarSection = () => {
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useScrollReveal<HTMLElement>();
   const { language } = useLanguage();
   const t = translations[language];
   const { events, loading: apiLoading, error, refetch } = useCalendarEvents();

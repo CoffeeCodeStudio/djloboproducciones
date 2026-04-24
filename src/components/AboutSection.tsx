@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
 import djLoboAboutImage from "@/assets/dj-lobo-about.jpg";
 import { Music, Headphones, Zap, Disc } from "lucide-react";
 import { useBranding } from "@/hooks/useBranding";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 
 const translations = {
@@ -66,7 +66,7 @@ const translations = {
 };
 
 const AboutSection = () => {
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useScrollReveal<HTMLElement>();
   const { branding } = useBranding();
   const { language } = useLanguage();
   const t = translations[language];
