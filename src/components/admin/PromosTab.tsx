@@ -119,22 +119,36 @@ function computeActiveQueue(promos: Promo[], strategy: PromoSortStrategy): Promo
 }
 
 const PromosTab = () => {
-  const { promos, isLoading, deletePromo, togglePromoActive, duplicatePromo } = usePromosAdmin();
+  const { promos, isLoading, deletePromo, togglePromoActive, togglePromoPin, duplicatePromo } = usePromosAdmin();
   const { strategy, setStrategy, isSaving } = usePromoSortStrategy();
   const [editorOpen, setEditorOpen] = useState(false);
   const [editing, setEditing] = useState<Promo | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Promo | null>(null);
   const [confirmDuplicate, setConfirmDuplicate] = useState<Promo | null>(null);
 
+  // Display-order queue (only currently active promos), mirrors the public site.
+  const activeQueue = useMemo(() => computeActiveQueue(promos, strategy), [promos, strategy]);
+  const rankById = useMemo(() => {
+    const map = new Map<string, number>();
+    activeQueue.forEach((p, i) => map.set(p.id, i + 1));
+    return map;
+  }, [activeQueue]);
+
+  // Admin list ordering: status group, then rank within active group.
   const sorted = useMemo(() => {
     return [...promos].sort((a, b) => {
       const sa = getStatus(a);
       const sb = getStatus(b);
       if (STATUS_ORDER[sa] !== STATUS_ORDER[sb]) return STATUS_ORDER[sa] - STATUS_ORDER[sb];
+      if (sa === "active") {
+        const ra = rankById.get(a.id) ?? 999;
+        const rb = rankById.get(b.id) ?? 999;
+        if (ra !== rb) return ra - rb;
+      }
       if (b.priority !== a.priority) return b.priority - a.priority;
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
-  }, [promos]);
+  }, [promos, rankById]);
 
   const openCreate = () => {
     setEditing(null);
