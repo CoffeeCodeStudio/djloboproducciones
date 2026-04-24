@@ -159,6 +159,19 @@ const CalendarSection = () => {
             {t.title}
           </h2>
           <p className="text-muted-foreground text-sm sm:text-base">{t.subtitle}</p>
+          {liveCount > 0 && (
+            <div
+              className="mt-3 inline-flex items-center gap-2 rounded-full border border-destructive/40 bg-destructive/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-destructive"
+              role="status"
+              aria-live="polite"
+            >
+              <span className="relative flex h-2 w-2" aria-hidden="true">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive/70" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-destructive" />
+              </span>
+              {liveCount === 1 ? t.liveCountOne : t.liveCountMany(liveCount)}
+            </div>
+          )}
         </div>
 
         {/* Event list container */}
