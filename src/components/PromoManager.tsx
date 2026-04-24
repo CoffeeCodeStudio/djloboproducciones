@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useActivePromo } from "@/hooks/useActivePromo";
+import { useActivePromo, type Promo } from "@/hooks/useActivePromo";
 import { trackPromoEvent } from "@/lib/promoAnalytics";
 import PromoPopup from "./PromoPopup";
 import PromoMiniCard from "./PromoMiniCard";
@@ -13,18 +13,12 @@ const PERMANENT_DISMISS_KEY = (id: string) => `promo_permanent_dismissed_${id}`;
 // so the popup re-opens automatically while the promo is still active.
 const FORCE_REOPEN_KEY = (id: string) => `promo_force_reopen_${id}`;
 
-const PromoManager = () => {
-  const { promos } = useActivePromo();
-  const [mode, setMode] = useState<"hidden" | "popup" | "mini">("hidden");
-  const [reopenedFromMini, setReopenedFromMini] = useState(false);
-  // Index into the active promos list — advances as user dismisses one.
-  const [currentIndex, setCurrentIndex] = useState(0);
-  // IDs the user dismissed during this session — skip them when rotating.
-  const [skippedIds, setSkippedIds] = useState<Set<string>>(new Set());
-
-  // Build the queue: ordered active promos minus anything dismissed this session
-  // or hard-dismissed via localStorage.
-  const queue = promos.filter((p) => {
+/**
+ * Filters out promos that the user has dismissed (session or permanent) or
+ * that we've explicitly skipped this session.
+ */
+const buildQueue = (promos: Promo[], skippedIds: Set<string>): Promo[] =>
+  promos.filter((p) => {
     if (skippedIds.has(p.id)) return false;
     try {
       if (localStorage.getItem(PERMANENT_DISMISS_KEY(p.id))) return false;
@@ -35,15 +29,33 @@ const PromoManager = () => {
     return true;
   });
 
-  const promo = queue[currentIndex] ?? queue[0] ?? null;
+const PromoManager = () => {
+  const { promos } = useActivePromo();
+  const [mode, setMode] = useState<"hidden" | "popup" | "mini">("hidden");
+  const [reopenedFromMini, setReopenedFromMini] = useState(false);
+  // The promo currently being displayed. Pinned so a newly-activated, higher
+  // ranked promo cannot hijack the popup mid-show — it'll be picked up on
+  // the next close/dismiss instead.
+  const [activeId, setActiveId] = useState<string | null>(null);
+  // IDs the user dismissed during this session — skip them when rotating.
+  const [skippedIds, setSkippedIds] = useState<Set<string>>(new Set());
 
-  // If the current promo disappears from the queue (expired, dismissed, etc.)
-  // reset the index so we show the next available one.
+  const queue = buildQueue(promos, skippedIds);
+
+  // Resolve the visible promo deterministically:
+  //   1. If activeId still exists in the queue → keep showing it (don't hijack).
+  //   2. Otherwise, pick the top of the queue (highest priority / most recent).
+  const promo: Promo | null =
+    (activeId && queue.find((p) => p.id === activeId)) || queue[0] || null;
+
+  // Pin the active id whenever the visible promo changes.
   useEffect(() => {
-    if (currentIndex >= queue.length && queue.length > 0) {
-      setCurrentIndex(0);
+    if (promo && promo.id !== activeId) {
+      setActiveId(promo.id);
+    } else if (!promo && activeId) {
+      setActiveId(null);
     }
-  }, [queue.length, currentIndex]);
+  }, [promo, activeId]);
 
   useEffect(() => {
     if (!promo) {
@@ -95,7 +107,7 @@ const PromoManager = () => {
       }
       // Restart from the top of the queue when user manually reopens
       setSkippedIds(new Set());
-      setCurrentIndex(0);
+      setActiveId(null);
       setReopenedFromMini(false);
       setMode("popup");
     };
@@ -105,18 +117,23 @@ const PromoManager = () => {
 
   if (!promo) return null;
 
-  // Advance to the next promo in the queue (if any). Returns true if rotated.
+  /**
+   * Mark the current promo as handled and let the resolver pick the next one
+   * from the freshly-sorted queue (deterministic: highest priority wins).
+   */
   const advanceQueue = (dismissedId: string) => {
     setSkippedIds((prev) => {
       const next = new Set(prev);
       next.add(dismissedId);
       return next;
     });
-    // Next promo will be picked up automatically because `queue` is recomputed
-    // and currentIndex stays at 0 (since the dismissed one is filtered out).
-    setCurrentIndex(0);
+    setActiveId(null);
     setReopenedFromMini(false);
   };
+
+  /** True if there's at least one other promo waiting after `currentId`. */
+  const hasNextAfter = (currentId: string) =>
+    queue.some((p) => p.id !== currentId);
 
   const handlePopupClose = () => {
     // PromoPopup sets this flag right before firing onClose for auto-close,
@@ -135,8 +152,7 @@ const PromoManager = () => {
     }
 
     // If there are more promos waiting, rotate to the next one as a popup.
-    const hasNext = queue.length > 1;
-    if (hasNext) {
+    if (hasNextAfter(promo.id)) {
       advanceQueue(promo.id);
       setMode("popup");
       return;
@@ -157,9 +173,7 @@ const PromoManager = () => {
     } catch {
       /* ignore */
     }
-    // Rotate to next queued promo if any; otherwise hide.
-    const hasNext = queue.length > 1;
-    if (hasNext) {
+    if (hasNextAfter(promo.id)) {
       advanceQueue(promo.id);
       setMode("popup");
     } else {
@@ -179,8 +193,7 @@ const PromoManager = () => {
     } catch {
       /* ignore */
     }
-    const hasNext = queue.length > 1;
-    if (hasNext) {
+    if (hasNextAfter(promo.id)) {
       advanceQueue(promo.id);
       setMode("popup");
     } else {
