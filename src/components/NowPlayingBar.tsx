@@ -296,6 +296,59 @@ const NowPlayingBar = () => {
       <div className="absolute inset-0 bg-background border-t border-border/50" />
 
       <div className="relative h-full flex flex-col">
+        {/* === SCHEDULE STRIP — current/next set with progress === */}
+        {(schedule.current || schedule.next) && (
+          <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 pt-1 pb-0.5 border-b border-border/30 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-4 text-[10px] sm:text-xs">
+              {schedule.current && (
+                <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                  <span className="font-display font-bold tracking-wider text-primary shrink-0">
+                    {t.nowSet}
+                  </span>
+                  <span className="truncate text-foreground font-medium">
+                    {schedule.current.summary}
+                  </span>
+                  <div className="hidden sm:block flex-1 max-w-[120px] h-1 bg-muted/60 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-1000 ease-linear"
+                      style={{ width: `${Math.round(schedule.progress * 100)}%` }}
+                    />
+                  </div>
+                  <span className="text-muted-foreground shrink-0 tabular-nums">
+                    {t.endsIn} {formatRelativeShort(schedule.msToCurrentEnd)}
+                  </span>
+                </div>
+              )}
+              {schedule.next && !schedule.current && (
+                <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                  <span className="font-display font-bold tracking-wider text-secondary shrink-0">
+                    {t.nextSet}
+                  </span>
+                  <span className="truncate text-foreground font-medium">
+                    {schedule.next.summary}
+                  </span>
+                  <span className="text-muted-foreground shrink-0 tabular-nums">
+                    {t.inTime} {formatRelativeShort(schedule.msToNext)}
+                  </span>
+                </div>
+              )}
+              {schedule.current && schedule.next && (
+                <div className="hidden md:flex items-center gap-1.5 shrink-0 text-muted-foreground">
+                  <span className="font-display font-bold tracking-wider text-secondary">
+                    {t.nextSet}
+                  </span>
+                  <span className="truncate max-w-[160px] text-foreground/80">
+                    {schedule.next.summary}
+                  </span>
+                  <span className="tabular-nums">
+                    · {t.inTime} {formatRelativeShort(schedule.msToNext)}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Main control bar — mobile: taller, reorganized layout */}
         <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-3 shrink-0">
 
