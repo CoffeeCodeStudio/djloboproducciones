@@ -18,8 +18,8 @@ serve(async (req) => {
       Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!
     );
 
-    const { data: branding, error: dbError } = await supabase
-      .from('site_branding')
+    const { data: secrets, error: dbError } = await supabase
+      .from('site_secrets')
       .select('google_calendar_id')
       .limit(1)
       .maybeSingle();
@@ -32,7 +32,7 @@ serve(async (req) => {
       });
     }
 
-    const calendarId = branding?.google_calendar_id;
+    const calendarId = secrets?.google_calendar_id;
     if (!calendarId) {
       return new Response(JSON.stringify({ error: 'No calendar configured' }), {
         status: 404,
