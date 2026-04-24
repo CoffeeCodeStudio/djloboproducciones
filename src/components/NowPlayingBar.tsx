@@ -409,7 +409,11 @@ const NowPlayingBar = () => {
                     {/* Mini visualizer — hide on very small screens */}
                     <div className="hidden xs:flex items-end gap-px h-3" aria-hidden="true">
                       {[1, 2, 3, 4].map((bar) => (
-                        <div key={bar} className="w-0.5 bg-destructive rounded-full visualizer-bar" />
+                        <div
+                          key={bar}
+                          className="w-0.5 bg-destructive rounded-full visualizer-bar"
+                          style={{ animationDuration: visualizerDuration }}
+                        />
                       ))}
                     </div>
                   </div>
