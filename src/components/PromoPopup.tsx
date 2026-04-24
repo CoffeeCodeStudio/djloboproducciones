@@ -133,6 +133,26 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   // Refs for the 5 EQ bars so we can drive scaleY directly
   const eqBarRefs = useRef<Array<HTMLSpanElement | null>>([]);
 
+  // Mute preference — persisted in localStorage, scoped to the promo popup only.
+  // Does NOT affect any other audio in the app.
+  const [muted, setMuted] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(MUTE_PREFERENCE_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
+  const mutedRef = useRef(muted);
+  useEffect(() => {
+    mutedRef.current = muted;
+    try {
+      if (muted) localStorage.setItem(MUTE_PREFERENCE_KEY, "1");
+      else localStorage.removeItem(MUTE_PREFERENCE_KEY);
+    } catch {
+      /* ignore */
+    }
+  }, [muted]);
+
   // Play "woosh/pop" on open — once per session for visitors,
   // every time when previewing from admin (promo.id === "preview").
   useEffect(() => {
