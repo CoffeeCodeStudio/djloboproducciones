@@ -1,8 +1,9 @@
 import { useLanguage } from "@/contexts/LanguageContext";
-import { Calendar, Clock, MapPin, Music, Send, CalendarIcon, Info, MessageCircle, CalendarCheck } from "lucide-react";
+import { Calendar, Clock, MapPin, Music, Send, CalendarIcon, Info, MessageCircle, CalendarCheck, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import { format } from "date-fns";
+import { z } from "zod";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -51,6 +52,19 @@ const translations = {
     disclaimer: "En inskickad förfrågan är inte en bekräftad bokning. Pris och tillgänglighet bekräftas via e-post.",
     privacyConsent: "Genom att skicka godkänner du att din data hanteras enligt vår",
     privacyLink: "integritetspolicy",
+    errors: {
+      nameRequired: "Vänligen ange ditt namn",
+      nameTooLong: "Namnet får vara max 100 tecken",
+      emailRequired: "E-postadress saknas",
+      emailInvalid: "Ogiltig e-postadress (t.ex. namn@exempel.se)",
+      phoneInvalid: "Ogiltigt telefonnummer (siffror, +, mellanslag tillåtna)",
+      eventTypeRequired: "Välj typ av event",
+      eventDateRequired: "Välj ett datum för eventet",
+      eventDatePast: "Datumet måste vara i framtiden",
+      messageRequired: "Skriv en kort fråga",
+      messageTooLong: "Meddelandet får vara max 2000 tecken",
+      formInvalid: "Vänligen åtgärda felen i formuläret innan du skickar.",
+    },
   },
   en: {
     title: "Contact & Booking",
@@ -80,6 +94,19 @@ const translations = {
     disclaimer: "A submitted request is not a confirmed booking. Price and availability will be confirmed via email.",
     privacyConsent: "By submitting, you agree that your data is handled according to our",
     privacyLink: "privacy policy",
+    errors: {
+      nameRequired: "Please enter your name",
+      nameTooLong: "Name must be max 100 characters",
+      emailRequired: "Email address is required",
+      emailInvalid: "Invalid email address (e.g. name@example.com)",
+      phoneInvalid: "Invalid phone number (digits, +, spaces allowed)",
+      eventTypeRequired: "Please select event type",
+      eventDateRequired: "Please pick an event date",
+      eventDatePast: "Date must be in the future",
+      messageRequired: "Please write a short question",
+      messageTooLong: "Message must be max 2000 characters",
+      formInvalid: "Please fix the errors below before submitting.",
+    },
   },
   es: {
     title: "Contacto y Reserva",
@@ -109,6 +136,19 @@ const translations = {
     disclaimer: "Una solicitud enviada no es una reserva confirmada. El precio y la disponibilidad se confirman por correo electrónico.",
     privacyConsent: "Al enviar, aceptas que tus datos se manejen según nuestra",
     privacyLink: "política de privacidad",
+    errors: {
+      nameRequired: "Por favor escribe tu nombre",
+      nameTooLong: "El nombre debe tener máximo 100 caracteres",
+      emailRequired: "Falta el correo electrónico",
+      emailInvalid: "Correo electrónico no válido (ej. nombre@ejemplo.com)",
+      phoneInvalid: "Teléfono no válido (dígitos, +, espacios permitidos)",
+      eventTypeRequired: "Selecciona el tipo de evento",
+      eventDateRequired: "Selecciona la fecha del evento",
+      eventDatePast: "La fecha debe ser futura",
+      messageRequired: "Escribe una pregunta breve",
+      messageTooLong: "El mensaje debe tener máximo 2000 caracteres",
+      formInvalid: "Por favor corrige los errores antes de enviar.",
+    },
   },
 };
 
@@ -129,35 +169,118 @@ const BookingSection = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const buildSchema = (isBooking: boolean) => {
+    const e = t.errors;
+    const phoneRegex = /^[+\d][\d\s\-()]{4,19}$/;
+
+    const base = {
+      name: z.string().trim().min(1, e.nameRequired).max(100, e.nameTooLong),
+      email: z
+        .string()
+        .trim()
+        .min(1, e.emailRequired)
+        .email(e.emailInvalid)
+        .max(255, e.emailInvalid),
+      phone: z
+        .string()
+        .trim()
+        .optional()
+        .refine((v) => !v || phoneRegex.test(v), { message: e.phoneInvalid }),
+      message: z
+        .string()
+        .trim()
+        .max(2000, e.messageTooLong)
+        .optional(),
+    };
+
+    if (isBooking) {
+      return z.object({
+        ...base,
+        eventType: z.string().min(1, e.eventTypeRequired),
+        eventDate: z
+          .date({ required_error: e.eventDateRequired, invalid_type_error: e.eventDateRequired })
+          .refine((d) => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return d >= today;
+          }, { message: e.eventDatePast }),
+        location: z.string().trim().max(200).optional(),
+      });
+    }
+
+    return z.object({
+      ...base,
+      message: z.string().trim().min(1, e.messageRequired).max(2000, e.messageTooLong),
+    });
+  };
+
+  const validate = (): boolean => {
+    const isBooking = mode === "booking";
+    const schema = buildSchema(isBooking);
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      message: formData.message,
+      ...(isBooking && {
+        eventType: formData.eventType,
+        eventDate: formData.eventDate,
+        location: formData.location,
+      }),
+    };
+    const result = schema.safeParse(payload);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      for (const issue of result.error.issues) {
+        const key = issue.path[0]?.toString();
+        if (key && !fieldErrors[key]) fieldErrors[key] = issue.message;
+      }
+      setErrors(fieldErrors);
+      return false;
+    }
+    setErrors({});
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validate()) {
+      toast({
+        title: t.errors.formInvalid,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const isBooking = mode === "booking";
 
       const { error } = await supabase.from("bookings").insert({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone || null,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim() || null,
         event_type: isBooking ? formData.eventType : "inquiry",
         event_date: isBooking && formData.eventDate ? format(formData.eventDate, "yyyy-MM-dd") : null,
-        location: isBooking ? (formData.location || null) : null,
-        message: formData.message || null,
+        location: isBooking ? (formData.location.trim() || null) : null,
+        message: formData.message.trim() || null,
       });
 
       if (error) throw error;
 
       supabase.functions.invoke("send-booking-notification", {
         body: {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || undefined,
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim() || undefined,
           eventType: isBooking ? formData.eventType : "inquiry",
           eventDate: isBooking && formData.eventDate ? format(formData.eventDate, "yyyy-MM-dd") : undefined,
-          location: isBooking ? (formData.location || undefined) : undefined,
-          message: formData.message || undefined,
+          location: isBooking ? (formData.location.trim() || undefined) : undefined,
+          message: formData.message.trim() || undefined,
         },
       }).catch((err) => console.error("Booking notification failed:", err));
 
@@ -175,6 +298,7 @@ const BookingSection = () => {
         location: "",
         message: "",
       });
+      setErrors({});
     } catch (error) {
       toast({
         title: t.error,
@@ -238,7 +362,7 @@ const BookingSection = () => {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <form onSubmit={handleSubmit} noValidate className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label htmlFor="booking-name" className="block text-sm font-medium text-foreground mb-2">
                 {t.name} *
@@ -248,9 +372,19 @@ const BookingSection = () => {
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-                className="bg-background/50 border-muted focus:border-neon-pink"
+                aria-invalid={!!errors.name}
+                aria-describedby={errors.name ? "booking-name-error" : undefined}
+                className={cn(
+                  "bg-background/50 border-muted focus:border-neon-pink",
+                  errors.name && "border-destructive focus:border-destructive"
+                )}
               />
+              {errors.name && (
+                <p id="booking-name-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
+                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                  {errors.name}
+                </p>
+              )}
             </div>
 
             <div>
@@ -262,9 +396,19 @@ const BookingSection = () => {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-                className="bg-background/50 border-muted focus:border-neon-pink"
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? "booking-email-error" : undefined}
+                className={cn(
+                  "bg-background/50 border-muted focus:border-neon-pink",
+                  errors.email && "border-destructive focus:border-destructive"
+                )}
               />
+              {errors.email && (
+                <p id="booking-email-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
+                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             <div className={isBooking ? "" : "sm:col-span-2"}>
@@ -276,8 +420,19 @@ const BookingSection = () => {
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="bg-background/50 border-muted focus:border-neon-pink"
+                aria-invalid={!!errors.phone}
+                aria-describedby={errors.phone ? "booking-phone-error" : undefined}
+                className={cn(
+                  "bg-background/50 border-muted focus:border-neon-pink",
+                  errors.phone && "border-destructive focus:border-destructive"
+                )}
               />
+              {errors.phone && (
+                <p id="booking-phone-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
+                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                  {errors.phone}
+                </p>
+              )}
             </div>
 
             {isBooking && (
@@ -290,8 +445,14 @@ const BookingSection = () => {
                     id="booking-event-type"
                     value={formData.eventType}
                     onChange={(e) => setFormData({ ...formData, eventType: e.target.value })}
-                    required
-                    className="w-full h-10 px-3 rounded-md bg-background/50 border border-muted focus:border-neon-pink focus:outline-none focus:ring-1 focus:ring-neon-pink text-foreground"
+                    aria-invalid={!!errors.eventType}
+                    aria-describedby={errors.eventType ? "booking-event-type-error" : undefined}
+                    className={cn(
+                      "w-full h-10 px-3 rounded-md bg-background/50 border focus:outline-none focus:ring-1 text-foreground",
+                      errors.eventType
+                        ? "border-destructive focus:border-destructive focus:ring-destructive"
+                        : "border-muted focus:border-neon-pink focus:ring-neon-pink"
+                    )}
                   >
                     <option value="">{t.selectType}</option>
                     {eventTypes.map((type) => (
@@ -300,6 +461,12 @@ const BookingSection = () => {
                       </option>
                     ))}
                   </select>
+                  {errors.eventType && (
+                    <p id="booking-event-type-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
+                      <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                      {errors.eventType}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -310,9 +477,11 @@ const BookingSection = () => {
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
+                        aria-invalid={!!errors.eventDate}
                         className={cn(
                           "w-full justify-start text-left font-normal bg-background/50 border-muted hover:border-neon-pink",
-                          !formData.eventDate && "text-muted-foreground"
+                          !formData.eventDate && "text-muted-foreground",
+                          errors.eventDate && "border-destructive hover:border-destructive"
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
@@ -330,6 +499,12 @@ const BookingSection = () => {
                       />
                     </PopoverContent>
                   </Popover>
+                  {errors.eventDate && (
+                    <p className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
+                      <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                      {errors.eventDate}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -355,10 +530,20 @@ const BookingSection = () => {
                 id="booking-message"
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                required={!isBooking}
                 rows={4}
-                className="bg-background/50 border-muted focus:border-neon-pink resize-none"
+                aria-invalid={!!errors.message}
+                aria-describedby={errors.message ? "booking-message-error" : undefined}
+                className={cn(
+                  "bg-background/50 border-muted focus:border-neon-pink resize-none",
+                  errors.message && "border-destructive focus:border-destructive"
+                )}
               />
+              {errors.message && (
+                <p id="booking-message-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
+                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                  {errors.message}
+                </p>
+              )}
             </div>
 
             <div className="sm:col-span-2">
