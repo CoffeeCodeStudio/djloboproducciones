@@ -377,6 +377,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   }, [open]);
 
   const handleCta = () => {
+    trackPromoEvent(promo.id, "cta_click", { url: promo.cta_url });
     if (promo.cta_url) {
       window.open(promo.cta_url, "_blank", "noopener,noreferrer");
     }
