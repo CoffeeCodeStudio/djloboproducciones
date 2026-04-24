@@ -136,6 +136,19 @@ const translations = {
     disclaimer: "Una solicitud enviada no es una reserva confirmada. El precio y la disponibilidad se confirman por correo electrónico.",
     privacyConsent: "Al enviar, aceptas que tus datos se manejen según nuestra",
     privacyLink: "política de privacidad",
+    errors: {
+      nameRequired: "Por favor escribe tu nombre",
+      nameTooLong: "El nombre debe tener máximo 100 caracteres",
+      emailRequired: "Falta el correo electrónico",
+      emailInvalid: "Correo electrónico no válido (ej. nombre@ejemplo.com)",
+      phoneInvalid: "Teléfono no válido (dígitos, +, espacios permitidos)",
+      eventTypeRequired: "Selecciona el tipo de evento",
+      eventDateRequired: "Selecciona la fecha del evento",
+      eventDatePast: "La fecha debe ser futura",
+      messageRequired: "Escribe una pregunta breve",
+      messageTooLong: "El mensaje debe tener máximo 2000 caracteres",
+      formInvalid: "Por favor corrige los errores antes de enviar.",
+    },
   },
 };
 
