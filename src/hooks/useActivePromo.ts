@@ -20,6 +20,7 @@ export interface Promo {
   active_to: string;
   priority: number;
   is_active: boolean;
+  pinned_to_top: boolean;
   created_at: string;
   updated_at: string;
 }
