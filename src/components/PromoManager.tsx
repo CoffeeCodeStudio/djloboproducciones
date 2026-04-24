@@ -8,6 +8,9 @@ const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
 const MINI_SESSION_HIDDEN_KEY = (id: string) => `promo_mini_session_hidden_${id}`;
 const SEEN_KEY = (id: string) => `promo_seen_${id}`;
 const PERMANENT_DISMISS_KEY = (id: string) => `promo_permanent_dismissed_${id}`;
+// Set when user clicks the navbar megaphone — survives page refresh
+// so the popup re-opens automatically while the promo is still active.
+const FORCE_REOPEN_KEY = (id: string) => `promo_force_reopen_${id}`;
 
 const PromoManager = () => {
   const { promo } = useActivePromo();
