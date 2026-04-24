@@ -169,35 +169,118 @@ const BookingSection = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [dateOpen, setDateOpen] = useState(false);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const buildSchema = (isBooking: boolean) => {
+    const e = t.errors;
+    const phoneRegex = /^[+\d][\d\s\-()]{4,19}$/;
+
+    const base = {
+      name: z.string().trim().min(1, e.nameRequired).max(100, e.nameTooLong),
+      email: z
+        .string()
+        .trim()
+        .min(1, e.emailRequired)
+        .email(e.emailInvalid)
+        .max(255, e.emailInvalid),
+      phone: z
+        .string()
+        .trim()
+        .optional()
+        .refine((v) => !v || phoneRegex.test(v), { message: e.phoneInvalid }),
+      message: z
+        .string()
+        .trim()
+        .max(2000, e.messageTooLong)
+        .optional(),
+    };
+
+    if (isBooking) {
+      return z.object({
+        ...base,
+        eventType: z.string().min(1, e.eventTypeRequired),
+        eventDate: z
+          .date({ required_error: e.eventDateRequired, invalid_type_error: e.eventDateRequired })
+          .refine((d) => {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            return d >= today;
+          }, { message: e.eventDatePast }),
+        location: z.string().trim().max(200).optional(),
+      });
+    }
+
+    return z.object({
+      ...base,
+      message: z.string().trim().min(1, e.messageRequired).max(2000, e.messageTooLong),
+    });
+  };
+
+  const validate = (): boolean => {
+    const isBooking = mode === "booking";
+    const schema = buildSchema(isBooking);
+    const payload = {
+      name: formData.name,
+      email: formData.email,
+      phone: formData.phone,
+      message: formData.message,
+      ...(isBooking && {
+        eventType: formData.eventType,
+        eventDate: formData.eventDate,
+        location: formData.location,
+      }),
+    };
+    const result = schema.safeParse(payload);
+    if (!result.success) {
+      const fieldErrors: Record<string, string> = {};
+      for (const issue of result.error.issues) {
+        const key = issue.path[0]?.toString();
+        if (key && !fieldErrors[key]) fieldErrors[key] = issue.message;
+      }
+      setErrors(fieldErrors);
+      return false;
+    }
+    setErrors({});
+    return true;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (!validate()) {
+      toast({
+        title: t.errors.formInvalid,
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
       const isBooking = mode === "booking";
 
       const { error } = await supabase.from("bookings").insert({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone || null,
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim() || null,
         event_type: isBooking ? formData.eventType : "inquiry",
         event_date: isBooking && formData.eventDate ? format(formData.eventDate, "yyyy-MM-dd") : null,
-        location: isBooking ? (formData.location || null) : null,
-        message: formData.message || null,
+        location: isBooking ? (formData.location.trim() || null) : null,
+        message: formData.message.trim() || null,
       });
 
       if (error) throw error;
 
       supabase.functions.invoke("send-booking-notification", {
         body: {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone || undefined,
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim() || undefined,
           eventType: isBooking ? formData.eventType : "inquiry",
           eventDate: isBooking && formData.eventDate ? format(formData.eventDate, "yyyy-MM-dd") : undefined,
-          location: isBooking ? (formData.location || undefined) : undefined,
-          message: formData.message || undefined,
+          location: isBooking ? (formData.location.trim() || undefined) : undefined,
+          message: formData.message.trim() || undefined,
         },
       }).catch((err) => console.error("Booking notification failed:", err));
 
@@ -215,6 +298,7 @@ const BookingSection = () => {
         location: "",
         message: "",
       });
+      setErrors({});
     } catch (error) {
       toast({
         title: t.error,
