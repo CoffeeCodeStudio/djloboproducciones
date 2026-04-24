@@ -283,6 +283,7 @@ export type Database = {
           google_event_id: string | null
           id: string
           is_active: boolean
+          pinned_to_top: boolean
           priority: number
           source: string
           subtitle: string | null
@@ -301,6 +302,7 @@ export type Database = {
           google_event_id?: string | null
           id?: string
           is_active?: boolean
+          pinned_to_top?: boolean
           priority?: number
           source: string
           subtitle?: string | null
@@ -319,6 +321,7 @@ export type Database = {
           google_event_id?: string | null
           id?: string
           is_active?: boolean
+          pinned_to_top?: boolean
           priority?: number
           source?: string
           subtitle?: string | null
