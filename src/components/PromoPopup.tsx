@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Disc3, X } from "lucide-react";
+import { Disc3, X, Volume2, VolumeX } from "lucide-react";
 import confetti from "canvas-confetti";
 import { logger } from "@/lib/logger";
 import {
