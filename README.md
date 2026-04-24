@@ -62,6 +62,77 @@ Trestegs visningslogik styrd av `PromoManager.tsx`:
 - Editor: `PromoEditor.tsx` med Google Calendar-koppling (auto: 14 dagar före → 1 dag efter event) eller manuell datum-picker. Prio 0–10 vid överlapp.
 - Detaljerad guide: `docs/PROMO_EDITOR_GUIDE.md`.
 
+#### 🧪 Konkret exempel — Hur PromoManager väljer promo
+
+**Scenario:** Tre kampanjer ligger aktiva i `promos`-tabellen samtidigt. En besökare öppnar sajten den 3 april 2026.
+
+| # | Titel | `is_active` | `active_from` → `active_to` | `priority` |
+|---|-------|-------------|-----------------------------|------------|
+| A | "Sommarturné 2026" | ✅ | 1 jun → 31 aug | 8 |
+| B | "Påskfest på Trädgår'n" | ✅ | 1 apr → 5 apr | 10 |
+| C | "Bröllopssäsong" | ✅ | 1 mar → 30 sep | 5 |
+
+**Steg 1 — Filtrering (RLS):**
+Policyn `Anyone can read active promos` släpper bara igenom rader där `is_active = true AND now() BETWEEN active_from AND active_to`. Den 3 april returneras därför **B** och **C** (A startar först 1 juni).
+
+**Steg 2 — Prioritetsval (`useActivePromo`):**
+Hooken sorterar resterande rader på `priority DESC, created_at DESC` och plockar den första. → **B "Påskfest" vinner** (priority 10 > 5).
+
+**Steg 3 — Visningsläge (`PromoManager.tsx`):**
+Manager läser `localStorage` + `sessionStorage` för promo-id `B`:
+
+```
+┌─ Permanent dismissad?  (localStorage: promo_permanent_dismissed_B)
+│    JA  → mode = "hidden"           ⛔ inget visas
+│    NEJ ↓
+├─ Session-dold (Mini X)?  (sessionStorage: promo_mini_session_hidden_B)
+│    JA  → mode = "hidden"           ⛔ inget visas (denna webbläsar-session)
+│    NEJ ↓
+├─ Sedd inom 24h?  (localStorage: promo_seen_B = timestamp)
+│    JA  → mode = "mini"             📌 PromoMiniCard
+│    NEJ → mode = "popup"            🎬 PromoPopup (full)
+```
+
+**Steg 4 — Användarens väg över tre dagar:**
+
+```
+1. Första besöket (måndag 09:00)
+   └─ Inget i storage → POPUP visas
+      └─ Användaren stänger med X
+         └─ promo_seen_B = 1712131200000 sparas
+         └─ mode växlar till "mini"
+
+2. Återbesök samma dag (måndag 14:00)  ─ 5h senare
+   └─ promo_seen_B finns och < 24h → MINI-CARD visas
+      • Desktop: flytande kort nere till höger
+      • Mobil:   banner inuti mix-griden efter 4:e mixen
+
+3. Användaren klickar X på mini-cardet
+   └─ promo_mini_session_hidden_B = "1" i sessionStorage
+   └─ Inget visas resten av sessionen
+
+4. Ny webbläsar-session (tisdag 08:00) ─ 23h senare
+   └─ sessionStorage rensad, men promo_seen_B finns kvar
+   └─ MINI-CARD visas igen (24h ej passerade)
+
+5. Återbesök onsdag 10:00  ─ >24h sedan popup
+   └─ promo_seen_B är för gammal → POPUP visas igen
+      └─ Användaren klickar "Visa inte igen"
+         └─ promo_permanent_dismissed_B = "1" i localStorage
+         └─ Promo B visas ALDRIG mer för denna webbläsare
+```
+
+**Steg 5 — Re-open från mini:**
+Klick på mini-cardet sätter `reopenedFromMini = true` och öppnar popupen igen. När användaren stänger den återgår läget till `mini` (utan att starta om 24h-timern).
+
+**Storage-nycklar (sammanfattning):**
+
+| Nyckel | Storage | Lifetime | Effekt |
+|--------|---------|----------|--------|
+| `promo_seen_<id>` | localStorage | 24h | Växlar popup → mini |
+| `promo_mini_session_hidden_<id>` | sessionStorage | Tab-session | Döljer mini tills tab stängs |
+| `promo_permanent_dismissed_<id>` | localStorage | Permanent | Döljer både popup och mini för alltid |
+
 ### 💼 Booking-flow
 - **`BookNowButton`** — Smart CTA: scrollar till `#boka` på `/prislista`, annars navigerar dit med hash.
 - **`BookingSection`** — Toggle mellan **Kontakt** (snabb fråga) och **Bokning** (fullt formulär: event, datum, plats, gäster).
