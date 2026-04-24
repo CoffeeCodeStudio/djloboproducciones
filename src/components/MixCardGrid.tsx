@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Play, Disc3, Music, Pin, Calendar, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlayerStore, MixTrack } from "@/stores/usePlayerStore";
@@ -160,9 +160,8 @@ const MixCardGrid = () => {
               const isActive = currentTrack?.id === mix.id;
 
               return (
-                <>
+                <Fragment key={mix.id}>
                   <button
-                    key={mix.id}
                     onClick={() => handlePlay(mix)}
                     className={`group relative aspect-square rounded-2xl overflow-hidden transition-all duration-300 text-left border ${
                       isActive
