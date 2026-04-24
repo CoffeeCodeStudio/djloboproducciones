@@ -39,6 +39,10 @@ const translations = {
     expand: "Expandera",
     minimize: "Minimera",
     close: "Stäng",
+    nowSet: "NU",
+    nextSet: "NÄSTA",
+    inTime: "om",
+    endsIn: "slutar om",
   },
   en: {
     radioLive: "RADIO LOBO — LIVE",
@@ -56,6 +60,10 @@ const translations = {
     expand: "Expand",
     minimize: "Minimize",
     close: "Close",
+    nowSet: "NOW",
+    nextSet: "NEXT",
+    inTime: "in",
+    endsIn: "ends in",
   },
   es: {
     radioLive: "RADIO LOBO — EN VIVO",
@@ -73,6 +81,10 @@ const translations = {
     expand: "Expandir",
     minimize: "Minimizar",
     close: "Cerrar",
+    nowSet: "AHORA",
+    nextSet: "SIGUIENTE",
+    inTime: "en",
+    endsIn: "termina en",
   },
 };
 
