@@ -636,6 +636,18 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
                 </p>
               </div>
 
+              <div className="flex items-center justify-between rounded-lg border border-primary/40 bg-primary/5 p-3">
+                <div>
+                  <Label htmlFor="pin-toggle" className="font-medium flex items-center gap-1.5">
+                    📌 Pin till toppen
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    Visas alltid först – före alla andra aktiva kampanjer, oavsett global strategi
+                  </p>
+                </div>
+                <Switch id="pin-toggle" checked={pinnedToTop} onCheckedChange={setPinnedToTop} />
+              </div>
+
               <div className="flex items-center justify-between rounded-lg border border-border p-3">
                 <div>
                   <Label htmlFor="active-toggle" className="font-medium">
