@@ -55,9 +55,10 @@ const Navbar = () => {
   const currentLang = languages.find((l) => l.code === language)!;
 
   const handlePromoReopen = () => {
-    // Persist intent so the popup re-opens automatically after a page refresh
-    // while this promo is still active. PromoManager consumes & clears the key.
     if (promo) {
+      trackPromoEvent(promo.id, "reopen_click");
+      // Persist intent so the popup re-opens automatically after a page refresh
+      // while this promo is still active. PromoManager consumes & clears the key.
       try {
         localStorage.setItem(`promo_force_reopen_${promo.id}`, "1");
       } catch {
