@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useActivePromo } from "@/hooks/useActivePromo";
+import { trackPromoEvent } from "@/lib/promoAnalytics";
 import PromoPopup from "./PromoPopup";
 import PromoMiniCard from "./PromoMiniCard";
 
