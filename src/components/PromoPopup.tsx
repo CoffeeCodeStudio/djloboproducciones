@@ -239,6 +239,21 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
     };
   }, [open]);
 
+  // Auto-close after 8s. Pauses while the user hovers/focuses inside the dialog,
+  // and skips entirely in admin preview mode. Manual close (X / overlay / Esc /
+  // "Visa inte igen") still works at any time.
+  const AUTO_CLOSE_MS = 8000;
+  const [isPaused, setIsPaused] = useState(false);
+  useEffect(() => {
+    if (!open) return;
+    if (promo.id === "preview") return; // Admin preview: no auto-dismiss
+    if (isPaused) return;
+    const t = window.setTimeout(() => {
+      onClose();
+    }, AUTO_CLOSE_MS);
+    return () => window.clearTimeout(t);
+  }, [open, isPaused, promo.id, onClose]);
+
 
   // Auto-scroll the inner content so the title/CTA area is reachable
   // immediately on open (helps when media is tall).
