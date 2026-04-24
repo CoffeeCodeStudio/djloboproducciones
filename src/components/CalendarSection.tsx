@@ -15,6 +15,8 @@ const translations = {
     errorMessage: "Kunde inte ladda spelningar just nu",
     retry: "Försök igen",
     live: "LIVE NU",
+    liveCountOne: "1 set spelas just nu",
+    liveCountMany: (n: number) => `${n} set spelas just nu`,
   },
   en: {
     title: "UPCOMING EVENTS",
@@ -24,6 +26,8 @@ const translations = {
     errorMessage: "Could not load shows right now",
     retry: "Try again",
     live: "LIVE NOW",
+    liveCountOne: "1 set playing now",
+    liveCountMany: (n: number) => `${n} sets playing now`,
   },
   es: {
     title: "PRÓXIMOS EVENTOS",
@@ -33,6 +37,8 @@ const translations = {
     errorMessage: "No se pudieron cargar los shows",
     retry: "Reintentar",
     live: "EN VIVO",
+    liveCountOne: "1 set en vivo ahora",
+    liveCountMany: (n: number) => `${n} sets en vivo ahora`,
   },
 };
 
