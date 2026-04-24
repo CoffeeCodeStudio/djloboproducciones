@@ -20,10 +20,17 @@ export interface Promo {
   updated_at: string;
 }
 
+/**
+ * Returns ALL currently-active promos sorted by:
+ *   priority DESC → active_from DESC (just startat först) → created_at DESC
+ *
+ * `promo` is the first one (back-compat). `promos` is the full ordered list
+ * so PromoManager can rotate to the next when one is closed/expires.
+ */
 export function useActivePromo() {
   const { data, isLoading } = useQuery({
-    queryKey: ["active-promo"],
-    queryFn: async (): Promise<Promo | null> => {
+    queryKey: ["active-promos"],
+    queryFn: async (): Promise<Promo[]> => {
       const nowIso = new Date().toISOString();
       const { data, error } = await supabase
         .from("promos")
@@ -33,14 +40,16 @@ export function useActivePromo() {
         .gte("active_to", nowIso)
         .order("priority", { ascending: false })
         .order("active_from", { ascending: false })
-        .order("created_at", { ascending: false })
-        .limit(1);
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
-      return (data?.[0] as Promo | undefined) ?? null;
+      return (data ?? []) as Promo[];
     },
     staleTime: 60 * 1000,
+    // Re-check periodically so an expiring promo gets dropped client-side too
+    refetchInterval: 60 * 1000,
   });
 
-  return { promo: data ?? null, isLoading };
+  const promos = data ?? [];
+  return { promo: promos[0] ?? null, promos, isLoading };
 }
