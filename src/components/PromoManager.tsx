@@ -60,6 +60,13 @@ const PromoManager = () => {
     }
   }, [promo]);
 
+  // Log analytics whenever the visible mode changes
+  useEffect(() => {
+    if (!promo) return;
+    if (mode === "popup") trackPromoEvent(promo.id, "shown");
+    else if (mode === "mini") trackPromoEvent(promo.id, "mini_shown");
+  }, [mode, promo]);
+
   // Listen for manual reopen requests (e.g. from Navbar megaphone button)
   useEffect(() => {
     const handleReopen = () => {
@@ -81,6 +88,7 @@ const PromoManager = () => {
   if (!promo) return null;
 
   const handlePopupClose = () => {
+    trackPromoEvent(promo.id, "closed");
     try {
       // Mark Large as seen with a fresh 24h window
       localStorage.setItem(SEEN_KEY(promo.id), Date.now().toString());
@@ -98,6 +106,7 @@ const PromoManager = () => {
   };
 
   const handleMiniDismiss = () => {
+    trackPromoEvent(promo.id, "mini_dismissed");
     try {
       sessionStorage.setItem(MINI_SESSION_HIDDEN_KEY(promo.id), "1");
     } catch {
@@ -112,6 +121,7 @@ const PromoManager = () => {
   };
 
   const handlePermanentDismiss = () => {
+    trackPromoEvent(promo.id, "permanent_dismiss");
     try {
       localStorage.setItem(PERMANENT_DISMISS_KEY(promo.id), "1");
     } catch {
