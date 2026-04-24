@@ -227,22 +227,74 @@ Klick på mini-cardet sätter `reopenedFromMini = true` och öppnar popupen igen
 
 Strikt mörk navy/charcoal-tema (NO neon — separat från publika sajten). Skyddad via Supabase RBAC (`user_roles` + `has_role()` SECURITY DEFINER).
 
-| Flik | Komponent | Funktion |
-|------|-----------|----------|
-| **Framsida** | `FramsidaTab` | Hero-bild, bakgrund, OG-image |
-| **Branding** | `BrandingTab` | Logotyp, färger (HSL), site-name, taglines |
-| **Bio** | `BioTab` | About-text |
-| **Spelningar** | `SpelningarTab` + `ScheduleTab` | Google Calendar-id |
-| **Mixar** | `MixesTab` + `MixcloudTab` | Manuell + auto-sync, pin/dölj |
-| **Galleri** | `GalleryTab` + `ImageCropper` | Upload, beskärning, sort |
-| **Utrustning** | `EquipmentTab` | Trespråkig CRUD |
-| **Omdömen** | `TestimonialsTab` | Kundcitat |
-| **Radio** | `RadioTab` | Stream-inställningar, sektionstitel |
-| **Kampanjer** | `PromosTab` + `PromoEditor` | Hela promo-systemet |
-| **Användare** | `UsersTab` | Roll-hantering (kallar `list-admin-users`) |
-| **Hjälp** | `HelpTab` | Länkar till dokumentation |
+### Flikar och åtgärder
 
-Inloggning via `AdminLogin.tsx` (Supabase Auth, e-post + lösen, password-reset via `/reset-password`).
+Legend: **C** = Create · **R** = Read · **U** = Update · **D** = Delete · **—** = ej tillämpligt
+
+| Flik | Komponent(er) | Tabell / källa | C | R | U | D | Övriga åtgärder | Krävd roll |
+|------|---------------|----------------|:-:|:-:|:-:|:-:|------------------|------------|
+| **Framsida** | `FramsidaTab` | `site_branding` (single row) | — | ✅ | ✅ | — | Upload hero/bg/OG till `branding`-bucket | `admin` |
+| **Branding** | `BrandingTab` | `site_branding` | — | ✅ | ✅ | — | Logo-upload, HSL-färger, site-name, tagline | `admin` |
+| **Bio** | `BioTab` | `site_branding.bio_text` | — | ✅ | ✅ | — | Rik-text editor | `admin` |
+| **Spelningar** | `SpelningarTab` + `ScheduleTab` | `site_branding.google_calendar_id` + edge `google-calendar` | — | ✅ | ✅ | — | Sätt Calendar-id, manuell refresh | `admin` |
+| **Mixar (manuell)** | `MixesTab` | `mixcloud_mixes` | ✅ | ✅ | ✅ | ✅ | Pin, dölj, omsortera (`sort_order`) | `admin` |
+| **Mixar (auto)** | `MixcloudTab` | `mixcloud_mixes` + edge `fetch-mixcloud` | ✅ (sync) | ✅ | ✅ | ✅ | Trigga full re-sync från Mixcloud | `admin` |
+| **Galleri** | `GalleryTab` + `ImageCropper` | `gallery_images` + `branding`-bucket | ✅ | ✅ | ✅ | ✅ | Upload + crop, drag-sort, foto/video-typ | `admin` |
+| **Utrustning** | `EquipmentTab` | `equipment` (SV/EN/ES) | ✅ | ✅ | ✅ | ✅ | Ikon-val, sortering | `admin` |
+| **Omdömen** | `TestimonialsTab` | (statisk i koden) | ✅ | ✅ | ✅ | ✅ | Kund-citat, namn, event-typ | `admin` |
+| **Radio** | `RadioTab` | `site_branding` (radio-fält) | — | ✅ | ✅ | — | Stream-URL, sektionstitel, radio-bild | `admin` |
+| **Kampanjer** | `PromosTab` + `PromoEditor` | `promos` | ✅ | ✅ | ✅ | ✅ | Toggla `is_active`, prio 0–10, Google Calendar-koppling, video/flyer-upload, förhandsgranska | `admin` |
+| **Bokningar** | (i admin via `bookings`-vy) | `bookings` | — | ✅ | ✅ | ✅ | Granska inkomna, ändra `status` (pending → confirmed/declined) | `admin` |
+| **Chatt-moderering** | (via Supabase) | `chat_messages` + `chat_bans` | ✅ (ban) | ✅ | ✅ | ✅ | Radera meddelanden, banna sessions-id | `admin` |
+| **Användare** | `UsersTab` | `user_roles` + edge `list-admin-users` | ✅ | ✅ | — | ✅ | Lägg till/ta bort admin-roller | `admin` |
+| **Hjälp** | `HelpTab` | (statisk) | — | ✅ | — | — | Länkar till `docs/` och guider | `admin` |
+
+### RLS-modell
+
+Alla skrivåtgärder i admin är skyddade av Row-Level Security policies som kräver `has_role(auth.uid(), 'admin')`. Mönstret är konsekvent över alla tabeller:
+
+```sql
+-- Exempel: equipment-tabellen
+CREATE POLICY "Anyone can view equipment"
+  ON equipment FOR SELECT USING (true);
+
+CREATE POLICY "Admins can insert equipment"
+  ON equipment FOR INSERT WITH CHECK (has_role(auth.uid(), 'admin'));
+
+CREATE POLICY "Admins can update equipment"
+  ON equipment FOR UPDATE USING (has_role(auth.uid(), 'admin'));
+
+CREATE POLICY "Admins can delete equipment"
+  ON equipment FOR DELETE USING (has_role(auth.uid(), 'admin'));
+```
+
+| Tabell | Publik SELECT | Admin INSERT | Admin UPDATE | Admin DELETE | Notering |
+|--------|:-:|:-:|:-:|:-:|----------|
+| `site_branding` | ✅ | ✅ | ✅ | ✅ | Single-row config |
+| `equipment` | ✅ | ✅ | ✅ | ✅ | Trespråkig |
+| `gallery_images` | ✅ | ✅ | ✅ | ✅ | Foto/video |
+| `mixcloud_mixes` | ✅ | ✅ | ✅ | ✅ | Auto + manuell |
+| `promos` | ✅ (filtrerat på `is_active` + datum) | ✅ | ✅ | ✅ | RLS exponerar bara aktiva publikt |
+| `bookings` | ❌ | ✅ (anon också, för formulär) | ✅ | ✅ | Admin ser allt, anon kan bara INSERT |
+| `contact_submissions` | ❌ | ✅ (anon också) | ❌ | ❌ | Append-only |
+| `chat_messages` | ✅ | ✅ (om ej bannad) | ✅ | ✅ | UPDATE/DELETE endast admin |
+| `chat_bans` | admin only | ✅ | ✅ | ✅ | Sessions-baserad ban |
+| `site_secrets` | admin only | ✅ | ✅ | ✅ | Inga publika reads |
+| `user_roles` | egen rad ELLER admin | ✅ (admin) | ✅ (admin) | ✅ (admin) | RBAC-grunden |
+
+### Roller
+
+| Roll | Värde i `user_roles.role` | Kan |
+|------|---------------------------|-----|
+| **Admin** | `'admin'` | Allt i `/admin`, alla CRUD via RLS |
+| **Moderator** | `'moderator'` | Reserverad för framtida bruk (chatt-mod) |
+| **User** | `'user'` | Standard — endast publika reads |
+
+> ⚠️ **Säkerhets-policy:** Roller lagras ALDRIG på `profiles` eller `users`. Endast i den separata `user_roles`-tabellen, kontrollerad via `has_role()` SECURITY DEFINER för att undvika RLS-rekursion och privilege escalation.
+
+### Inloggning
+
+Inloggning via `AdminLogin.tsx` (Supabase Auth, e-post + lösen). Password-reset via `/reset-password`. Sessioner hanteras automatiskt av `useAuth`-hooken som även verifierar admin-rollen innan `/admin` renderas — utan admin-roll redirectas användaren till login.
 
 ---
 
