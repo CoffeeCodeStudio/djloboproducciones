@@ -25,6 +25,17 @@ const PromoManager = () => {
 
     const id = promo.id;
     try {
+      // Force reopen flag (set by navbar megaphone) — overrides all dismiss
+      // states so the popup re-appears after refresh while promo is active.
+      if (localStorage.getItem(FORCE_REOPEN_KEY(id))) {
+        localStorage.removeItem(FORCE_REOPEN_KEY(id));
+        localStorage.removeItem(PERMANENT_DISMISS_KEY(id));
+        localStorage.removeItem(SEEN_KEY(id));
+        sessionStorage.removeItem(MINI_SESSION_HIDDEN_KEY(id));
+        setMode("popup");
+        return;
+      }
+
       // Hard dismiss ("Visa inte igen") — never show either variant
       if (localStorage.getItem(PERMANENT_DISMISS_KEY(id))) {
         setMode("hidden");
