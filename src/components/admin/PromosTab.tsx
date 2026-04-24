@@ -270,23 +270,47 @@ const PromosTab = () => {
             <div className="space-y-2">
               {sorted.map((p) => {
                 const status = getStatus(p);
+                const rank = rankById.get(p.id);
                 return (
                   <div
                     key={p.id}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-card/40 border border-border/50 hover:bg-card/60 transition-colors"
+                    className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
+                      p.pinned_to_top && status === "active"
+                        ? "bg-primary/5 border-primary/30 hover:bg-primary/10"
+                        : "bg-card/40 border-border/50 hover:bg-card/60"
+                    }`}
                   >
-                    {/* Thumbnail */}
-                    <div className="w-10 h-10 rounded-md overflow-hidden bg-muted/30 flex-shrink-0 flex items-center justify-center">
-                      {p.flyer_image_url ? (
-                        <img src={p.flyer_image_url} alt={p.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <ImageIcon className="w-4 h-4 text-muted-foreground" />
+                    {/* Rank + thumbnail */}
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {rank !== undefined && (
+                        <span
+                          className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${
+                            rank === 1
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                          aria-label={`Visningsordning ${rank}`}
+                        >
+                          {rank}
+                        </span>
                       )}
+                      <div className="w-10 h-10 rounded-md overflow-hidden bg-muted/30 flex items-center justify-center">
+                        {p.flyer_image_url ? (
+                          <img src={p.flyer_image_url} alt={p.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <ImageIcon className="w-4 h-4 text-muted-foreground" />
+                        )}
+                      </div>
                     </div>
 
                     {/* Title + meta */}
                     <div className="flex-1 min-w-0">
-                      <div className="font-semibold text-sm truncate">{p.title}</div>
+                      <div className="font-semibold text-sm truncate flex items-center gap-1.5">
+                        {p.pinned_to_top && (
+                          <Pin className="w-3.5 h-3.5 text-primary flex-shrink-0" aria-label="Pinnad till toppen" />
+                        )}
+                        <span className="truncate">{p.title}</span>
+                      </div>
                       {p.subtitle && (
                         <div className="text-xs text-muted-foreground truncate">{p.subtitle}</div>
                       )}
@@ -310,9 +334,22 @@ const PromosTab = () => {
                           <MoreVertical className="w-4 h-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-44">
+                      <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem onClick={() => openEdit(p)}>
                           <Pencil className="w-4 h-4 mr-2" /> Redigera
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => togglePromoPin.mutate({ id: p.id, pinned_to_top: !p.pinned_to_top })}
+                        >
+                          {p.pinned_to_top ? (
+                            <>
+                              <PinOff className="w-4 h-4 mr-2" /> Ta bort pin
+                            </>
+                          ) : (
+                            <>
+                              <Pin className="w-4 h-4 mr-2" /> Pin till toppen
+                            </>
+                          )}
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => togglePromoActive.mutate({ id: p.id, is_active: !p.is_active })}
