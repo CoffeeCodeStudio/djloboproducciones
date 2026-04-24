@@ -69,6 +69,76 @@ Trestegs visningslogik styrd av `PromoManager.tsx`:
 - **Edge function `send-booking-notification`** — Resend e-post från `noreply@djloboproducciones.com` → `djloboproducciones75@gmail.com`.
 - **Lagring:** `bookings`-tabellen (admin kan se/uppdatera/radera, anon kan submit).
 
+#### 🗺 Flödeskarta — Bokning från klick till bekräftelse
+
+```
+┌──────────────────────────────────────────────────────────────────────────┐
+│  1. ANVÄNDAREN KLICKAR "BOKA NU"                                         │
+│     Komponent: BookNowButton.tsx                                         │
+│     • På /prislista  → smooth scroll till #boka                          │
+│     • Annan sida     → navigate("/prislista#boka") + scroll vid mount    │
+└──────────────────────────────┬───────────────────────────────────────────┘
+                               ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│  2. ANVÄNDAREN VÄLJER LÄGE I FORMULÄRET                                  │
+│     Komponent: BookingSection.tsx (id="boka")                            │
+│     • Toggle: [ Kontakt ]  ⇄  [ Bokning ]                                │
+│     • Trespråkig (SV/EN/ES) via LanguageContext                          │
+│                                                                          │
+│     Kontakt-läge        →  ContactSection.tsx (kort meddelande)          │
+│     Bokning-läge        →  Fullt formulär: namn, e-post, telefon,        │
+│                            event_type, event_date, location, message     │
+└──────────────────────────────┬───────────────────────────────────────────┘
+                               ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│  3. SUBMIT — DATA SPARAS I DATABASEN                                     │
+│     Tabell: public.bookings                                              │
+│     • RLS: "Anyone can submit bookings" (anon + auth → INSERT)           │
+│     • status defaultar till 'pending'                                    │
+│     • Kolumner: name, email, phone, event_type, event_date,              │
+│       location, message, status, created_at, updated_at                  │
+└──────────────────────────────┬───────────────────────────────────────────┘
+                               ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│  4. EDGE FUNCTION TRIGGAS                                                │
+│     supabase.functions.invoke('send-booking-notification')               │
+│     Funktion: supabase/functions/send-booking-notification/index.ts      │
+│     • Resend-API via RESEND_API_KEY                                      │
+│     • From: noreply@djloboproducciones.com                               │
+│     • To:   djloboproducciones75@gmail.com (DJ Lobo)                     │
+│     • Innehåll: alla bokningsfält + tidsstämpel                          │
+│                                                                          │
+│     (Snabb-kontakt går via send-contact-email på samma sätt)             │
+└──────────────────────────────┬───────────────────────────────────────────┘
+                               ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│  5. ANVÄNDAR-FEEDBACK                                                    │
+│     • Toast-bekräftelse via sonner ("Tack! Vi hör av oss snart")         │
+│     • Formuläret rensas och stängs                                       │
+│     • Vid fel → felmeddelande + bokningen ligger kvar i DB som pending   │
+└──────────────────────────────┬───────────────────────────────────────────┘
+                               ▼
+┌──────────────────────────────────────────────────────────────────────────┐
+│  6. DJ LOBO HANTERAR I ADMIN                                             │
+│     Sida: /admin (kräver admin-roll via user_roles + has_role())         │
+│     • Får mejl i inkorgen → öppnar admin-panelen                         │
+│     • Granskar inkomna bokningar i bookings-tabellen                     │
+│     • Uppdaterar status: pending → confirmed / declined                  │
+│     • RLS: "Admins can update/view/delete bookings"                      │
+│     • Svarar kunden manuellt via e-post / telefon                        │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+**Berörda artefakter:**
+| Lager | Resurs |
+|-------|--------|
+| Frontend | `BookNowButton.tsx`, `BookingSection.tsx`, `ContactSection.tsx` |
+| Databas | Tabell `bookings` (RLS: anon INSERT, admin SELECT/UPDATE/DELETE) |
+| Edge functions | `send-booking-notification`, `send-contact-email` |
+| Secrets | `RESEND_API_KEY` |
+| E-post | Resend → `djloboproducciones75@gmail.com` |
+| Admin | `/admin` (RBAC via `user_roles` + `has_role()` SECURITY DEFINER) |
+
 ### 💬 LiveChat (endast `/lyssna`)
 - **Supabase Realtime** på `chat_messages`.
 - UUID-baserad sessions-id (ingen IP-tracking) — ban-system via `chat_bans` + `is_session_banned()` SQL-funktion.
