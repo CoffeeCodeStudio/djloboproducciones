@@ -87,6 +87,7 @@ const StatusBadge = ({ status }: { status: PromoStatus }) => {
 
 const PromosTab = () => {
   const { promos, isLoading, deletePromo, togglePromoActive, duplicatePromo } = usePromosAdmin();
+  const { strategy, setStrategy, isSaving } = usePromoSortStrategy();
   const [editorOpen, setEditorOpen] = useState(false);
   const [editing, setEditing] = useState<Promo | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Promo | null>(null);
