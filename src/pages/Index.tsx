@@ -2,6 +2,7 @@ import HeroSection from "@/components/HeroSection";
 import AboutSection from "@/components/AboutSection";
 import CalendarSection from "@/components/CalendarSection";
 import EquipmentSection from "@/components/EquipmentSection";
+import ContactSection from "@/components/ContactSection";
 import Footer from "@/components/Footer";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
@@ -24,6 +25,10 @@ const Index = () => {
           <EquipmentSection />
         </ErrorBoundary>
       </div>
+
+      <ErrorBoundary>
+        <ContactSection />
+      </ErrorBoundary>
 
       <Footer />
     </div>
