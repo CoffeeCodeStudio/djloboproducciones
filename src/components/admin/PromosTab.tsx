@@ -197,6 +197,57 @@ const PromosTab = () => {
         </CardContent>
       </Card>
 
+      {/* Display-queue preview — shows what visitors will actually see right now */}
+      {activeQueue.length > 0 && (
+        <Card className="glass-card border-primary/30">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              <CardTitle className="font-display text-base">
+                Visningsordning just nu ({activeQueue.length} aktiv{activeQueue.length === 1 ? "" : "a"})
+              </CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <ol className="space-y-1.5">
+              {activeQueue.map((p, idx) => (
+                <li
+                  key={p.id}
+                  className={`flex items-center gap-2 p-2 rounded-md text-sm ${
+                    idx === 0
+                      ? "bg-primary/10 border border-primary/30"
+                      : "bg-card/30 border border-border/40"
+                  }`}
+                >
+                  <span
+                    className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold flex-shrink-0 ${
+                      idx === 0
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {idx + 1}
+                  </span>
+                  {p.pinned_to_top && (
+                    <Pin className="w-3.5 h-3.5 text-primary flex-shrink-0" aria-label="Pinnad" />
+                  )}
+                  <span className="font-medium truncate flex-1">{p.title}</span>
+                  {idx === 0 && (
+                    <Badge className="text-xs bg-primary/20 text-primary border-primary/40 hover:bg-primary/20">
+                      ✨ Visas nu
+                    </Badge>
+                  )}
+                </li>
+              ))}
+            </ol>
+            <p className="text-xs text-muted-foreground mt-3">
+              Strategi: <span className="text-foreground font-medium">{PROMO_SORT_STRATEGY_LABELS[strategy]}</span>
+              {activeQueue.some((p) => p.pinned_to_top) && " · 📌 Pinnade kampanjer kommer alltid först"}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="glass-card">
         <CardHeader className="flex flex-row items-center justify-between gap-3 space-y-0">
           <div className="flex items-center gap-2">
