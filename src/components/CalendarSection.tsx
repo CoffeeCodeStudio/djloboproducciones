@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { MapPin, Clock, AlertCircle } from "lucide-react";
+import { MapPin, Clock, AlertCircle, Radio } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
 
@@ -13,6 +13,7 @@ const translations = {
     locationTBA: "Plats meddelas",
     errorMessage: "Kunde inte ladda spelningar just nu",
     retry: "Försök igen",
+    live: "LIVE NU",
   },
   en: {
     title: "UPCOMING EVENTS",
@@ -21,6 +22,7 @@ const translations = {
     locationTBA: "Location TBA",
     errorMessage: "Could not load shows right now",
     retry: "Try again",
+    live: "LIVE NOW",
   },
   es: {
     title: "PRÓXIMOS EVENTOS",
@@ -29,6 +31,7 @@ const translations = {
     locationTBA: "Lugar por confirmar",
     errorMessage: "No se pudieron cargar los shows",
     retry: "Reintentar",
+    live: "EN VIVO",
   },
 };
 
