@@ -128,6 +128,19 @@ const Navbar = () => {
 
             {/* Right side controls */}
             <div className="flex items-center gap-2 sm:gap-3">
+              {/* Promo reopen button — only when an active promo exists */}
+              {promo && (
+                <button
+                  onClick={handlePromoReopen}
+                  aria-label={language === "sv" ? "Visa aktuellt erbjudande" : language === "es" ? "Mostrar promoción actual" : "Show current promo"}
+                  title={language === "sv" ? "Visa aktuellt erbjudande" : language === "es" ? "Mostrar promoción actual" : "Show current promo"}
+                  className="tap-target glass-card p-2 rounded-lg focus-neon hover:border-neon-pink/50 transition-colors group relative"
+                >
+                  <Megaphone className="w-4 h-4 text-neon-pink group-hover:scale-110 transition-transform" />
+                  <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-neon-pink animate-pulse" aria-hidden="true" />
+                </button>
+              )}
+
               {/* Language Selector */}
               <div className="relative lang-dropdown">
                 <button
