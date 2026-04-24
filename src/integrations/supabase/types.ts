@@ -245,6 +245,33 @@ export type Database = {
         }
         Relationships: []
       }
+      promo_events: {
+        Row: {
+          created_at: string
+          event_type: string
+          id: string
+          metadata: Json | null
+          promo_id: string
+          session_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          event_type: string
+          id?: string
+          metadata?: Json | null
+          promo_id: string
+          session_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          event_type?: string
+          id?: string
+          metadata?: Json | null
+          promo_id?: string
+          session_id?: string | null
+        }
+        Relationships: []
+      }
       promos: {
         Row: {
           active_from: string
