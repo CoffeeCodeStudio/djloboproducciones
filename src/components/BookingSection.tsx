@@ -362,7 +362,7 @@ const BookingSection = () => {
             </button>
           </div>
 
-          <form onSubmit={handleSubmit} className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+          <form onSubmit={handleSubmit} noValidate className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div>
               <label htmlFor="booking-name" className="block text-sm font-medium text-foreground mb-2">
                 {t.name} *
@@ -372,9 +372,19 @@ const BookingSection = () => {
                 type="text"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                required
-                className="bg-background/50 border-muted focus:border-neon-pink"
+                aria-invalid={!!errors.name}
+                aria-describedby={errors.name ? "booking-name-error" : undefined}
+                className={cn(
+                  "bg-background/50 border-muted focus:border-neon-pink",
+                  errors.name && "border-destructive focus:border-destructive"
+                )}
               />
+              {errors.name && (
+                <p id="booking-name-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
+                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                  {errors.name}
+                </p>
+              )}
             </div>
 
             <div>
@@ -386,9 +396,19 @@ const BookingSection = () => {
                 type="email"
                 value={formData.email}
                 onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                required
-                className="bg-background/50 border-muted focus:border-neon-pink"
+                aria-invalid={!!errors.email}
+                aria-describedby={errors.email ? "booking-email-error" : undefined}
+                className={cn(
+                  "bg-background/50 border-muted focus:border-neon-pink",
+                  errors.email && "border-destructive focus:border-destructive"
+                )}
               />
+              {errors.email && (
+                <p id="booking-email-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
+                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                  {errors.email}
+                </p>
+              )}
             </div>
 
             <div className={isBooking ? "" : "sm:col-span-2"}>
@@ -400,8 +420,19 @@ const BookingSection = () => {
                 type="tel"
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="bg-background/50 border-muted focus:border-neon-pink"
+                aria-invalid={!!errors.phone}
+                aria-describedby={errors.phone ? "booking-phone-error" : undefined}
+                className={cn(
+                  "bg-background/50 border-muted focus:border-neon-pink",
+                  errors.phone && "border-destructive focus:border-destructive"
+                )}
               />
+              {errors.phone && (
+                <p id="booking-phone-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
+                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                  {errors.phone}
+                </p>
+              )}
             </div>
 
             {isBooking && (
@@ -414,8 +445,14 @@ const BookingSection = () => {
                     id="booking-event-type"
                     value={formData.eventType}
                     onChange={(e) => setFormData({ ...formData, eventType: e.target.value })}
-                    required
-                    className="w-full h-10 px-3 rounded-md bg-background/50 border border-muted focus:border-neon-pink focus:outline-none focus:ring-1 focus:ring-neon-pink text-foreground"
+                    aria-invalid={!!errors.eventType}
+                    aria-describedby={errors.eventType ? "booking-event-type-error" : undefined}
+                    className={cn(
+                      "w-full h-10 px-3 rounded-md bg-background/50 border focus:outline-none focus:ring-1 text-foreground",
+                      errors.eventType
+                        ? "border-destructive focus:border-destructive focus:ring-destructive"
+                        : "border-muted focus:border-neon-pink focus:ring-neon-pink"
+                    )}
                   >
                     <option value="">{t.selectType}</option>
                     {eventTypes.map((type) => (
@@ -424,6 +461,12 @@ const BookingSection = () => {
                       </option>
                     ))}
                   </select>
+                  {errors.eventType && (
+                    <p id="booking-event-type-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
+                      <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                      {errors.eventType}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -434,9 +477,11 @@ const BookingSection = () => {
                     <PopoverTrigger asChild>
                       <Button
                         variant="outline"
+                        aria-invalid={!!errors.eventDate}
                         className={cn(
                           "w-full justify-start text-left font-normal bg-background/50 border-muted hover:border-neon-pink",
-                          !formData.eventDate && "text-muted-foreground"
+                          !formData.eventDate && "text-muted-foreground",
+                          errors.eventDate && "border-destructive hover:border-destructive"
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
@@ -454,6 +499,12 @@ const BookingSection = () => {
                       />
                     </PopoverContent>
                   </Popover>
+                  {errors.eventDate && (
+                    <p className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
+                      <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                      {errors.eventDate}
+                    </p>
+                  )}
                 </div>
 
                 <div>
@@ -479,10 +530,20 @@ const BookingSection = () => {
                 id="booking-message"
                 value={formData.message}
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                required={!isBooking}
                 rows={4}
-                className="bg-background/50 border-muted focus:border-neon-pink resize-none"
+                aria-invalid={!!errors.message}
+                aria-describedby={errors.message ? "booking-message-error" : undefined}
+                className={cn(
+                  "bg-background/50 border-muted focus:border-neon-pink resize-none",
+                  errors.message && "border-destructive focus:border-destructive"
+                )}
               />
+              {errors.message && (
+                <p id="booking-message-error" className="mt-1.5 flex items-center gap-1.5 text-xs text-destructive">
+                  <AlertCircle className="w-3.5 h-3.5 flex-shrink-0" />
+                  {errors.message}
+                </p>
+              )}
             </div>
 
             <div className="sm:col-span-2">
