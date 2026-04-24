@@ -15,6 +15,8 @@ const translations = {
     errorMessage: "Kunde inte ladda spelningar just nu",
     retry: "Försök igen",
     live: "LIVE NU",
+    liveCountOne: "1 set spelas just nu",
+    liveCountMany: (n: number) => `${n} set spelas just nu`,
   },
   en: {
     title: "UPCOMING EVENTS",
@@ -24,6 +26,8 @@ const translations = {
     errorMessage: "Could not load shows right now",
     retry: "Try again",
     live: "LIVE NOW",
+    liveCountOne: "1 set playing now",
+    liveCountMany: (n: number) => `${n} sets playing now`,
   },
   es: {
     title: "PRÓXIMOS EVENTOS",
@@ -33,6 +37,8 @@ const translations = {
     errorMessage: "No se pudieron cargar los shows",
     retry: "Reintentar",
     live: "EN VIVO",
+    liveCountOne: "1 set en vivo ahora",
+    liveCountMany: (n: number) => `${n} sets en vivo ahora`,
   },
 };
 
@@ -91,6 +97,28 @@ const CalendarSection = () => {
     return () => clearInterval(id);
   }, []);
 
+  // Surface ALL concurrently-live sets — overlapping bookings (e.g. radio
+  // residency + venue gig) should each get a LIVE badge, not just the first
+  // one. We re-order so live sets stack on top, with the one ending soonest
+  // first, then upcoming sets in normal chronological order.
+  const orderedEvents = (() => {
+    const live: typeof events = [];
+    const upcoming: typeof events = [];
+    for (const ev of events) {
+      const startMs = ev.date.getTime();
+      const endMs = ev.endDate.getTime();
+      if (startMs <= nowTick && endMs >= nowTick) live.push(ev);
+      else upcoming.push(ev);
+    }
+    live.sort((a, b) => a.endDate.getTime() - b.endDate.getTime());
+    upcoming.sort((a, b) => a.date.getTime() - b.date.getTime());
+    return [...live, ...upcoming];
+  })();
+  const liveCount = orderedEvents.reduce(
+    (n, ev) => (ev.date.getTime() <= nowTick && ev.endDate.getTime() >= nowTick ? n + 1 : n),
+    0,
+  );
+
   // Force minimum loading time of 3 seconds
   useEffect(() => {
     const minimumLoadingPromise = new Promise((resolve) =>
@@ -131,6 +159,19 @@ const CalendarSection = () => {
             {t.title}
           </h2>
           <p className="text-muted-foreground text-sm sm:text-base">{t.subtitle}</p>
+          {liveCount > 0 && (
+            <div
+              className="mt-3 inline-flex items-center gap-2 rounded-full border border-destructive/40 bg-destructive/10 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-destructive"
+              role="status"
+              aria-live="polite"
+            >
+              <span className="relative flex h-2 w-2" aria-hidden="true">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-destructive/70" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-destructive" />
+              </span>
+              {liveCount === 1 ? t.liveCountOne : t.liveCountMany(liveCount)}
+            </div>
+          )}
         </div>
 
         {/* Event list container */}
@@ -162,9 +203,9 @@ const CalendarSection = () => {
           )}
 
           {/* Events */}
-          {events.length > 0 && (
+          {orderedEvents.length > 0 && (
             <ul role="list" className="divide-y divide-neon-cyan/10">
-              {events.map((event, i) => {
+              {orderedEvents.map((event, i) => {
                 // Read day/month in Stockholm wall-clock so the chip never
                 // drifts a day around midnight or across DST transitions.
                 const dayMonthFmt = new Intl.DateTimeFormat(
