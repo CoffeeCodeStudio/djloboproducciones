@@ -529,20 +529,37 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
               >
                 {promo.title}
               </h2>
-              {/* 5-bar live EQ — driven by Web Audio analyser via rAF */}
-              <div className="hidden sm:flex items-end gap-[3px] h-5 pt-2 shrink-0" aria-hidden="true">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <span
-                    key={i}
-                    ref={(el) => { eqBarRefs.current[i] = el; }}
-                    className="eq-bar"
-                    style={{
-                      animation: "none",
-                      transform: "scaleY(0.4)",
-                      transition: "transform 60ms linear",
-                    }}
-                  />
-                ))}
+              <div className="flex items-center gap-2 shrink-0">
+                {/* 5-bar live EQ — driven by Web Audio analyser via rAF */}
+                <div className="hidden sm:flex items-end gap-[3px] h-5 pt-2" aria-hidden="true">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <span
+                      key={i}
+                      ref={(el) => { eqBarRefs.current[i] = el; }}
+                      className="eq-bar"
+                      style={{
+                        animation: "none",
+                        transform: "scaleY(0.4)",
+                        transition: "transform 60ms linear",
+                      }}
+                    />
+                  ))}
+                </div>
+                {/* Discreet popup-only mute toggle — does not affect other audio */}
+                <button
+                  type="button"
+                  onClick={() => setMuted((m) => !m)}
+                  aria-label={muted ? "Slå på popup-ljud" : "Stäng av popup-ljud"}
+                  aria-pressed={muted}
+                  title={muted ? "Slå på popup-ljud" : "Stäng av popup-ljud"}
+                  className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-colors focus-neon"
+                >
+                  {muted ? (
+                    <VolumeX className="w-3.5 h-3.5" aria-hidden="true" />
+                  ) : (
+                    <Volume2 className="w-3.5 h-3.5" aria-hidden="true" />
+                  )}
+                </button>
               </div>
             </div>
             {promo.subtitle && (
