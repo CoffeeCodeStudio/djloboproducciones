@@ -704,6 +704,7 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
             active_to: (activeTo ?? new Date()).toISOString(),
             priority,
             is_active: isActive,
+            pinned_to_top: pinnedToTop,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           }}

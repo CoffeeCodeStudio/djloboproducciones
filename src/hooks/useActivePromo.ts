@@ -31,8 +31,18 @@ const ROTATION_STORAGE_KEY = "promo_rotation_index";
  * Apply the chosen sort strategy on the client. We always fetch the full set
  * (cheap — there are very few active promos at any time) and reorder locally
  * so the strategy can be changed without a DB roundtrip.
+ *
+ * Pinned promos ALWAYS come first (in their own group, sub-sorted by the
+ * chosen strategy) regardless of the global strategy — this is the per-promo
+ * override.
  */
 function sortByStrategy(list: Promo[], strategy: PromoSortStrategy): Promo[] {
+  const pinned = list.filter((p) => p.pinned_to_top);
+  const rest = list.filter((p) => !p.pinned_to_top);
+  return [...applyStrategy(pinned, strategy), ...applyStrategy(rest, strategy)];
+}
+
+function applyStrategy(list: Promo[], strategy: PromoSortStrategy): Promo[] {
   const arr = [...list];
   switch (strategy) {
     case "priority":
