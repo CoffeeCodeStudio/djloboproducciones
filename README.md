@@ -1,83 +1,216 @@
 # 🚀 DJ Lobo Producciones – Web Application
 
-Modern webbapp byggd av Coffee Code Studio som ersätter en 
-legacy-site från 2015. Optimerad för hastighet, modern UX 
-och sömlös medieintegration.
+Modern webbapp byggd av **Coffee Code Studio** som ersätter en legacy-site från 2015. Optimerad för hastighet, modern UX och sömlös medieintegration. Trespråkig (SV/EN/ES) med ett fullt utbyggt admin-system.
 
 ## 🔗 Länkar
 - **Live:** https://djloboproducciones.com
 - **Byggt av:** https://coffeecodestudio.se
 
-## 🛠 Features
-- **Radio-interface** — Live streaming via ZenoFM + Mixcloud
-- **Admin-panel** — Säker panel för innehållshantering
-- **Prislista** — Dynamisk prislista baserad på gästantal
-- **Bokningsformulär** — Kontakt & bokning i ett
-- **Google Calendar** — Kommande spelningar synkade automatiskt
-- **Bildhantering** — Upload med inbyggd cropper
-- **Mobiloptimerad** — Responsiv design för alla enheter
+---
 
-## ⚡ Tech Stack
-- **Frontend:** React + TypeScript + Vite
-- **Styling:** Tailwind CSS + shadcn/ui
-- **Backend:** Supabase (Auth, Database, Storage)
-- **Hosting:** Lovable
-- **Domän:** SVZ.RO
-- **Workflow:** GitHub + Lovable AI
+## 🗺 Sidstruktur (Routes)
 
-## 🏗 Stacking Context (Z-Index)
-To ensure UI consistency, the following z-index scale is enforced:
-- **100**: `PromoMiniCard` (Mini-Player) — Always on top of site content.
-- **60**: `CookieConsent` — Essential legal overlay.
-- **50**: `NowPlayingBar` & Navigation — Global site controls.
-- **10**: `Footer` & Layout — Base page elements.
+Publika sidor (delar `Layout.tsx` med Navbar, NowPlayingBar, PromoManager, CookieConsent):
+| Route | Sida | Innehåll |
+|-------|------|----------|
+| `/` | **Hem** (`Index.tsx`) | Hero, About, Spelningar (Google Calendar), Equipment, Testimonials, Contact |
+| `/lyssna` | **Live Radio** (`ListenPage.tsx`) | ZenoFM-stream + LiveChat (Supabase Realtime) |
+| `/mixar` | **Mixar & Sets** (`MixesPage.tsx`) | Mixcloud-grid med inline mobil-promo |
+| `/media` | **Media** (`MediaPage.tsx`) | Galleri, lightbox, filterbar (foto/video) |
+| `/referenser` | **Omdömen** (`ReferencesPage.tsx`) | Kundtestimonials |
+| `/prislista` | **Prislista** (`PrislistaPage.tsx`) | PricingGrid + BookingSection (kontakt/bokning) |
+| `/privacy`, `/terms` | Juridiska sidor | GDPR, integritet, ÅRL |
 
-> ⚠️ Future overlays (e.g. DJ profile modals) must respect this scale and never exceed `100` unless they are critical full-screen alerts (`PromoPopup` uses Radix Dialog defaults).
+Standalone (utan Layout): `/admin`, `/reset-password`, `/dev/zstack`.
 
-## 🛠 Component Architecture
-
-### React Portals
-The `PromoMiniCard` uses `createPortal` to render directly into `document.body`. This is a deliberate architectural choice to:
-1. Escape `overflow: hidden` on parent containers (avoids "Clipping Ancestors").
-2. Ensure `position: fixed` is relative to the viewport, not a nested stacking context created by `transform` or `filter` ancestors.
-
-### Media Playback Strategy
-The platform supports three media sources for promos and hero content:
-- **YouTube**: Embedded via `youtube-nocookie.com` with `autoplay=1&mute=1&controls=0&loop=1` for silent background-video style. Cookie-less domain keeps GDPR compliance.
-- **Native Video (`<video>`)**: Uses `playsinline`, `muted`, and `loop` for mobile autoplay compatibility (iOS requires muted+playsinline).
-- **Image Fallback**: Every video element receives a `poster` / fallback image so the UI never shows an empty black box during load or on autoplay failure.
-
-## 🧠 Business Logic: Promo Visibility
-The promo system (`PromoManager.tsx`) balances marketing visibility with user comfort using a layered storage strategy:
-
-- **Priority Selection**: When multiple promos are active in Supabase, the one with the highest `priority` wins; ties break on most recent `created_at`. Only one promo is shown at a time.
-- **24-Hour Cool-down**: Once a user closes the full-screen `PromoPopup`, a timestamp is saved to `localStorage` (`promo_seen_<id>`). The large modal won't reappear for 24 hours — instead the user sees the compact `PromoMiniCard`.
-- **Session Dismissal**: Clicking `X` on the Mini-Player saves a flag to `sessionStorage` (`promo_mini_session_hidden_<id>`). The mini-player stays hidden until the browser tab/session closes.
-- **Permanent Dismissal**: "Visa inte igen" writes to `localStorage` (`promo_permanent_dismissed_<id>`) — neither the popup nor the mini-player will ever show again for that promo ID.
-- **Re-open Flow**: Clicking the Mini-Player re-opens the full popup; closing it returns to mini state instead of restarting the 24h timer.
-
-## 💾 State Management
-Hybrid persistence model — pick the right storage for the right lifetime:
-- **`localStorage`**: Long-lived user preferences (promo cool-downs, permanent dismissals, cookie consent).
-- **`sessionStorage`**: Per-session UI state (mini-player hide for current visit).
-- **Zustand (`usePlayerStore`)**: In-memory global radio player state (current mix, play/pause).
-- **TanStack Query**: Server state (promos, gallery, mixes, calendar) with `staleTime` tuned per resource.
-
-## ⚖️ Compliance & Privacy
-- **Storage Transparency**: The app uses `localStorage` and `sessionStorage` for functional UI state only — no personally identifiable information (PII) is stored client-side.
-  - `promo_seen_<id>` — 24h timestamp to throttle popup frequency.
-  - `promo_mini_session_hidden_<id>` — session-only mini-player hide flag.
-  - `promo_permanent_dismissed_<id>` — persistent "do not show again" preference.
-  - `cookie_consent` — user's choice for third-party embeds (YouTube, Mixcloud).
-- **Privacy-by-Design**: All YouTube embeds use the `youtube-nocookie.com` domain, which prevents marketing/tracking cookies from being set until the user actively presses Play.
-- **Third-Party Embeds**: Mixcloud (audio) and YouTube (video) iframes are gated behind the cookie consent banner (`CookieConsent.tsx`) — nothing loads from third parties until the user accepts.
-- **GDPR Ready**: Dismissal actions ("Visa inte igen") are stored locally on the user's device and never transmitted to the server. Server-side data (bookings, contact submissions, chat messages) is auto-purged via `pg_cron` jobs per the retention policy.
-- **No Analytics Cookies**: The site ships without Google Analytics, Meta Pixel, or other tracking SDKs.
-
-## 💼 Coffee Code Studio
-Levererat av Coffee Code Studio som en del av vårt 
-"Digital Upgrade"-paket — från legacy till modern 
-webbapplikation.
+Legacy-redirects: `/radio → /lyssna`, `/mixes|/galleri → /media`, `/spelningar → /`, `/utrustning → /spelningar`.
 
 ---
-*Senast uppdaterad: Mars 2026*
+
+## 🛠 Kärnfunktioner
+
+### 📻 Radio-spelare (Global)
+- **`NowPlayingBar`** + **`GlobalMiniPlayer`** — Persistent spelare som överlever sidnavigering tack vare `Layout.tsx`.
+- **State:** Zustand (`usePlayerStore`) hanterar mode (`radio` / `mix`), aktuellt spår, play/pause/minimize.
+- **Källor:** ZenoFM live-stream + Mixcloud iframe-spelare.
+- **`useStreamStatus`** kollar om streamen är live och visar ON AIR-indikator.
+
+### 🎧 Mixar (Mixcloud)
+- **`MixCardGrid`** + **`MixcloudMixes`** + **`MixcloudModal`** — Grid med kort, klick öppnar embedded spelare eller startar i mini-spelaren.
+- **Sortering:** Pinnade först, sedan efter `mixcloud_created_time`. Dolda mixar filtreras bort.
+- **Edge function `fetch-mixcloud`** — Synkar mixar automatiskt från Mixcloud-API.
+- **Mobil:** Promo-banner injiceras efter 4:e mixen (`#promo-mobile-slot`).
+
+### 📅 Schemaläggning (Spelningar)
+- **`useUpcomingEvents`** — Kommande event på hemsidan (sorterade ascending, framtida endast).
+- **`useCalendarEvents`** — Full event-lista, filtrerar bort historik, sorterar efter datum.
+- **Edge function `google-calendar`** — Hämtar events från `djloboproducciones75@gmail.com` via Google Calendar API.
+- **Caching:** TanStack Query med konfigurerad `staleTime`. Minimum loading-animation för UX.
+
+### 📣 Promo / Kampanj-system
+Trestegs visningslogik styrd av `PromoManager.tsx`:
+
+1. **`PromoPopup`** — Stor popup vid första besöket. Stöder bild, MP4-loop eller YouTube-embed.
+2. **`PromoMiniCard`** — Efter stängning visas mini-version i 24 timmar:
+   - **Desktop (≥768px):** Flytande kort nere till höger (via `createPortal` till `document.body`).
+   - **Mobil (<768px):** Helbredds-banner inuti mix-griden efter 4:e mixen (portalas till `#promo-mobile-slot` med `MutationObserver`-detektering).
+3. **"Visa inte igen"** — Permanent dismiss via `localStorage`.
+
+**Datakällor:**
+- Tabell: `promos` (RLS: publika ser bara aktiva inom datumintervall).
+- Hooks: `useActivePromo` (publik), `usePromosAdmin` (admin).
+- Editor: `PromoEditor.tsx` med Google Calendar-koppling (auto: 14 dagar före → 1 dag efter event) eller manuell datum-picker. Prio 0–10 vid överlapp.
+- Detaljerad guide: `docs/PROMO_EDITOR_GUIDE.md`.
+
+### 💼 Booking-flow
+- **`BookNowButton`** — Smart CTA: scrollar till `#boka` på `/prislista`, annars navigerar dit med hash.
+- **`BookingSection`** — Toggle mellan **Kontakt** (snabb fråga) och **Bokning** (fullt formulär: event, datum, plats, gäster).
+- **Trespråkig:** SV/EN/ES via `LanguageContext`.
+- **Edge function `send-booking-notification`** — Resend e-post från `noreply@djloboproducciones.com` → `djloboproducciones75@gmail.com`.
+- **Lagring:** `bookings`-tabellen (admin kan se/uppdatera/radera, anon kan submit).
+
+### 💬 LiveChat (endast `/lyssna`)
+- **Supabase Realtime** på `chat_messages`.
+- UUID-baserad sessions-id (ingen IP-tracking) — ban-system via `chat_bans` + `is_session_banned()` SQL-funktion.
+- **`profanityFilter.ts`** + rate limiting per session.
+- **`FloatingChatButton`** — Endast synlig på `/lyssna`.
+
+### 🖼 Media & Galleri
+- **`SocialGallerySection`** + **`MediaLightbox`** + **`MediaFilterBar`** — Filtrerbar (foto/video).
+- **`useGallery`** — Hämtar från `gallery_images`, sorterar efter `sort_order`.
+- **`imageOptimizer.ts`** — Supabase image transformations + WebP, lazy-loading överallt.
+
+---
+
+## 🔐 Admin-panel (`/admin`)
+
+Strikt mörk navy/charcoal-tema (NO neon — separat från publika sajten). Skyddad via Supabase RBAC (`user_roles` + `has_role()` SECURITY DEFINER).
+
+| Flik | Komponent | Funktion |
+|------|-----------|----------|
+| **Framsida** | `FramsidaTab` | Hero-bild, bakgrund, OG-image |
+| **Branding** | `BrandingTab` | Logotyp, färger (HSL), site-name, taglines |
+| **Bio** | `BioTab` | About-text |
+| **Spelningar** | `SpelningarTab` + `ScheduleTab` | Google Calendar-id |
+| **Mixar** | `MixesTab` + `MixcloudTab` | Manuell + auto-sync, pin/dölj |
+| **Galleri** | `GalleryTab` + `ImageCropper` | Upload, beskärning, sort |
+| **Utrustning** | `EquipmentTab` | Trespråkig CRUD |
+| **Omdömen** | `TestimonialsTab` | Kundcitat |
+| **Radio** | `RadioTab` | Stream-inställningar, sektionstitel |
+| **Kampanjer** | `PromosTab` + `PromoEditor` | Hela promo-systemet |
+| **Användare** | `UsersTab` | Roll-hantering (kallar `list-admin-users`) |
+| **Hjälp** | `HelpTab` | Länkar till dokumentation |
+
+Inloggning via `AdminLogin.tsx` (Supabase Auth, e-post + lösen, password-reset via `/reset-password`).
+
+---
+
+## 🧠 Hooks-översikt
+
+| Hook | Syfte |
+|------|-------|
+| `useAuth` | Supabase session + admin-roll |
+| `useBranding` | `site_branding` (cached) |
+| `useActivePromo` | Aktiv promo för publika sajten |
+| `usePromosAdmin` | CRUD för admin |
+| `useUpcomingEvents` | Hemsidans nästa event (sorterad asc, framtida) |
+| `useCalendarEvents` | Full event-lista med stale-closure-säker fetch |
+| `useGallery` | Galleri-bilder |
+| `useStreamStatus` | Live/offline-detektering |
+| `usePresence` | Realtime online-räknare |
+| `useDynamicFavicon` | Statisk 512x512 favicon (ingen dynamisk ändring) |
+| `use-mobile` | Breakpoint-detektering (768px) |
+
+---
+
+## ⚡ Tech Stack
+- **Frontend:** React 18 + TypeScript + Vite 5
+- **Styling:** Tailwind CSS v3 + shadcn/ui + semantiska HSL-tokens
+- **State:** Zustand (player) + TanStack Query (server state) + React Context (language, cookie consent)
+- **Backend:** Lovable Cloud (Supabase Auth, Postgres, Storage, Realtime, Edge Functions)
+- **E-post:** Resend (`noreply@djloboproducciones.com`)
+- **Hosting:** Lovable + custom domain
+- **Workflow:** GitHub + Lovable AI
+
+---
+
+## ⚙️ Edge Functions (`supabase/functions/`)
+
+| Function | Syfte |
+|----------|-------|
+| `fetch-mixcloud` | Synkar mixar från Mixcloud-API till `mixcloud_mixes` |
+| `google-calendar` | Hämtar kommande spelningar från Google Calendar |
+| `send-booking-notification` | Skickar bokningsmejl via Resend |
+| `send-contact-email` | Skickar kontaktmejl via Resend |
+| `list-admin-users` | Listar användare för admin-panelen |
+| `check-cron-jobs` | Diagnostik för pg_cron retention-jobb |
+
+---
+
+## 🏗 Stacking Context (Z-Index)
+För UI-konsistens:
+- **100**: `PromoMiniCard` (Mini-Player) — Alltid över sidans innehåll
+- **60**: `CookieConsent` — Juridisk overlay
+- **50**: `NowPlayingBar` & Navigation — Globala kontroller
+- **10**: `Footer` & Layout — Bas-element
+
+> ⚠️ Framtida overlays får inte överstiga `100` om de inte är fullskärms-alerts (`PromoPopup` använder Radix Dialog defaults).
+
+Debug-tool: `/dev/zstack` + `ZIndexDebugOverlay.tsx`.
+
+---
+
+## 🛠 Arkitektur-beslut
+
+### React Portals
+`PromoMiniCard` och `PromoPopup` använder `createPortal` för att:
+1. Slippa `overflow: hidden` på parent-containers
+2. Garantera att `position: fixed` är relativ till viewport, inte transformade ancestors
+3. Mobil-banner portalas dynamiskt till mix-griden via `MutationObserver`
+
+### Persistent Layout
+`Layout.tsx` hålls monterad mellan route-byten — nödvändigt för att radio-spelaren inte ska stängas av vid navigering.
+
+### Media-strategi
+- **YouTube:** `youtube-nocookie.com` med `autoplay=1&mute=1&controls=0&loop=1` (GDPR-säker)
+- **Native `<video>`:** `playsinline + muted + loop` (iOS-kompatibel autoplay)
+- **Image fallback:** Alla videor har `poster` för att aldrig visa svart ruta
+
+---
+
+## 💾 State Management — Hybrid-modell
+
+| Storage | Användning |
+|---------|-----------|
+| `localStorage` | Promo-cooldowns (24h), permanent dismiss, cookie-samtycke |
+| `sessionStorage` | Mini-player session-hide |
+| Zustand (`usePlayerStore`) | Global radio-/mix-spelare i minne |
+| TanStack Query | Server-state med tunad `staleTime` per resurs |
+| React Context | Språkval (SV/EN/ES), cookie consent |
+
+---
+
+## ⚖️ Compliance & Privacy
+- **Storage Transparency:** Endast funktionell UI-state lagras klient-sidan — ingen PII.
+  - `promo_seen_<id>`, `promo_mini_session_hidden_<id>`, `promo_permanent_dismissed_<id>`, `cookie_consent`
+- **Privacy-by-Design:** YouTube via `youtube-nocookie.com` — inga marknadsföringscookies förrän användaren spelar upp.
+- **Third-party gating:** Mixcloud + YouTube iframes laddas EJ förrän cookie-banner accepterats.
+- **GDPR:** Server-data (bookings, contact, chat) auto-rensas via `pg_cron`.
+- **No Analytics SDKs:** Inga Google Analytics, Meta Pixel eller liknande.
+- **CSP:** Strikta HTTP-headers via `public/_headers`.
+
+---
+
+## 🌍 Internationalisering
+- **3 språk:** Svenska (default), English, Español
+- **Källa:** `LanguageContext.tsx` + per-komponent `translations`-objekt
+- **Tone:** Informellt "tú" på spanska, "Göteborgs" på svenska
+- **DB-data:** Equipment har `*_sv`, `*_en`, `*_es`-kolumner
+
+---
+
+## 💼 Coffee Code Studio
+Levererat av **Coffee Code Studio** som en del av vårt **"Digital Upgrade"-paket** — från legacy till modern webbapplikation. Footer-signatur: *"Design & Development by Coffee Code Studio ☕"*.
+
+---
+*Senast uppdaterad: April 2026*
