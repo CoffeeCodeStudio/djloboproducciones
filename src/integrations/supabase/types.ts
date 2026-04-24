@@ -353,6 +353,7 @@ export type Database = {
           og_image_url: string | null
           primary_glow_color: string | null
           profile_image_url: string | null
+          promo_sort_strategy: string
           radio_image_url: string | null
           radio_section_title: string | null
           secondary_glow_color: string | null
@@ -385,6 +386,7 @@ export type Database = {
           og_image_url?: string | null
           primary_glow_color?: string | null
           profile_image_url?: string | null
+          promo_sort_strategy?: string
           radio_image_url?: string | null
           radio_section_title?: string | null
           secondary_glow_color?: string | null
@@ -417,6 +419,7 @@ export type Database = {
           og_image_url?: string | null
           primary_glow_color?: string | null
           profile_image_url?: string | null
+          promo_sort_strategy?: string
           radio_image_url?: string | null
           radio_section_title?: string | null
           secondary_glow_color?: string | null
