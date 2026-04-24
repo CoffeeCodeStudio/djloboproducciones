@@ -251,6 +251,8 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
     if (isPaused) return;
     const t = window.setTimeout(() => {
       logger.log("[PromoPopup] auto-close fired", { promoId: promo.id, afterMs: AUTO_CLOSE_MS });
+      // Signal to PromoManager that this close was automatic, not manual
+      (window as unknown as { __promoCloseReason?: string }).__promoCloseReason = "auto";
       trackPromoEvent(promo.id, "closed", { close_reason: "auto", after_ms: AUTO_CLOSE_MS });
       onClose();
     }, AUTO_CLOSE_MS);
