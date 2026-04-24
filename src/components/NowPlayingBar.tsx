@@ -18,6 +18,7 @@ import { useStreamStatus } from "@/hooks/useStreamStatus";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { logger } from "@/lib/logger";
+import { useScheduleNow, formatRelativeShort } from "@/hooks/useScheduleNow";
 
 const STREAM_URL = "https://stream.zeno.fm/gzzqvbuy0d7uv";
 
