@@ -82,6 +82,13 @@ const CalendarSection = () => {
   const t = translations[language];
   const { events, loading: apiLoading, error, refetch } = useCalendarEvents();
   const [isLoading, setIsLoading] = useState(true);
+  // Tick every 30s so LIVE badges flip on/off automatically as time passes,
+  // even if the calendar feed is still cached.
+  const [nowTick, setNowTick] = useState(() => Date.now());
+  useEffect(() => {
+    const id = setInterval(() => setNowTick(Date.now()), 30 * 1000);
+    return () => clearInterval(id);
+  }, []);
 
   // Force minimum loading time of 3 seconds
   useEffect(() => {
@@ -174,28 +181,63 @@ const CalendarSection = () => {
               {events.map((event, i) => {
                 const day = event.date.getDate();
                 const month = event.date.toLocaleString(language === "sv" ? "sv-SE" : language === "es" ? "es-ES" : "en-US", { month: "short" }).toUpperCase();
+                const isLive =
+                  event.date.getTime() <= nowTick && event.endDate.getTime() >= nowTick;
 
                 return (
                   <li
                     key={event.id}
-                    className="scroll-reveal group flex items-center gap-4 px-4 sm:px-6 py-4 hover:bg-white/[0.03] transition-colors"
+                    aria-current={isLive ? "true" : undefined}
+                    className={`scroll-reveal group flex items-center gap-4 px-4 sm:px-6 py-4 transition-colors ${
+                      isLive
+                        ? "bg-destructive/10 hover:bg-destructive/15"
+                        : "hover:bg-white/[0.03]"
+                    }`}
                     style={{ animationDelay: `${i * 80}ms` }}
                   >
-                    {/* Date block */}
-                    <div className="flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl bg-gradient-to-br from-[#FFD700]/20 to-[#FF8C00]/10 border border-[#FFD700]/30 flex flex-col items-center justify-center">
-                      <span className="text-[10px] sm:text-xs font-bold tracking-widest text-[#FFD700]/80">
-                        {month}
-                      </span>
-                      <span className="text-xl sm:text-2xl font-display font-black text-[#FFD700]">
-                        {day}
-                      </span>
+                    {/* Date block — LIVE state recolors to destructive */}
+                    <div
+                      className={`flex-shrink-0 w-14 h-14 sm:w-16 sm:h-16 rounded-xl flex flex-col items-center justify-center border ${
+                        isLive
+                          ? "bg-gradient-to-br from-destructive/30 to-destructive/10 border-destructive/50"
+                          : "bg-gradient-to-br from-[#FFD700]/20 to-[#FF8C00]/10 border-[#FFD700]/30"
+                      }`}
+                    >
+                      {isLive ? (
+                        <Radio className="w-6 h-6 text-destructive animate-pulse" aria-hidden="true" />
+                      ) : (
+                        <>
+                          <span className="text-[10px] sm:text-xs font-bold tracking-widest text-[#FFD700]/80">
+                            {month}
+                          </span>
+                          <span className="text-xl sm:text-2xl font-display font-black text-[#FFD700]">
+                            {day}
+                          </span>
+                        </>
+                      )}
                     </div>
 
                     {/* Details */}
                     <div className="flex-1 min-w-0">
-                      <h3 className="font-display text-sm sm:text-base font-bold text-[#FFD700] truncate">
-                        {event.title}
-                      </h3>
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <h3 className={`font-display text-sm sm:text-base font-bold truncate ${
+                          isLive ? "text-destructive" : "text-[#FFD700]"
+                        }`}>
+                          {event.title}
+                        </h3>
+                        {isLive && (
+                          <span
+                            className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full bg-destructive/20 border border-destructive/40 text-[10px] font-display font-bold tracking-wider text-destructive"
+                            aria-label={t.live}
+                          >
+                            <span className="relative flex h-1.5 w-1.5">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-destructive opacity-75" />
+                              <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-destructive" />
+                            </span>
+                            {t.live}
+                          </span>
+                        )}
+                      </div>
                       <div className="flex flex-wrap items-center gap-x-3 gap-y-0.5 mt-1 text-xs sm:text-sm text-muted-foreground">
                         <span className="flex items-center gap-1">
                           <Clock className="w-3 h-3 text-neon-cyan" aria-hidden="true" />
