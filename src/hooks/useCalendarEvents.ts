@@ -6,6 +6,7 @@ export interface CalendarEvent {
   title: string;
   location: string;
   date: Date;
+  endDate: Date;
   dateFormatted: string;
   timeFormatted: string;
 }
@@ -14,7 +15,7 @@ const CACHE_KEY = "dj-lobo-calendar-events";
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 interface CachedData {
-  events: Array<Omit<CalendarEvent, "date"> & { date: string }>;
+  events: Array<Omit<CalendarEvent, "date" | "endDate"> & { date: string; endDate: string }>;
   timestamp: number;
 }
 
@@ -27,7 +28,11 @@ const getCachedEvents = (): CalendarEvent[] | null => {
       localStorage.removeItem(CACHE_KEY);
       return null;
     }
-    return cached.events.map((e) => ({ ...e, date: new Date(e.date) }));
+    return cached.events.map((e) => ({
+      ...e,
+      date: new Date(e.date),
+      endDate: new Date(e.endDate),
+    }));
   } catch {
     return null;
   }
@@ -36,7 +41,11 @@ const getCachedEvents = (): CalendarEvent[] | null => {
 const setCachedEvents = (events: CalendarEvent[]) => {
   try {
     const data: CachedData = {
-      events: events.map((e) => ({ ...e, date: e.date.toISOString() })),
+      events: events.map((e) => ({
+        ...e,
+        date: e.date.toISOString(),
+        endDate: e.endDate.toISOString(),
+      })),
       timestamp: Date.now(),
     };
     localStorage.setItem(CACHE_KEY, JSON.stringify(data));
