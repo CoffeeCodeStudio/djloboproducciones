@@ -95,25 +95,55 @@ export const useCalendarEvents = () => {
       if (data?.items && data.items.length > 0) {
         const now = new Date();
 
+        // Single source of truth for Stockholm-local field extraction. Using
+        // Intl.DateTimeFormat keeps the underlying Date in real UTC (so
+        // getTime() comparisons remain DST-safe everywhere downstream) while
+        // letting us read the wall-clock day/month/weekday/time as they appear
+        // in Sweden — including correct shifts across CET ↔ CEST.
+        const TZ = "Europe/Stockholm";
+        const dayNamesByLocale: Record<string, string[]> = {
+          sv: ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"],
+        };
+        const monthNamesByLocale: Record<string, string[]> = {
+          sv: ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"],
+        };
+        const partsFmt = new Intl.DateTimeFormat("en-US", {
+          timeZone: TZ,
+          weekday: "short",
+          year: "numeric",
+          month: "numeric",
+          day: "numeric",
+        });
+        const timeFmt = new Intl.DateTimeFormat("sv-SE", {
+          timeZone: TZ,
+          hour: "2-digit",
+          minute: "2-digit",
+          hourCycle: "h23",
+        });
+        const weekdayIndex: Record<string, number> = { Sun: 0, Mon: 1, Tue: 2, Wed: 3, Thu: 4, Fri: 5, Sat: 6 };
+
         const formatted: CalendarEvent[] = data.items
           .map((item: any) => {
             const startDate = new Date(item.start.dateTime || item.start.date);
             // Fall back to start if Calendar didn't provide an end (all-day quirks).
             const endDate = new Date(item.end?.dateTime || item.end?.date || startDate);
-            const dayNames = ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"];
-            const monthNames = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"];
 
-            // Format in Stockholm timezone to avoid UTC shift
-            const stockholmDate = new Date(startDate.toLocaleString("en-US", { timeZone: "Europe/Stockholm" }));
+            const parts = partsFmt.formatToParts(startDate);
+            const get = (type: string) => parts.find((p) => p.type === type)?.value ?? "";
+            const stockholmDay = parseInt(get("day"), 10);
+            const stockholmMonthIdx = parseInt(get("month"), 10) - 1;
+            const stockholmWeekday = weekdayIndex[get("weekday")] ?? 0;
 
             return {
               id: item.id,
               title: item.summary || "Untitled Event",
               location: item.location || "",
-              date: stockholmDate,
+              // Keep real UTC Date — comparisons (LIVE detection, sorting)
+              // must never operate on a fake "shifted" Date.
+              date: startDate,
               endDate,
-              dateFormatted: `${dayNames[stockholmDate.getDay()]} ${stockholmDate.getDate()} ${monthNames[stockholmDate.getMonth()]}`,
-              timeFormatted: startDate.toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Stockholm" }),
+              dateFormatted: `${dayNamesByLocale.sv[stockholmWeekday]} ${stockholmDay} ${monthNamesByLocale.sv[stockholmMonthIdx]}`,
+              timeFormatted: timeFmt.format(startDate),
             } as CalendarEvent;
           })
           // Keep events that have not yet ended — covers currently-LIVE sets.
