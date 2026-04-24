@@ -165,8 +165,15 @@ const CalendarSection = () => {
           {events.length > 0 && (
             <ul role="list" className="divide-y divide-neon-cyan/10">
               {events.map((event, i) => {
-                const day = event.date.getDate();
-                const month = event.date.toLocaleString(language === "sv" ? "sv-SE" : language === "es" ? "es-ES" : "en-US", { month: "short" }).toUpperCase();
+                // Read day/month in Stockholm wall-clock so the chip never
+                // drifts a day around midnight or across DST transitions.
+                const dayMonthFmt = new Intl.DateTimeFormat(
+                  language === "sv" ? "sv-SE" : language === "es" ? "es-ES" : "en-US",
+                  { timeZone: "Europe/Stockholm", day: "numeric", month: "short" }
+                );
+                const parts = dayMonthFmt.formatToParts(event.date);
+                const day = parts.find((p) => p.type === "day")?.value ?? event.date.getUTCDate();
+                const month = (parts.find((p) => p.type === "month")?.value ?? "").toUpperCase();
                 const isLive =
                   event.date.getTime() <= nowTick && event.endDate.getTime() >= nowTick;
 
