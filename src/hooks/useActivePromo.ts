@@ -32,6 +32,7 @@ export function useActivePromo() {
         .lte("active_from", nowIso)
         .gte("active_to", nowIso)
         .order("priority", { ascending: false })
+        .order("active_to", { ascending: true })
         .order("created_at", { ascending: false })
         .limit(1);
 
