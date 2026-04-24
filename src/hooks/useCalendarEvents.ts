@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export interface CalendarEvent {
@@ -12,7 +12,6 @@ export interface CalendarEvent {
 
 const CACHE_KEY = "dj-lobo-calendar-events";
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
-const FETCH_TIMEOUT = 8000; // 8 seconds
 
 interface CachedData {
   events: Array<Omit<CalendarEvent, "date"> & { date: string }>;
@@ -51,6 +50,11 @@ export const useCalendarEvents = () => {
   const [loading, setLoading] = useState(() => !getCachedEvents());
   const [isPlaceholder, setIsPlaceholder] = useState(false);
   const [error, setError] = useState(false);
+  const eventsRef = useRef<CalendarEvent[]>(events);
+
+  useEffect(() => {
+    eventsRef.current = events;
+  }, [events]);
 
   const fetchEvents = useCallback(async () => {
     setLoading(true);
@@ -70,20 +74,14 @@ export const useCalendarEvents = () => {
         return;
       }
 
-      // Fetch events with timeout
-      const controller = new AbortController();
-      const timeout = setTimeout(() => controller.abort(), FETCH_TIMEOUT);
-
       const { data, error: fnError } = await supabase.functions.invoke("google-calendar", {
         body: {},
       });
 
-      clearTimeout(timeout);
-
       if (fnError) {
         console.error("[Calendar] Edge function error:", fnError);
         // Keep cached data if available, show error only if no cache
-        if (events.length === 0) {
+        if (eventsRef.current.length === 0) {
           setError(true);
           setIsPlaceholder(true);
         }
@@ -92,34 +90,46 @@ export const useCalendarEvents = () => {
       }
 
       if (data?.items && data.items.length > 0) {
-        const formatted: CalendarEvent[] = data.items.slice(0, 10).map((item: any) => {
-          const startDate = new Date(item.start.dateTime || item.start.date);
-          const dayNames = ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"];
-          const monthNames = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"];
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-          // Format in Stockholm timezone to avoid UTC shift
-          const stockholmDate = new Date(startDate.toLocaleString("en-US", { timeZone: "Europe/Stockholm" }));
+        const formatted: CalendarEvent[] = data.items
+          .map((item: any) => {
+            const startDate = new Date(item.start.dateTime || item.start.date);
+            const dayNames = ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"];
+            const monthNames = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"];
 
-          return {
-            id: item.id,
-            title: item.summary || "Untitled Event",
-            location: item.location || "",
-            date: stockholmDate,
-            dateFormatted: `${dayNames[stockholmDate.getDay()]} ${stockholmDate.getDate()} ${monthNames[stockholmDate.getMonth()]}`,
-            timeFormatted: startDate.toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Stockholm" }),
-          };
-        });
+            // Format in Stockholm timezone to avoid UTC shift
+            const stockholmDate = new Date(startDate.toLocaleString("en-US", { timeZone: "Europe/Stockholm" }));
 
-        setEvents(formatted);
-        setCachedEvents(formatted);
-        setIsPlaceholder(false);
+            return {
+              id: item.id,
+              title: item.summary || "Untitled Event",
+              location: item.location || "",
+              date: stockholmDate,
+              dateFormatted: `${dayNames[stockholmDate.getDay()]} ${stockholmDate.getDate()} ${monthNames[stockholmDate.getMonth()]}`,
+              timeFormatted: startDate.toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Stockholm" }),
+            } as CalendarEvent;
+          })
+          .filter((e: CalendarEvent) => e.date >= today)
+          .sort((a: CalendarEvent, b: CalendarEvent) => a.date.getTime() - b.date.getTime())
+          .slice(0, 10);
+
+        if (formatted.length > 0) {
+          setEvents(formatted);
+          setCachedEvents(formatted);
+          setIsPlaceholder(false);
+        } else {
+          setEvents([]);
+          setIsPlaceholder(true);
+        }
       } else {
         setEvents([]);
         setIsPlaceholder(true);
       }
     } catch (err) {
       console.error("[Calendar] Unexpected error:", err);
-      if (events.length === 0) {
+      if (eventsRef.current.length === 0) {
         setError(true);
         setIsPlaceholder(true);
       }
