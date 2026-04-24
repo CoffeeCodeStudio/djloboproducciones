@@ -111,6 +111,14 @@ const NowPlayingBar = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const t = translations[language];
+  const schedule = useScheduleNow();
+
+  // Visualizer animation speed scales with progress through the current set
+  // (faster bars near the end → "synced with time"). When a set is playing
+  // we go from 1.4s → 0.45s; when idle we use a calm default.
+  const visualizerDuration = schedule.current
+    ? `${(1.4 - schedule.progress * 0.95).toFixed(2)}s`
+    : "1.2s";
 
   const isRadio = mode === "radio";
   const isMix = mode === "mix";
