@@ -298,7 +298,100 @@ Inloggning via `AdminLogin.tsx` (Supabase Auth, e-post + lösen). Password-reset
 
 ---
 
-## 🧠 Hooks-översikt
+## 📡 Live-system: Radio, Chat & Kalender
+
+### 🎙 Radio (ZenoFM live-stream)
+
+**Stream-URL** (hårdkodad i `NowPlayingBar.tsx`):
+```
+https://stream.zeno.fm/gzzqvbuy0d7uv
+```
+
+Statusen drivs av en Zustand-store (`useStreamStatus`) med fyra lägen:
+
+| Status | Trigger | UI-indikator |
+|--------|---------|--------------|
+| `offline` | Default + när användaren stoppar | Grå "OFF AIR" |
+| `connecting` | `audio` `waiting`-event eller play-anrop | Pulserande "ANSLUTER…" |
+| `live` | `audio` `playing`-event lyckas | Glödande röd "ON AIR" |
+| `error` | `audio` `error`-event eller fetch-fel | "Kunde inte ansluta" |
+
+**Hur det fungerar tekniskt:**
+1. Klick på "Spela" i `NowPlayingBar` skapar ett `<audio>`-element och sätter `src = STREAM_URL`.
+2. Webbläsarens egna events (`playing`, `waiting`, `error`) mappas direkt till status-store:n.
+3. Det finns **ingen separat health-check eller polling** — status reflekterar enbart vad ljud-elementet rapporterar i realtid. ZenoFM:s server styr om streamen är levande.
+4. Tabben i bakgrunden? Streamen pausas av webbläsaren själv enligt autoplay-policyn — inget vi kontrollerar.
+
+**Fallback-beteende:**
+- **Stream nere:** `error`-event → status blir `error`, knappen blir spelbar igen så användaren kan försöka manuellt.
+- **Mix spelar istället:** `usePlayerStore.mode` växlar mellan `"radio"` och `"mix"` — Mixcloud-iframe tar över när en mix väljs, radio stoppas automatiskt.
+- **Footer-länk:** Om mini-spelaren strular kan användaren alltid öppna ZenoFM direkt via Footer → "ZenoFM" (extern länk till `zeno.fm/radio/dj-lobo-radio-o85p/`).
+
+**Konfiguration i admin (`/admin` → Radio-fliken):**
+- `radio_section_title` — Rubriken på `/lyssna`-sidan
+- `radio_image_url` — Bilden bakom spelaren
+- Stream-URL själv är **hårdkodad i koden** — för att byta stream måste `STREAM_URL` i `NowPlayingBar.tsx` uppdateras (medvetet beslut för att förhindra felkonfiguration).
+
+---
+
+### 💬 LiveChat (endast `/lyssna`)
+
+Realtime-chat byggd på Supabase Realtime + Postgres-tabellen `chat_messages`.
+
+**Beteende:**
+- Anonyma sessioner — varje besökare får ett UUID i `localStorage` (`chat_session_id`). **Ingen IP-tracking.**
+- **Realtime-prenumeration:** `supabase.channel('chat_messages').on('postgres_changes', ...)` — nya meddelanden pushas direkt till alla anslutna klienter utan polling.
+- **Profanity-filter:** `lib/profanityFilter.ts` blockerar olämpliga ord innan submit.
+- **Rate limiting (klient):** `RATE_LIMIT_MS = 3000` — max 1 meddelande per 3 sekunder per session, med live-countdown i UI:t.
+- **Rate limiting (server):** Trigger `check_chat_rate_limit()` blockerar >5 meddelanden per 30s från samma `session_id`.
+- **Ban-system:** Admin lägger till `session_id` i `chat_bans`-tabellen → RLS-policyn `Non-banned users can send messages` använder `is_session_banned()` för att blockera INSERT.
+- **Auto-purge:** Gamla meddelanden rensas via pg_cron (GDPR-kompliant retention).
+
+**Cooldown-flöde:**
+```
+Skickar meddelande → setLastMessageTime(now)
+                   ↓
+Försök skicka nytt inom 3s
+                   ↓
+cooldownRemaining = 3000 - elapsed
+                   ↓
+setInterval(100ms) → räknar ner i UI tills 0
+                   ↓
+Knappen aktiveras igen
+```
+
+---
+
+### 📅 Kalender-polling (Spelningar)
+
+Två hooks med olika cache-strategier:
+
+| Hook | Cache-källa | TTL | Polling | Använd av |
+|------|-------------|-----|---------|-----------|
+| `useUpcomingEvents` | TanStack Query (in-memory) | `staleTime: 5 min` | Endast vid mount/focus | Hemsidan |
+| `useCalendarEvents` | `localStorage` (persistent) | 5 min | Endast vid mount + manuell `refetch()` | Övriga vyer |
+
+**Beteende `useCalendarEvents` (steg-för-steg):**
+
+1. **Mount:** Försöker läsa `dj-lobo-calendar-events` från `localStorage`. Hit < 5 min → visa direkt utan loading-spinner.
+2. **Hämta calendar-id:** Slår upp `site_branding.google_calendar_id` (single-row select).
+3. **Saknas id?** → `isPlaceholder = true`, visar fallback-UI ("Inga kommande spelningar").
+4. **Edge function:** Anropar `supabase.functions.invoke('google-calendar', { body: {} })` som i sin tur kallar Google Calendar API v3 med `GOOGLE_CALENDAR_API_KEY`.
+5. **Bearbetning:**
+   - Filtrerar bort historik (`date >= today` med midnatt-jämförelse)
+   - Sorterar ascending
+   - Tar max 10 events
+   - Formaterar i `Europe/Stockholm`-timezone (svensk dagnamn + 24h klockslag)
+6. **Cache:** Skriver tillbaka till `localStorage` med ny tidsstämpel.
+7. **Felhantering:** Vid fetch-fel — om cache finns, behåll den tyst. Om ingen cache → `error = true` + placeholder-UI.
+
+**Polling-strategi:** **Ingen automatisk polling** — events laddas vid sidladdning och stannar fresh i 5 minuter. För nya event innan TTL går ut: `refetch()` exponeras från hooken.
+
+**Stale-closure-skydd:** `eventsRef` (useRef) speglar `events`-state så `useCallback`-dependency arrayen kan vara `[]` utan att tappa nuvarande cache-status i felhanteringen.
+
+---
+
+
 
 | Hook | Syfte |
 |------|-------|
