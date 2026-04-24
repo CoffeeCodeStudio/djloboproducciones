@@ -94,26 +94,37 @@ const PromoManager = () => {
     else if (mode === "mini") trackPromoEvent(promo.id, "mini_shown");
   }, [mode, promo]);
 
-  // Listen for manual reopen requests (e.g. from Navbar megaphone button)
+  // Listen for manual reopen requests (e.g. from Navbar megaphone button).
+  // Important: we resolve the target promo from the LATEST queue inside the
+  // handler so a stale `promo` closure can't leave us with `mode="popup"` but
+  // no visible promo (which is what made the button feel "dead").
   useEffect(() => {
     const handleReopen = () => {
-      if (!promo) return;
+      // Pick the highest-priority active promo from the unfiltered list,
+      // so even permanently-dismissed promos can be reopened from the navbar.
+      const target = promos[0];
+      if (!target) return;
+
       try {
-        localStorage.removeItem(PERMANENT_DISMISS_KEY(promo.id));
-        localStorage.removeItem(SEEN_KEY(promo.id));
-        sessionStorage.removeItem(MINI_SESSION_HIDDEN_KEY(promo.id));
+        localStorage.removeItem(PERMANENT_DISMISS_KEY(target.id));
+        localStorage.removeItem(SEEN_KEY(target.id));
+        sessionStorage.removeItem(MINI_SESSION_HIDDEN_KEY(target.id));
       } catch {
         /* ignore */
       }
-      // Restart from the top of the queue when user manually reopens
+
+      // Reset the queue state and pin the target so the resolver shows it
+      // immediately on the next render — without racing the [promo] effect
+      // below that might otherwise flip us back to "mini".
       setSkippedIds(new Set());
-      setActiveId(null);
       setReopenedFromMini(false);
+      setActiveId(target.id);
       setMode("popup");
     };
     window.addEventListener("promo:reopen", handleReopen);
     return () => window.removeEventListener("promo:reopen", handleReopen);
-  }, [promo]);
+  }, [promos]);
+
 
   if (!promo) return null;
 
