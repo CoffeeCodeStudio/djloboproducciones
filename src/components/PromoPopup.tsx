@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Dialog, DialogContent } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Disc3, X, Volume2, VolumeX } from "lucide-react";
 import confetti from "canvas-confetti";
@@ -439,6 +439,8 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
 
       <DialogContent
         data-zlayer="promo-popup-content"
+        aria-labelledby="promo-popup-title"
+        aria-describedby={promo.subtitle ? "promo-popup-desc" : undefined}
         className="p-0 overflow-visible max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow promo-popup-enter"
         style={{ zIndex: 9999, cursor: "auto" }}
         onMouseEnter={() => setIsPaused(true)}
@@ -451,6 +453,15 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
           }
         }}
       >
+        {/* Screen-reader-only title & description for accessibility */}
+        <DialogTitle className="sr-only" id="promo-popup-title">
+          {promo.title}
+        </DialogTitle>
+        {promo.subtitle && (
+          <DialogDescription className="sr-only" id="promo-popup-desc">
+            {promo.subtitle}
+          </DialogDescription>
+        )}
         {/* Ambient outer aura — pulsing radial glow behind the modal */}
         <span aria-hidden="true" className="promo-aura" />
 
