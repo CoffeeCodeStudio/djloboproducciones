@@ -487,6 +487,35 @@ Debug-tool: `/dev/zstack` + `ZIndexDebugOverlay.tsx`.
 
 ---
 
+## 🔒 Säkerhet — Skyddade fält & RLS-ansvar
+
+Vissa fält får **aldrig** vara publikt läsbara. Tabellen nedan visar var känslig data hanteras, vilken roll som kan läsa den och var motsvarande RLS-policy ligger.
+
+| Fält | Tabell | Får läsas av | Hur det skyddas | Policy-referens |
+|---|---|---|---|---|
+| `google_calendar_id` (personlig Gmail) | `site_secrets` | Endast `admin` (auth) + edge function via `service_role` | Flyttat från publika `site_branding`. Hämtas serverside i edge function. | [`Admins can read secrets`](#site_secrets-rls) |
+| `session_id` (chat) | `chat_messages` | Aldrig exponeras klient-sidan | Klienten läser via vyn `chat_messages_public` (utan `session_id`). Bas­tabellen används bara av admin/server. | [`chat_messages_public` view](#chat-rls) |
+| `email`, `phone`, `message` (bokningar) | `bookings` | Endast `admin` | Anon kan endast `INSERT`. `SELECT/UPDATE/DELETE` kräver `has_role(auth.uid(), 'admin')`. | [`Admins can view bookings`](#bookings-rls) |
+| `email` (kontakt­inlämning) | `contact_submissions` | Endast `admin` | Anon kan endast `INSERT`. | [`Admins can view contact submissions`](#contact-rls) |
+| `instagram_access_token` | `site_secrets` | Endast `admin` | Hela tabellen är admin-skyddad. | [`Admins can read secrets`](#site_secrets-rls) |
+| `role` (rolltilldelning) | `user_roles` | Användaren själv (egen rad) + `admin` | `INSERT/UPDATE/DELETE` kräver `has_role(auth.uid(), 'admin')` via `Admins can manage roles`. Förhindrar privilegie­eskalering. | [`Admins can manage roles`](#user_roles-rls) |
+
+### Ansvariga roller
+- **`anon`** — får endast skicka in formulär (`bookings`, `contact_submissions`, `chat_messages`) och läsa publikt innehåll (`site_branding` utan kalender-ID, `equipment`, `gallery_images`, `mixcloud_mixes`, aktiva `promos`).
+- **`authenticated` + `admin`** — full CRUD på allt admin-relaterat. Verifieras via `has_role(_user_id, _role)` (SECURITY DEFINER).
+- **`service_role`** (edge functions) — kringgår RLS. Används i `google-calendar` för att läsa `site_secrets.google_calendar_id` utan att exponera det i klienten.
+
+### RLS-policies (referens)
+<a id="site_secrets-rls"></a>**`site_secrets`** — alla operationer kräver `has_role(auth.uid(), 'admin')`.
+<a id="chat-rls"></a>**`chat_messages`** — `Anyone can read messages` returnerar `session_id` i bas­tabellen, så klienten ska alltid använda vyn `chat_messages_public` som utelämnar fältet. `INSERT` kräver att sessionen inte är bannad (`is_session_banned()`).
+<a id="bookings-rls"></a>**`bookings`** — `Anyone can submit bookings` (INSERT, anon). `SELECT/UPDATE/DELETE` endast admin.
+<a id="contact-rls"></a>**`contact_submissions`** — `Anyone can insert` (anon). `SELECT` endast admin. Inga `UPDATE/DELETE`-policies = oföränderlig logg.
+<a id="user_roles-rls"></a>**`user_roles`** — `Users can view their own roles` (egen rad). `Admins can manage roles` (ALL) kräver admin för `INSERT/UPDATE/DELETE`.
+
+> ⚠️ **Tumregel:** Om ett fält innehåller PII, en personlig identifierare eller en hemlighet — placera det i `site_secrets` eller en admin-skyddad tabell, och hämta det server-sidan via edge function.
+
+---
+
 ## 🌍 Internationalisering
 - **3 språk:** Svenska (default), English, Español
 - **Källa:** `LanguageContext.tsx` + per-komponent `translations`-objekt
