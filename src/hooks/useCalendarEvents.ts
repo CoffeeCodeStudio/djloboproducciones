@@ -60,20 +60,6 @@ export const useCalendarEvents = () => {
     setLoading(true);
     setError(false);
     try {
-      // Fetch calendar ID from branding
-      const { data: branding, error: brandingError } = await supabase
-        .from("site_branding")
-        .select("google_calendar_id")
-        .limit(1)
-        .maybeSingle();
-
-      if (brandingError || !branding?.google_calendar_id) {
-        setEvents([]);
-        setIsPlaceholder(true);
-        setLoading(false);
-        return;
-      }
-
       const { data, error: fnError } = await supabase.functions.invoke("google-calendar", {
         body: {},
       });
@@ -85,6 +71,14 @@ export const useCalendarEvents = () => {
           setError(true);
           setIsPlaceholder(true);
         }
+        setLoading(false);
+        return;
+      }
+
+      // Edge function returns { error: 'No calendar configured' } as a 404 payload
+      if (data?.error) {
+        setEvents([]);
+        setIsPlaceholder(true);
         setLoading(false);
         return;
       }

@@ -22,7 +22,7 @@ const ScheduleTab = () => {
 
   const fetchSettings = async () => {
     const { data, error } = await supabase
-      .from("site_branding")
+      .from("site_secrets")
       .select("google_calendar_id")
       .limit(1)
       .maybeSingle();
@@ -37,7 +37,7 @@ const ScheduleTab = () => {
     setSaving(true);
 
     const { data: existing } = await supabase
-      .from("site_branding")
+      .from("site_secrets")
       .select("id")
       .limit(1)
       .maybeSingle();
@@ -45,13 +45,13 @@ const ScheduleTab = () => {
     let error;
     if (existing) {
       const result = await supabase
-        .from("site_branding")
+        .from("site_secrets")
         .update({ google_calendar_id: calendarId || null })
         .eq("id", existing.id);
       error = result.error;
     } else {
       const result = await supabase
-        .from("site_branding")
+        .from("site_secrets")
         .insert({ google_calendar_id: calendarId || null });
       error = result.error;
     }
