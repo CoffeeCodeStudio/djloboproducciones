@@ -39,12 +39,12 @@ export function trackPromoEvent(
 
   void supabase
     .from("promo_events")
-    .insert({
+    .insert([{
       promo_id: promoId,
       event_type: eventType,
       session_id: getSessionId(),
-      metadata: metadata ?? null,
-    })
+      metadata: (metadata ?? null) as never,
+    }])
     .then(({ error }) => {
       if (error) logger.warn("[promoAnalytics] Failed to log event", { eventType, error });
     });
