@@ -36,7 +36,8 @@ export function useUpcomingEvents() {
               location: item.location,
             } as CalendarEvent;
           })
-          .filter((e): e is CalendarEvent => e !== null && new Date(e.start) >= today);
+          .filter((e): e is CalendarEvent => e !== null && new Date(e.start) >= today)
+          .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
       } catch {
         return [];
       }
