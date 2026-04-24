@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Menu, Radio, Globe, ChevronDown, Home, Star, Film, Disc3, BadgeDollarSign, Megaphone } from "lucide-react";
 import { useActivePromo } from "@/hooks/useActivePromo";
+import { trackPromoEvent } from "@/lib/promoAnalytics";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
 import { Link, useLocation } from "react-router-dom";
 import {
