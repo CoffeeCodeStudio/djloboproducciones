@@ -447,7 +447,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
         data-zlayer="promo-popup-content"
         aria-labelledby="promo-popup-title"
         aria-describedby={promo.subtitle ? "promo-popup-desc" : undefined}
-        className="p-0 overflow-visible max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow promo-popup-enter"
+        className="p-0 overflow-visible w-[calc(100vw-2rem)] sm:w-auto max-w-md max-h-[85vh] sm:max-h-[90vh] mx-4 sm:mx-auto flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow promo-popup-enter"
         style={{ zIndex: 9999, cursor: "auto" }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
