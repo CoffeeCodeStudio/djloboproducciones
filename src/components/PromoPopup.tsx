@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Disc3, X, Volume2, VolumeX } from "lucide-react";
+import { Disc3, X } from "lucide-react";
 import confetti from "canvas-confetti";
 import { logger } from "@/lib/logger";
 import {
@@ -586,21 +586,6 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
                     />
                   ))}
                 </div>
-                {/* Discreet popup-only mute toggle — does not affect other audio */}
-                <button
-                  type="button"
-                  onClick={() => setMuted((m) => !m)}
-                  aria-label={muted ? "Slå på popup-ljud" : "Stäng av popup-ljud"}
-                  aria-pressed={muted}
-                  title={muted ? "Slå på popup-ljud" : "Stäng av popup-ljud"}
-                  className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-colors focus-neon"
-                >
-                  {muted ? (
-                    <VolumeX className="w-3.5 h-3.5" aria-hidden="true" />
-                  ) : (
-                    <Volume2 className="w-3.5 h-3.5" aria-hidden="true" />
-                  )}
-                </button>
               </div>
             </div>
             {promo.subtitle && (
