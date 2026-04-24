@@ -113,12 +113,28 @@ const NowPlayingBar = () => {
   const t = translations[language];
   const schedule = useScheduleNow();
 
-  // Visualizer animation speed scales with progress through the current set
-  // (faster bars near the end → "synced with time"). When a set is playing
-  // we go from 1.4s → 0.45s; when idle we use a calm default.
-  const visualizerDuration = schedule.current
-    ? `${(1.4 - schedule.progress * 0.95).toFixed(2)}s`
-    : "1.2s";
+  // Visualizer is phase-locked to the current set: animation-duration is
+  // derived from the set length (clamped) and animation-delay is the
+  // negative offset of "how long we're already into the set", so the bars
+  // appear to have been running since the set started instead of resetting
+  // every render. When idle we fall back to a calm 1.2s loop.
+  const visualizerStyle: React.CSSProperties = (() => {
+    if (!schedule.current) {
+      return { animationDuration: "1.2s", animationDelay: "0s" };
+    }
+    const start = new Date(schedule.current.start).getTime();
+    const end = new Date(schedule.current.end).getTime();
+    const setMs = Math.max(60_000, end - start);
+    // Map a 30-min set → ~0.7s, 2h+ set → ~0.45s. Stays musical.
+    const durationSec = Math.max(0.45, Math.min(1.2, 1800_000 / setMs));
+    const elapsedSec = Math.max(0, (Date.now() - start) / 1000);
+    return {
+      animationDuration: `${durationSec.toFixed(2)}s`,
+      // Negative delay → CSS treats the animation as already in progress,
+      // so reloads / re-renders don't snap the bars back to frame 0.
+      animationDelay: `-${(elapsedSec % durationSec).toFixed(2)}s`,
+    };
+  })();
 
   const isRadio = mode === "radio";
   const isMix = mode === "mix";
