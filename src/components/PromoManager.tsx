@@ -14,9 +14,36 @@ const PERMANENT_DISMISS_KEY = (id: string) => `promo_permanent_dismissed_${id}`;
 const FORCE_REOPEN_KEY = (id: string) => `promo_force_reopen_${id}`;
 
 const PromoManager = () => {
-  const { promo } = useActivePromo();
+  const { promos } = useActivePromo();
   const [mode, setMode] = useState<"hidden" | "popup" | "mini">("hidden");
   const [reopenedFromMini, setReopenedFromMini] = useState(false);
+  // Index into the active promos list — advances as user dismisses one.
+  const [currentIndex, setCurrentIndex] = useState(0);
+  // IDs the user dismissed during this session — skip them when rotating.
+  const [skippedIds, setSkippedIds] = useState<Set<string>>(new Set());
+
+  // Build the queue: ordered active promos minus anything dismissed this session
+  // or hard-dismissed via localStorage.
+  const queue = promos.filter((p) => {
+    if (skippedIds.has(p.id)) return false;
+    try {
+      if (localStorage.getItem(PERMANENT_DISMISS_KEY(p.id))) return false;
+      if (sessionStorage.getItem(MINI_SESSION_HIDDEN_KEY(p.id))) return false;
+    } catch {
+      /* ignore */
+    }
+    return true;
+  });
+
+  const promo = queue[currentIndex] ?? queue[0] ?? null;
+
+  // If the current promo disappears from the queue (expired, dismissed, etc.)
+  // reset the index so we show the next available one.
+  useEffect(() => {
+    if (currentIndex >= queue.length && queue.length > 0) {
+      setCurrentIndex(0);
+    }
+  }, [queue.length, currentIndex]);
 
   useEffect(() => {
     if (!promo) {
@@ -34,18 +61,6 @@ const PromoManager = () => {
         localStorage.removeItem(SEEN_KEY(id));
         sessionStorage.removeItem(MINI_SESSION_HIDDEN_KEY(id));
         setMode("popup");
-        return;
-      }
-
-      // Hard dismiss ("Visa inte igen") — never show either variant
-      if (localStorage.getItem(PERMANENT_DISMISS_KEY(id))) {
-        setMode("hidden");
-        return;
-      }
-
-      // Session-only hide (Mini X) — gone until next browser session
-      if (sessionStorage.getItem(MINI_SESSION_HIDDEN_KEY(id))) {
-        setMode("hidden");
         return;
       }
 
@@ -78,6 +93,9 @@ const PromoManager = () => {
       } catch {
         /* ignore */
       }
+      // Restart from the top of the queue when user manually reopens
+      setSkippedIds(new Set());
+      setCurrentIndex(0);
       setReopenedFromMini(false);
       setMode("popup");
     };
@@ -86,6 +104,19 @@ const PromoManager = () => {
   }, [promo]);
 
   if (!promo) return null;
+
+  // Advance to the next promo in the queue (if any). Returns true if rotated.
+  const advanceQueue = (dismissedId: string) => {
+    setSkippedIds((prev) => {
+      const next = new Set(prev);
+      next.add(dismissedId);
+      return next;
+    });
+    // Next promo will be picked up automatically because `queue` is recomputed
+    // and currentIndex stays at 0 (since the dismissed one is filtered out).
+    setCurrentIndex(0);
+    setReopenedFromMini(false);
+  };
 
   const handlePopupClose = () => {
     // PromoPopup sets this flag right before firing onClose for auto-close,
@@ -102,12 +133,19 @@ const PromoManager = () => {
     } catch {
       /* ignore */
     }
+
+    // If there are more promos waiting, rotate to the next one as a popup.
+    const hasNext = queue.length > 1;
+    if (hasNext) {
+      advanceQueue(promo.id);
+      setMode("popup");
+      return;
+    }
+
     if (reopenedFromMini) {
-      // User expanded from Mini and closed again — return to Mini view
       setReopenedFromMini(false);
       setMode("mini");
     } else {
-      // First-time Large was shown — switch to Mini for subsequent visits in the 24h window
       setMode("mini");
     }
   };
@@ -119,7 +157,14 @@ const PromoManager = () => {
     } catch {
       /* ignore */
     }
-    setMode("hidden");
+    // Rotate to next queued promo if any; otherwise hide.
+    const hasNext = queue.length > 1;
+    if (hasNext) {
+      advanceQueue(promo.id);
+      setMode("popup");
+    } else {
+      setMode("hidden");
+    }
   };
 
   const handleMiniClick = () => {
@@ -134,13 +179,20 @@ const PromoManager = () => {
     } catch {
       /* ignore */
     }
-    setMode("hidden");
+    const hasNext = queue.length > 1;
+    if (hasNext) {
+      advanceQueue(promo.id);
+      setMode("popup");
+    } else {
+      setMode("hidden");
+    }
   };
 
   return (
     <>
       {mode === "popup" && (
         <PromoPopup
+          key={promo.id}
           promo={promo}
           open
           onClose={handlePopupClose}
@@ -149,6 +201,7 @@ const PromoManager = () => {
       )}
       {mode === "mini" && (
         <PromoMiniCard
+          key={promo.id}
           promo={promo}
           onClick={handleMiniClick}
           onDismiss={handleMiniDismiss}
