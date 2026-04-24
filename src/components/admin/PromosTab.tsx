@@ -114,6 +114,42 @@ const PromosTab = () => {
 
   return (
     <div className="space-y-4">
+      {/* Sort strategy selector — global, applies when several promos overlap */}
+      <Card className="glass-card">
+        <CardHeader className="pb-3">
+          <div className="flex items-center gap-2">
+            <ListOrdered className="w-5 h-5 text-primary" />
+            <CardTitle className="font-display text-base">Sorteringsstrategi</CardTitle>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <p className="text-xs text-muted-foreground">
+            Bestämmer vilken kampanj som visas först när flera är aktiva samtidigt.
+          </p>
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+            <Select
+              value={strategy}
+              onValueChange={(v) => setStrategy(v as PromoSortStrategy)}
+              disabled={isSaving}
+            >
+              <SelectTrigger className="sm:w-72">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {(Object.keys(PROMO_SORT_STRATEGY_LABELS) as PromoSortStrategy[]).map((key) => (
+                  <SelectItem key={key} value={key}>
+                    {PROMO_SORT_STRATEGY_LABELS[key]}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground sm:flex-1">
+              {PROMO_SORT_STRATEGY_DESCRIPTIONS[strategy]}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       <Card className="glass-card">
         <CardHeader className="flex flex-row items-center justify-between gap-3 space-y-0">
           <div className="flex items-center gap-2">
