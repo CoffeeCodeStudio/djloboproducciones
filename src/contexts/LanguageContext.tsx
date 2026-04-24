@@ -35,6 +35,22 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     }
   }, [language]);
 
+  // Cross-tab sync: if the user switches language in another tab/window,
+  // mirror it here on next focus/storage event so the whole site stays in
+  // one language. The `storage` event only fires in *other* tabs, which is
+  // exactly the behavior we want.
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const handler = (e: StorageEvent) => {
+      if (e.key !== STORAGE_KEY || !e.newValue) return;
+      if ((VALID as string[]).includes(e.newValue) && e.newValue !== language) {
+        setLanguageState(e.newValue as Language);
+      }
+    };
+    window.addEventListener("storage", handler);
+    return () => window.removeEventListener("storage", handler);
+  }, [language]);
+
   const setLanguage = (lang: Language) => {
     setLanguageState(lang);
     try {
