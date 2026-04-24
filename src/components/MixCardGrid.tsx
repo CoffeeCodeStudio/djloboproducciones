@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import { Play, Disc3, Music, Pin, Calendar, ShieldAlert } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { usePlayerStore, MixTrack } from "@/stores/usePlayerStore";
@@ -156,78 +156,87 @@ const MixCardGrid = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6">
-            {mixes.map((mix) => {
+            {mixes.map((mix, idx) => {
               const isActive = currentTrack?.id === mix.id;
 
               return (
-                <button
-                  key={mix.id}
-                  onClick={() => handlePlay(mix)}
-                  className={`group relative aspect-square rounded-2xl overflow-hidden transition-all duration-300 text-left border ${
-                    isActive
-                      ? "border-primary shadow-[0_0_30px_-5px_hsl(var(--primary)/0.5)] scale-[1.02]"
-                      : "border-border/30 hover:border-primary/50 hover:shadow-[0_0_24px_-6px_hsl(var(--primary)/0.3)] hover:scale-[1.03]"
-                  }`}
-                >
-                  {/* Cover art */}
-                  <img
-                    src={mix.coverArt}
-                    alt={mix.title}
-                    className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
-                    loading="lazy"
-                  />
+                <Fragment key={mix.id}>
+                  <button
+                    onClick={() => handlePlay(mix)}
+                    className={`group relative aspect-square rounded-2xl overflow-hidden transition-all duration-300 text-left border ${
+                      isActive
+                        ? "border-primary shadow-[0_0_30px_-5px_hsl(var(--primary)/0.5)] scale-[1.02]"
+                        : "border-border/30 hover:border-primary/50 hover:shadow-[0_0_24px_-6px_hsl(var(--primary)/0.3)] hover:scale-[1.03]"
+                    }`}
+                  >
+                    {/* Cover art */}
+                    <img
+                      src={mix.coverArt}
+                      alt={mix.title}
+                      className="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+                      loading="lazy"
+                    />
 
-                  {/* Glassmorphism overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
+                    {/* Glassmorphism overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-background/95 via-background/40 to-transparent" />
 
-                  {/* Pinned badge */}
-                  {mix.pinned && (
-                    <div className="absolute top-2 left-2 z-10">
-                      <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-primary/90 text-primary-foreground flex items-center gap-1 backdrop-blur-sm">
-                        <Pin className="w-3 h-3" />
-                        {t.pinned}
+                    {/* Pinned badge */}
+                    {mix.pinned && (
+                      <div className="absolute top-2 left-2 z-10">
+                        <span className="px-2 py-1 rounded-lg text-[10px] font-bold bg-primary/90 text-primary-foreground flex items-center gap-1 backdrop-blur-sm">
+                          <Pin className="w-3 h-3" />
+                          {t.pinned}
+                        </span>
+                      </div>
+                    )}
+
+                    {/* Source badge */}
+                    <div className="absolute top-2 right-2 z-10">
+                      <span className="px-2 py-1 rounded-lg text-[10px] font-bold backdrop-blur-sm flex items-center gap-1 bg-accent/80 text-accent-foreground">
+                        <Disc3 className="w-3 h-3" />
+                        Mixcloud
                       </span>
                     </div>
-                  )}
 
-                  {/* Source badge */}
-                  <div className="absolute top-2 right-2 z-10">
-                    <span className="px-2 py-1 rounded-lg text-[10px] font-bold backdrop-blur-sm flex items-center gap-1 bg-accent/80 text-accent-foreground">
-                      <Disc3 className="w-3 h-3" />
-                      Mixcloud
-                    </span>
-                  </div>
-
-                  {/* Neon play button */}
-                  <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
-                    isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
-                  }`}>
-                    <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${
-                      isActive
-                        ? "bg-primary shadow-[0_0_20px_hsl(var(--primary)/0.6)]"
-                        : "bg-primary/90 shadow-[0_0_20px_hsl(var(--primary)/0.4)]"
+                    {/* Neon play button */}
+                    <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${
+                      isActive ? "opacity-100" : "opacity-0 group-hover:opacity-100"
                     }`}>
-                      {isActive ? (
-                        <Disc3 className="w-7 h-7 text-primary-foreground animate-spin" style={{ animationDuration: "2s" }} />
-                      ) : (
-                        <Play className="w-7 h-7 text-primary-foreground ml-1" />
+                      <div className={`w-14 h-14 sm:w-16 sm:h-16 rounded-full flex items-center justify-center transition-transform duration-300 group-hover:scale-110 ${
+                        isActive
+                          ? "bg-primary shadow-[0_0_20px_hsl(var(--primary)/0.6)]"
+                          : "bg-primary/90 shadow-[0_0_20px_hsl(var(--primary)/0.4)]"
+                      }`}>
+                        {isActive ? (
+                          <Disc3 className="w-7 h-7 text-primary-foreground animate-spin" style={{ animationDuration: "2s" }} />
+                        ) : (
+                          <Play className="w-7 h-7 text-primary-foreground ml-1" />
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Title bar */}
+                    <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                      <p className="font-display text-sm sm:text-base font-bold text-foreground leading-tight line-clamp-2 drop-shadow-lg">
+                        {mix.title}
+                      </p>
+                      {mix.createdTime && (
+                        <p className="flex items-center gap-1 mt-1 text-[10px] sm:text-xs text-muted-foreground drop-shadow-lg">
+                          <Calendar className="w-3 h-3" aria-hidden="true" />
+                          {formatMixDate(mix.createdTime, language)}
+                        </p>
                       )}
                     </div>
-                  </div>
-
-                  {/* Title bar */}
-                  <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
-                    <p className="font-display text-sm sm:text-base font-bold text-foreground leading-tight line-clamp-2 drop-shadow-lg">
-                      {mix.title}
-                    </p>
-                    {mix.createdTime && (
-                      <p className="flex items-center gap-1 mt-1 text-[10px] sm:text-xs text-muted-foreground drop-shadow-lg">
-                        <Calendar className="w-3 h-3" aria-hidden="true" />
-                        {formatMixDate(mix.createdTime, language)}
-                      </p>
-                    )}
-                  </div>
-                </button>
+                  </button>
+                  {/* Mobile-only promo slot inserted after 4th item */}
+                  {idx === 3 && (
+                    <div
+                      id="promo-mobile-slot"
+                      className="col-span-2 sm:hidden"
+                      aria-live="polite"
+                    />
+                  )}
+                </Fragment>
               );
             })}
           </div>
