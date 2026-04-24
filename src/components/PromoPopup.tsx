@@ -12,6 +12,7 @@ import {
   shouldFireConfetti,
 } from "@/lib/confettiThrottle";
 import type { Promo } from "@/hooks/useActivePromo";
+import { trackPromoEvent } from "@/lib/promoAnalytics";
 
 interface PromoPopupProps {
   promo: Promo;
