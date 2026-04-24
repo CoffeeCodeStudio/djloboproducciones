@@ -95,6 +95,7 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
   const [activeFrom, setActiveFrom] = useState<Date | undefined>();
   const [activeTo, setActiveTo] = useState<Date | undefined>();
   const [priority, setPriority] = useState(0);
+  const [pinnedToTop, setPinnedToTop] = useState(false);
   const [isActive, setIsActive] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -134,6 +135,7 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       setActiveFrom(new Date(promo.active_from));
       setActiveTo(new Date(promo.active_to));
       setPriority(promo.priority);
+      setPinnedToTop(promo.pinned_to_top ?? false);
       setIsActive(promo.is_active);
     } else {
       setTitle("");
@@ -151,6 +153,7 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       setActiveFrom(undefined);
       setActiveTo(undefined);
       setPriority(0);
+      setPinnedToTop(false);
       setIsActive(true);
     }
   }, [open, promo]);
@@ -279,6 +282,7 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       active_from: activeFrom.toISOString(),
       active_to: activeTo.toISOString(),
       priority,
+      pinned_to_top: pinnedToTop,
       is_active: isActive,
     };
 
