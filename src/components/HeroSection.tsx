@@ -2,6 +2,7 @@ import { CalendarDays, Headphones } from "lucide-react";
 import { useBranding } from "@/hooks/useBranding";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { optimizeHero } from "@/lib/imageOptimizer";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { Link } from "react-router-dom";
 
 const translations = {
@@ -39,8 +40,17 @@ const HeroSection = () => {
     window.location.href = "/prislista#boka";
   };
 
+  // Hero is above the fold — drop the rootMargin so the stagger plays
+  // immediately on mount instead of waiting for a scroll.
+  const sectionRef = useScrollReveal<HTMLElement>({
+    threshold: 0,
+    rootMargin: "0px",
+    staggerMs: 120,
+  });
+
   return (
     <section
+      ref={sectionRef}
       className="h-[calc(100vh-5rem)] flex flex-col items-center justify-center px-4 sm:px-6 pt-4 pb-20 relative overflow-hidden"
       aria-labelledby="hero-title">
       
@@ -69,23 +79,18 @@ const HeroSection = () => {
       {/* Title */}
       <h1
         id="hero-title"
-        className="font-display text-[clamp(1.8rem,7vw,7rem)] font-black text-neon-gradient mb-3 sm:mb-4 tracking-wider text-high-contrast text-center px-2 leading-tight">
+        className="scroll-reveal font-display text-[clamp(1.8rem,7vw,7rem)] font-black text-neon-gradient mb-3 sm:mb-4 tracking-wider text-high-contrast text-center px-2 leading-tight">
         
         DJ LOBO PRODUCCIONES
       </h1>
 
       {/* Subtitle */}
-      <p className="font-display text-sm sm:text-lg md:text-xl tracking-[0.3em] text-neon-cyan/80 mb-4 sm:mb-6 text-center">
+      <p className="scroll-reveal font-display text-sm sm:text-lg md:text-xl tracking-[0.3em] text-neon-cyan/80 mb-4 sm:mb-6 text-center">
         {t.subtitle}
       </p>
 
-      {/* Tagline */}
-      
-
-      
-
       {/* CTA Buttons */}
-      <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-5">
+      <div className="scroll-reveal flex flex-col sm:flex-row items-center gap-3 sm:gap-5">
         <button
           onClick={scrollToBooking}
           className="book-now-button tap-target px-8 sm:px-10 py-3.5 sm:py-4 font-display font-bold tracking-wider text-sm sm:text-base rounded-full flex items-center justify-center gap-2.5 transition-all w-full sm:w-auto sm:min-w-[240px]">
