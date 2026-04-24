@@ -8,6 +8,9 @@ const TWENTY_FOUR_HOURS_MS = 24 * 60 * 60 * 1000;
 const MINI_SESSION_HIDDEN_KEY = (id: string) => `promo_mini_session_hidden_${id}`;
 const SEEN_KEY = (id: string) => `promo_seen_${id}`;
 const PERMANENT_DISMISS_KEY = (id: string) => `promo_permanent_dismissed_${id}`;
+// Set when user clicks the navbar megaphone — survives page refresh
+// so the popup re-opens automatically while the promo is still active.
+const FORCE_REOPEN_KEY = (id: string) => `promo_force_reopen_${id}`;
 
 const PromoManager = () => {
   const { promo } = useActivePromo();
@@ -22,6 +25,17 @@ const PromoManager = () => {
 
     const id = promo.id;
     try {
+      // Force reopen flag (set by navbar megaphone) — overrides all dismiss
+      // states so the popup re-appears after refresh while promo is active.
+      if (localStorage.getItem(FORCE_REOPEN_KEY(id))) {
+        localStorage.removeItem(FORCE_REOPEN_KEY(id));
+        localStorage.removeItem(PERMANENT_DISMISS_KEY(id));
+        localStorage.removeItem(SEEN_KEY(id));
+        sessionStorage.removeItem(MINI_SESSION_HIDDEN_KEY(id));
+        setMode("popup");
+        return;
+      }
+
       // Hard dismiss ("Visa inte igen") — never show either variant
       if (localStorage.getItem(PERMANENT_DISMISS_KEY(id))) {
         setMode("hidden");
