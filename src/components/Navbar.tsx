@@ -46,11 +46,16 @@ const languages: LanguageOption[] = [
 
 const Navbar = () => {
   const { language, setLanguage } = useLanguage();
+  const { promo } = useActivePromo();
   const logoSrc = "/logo-neon.png";
   const location = useLocation();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const currentLang = languages.find((l) => l.code === language)!;
+
+  const handlePromoReopen = () => {
+    window.dispatchEvent(new CustomEvent("promo:reopen"));
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
