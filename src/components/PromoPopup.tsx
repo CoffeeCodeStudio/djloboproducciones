@@ -1,7 +1,7 @@
-import { useEffect, useMemo, useRef } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Dialog, DialogContent } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Disc3, X } from "lucide-react";
+import { Disc3, X, Volume2, VolumeX } from "lucide-react";
 import confetti from "canvas-confetti";
 import { logger } from "@/lib/logger";
 import {
@@ -119,6 +119,7 @@ function playOpenSound(): (() => number) | null {
 }
 
 const SOUND_SESSION_KEY = "promo-popup-sound-played";
+const MUTE_PREFERENCE_KEY = "promo-popup-muted";
 
 const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProps) => {
   const ytEmbed = promo.youtube_url ? getYouTubeEmbedUrl(promo.youtube_url) : null;
@@ -132,10 +133,31 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   // Refs for the 5 EQ bars so we can drive scaleY directly
   const eqBarRefs = useRef<Array<HTMLSpanElement | null>>([]);
 
+  // Mute preference — persisted in localStorage, scoped to the promo popup only.
+  // Does NOT affect any other audio in the app.
+  const [muted, setMuted] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem(MUTE_PREFERENCE_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
+  const mutedRef = useRef(muted);
+  useEffect(() => {
+    mutedRef.current = muted;
+    try {
+      if (muted) localStorage.setItem(MUTE_PREFERENCE_KEY, "1");
+      else localStorage.removeItem(MUTE_PREFERENCE_KEY);
+    } catch {
+      /* ignore */
+    }
+  }, [muted]);
+
   // Play "woosh/pop" on open — once per session for visitors,
   // every time when previewing from admin (promo.id === "preview").
   useEffect(() => {
     if (!open) return;
+    if (mutedRef.current) return; // Respect popup-only mute preference
     const isPreview = promo.id === "preview";
     const trigger = () => {
       const getter = playOpenSound();
@@ -507,20 +529,37 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
               >
                 {promo.title}
               </h2>
-              {/* 5-bar live EQ — driven by Web Audio analyser via rAF */}
-              <div className="hidden sm:flex items-end gap-[3px] h-5 pt-2 shrink-0" aria-hidden="true">
-                {[0, 1, 2, 3, 4].map((i) => (
-                  <span
-                    key={i}
-                    ref={(el) => { eqBarRefs.current[i] = el; }}
-                    className="eq-bar"
-                    style={{
-                      animation: "none",
-                      transform: "scaleY(0.4)",
-                      transition: "transform 60ms linear",
-                    }}
-                  />
-                ))}
+              <div className="flex items-center gap-2 shrink-0">
+                {/* 5-bar live EQ — driven by Web Audio analyser via rAF */}
+                <div className="hidden sm:flex items-end gap-[3px] h-5 pt-2" aria-hidden="true">
+                  {[0, 1, 2, 3, 4].map((i) => (
+                    <span
+                      key={i}
+                      ref={(el) => { eqBarRefs.current[i] = el; }}
+                      className="eq-bar"
+                      style={{
+                        animation: "none",
+                        transform: "scaleY(0.4)",
+                        transition: "transform 60ms linear",
+                      }}
+                    />
+                  ))}
+                </div>
+                {/* Discreet popup-only mute toggle — does not affect other audio */}
+                <button
+                  type="button"
+                  onClick={() => setMuted((m) => !m)}
+                  aria-label={muted ? "Slå på popup-ljud" : "Stäng av popup-ljud"}
+                  aria-pressed={muted}
+                  title={muted ? "Slå på popup-ljud" : "Stäng av popup-ljud"}
+                  className="p-1 rounded-md text-muted-foreground hover:text-foreground hover:bg-foreground/10 transition-colors focus-neon"
+                >
+                  {muted ? (
+                    <VolumeX className="w-3.5 h-3.5" aria-hidden="true" />
+                  ) : (
+                    <Volume2 className="w-3.5 h-3.5" aria-hidden="true" />
+                  )}
+                </button>
               </div>
             </div>
             {promo.subtitle && (
