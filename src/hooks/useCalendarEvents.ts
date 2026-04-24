@@ -6,6 +6,7 @@ export interface CalendarEvent {
   title: string;
   location: string;
   date: Date;
+  endDate: Date;
   dateFormatted: string;
   timeFormatted: string;
 }
@@ -14,7 +15,7 @@ const CACHE_KEY = "dj-lobo-calendar-events";
 const CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
 interface CachedData {
-  events: Array<Omit<CalendarEvent, "date"> & { date: string }>;
+  events: Array<Omit<CalendarEvent, "date" | "endDate"> & { date: string; endDate: string }>;
   timestamp: number;
 }
 
@@ -27,7 +28,11 @@ const getCachedEvents = (): CalendarEvent[] | null => {
       localStorage.removeItem(CACHE_KEY);
       return null;
     }
-    return cached.events.map((e) => ({ ...e, date: new Date(e.date) }));
+    return cached.events.map((e) => ({
+      ...e,
+      date: new Date(e.date),
+      endDate: new Date(e.endDate),
+    }));
   } catch {
     return null;
   }
@@ -36,7 +41,11 @@ const getCachedEvents = (): CalendarEvent[] | null => {
 const setCachedEvents = (events: CalendarEvent[]) => {
   try {
     const data: CachedData = {
-      events: events.map((e) => ({ ...e, date: e.date.toISOString() })),
+      events: events.map((e) => ({
+        ...e,
+        date: e.date.toISOString(),
+        endDate: e.endDate.toISOString(),
+      })),
       timestamp: Date.now(),
     };
     localStorage.setItem(CACHE_KEY, JSON.stringify(data));
@@ -84,12 +93,13 @@ export const useCalendarEvents = () => {
       }
 
       if (data?.items && data.items.length > 0) {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const now = new Date();
 
         const formatted: CalendarEvent[] = data.items
           .map((item: any) => {
             const startDate = new Date(item.start.dateTime || item.start.date);
+            // Fall back to start if Calendar didn't provide an end (all-day quirks).
+            const endDate = new Date(item.end?.dateTime || item.end?.date || startDate);
             const dayNames = ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"];
             const monthNames = ["Jan", "Feb", "Mar", "Apr", "Maj", "Jun", "Jul", "Aug", "Sep", "Okt", "Nov", "Dec"];
 
@@ -101,11 +111,13 @@ export const useCalendarEvents = () => {
               title: item.summary || "Untitled Event",
               location: item.location || "",
               date: stockholmDate,
+              endDate,
               dateFormatted: `${dayNames[stockholmDate.getDay()]} ${stockholmDate.getDate()} ${monthNames[stockholmDate.getMonth()]}`,
               timeFormatted: startDate.toLocaleTimeString("sv-SE", { hour: "2-digit", minute: "2-digit", timeZone: "Europe/Stockholm" }),
             } as CalendarEvent;
           })
-          .filter((e: CalendarEvent) => e.date >= today)
+          // Keep events that have not yet ended — covers currently-LIVE sets.
+          .filter((e: CalendarEvent) => e.endDate >= now)
           .sort((a: CalendarEvent, b: CalendarEvent) => a.date.getTime() - b.date.getTime())
           .slice(0, 10);
 

@@ -20,8 +20,7 @@ export function useUpcomingEvents() {
 
         if (fnError || !data?.items) return [];
 
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
+        const now = new Date();
 
         return (data.items as any[])
           .map((item) => {
@@ -36,7 +35,8 @@ export function useUpcomingEvents() {
               location: item.location,
             } as CalendarEvent;
           })
-          .filter((e): e is CalendarEvent => e !== null && new Date(e.start) >= today)
+          // Keep events that have not yet ended (covers currently-LIVE sets).
+          .filter((e): e is CalendarEvent => e !== null && new Date(e.end) >= now)
           .sort((a, b) => new Date(a.start).getTime() - new Date(b.start).getTime());
       } catch {
         return [];
