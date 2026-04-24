@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { MapPin, Clock, AlertCircle, Radio } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 const MINIMUM_LOADING_TIME = 3000; // 3 seconds
 
@@ -77,7 +78,7 @@ const DJLoadingAnimation = ({ loadingText }: { loadingText: string }) => (
 );
 
 const CalendarSection = () => {
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useScrollReveal<HTMLElement>();
   const { language } = useLanguage();
   const t = translations[language];
   const { events, loading: apiLoading, error, refetch } = useCalendarEvents();
@@ -111,22 +112,7 @@ const CalendarSection = () => {
     }
   }, [apiLoading]);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".scroll-reveal").forEach((el, i) => {
-              setTimeout(() => el.classList.add("revealed"), i * 80);
-            });
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-    if (sectionRef.current) observer.observe(sectionRef.current);
-    return () => observer.disconnect();
-  }, []);
+  // Reveal handled by the shared hook below for parity with Hero/About.
 
   return (
     <section

@@ -1,8 +1,8 @@
-import { useEffect, useRef } from "react";
 import djLoboAboutImage from "@/assets/dj-lobo-about.jpg";
 import { Music, Headphones, Zap, Disc } from "lucide-react";
 import { useBranding } from "@/hooks/useBranding";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useScrollReveal } from "@/hooks/useScrollReveal";
 
 
 const translations = {
@@ -66,7 +66,7 @@ const translations = {
 };
 
 const AboutSection = () => {
-  const sectionRef = useRef<HTMLElement>(null);
+  const sectionRef = useScrollReveal<HTMLElement>();
   const { branding } = useBranding();
   const { language } = useLanguage();
   const t = translations[language];
@@ -76,28 +76,8 @@ const AboutSection = () => {
   const aboutImage = profileUrl || djLoboAboutImage;
   const aboutFallback = djLoboAboutImage;
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      (entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.querySelectorAll(".scroll-reveal").forEach((el, i) => {
-              setTimeout(() => {
-                el.classList.add("revealed");
-              }, i * 100);
-            });
-          }
-        });
-      },
-      { threshold: 0.1 }
-    );
-
-    if (sectionRef.current) {
-      observer.observe(sectionRef.current);
-    }
-
-    return () => observer.disconnect();
-  }, []);
+  // Reveal handled by the shared hook below — kept declarations above so the
+  // refactor is a drop-in replacement.
 
   const stats = [
     { value: "20+", label: t.yearsLabel, ariaLabel: "Över 20 års erfarenhet" },
