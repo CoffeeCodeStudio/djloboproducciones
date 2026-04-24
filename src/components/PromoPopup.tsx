@@ -119,6 +119,7 @@ function playOpenSound(): (() => number) | null {
 }
 
 const SOUND_SESSION_KEY = "promo-popup-sound-played";
+const MUTE_PREFERENCE_KEY = "promo-popup-muted";
 
 const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProps) => {
   const ytEmbed = promo.youtube_url ? getYouTubeEmbedUrl(promo.youtube_url) : null;
