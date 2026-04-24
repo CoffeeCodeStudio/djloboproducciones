@@ -203,9 +203,9 @@ const CalendarSection = () => {
           )}
 
           {/* Events */}
-          {events.length > 0 && (
+          {orderedEvents.length > 0 && (
             <ul role="list" className="divide-y divide-neon-cyan/10">
-              {events.map((event, i) => {
+              {orderedEvents.map((event, i) => {
                 // Read day/month in Stockholm wall-clock so the chip never
                 // drifts a day around midnight or across DST transitions.
                 const dayMonthFmt = new Intl.DateTimeFormat(
