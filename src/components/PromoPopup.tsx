@@ -157,6 +157,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   // every time when previewing from admin (promo.id === "preview").
   useEffect(() => {
     if (!open) return;
+    if (mutedRef.current) return; // Respect popup-only mute preference
     const isPreview = promo.id === "preview";
     const trigger = () => {
       const getter = playOpenSound();
