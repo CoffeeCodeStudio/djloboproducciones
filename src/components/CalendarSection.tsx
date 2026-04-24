@@ -97,6 +97,28 @@ const CalendarSection = () => {
     return () => clearInterval(id);
   }, []);
 
+  // Surface ALL concurrently-live sets — overlapping bookings (e.g. radio
+  // residency + venue gig) should each get a LIVE badge, not just the first
+  // one. We re-order so live sets stack on top, with the one ending soonest
+  // first, then upcoming sets in normal chronological order.
+  const orderedEvents = (() => {
+    const live: typeof events = [];
+    const upcoming: typeof events = [];
+    for (const ev of events) {
+      const startMs = ev.date.getTime();
+      const endMs = ev.endDate.getTime();
+      if (startMs <= nowTick && endMs >= nowTick) live.push(ev);
+      else upcoming.push(ev);
+    }
+    live.sort((a, b) => a.endDate.getTime() - b.endDate.getTime());
+    upcoming.sort((a, b) => a.date.getTime() - b.date.getTime());
+    return [...live, ...upcoming];
+  })();
+  const liveCount = orderedEvents.reduce(
+    (n, ev) => (ev.date.getTime() <= nowTick && ev.endDate.getTime() >= nowTick ? n + 1 : n),
+    0,
+  );
+
   // Force minimum loading time of 3 seconds
   useEffect(() => {
     const minimumLoadingPromise = new Promise((resolve) =>
