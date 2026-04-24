@@ -441,6 +441,15 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
         data-zlayer="promo-popup-content"
         className="p-0 overflow-visible max-w-md max-h-[90vh] flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow promo-popup-enter"
         style={{ zIndex: 9999, cursor: "auto" }}
+        onMouseEnter={() => setIsPaused(true)}
+        onMouseLeave={() => setIsPaused(false)}
+        onFocusCapture={() => setIsPaused(true)}
+        onBlurCapture={(e) => {
+          // Only unpause when focus actually leaves the dialog content
+          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+            setIsPaused(false);
+          }
+        }}
       >
         {/* Ambient outer aura — pulsing radial glow behind the modal */}
         <span aria-hidden="true" className="promo-aura" />
