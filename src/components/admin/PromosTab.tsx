@@ -19,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Plus, MoreVertical, Pencil, Pause, Play, Copy, Trash2, ImageIcon, Megaphone, ListOrdered } from "lucide-react";
+import { Plus, MoreVertical, Pencil, Pause, Play, Copy, Trash2, ImageIcon, Megaphone, ListOrdered, Pin, PinOff, Sparkles } from "lucide-react";
 import {
   Select,
   SelectContent,
