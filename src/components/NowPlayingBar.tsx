@@ -326,8 +326,8 @@ const NowPlayingBar = () => {
                   </span>
                   <div className="hidden sm:block flex-1 max-w-[120px] h-1 bg-muted/60 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-1000 ease-linear"
-                      style={{ width: `${Math.round(schedule.progress * 100)}%` }}
+                      className="h-full bg-gradient-to-r from-primary to-secondary rounded-full"
+                      style={{ width: `${(schedule.progress * 100).toFixed(2)}%` }}
                     />
                   </div>
                   <span className="text-muted-foreground shrink-0 tabular-nums">
