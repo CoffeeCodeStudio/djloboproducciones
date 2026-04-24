@@ -19,9 +19,22 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Plus, MoreVertical, Pencil, Pause, Play, Copy, Trash2, ImageIcon, Megaphone } from "lucide-react";
+import { Plus, MoreVertical, Pencil, Pause, Play, Copy, Trash2, ImageIcon, Megaphone, ListOrdered } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { usePromosAdmin } from "@/hooks/usePromosAdmin";
 import type { Promo } from "@/hooks/useActivePromo";
+import {
+  usePromoSortStrategy,
+  PROMO_SORT_STRATEGY_LABELS,
+  PROMO_SORT_STRATEGY_DESCRIPTIONS,
+  type PromoSortStrategy,
+} from "@/hooks/usePromoSortStrategy";
 import PromoEditor from "./PromoEditor";
 
 type PromoStatus = "active" | "upcoming" | "expired" | "paused";
