@@ -236,7 +236,7 @@ const MixCardGrid = () => {
                       aria-live="polite"
                     />
                   )}
-                </>
+                </Fragment>
               );
             })}
           </div>
