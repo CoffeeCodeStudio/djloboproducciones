@@ -30,6 +30,7 @@ const FIXTURE_PROMO: Promo = {
   active_from: new Date(Date.now() - 86400000).toISOString(),
   active_to: new Date(Date.now() + 86400000).toISOString(),
   is_active: true,
+  pinned_to_top: false,
   priority: 1,
   source: "manual",
   google_event_id: null,

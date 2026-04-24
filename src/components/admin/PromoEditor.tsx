@@ -95,6 +95,7 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
   const [activeFrom, setActiveFrom] = useState<Date | undefined>();
   const [activeTo, setActiveTo] = useState<Date | undefined>();
   const [priority, setPriority] = useState(0);
+  const [pinnedToTop, setPinnedToTop] = useState(false);
   const [isActive, setIsActive] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -134,6 +135,7 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       setActiveFrom(new Date(promo.active_from));
       setActiveTo(new Date(promo.active_to));
       setPriority(promo.priority);
+      setPinnedToTop(promo.pinned_to_top ?? false);
       setIsActive(promo.is_active);
     } else {
       setTitle("");
@@ -151,6 +153,7 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       setActiveFrom(undefined);
       setActiveTo(undefined);
       setPriority(0);
+      setPinnedToTop(false);
       setIsActive(true);
     }
   }, [open, promo]);
@@ -279,6 +282,7 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       active_from: activeFrom.toISOString(),
       active_to: activeTo.toISOString(),
       priority,
+      pinned_to_top: pinnedToTop,
       is_active: isActive,
     };
 
@@ -632,6 +636,18 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
                 </p>
               </div>
 
+              <div className="flex items-center justify-between rounded-lg border border-primary/40 bg-primary/5 p-3">
+                <div>
+                  <Label htmlFor="pin-toggle" className="font-medium flex items-center gap-1.5">
+                    📌 Pin till toppen
+                  </Label>
+                  <p className="text-xs text-muted-foreground">
+                    Visas alltid först – före alla andra aktiva kampanjer, oavsett global strategi
+                  </p>
+                </div>
+                <Switch id="pin-toggle" checked={pinnedToTop} onCheckedChange={setPinnedToTop} />
+              </div>
+
               <div className="flex items-center justify-between rounded-lg border border-border p-3">
                 <div>
                   <Label htmlFor="active-toggle" className="font-medium">
@@ -704,6 +720,7 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
             active_to: (activeTo ?? new Date()).toISOString(),
             priority,
             is_active: isActive,
+            pinned_to_top: pinnedToTop,
             created_at: new Date().toISOString(),
             updated_at: new Date().toISOString(),
           }}

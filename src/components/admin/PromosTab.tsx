@@ -19,7 +19,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
-import { Plus, MoreVertical, Pencil, Pause, Play, Copy, Trash2, ImageIcon, Megaphone, ListOrdered } from "lucide-react";
+import { Plus, MoreVertical, Pencil, Pause, Play, Copy, Trash2, ImageIcon, Megaphone, ListOrdered, Pin, PinOff, Sparkles } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -85,23 +85,70 @@ const StatusBadge = ({ status }: { status: PromoStatus }) => {
   );
 };
 
+/**
+ * Compute the display order of currently-active promos using the same
+ * pinned-first + strategy logic as the public site (mirrors useActivePromo).
+ * Returns a Map from promo.id → 1-based rank for quick lookup.
+ */
+function computeActiveQueue(promos: Promo[], strategy: PromoSortStrategy): Promo[] {
+  const active = promos.filter((p) => getStatus(p) === "active");
+  const pinned = active.filter((p) => p.pinned_to_top);
+  const rest = active.filter((p) => !p.pinned_to_top);
+  const sortFn = (a: Promo, b: Promo) => {
+    switch (strategy) {
+      case "priority":
+        return (
+          b.priority - a.priority ||
+          new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
+        );
+      case "nearest_end":
+        return (
+          new Date(a.active_to).getTime() - new Date(b.active_to).getTime() ||
+          b.priority - a.priority
+        );
+      case "nearest_start":
+        return (
+          new Date(b.active_from).getTime() - new Date(a.active_from).getTime() ||
+          b.priority - a.priority
+        );
+      case "rotation":
+        return a.id.localeCompare(b.id);
+    }
+  };
+  return [...pinned.sort(sortFn), ...rest.sort(sortFn)];
+}
+
 const PromosTab = () => {
-  const { promos, isLoading, deletePromo, togglePromoActive, duplicatePromo } = usePromosAdmin();
+  const { promos, isLoading, deletePromo, togglePromoActive, togglePromoPin, duplicatePromo } = usePromosAdmin();
   const { strategy, setStrategy, isSaving } = usePromoSortStrategy();
   const [editorOpen, setEditorOpen] = useState(false);
   const [editing, setEditing] = useState<Promo | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Promo | null>(null);
   const [confirmDuplicate, setConfirmDuplicate] = useState<Promo | null>(null);
 
+  // Display-order queue (only currently active promos), mirrors the public site.
+  const activeQueue = useMemo(() => computeActiveQueue(promos, strategy), [promos, strategy]);
+  const rankById = useMemo(() => {
+    const map = new Map<string, number>();
+    activeQueue.forEach((p, i) => map.set(p.id, i + 1));
+    return map;
+  }, [activeQueue]);
+
+  // Admin list ordering: status group, then rank within active group.
   const sorted = useMemo(() => {
     return [...promos].sort((a, b) => {
       const sa = getStatus(a);
       const sb = getStatus(b);
       if (STATUS_ORDER[sa] !== STATUS_ORDER[sb]) return STATUS_ORDER[sa] - STATUS_ORDER[sb];
+      if (sa === "active") {
+        const ra = rankById.get(a.id) ?? 999;
+        const rb = rankById.get(b.id) ?? 999;
+        if (ra !== rb) return ra - rb;
+      }
       if (b.priority !== a.priority) return b.priority - a.priority;
       return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
     });
-  }, [promos]);
+  }, [promos, rankById]);
 
   const openCreate = () => {
     setEditing(null);
@@ -150,6 +197,57 @@ const PromosTab = () => {
         </CardContent>
       </Card>
 
+      {/* Display-queue preview — shows what visitors will actually see right now */}
+      {activeQueue.length > 0 && (
+        <Card className="glass-card border-primary/30">
+          <CardHeader className="pb-3">
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-5 h-5 text-primary" />
+              <CardTitle className="font-display text-base">
+                Visningsordning just nu ({activeQueue.length} aktiv{activeQueue.length === 1 ? "" : "a"})
+              </CardTitle>
+            </div>
+          </CardHeader>
+          <CardContent>
+            <ol className="space-y-1.5">
+              {activeQueue.map((p, idx) => (
+                <li
+                  key={p.id}
+                  className={`flex items-center gap-2 p-2 rounded-md text-sm ${
+                    idx === 0
+                      ? "bg-primary/10 border border-primary/30"
+                      : "bg-card/30 border border-border/40"
+                  }`}
+                >
+                  <span
+                    className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold flex-shrink-0 ${
+                      idx === 0
+                        ? "bg-primary text-primary-foreground"
+                        : "bg-muted text-muted-foreground"
+                    }`}
+                  >
+                    {idx + 1}
+                  </span>
+                  {p.pinned_to_top && (
+                    <Pin className="w-3.5 h-3.5 text-primary flex-shrink-0" aria-label="Pinnad" />
+                  )}
+                  <span className="font-medium truncate flex-1">{p.title}</span>
+                  {idx === 0 && (
+                    <Badge className="text-xs bg-primary/20 text-primary border-primary/40 hover:bg-primary/20">
+                      ✨ Visas nu
+                    </Badge>
+                  )}
+                </li>
+              ))}
+            </ol>
+            <p className="text-xs text-muted-foreground mt-3">
+              Strategi: <span className="text-foreground font-medium">{PROMO_SORT_STRATEGY_LABELS[strategy]}</span>
+              {activeQueue.some((p) => p.pinned_to_top) && " · 📌 Pinnade kampanjer kommer alltid först"}
+            </p>
+          </CardContent>
+        </Card>
+      )}
+
       <Card className="glass-card">
         <CardHeader className="flex flex-row items-center justify-between gap-3 space-y-0">
           <div className="flex items-center gap-2">
@@ -172,23 +270,47 @@ const PromosTab = () => {
             <div className="space-y-2">
               {sorted.map((p) => {
                 const status = getStatus(p);
+                const rank = rankById.get(p.id);
                 return (
                   <div
                     key={p.id}
-                    className="flex items-center gap-3 p-3 rounded-lg bg-card/40 border border-border/50 hover:bg-card/60 transition-colors"
+                    className={`flex items-center gap-3 p-3 rounded-lg border transition-colors ${
+                      p.pinned_to_top && status === "active"
+                        ? "bg-primary/5 border-primary/30 hover:bg-primary/10"
+                        : "bg-card/40 border-border/50 hover:bg-card/60"
+                    }`}
                   >
-                    {/* Thumbnail */}
-                    <div className="w-10 h-10 rounded-md overflow-hidden bg-muted/30 flex-shrink-0 flex items-center justify-center">
-                      {p.flyer_image_url ? (
-                        <img src={p.flyer_image_url} alt={p.title} className="w-full h-full object-cover" />
-                      ) : (
-                        <ImageIcon className="w-4 h-4 text-muted-foreground" />
+                    {/* Rank + thumbnail */}
+                    <div className="flex items-center gap-2 flex-shrink-0">
+                      {rank !== undefined && (
+                        <span
+                          className={`inline-flex items-center justify-center w-6 h-6 rounded-full text-xs font-bold ${
+                            rank === 1
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-muted text-muted-foreground"
+                          }`}
+                          aria-label={`Visningsordning ${rank}`}
+                        >
+                          {rank}
+                        </span>
                       )}
+                      <div className="w-10 h-10 rounded-md overflow-hidden bg-muted/30 flex items-center justify-center">
+                        {p.flyer_image_url ? (
+                          <img src={p.flyer_image_url} alt={p.title} className="w-full h-full object-cover" />
+                        ) : (
+                          <ImageIcon className="w-4 h-4 text-muted-foreground" />
+                        )}
+                      </div>
                     </div>
 
                     {/* Title + meta */}
                     <div className="flex-1 min-w-0">
-                      <div className="font-semibold text-sm truncate">{p.title}</div>
+                      <div className="font-semibold text-sm truncate flex items-center gap-1.5">
+                        {p.pinned_to_top && (
+                          <Pin className="w-3.5 h-3.5 text-primary flex-shrink-0" aria-label="Pinnad till toppen" />
+                        )}
+                        <span className="truncate">{p.title}</span>
+                      </div>
                       {p.subtitle && (
                         <div className="text-xs text-muted-foreground truncate">{p.subtitle}</div>
                       )}
@@ -212,9 +334,22 @@ const PromosTab = () => {
                           <MoreVertical className="w-4 h-4" />
                         </Button>
                       </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end" className="w-44">
+                      <DropdownMenuContent align="end" className="w-48">
                         <DropdownMenuItem onClick={() => openEdit(p)}>
                           <Pencil className="w-4 h-4 mr-2" /> Redigera
+                        </DropdownMenuItem>
+                        <DropdownMenuItem
+                          onClick={() => togglePromoPin.mutate({ id: p.id, pinned_to_top: !p.pinned_to_top })}
+                        >
+                          {p.pinned_to_top ? (
+                            <>
+                              <PinOff className="w-4 h-4 mr-2" /> Ta bort pin
+                            </>
+                          ) : (
+                            <>
+                              <Pin className="w-4 h-4 mr-2" /> Pin till toppen
+                            </>
+                          )}
                         </DropdownMenuItem>
                         <DropdownMenuItem
                           onClick={() => togglePromoActive.mutate({ id: p.id, is_active: !p.is_active })}

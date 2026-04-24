@@ -24,7 +24,7 @@ export function usePromosAdmin() {
 
   const invalidate = () => {
     queryClient.invalidateQueries({ queryKey: ["admin-promos"] });
-    queryClient.invalidateQueries({ queryKey: ["active-promo"] });
+    queryClient.invalidateQueries({ queryKey: ["active-promos"] });
   };
 
   const createPromo = useMutation({
@@ -97,6 +97,23 @@ export function usePromosAdmin() {
     },
   });
 
+  const togglePromoPin = useMutation({
+    mutationFn: async ({ id, pinned_to_top }: { id: string; pinned_to_top: boolean }) => {
+      const { error } = await supabase
+        .from("promos")
+        .update({ pinned_to_top } as never)
+        .eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: (_data, variables) => {
+      invalidate();
+      toast.success(variables.pinned_to_top ? "Kampanj pinnad till toppen!" : "Pin borttagen");
+    },
+    onError: (err: any) => {
+      toast.error("Kunde inte ändra pin", { description: err.message });
+    },
+  });
+
   const duplicatePromo = useMutation({
     mutationFn: async (id: string) => {
       const { data: original, error: fetchError } = await supabase
@@ -111,6 +128,7 @@ export function usePromosAdmin() {
         ...rest,
         title: `${rest.title} (Kopia)`,
         is_active: false,
+        pinned_to_top: false,
       };
 
       const { data, error } = await supabase
@@ -137,6 +155,7 @@ export function usePromosAdmin() {
     updatePromo,
     deletePromo,
     togglePromoActive,
+    togglePromoPin,
     duplicatePromo,
   };
 }
