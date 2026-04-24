@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
-import { Menu, Radio, Globe, ChevronDown, Home, Star, Film, Disc3, BadgeDollarSign } from "lucide-react";
+import { Menu, Radio, Globe, ChevronDown, Home, Star, Film, Disc3, BadgeDollarSign, Megaphone } from "lucide-react";
+import { useActivePromo } from "@/hooks/useActivePromo";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
 import { Link, useLocation } from "react-router-dom";
 import {
@@ -45,11 +46,16 @@ const languages: LanguageOption[] = [
 
 const Navbar = () => {
   const { language, setLanguage } = useLanguage();
+  const { promo } = useActivePromo();
   const logoSrc = "/logo-neon.png";
   const location = useLocation();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const currentLang = languages.find((l) => l.code === language)!;
+
+  const handlePromoReopen = () => {
+    window.dispatchEvent(new CustomEvent("promo:reopen"));
+  };
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 50);
@@ -122,6 +128,19 @@ const Navbar = () => {
 
             {/* Right side controls */}
             <div className="flex items-center gap-2 sm:gap-3">
+              {/* Promo reopen button — only when an active promo exists */}
+              {promo && (
+                <button
+                  onClick={handlePromoReopen}
+                  aria-label={language === "sv" ? "Visa aktuellt erbjudande" : language === "es" ? "Mostrar promoción actual" : "Show current promo"}
+                  title={language === "sv" ? "Visa aktuellt erbjudande" : language === "es" ? "Mostrar promoción actual" : "Show current promo"}
+                  className="tap-target glass-card p-2 rounded-lg focus-neon hover:border-neon-pink/50 transition-colors group relative"
+                >
+                  <Megaphone className="w-4 h-4 text-neon-pink group-hover:scale-110 transition-transform" />
+                  <span className="absolute top-1 right-1 w-1.5 h-1.5 rounded-full bg-neon-pink animate-pulse" aria-hidden="true" />
+                </button>
+              )}
+
               {/* Language Selector */}
               <div className="relative lang-dropdown">
                 <button

@@ -45,6 +45,24 @@ const PromoManager = () => {
     }
   }, [promo]);
 
+  // Listen for manual reopen requests (e.g. from Navbar megaphone button)
+  useEffect(() => {
+    const handleReopen = () => {
+      if (!promo) return;
+      try {
+        localStorage.removeItem(PERMANENT_DISMISS_KEY(promo.id));
+        localStorage.removeItem(SEEN_KEY(promo.id));
+        sessionStorage.removeItem(MINI_SESSION_HIDDEN_KEY(promo.id));
+      } catch {
+        /* ignore */
+      }
+      setReopenedFromMini(false);
+      setMode("popup");
+    };
+    window.addEventListener("promo:reopen", handleReopen);
+    return () => window.removeEventListener("promo:reopen", handleReopen);
+  }, [promo]);
+
   if (!promo) return null;
 
   const handlePopupClose = () => {
