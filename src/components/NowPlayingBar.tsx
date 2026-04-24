@@ -18,6 +18,7 @@ import { useStreamStatus } from "@/hooks/useStreamStatus";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
 import { logger } from "@/lib/logger";
+import { useScheduleNow, formatRelativeShort } from "@/hooks/useScheduleNow";
 
 const STREAM_URL = "https://stream.zeno.fm/gzzqvbuy0d7uv";
 
@@ -38,6 +39,10 @@ const translations = {
     expand: "Expandera",
     minimize: "Minimera",
     close: "Stäng",
+    nowSet: "NU",
+    nextSet: "NÄSTA",
+    inTime: "om",
+    endsIn: "slutar om",
   },
   en: {
     radioLive: "RADIO LOBO — LIVE",
@@ -55,6 +60,10 @@ const translations = {
     expand: "Expand",
     minimize: "Minimize",
     close: "Close",
+    nowSet: "NOW",
+    nextSet: "NEXT",
+    inTime: "in",
+    endsIn: "ends in",
   },
   es: {
     radioLive: "RADIO LOBO — EN VIVO",
@@ -72,6 +81,10 @@ const translations = {
     expand: "Expandir",
     minimize: "Minimizar",
     close: "Cerrar",
+    nowSet: "AHORA",
+    nextSet: "SIGUIENTE",
+    inTime: "en",
+    endsIn: "termina en",
   },
 };
 
@@ -98,6 +111,14 @@ const NowPlayingBar = () => {
   const { language } = useLanguage();
   const navigate = useNavigate();
   const t = translations[language];
+  const schedule = useScheduleNow();
+
+  // Visualizer animation speed scales with progress through the current set
+  // (faster bars near the end → "synced with time"). When a set is playing
+  // we go from 1.4s → 0.45s; when idle we use a calm default.
+  const visualizerDuration = schedule.current
+    ? `${(1.4 - schedule.progress * 0.95).toFixed(2)}s`
+    : "1.2s";
 
   const isRadio = mode === "radio";
   const isMix = mode === "mix";
@@ -275,6 +296,59 @@ const NowPlayingBar = () => {
       <div className="absolute inset-0 bg-background border-t border-border/50" />
 
       <div className="relative h-full flex flex-col">
+        {/* === SCHEDULE STRIP — current/next set with progress === */}
+        {(schedule.current || schedule.next) && (
+          <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 pt-1 pb-0.5 border-b border-border/30 shrink-0">
+            <div className="flex items-center gap-2 sm:gap-4 text-[10px] sm:text-xs">
+              {schedule.current && (
+                <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                  <span className="font-display font-bold tracking-wider text-primary shrink-0">
+                    {t.nowSet}
+                  </span>
+                  <span className="truncate text-foreground font-medium">
+                    {schedule.current.summary}
+                  </span>
+                  <div className="hidden sm:block flex-1 max-w-[120px] h-1 bg-muted/60 rounded-full overflow-hidden">
+                    <div
+                      className="h-full bg-gradient-to-r from-primary to-secondary rounded-full transition-all duration-1000 ease-linear"
+                      style={{ width: `${Math.round(schedule.progress * 100)}%` }}
+                    />
+                  </div>
+                  <span className="text-muted-foreground shrink-0 tabular-nums">
+                    {t.endsIn} {formatRelativeShort(schedule.msToCurrentEnd)}
+                  </span>
+                </div>
+              )}
+              {schedule.next && !schedule.current && (
+                <div className="flex items-center gap-1.5 min-w-0 flex-1">
+                  <span className="font-display font-bold tracking-wider text-secondary shrink-0">
+                    {t.nextSet}
+                  </span>
+                  <span className="truncate text-foreground font-medium">
+                    {schedule.next.summary}
+                  </span>
+                  <span className="text-muted-foreground shrink-0 tabular-nums">
+                    {t.inTime} {formatRelativeShort(schedule.msToNext)}
+                  </span>
+                </div>
+              )}
+              {schedule.current && schedule.next && (
+                <div className="hidden md:flex items-center gap-1.5 shrink-0 text-muted-foreground">
+                  <span className="font-display font-bold tracking-wider text-secondary">
+                    {t.nextSet}
+                  </span>
+                  <span className="truncate max-w-[160px] text-foreground/80">
+                    {schedule.next.summary}
+                  </span>
+                  <span className="tabular-nums">
+                    · {t.inTime} {formatRelativeShort(schedule.msToNext)}
+                  </span>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* Main control bar — mobile: taller, reorganized layout */}
         <div className="max-w-7xl mx-auto w-full px-2 sm:px-4 py-1.5 sm:py-2 flex items-center gap-1.5 sm:gap-3 shrink-0">
 
@@ -335,7 +409,11 @@ const NowPlayingBar = () => {
                     {/* Mini visualizer — hide on very small screens */}
                     <div className="hidden xs:flex items-end gap-px h-3" aria-hidden="true">
                       {[1, 2, 3, 4].map((bar) => (
-                        <div key={bar} className="w-0.5 bg-destructive rounded-full visualizer-bar" />
+                        <div
+                          key={bar}
+                          className="w-0.5 bg-destructive rounded-full visualizer-bar"
+                          style={{ animationDuration: visualizerDuration }}
+                        />
                       ))}
                     </div>
                   </div>
