@@ -424,11 +424,16 @@ const NowPlayingBar = () => {
                     <span className="text-destructive font-bold">LIVE</span>
                     {/* Mini visualizer — hide on very small screens */}
                     <div className="hidden xs:flex items-end gap-px h-3" aria-hidden="true">
-                      {[1, 2, 3, 4].map((bar) => (
+                      {[1, 2, 3, 4].map((bar, i) => (
                         <div
                           key={bar}
                           className="w-0.5 bg-destructive rounded-full visualizer-bar"
-                          style={{ animationDuration: visualizerDuration }}
+                          style={{
+                            ...visualizerStyle,
+                            // Per-bar phase offset on top of the schedule-locked
+                            // delay so bars don't move in lockstep.
+                            animationDelay: `calc(${visualizerStyle.animationDelay} - ${i * 0.08}s)`,
+                          }}
                         />
                       ))}
                     </div>
