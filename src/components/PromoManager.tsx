@@ -88,7 +88,14 @@ const PromoManager = () => {
   if (!promo) return null;
 
   const handlePopupClose = () => {
-    trackPromoEvent(promo.id, "closed");
+    // PromoPopup sets this flag right before firing onClose for auto-close,
+    // so we know whether to log "manual" or skip (auto already logged).
+    const w = window as unknown as { __promoCloseReason?: string };
+    const wasAuto = w.__promoCloseReason === "auto";
+    w.__promoCloseReason = undefined;
+    if (!wasAuto) {
+      trackPromoEvent(promo.id, "closed", { close_reason: "manual" });
+    }
     try {
       // Mark Large as seen with a fresh 24h window
       localStorage.setItem(SEEN_KEY(promo.id), Date.now().toString());
