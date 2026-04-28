@@ -173,6 +173,10 @@
 
           // Hard recovery
           setTimeout(function () {
+            if (document.visibilityState === "hidden") {
+              emit("hard-skip", { reason: "document hidden" });
+              return;
+            }
             if (appPainted()) return;
             try {
               if (sessionStorage.getItem(RELOAD_FLAG)) {
@@ -183,7 +187,10 @@
             } catch (e) {}
             emit("hard-reload");
             try {
-              console.warn("[white-screen-detector] App not painted within " + HARD_TIMEOUT + "ms — reloading.");
+              console.warn("[white-screen-detector] App not painted within " + HARD_TIMEOUT + "ms — reloading.", {
+                pageUrl: location.href,
+                elapsedMs: Date.now() - bootedAt,
+              });
             } catch (e) {}
             location.reload();
           }, HARD_TIMEOUT);
