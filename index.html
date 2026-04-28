@@ -123,26 +123,49 @@
           };
 
           function appPainted() {
-            if (alive) return true;
             var root = document.getElementById("root");
             if (!root) return false;
             var main = document.getElementById("main-content");
             if (main) {
               var r = main.getBoundingClientRect();
-              if (r.width > 0 && r.height > 0) return true;
+              var mainStyle = window.getComputedStyle(main);
+              if (
+                r.width > 0 &&
+                r.height > 0 &&
+                mainStyle.display !== "none" &&
+                mainStyle.visibility !== "hidden" &&
+                parseFloat(mainStyle.opacity || "1") > 0
+              ) return true;
             }
             if (root.children && root.children.length > 0) {
               var rr = root.getBoundingClientRect();
-              if (rr.width > 0 && rr.height > 0) return true;
+              var rootStyle = window.getComputedStyle(root);
+              if (
+                rr.width > 0 &&
+                rr.height > 0 &&
+                rootStyle.display !== "none" &&
+                rootStyle.visibility !== "hidden" &&
+                parseFloat(rootStyle.opacity || "1") > 0 &&
+                root.textContent &&
+                root.textContent.trim().length > 0
+              ) return true;
             }
             return false;
           }
 
           // Soft recovery
           setTimeout(function () {
+            if (document.visibilityState === "hidden") {
+              emit("soft-skip", { reason: "document hidden" });
+              return;
+            }
             if (appPainted()) return;
             emit("soft-recover", { reason: "main not painted" });
             try {
+              console.warn("[white-screen-detector] Soft recovery triggered", {
+                pageUrl: location.href,
+                elapsedMs: Date.now() - bootedAt,
+              });
               window.dispatchEvent(new CustomEvent("lovable:white-screen-recover"));
               window.dispatchEvent(new Event("resize"));
             } catch (e) {}
@@ -150,6 +173,10 @@
 
           // Hard recovery
           setTimeout(function () {
+            if (document.visibilityState === "hidden") {
+              emit("hard-skip", { reason: "document hidden" });
+              return;
+            }
             if (appPainted()) return;
             try {
               if (sessionStorage.getItem(RELOAD_FLAG)) {
@@ -160,7 +187,10 @@
             } catch (e) {}
             emit("hard-reload");
             try {
-              console.warn("[white-screen-detector] App not painted within " + HARD_TIMEOUT + "ms — reloading.");
+              console.warn("[white-screen-detector] App not painted within " + HARD_TIMEOUT + "ms — reloading.", {
+                pageUrl: location.href,
+                elapsedMs: Date.now() - bootedAt,
+              });
             } catch (e) {}
             location.reload();
           }, HARD_TIMEOUT);
