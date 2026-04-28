@@ -1,6 +1,10 @@
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
+interface WhiteScreenGuardProps {
+  onSoftReset?: () => void;
+}
+
 /**
  * Reports "alive" to the white-screen detector in index.html as soon as the
  * app has mounted AND the browser has painted a frame. Also listens for the
@@ -10,7 +14,7 @@ import { useLocation, useNavigate } from "react-router-dom";
  *
  * The hard reload is handled by the inline detector itself.
  */
-const WhiteScreenGuard = () => {
+const WhiteScreenGuard = ({ onSoftReset }: WhiteScreenGuardProps) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -38,14 +42,13 @@ const WhiteScreenGuard = () => {
   useEffect(() => {
     const handleRecover = () => {
       try {
-        // If we're not on home, try going home — most likely a lazy route
-        // failed to render. Otherwise, force a re-navigation to the same path
-        // to trigger Suspense + ErrorBoundary fresh.
-        if (location.pathname !== "/") {
-          navigate("/", { replace: true });
-        } else {
-          navigate(location.pathname, { replace: true });
-        }
+        onSoftReset?.();
+        navigate(location.pathname || "/", {
+          replace: true,
+          state: {
+            __wsRecoverAt: Date.now(),
+          },
+        });
       } catch {
         /* ignore */
       }
@@ -53,7 +56,7 @@ const WhiteScreenGuard = () => {
     window.addEventListener("lovable:white-screen-recover", handleRecover);
     return () =>
       window.removeEventListener("lovable:white-screen-recover", handleRecover);
-  }, [navigate, location.pathname]);
+  }, [navigate, location.pathname, onSoftReset]);
 
   return null;
 };
