@@ -599,7 +599,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
         </div>
 
         {/* Sticky footer: CTA always visible. Stacks vertically on narrow screens. */}
-        <div className="px-6 py-4 space-y-3 border-t border-border/40 bg-background/80 backdrop-blur-sm flex-shrink-0 rounded-b-[inherit]">
+        <div className="px-4 xs:px-6 py-3 xs:py-4 space-y-2 xs:space-y-3 border-t border-border/40 bg-background/80 backdrop-blur-sm flex-shrink-0 rounded-b-[inherit]">
           {promo.cta_text && promo.cta_url && (
             <Button onClick={handleCta} className="w-full promo-cta-pulse" size="lg">
               {promo.cta_text}
