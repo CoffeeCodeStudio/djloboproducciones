@@ -112,7 +112,10 @@ const FramsidaTab = () => {
   return (
     <div className="space-y-4 sm:space-y-6 max-w-2xl mx-auto">
       {hasPending && (
-        <div className="sticky top-[60px] sm:top-[72px] z-10 bg-background/95 backdrop-blur py-3 -mx-3 sm:-mx-4 px-3 sm:px-4 border-b border-border/50 flex items-center justify-between gap-3">
+        <div
+          className="sticky z-10 bg-background/95 backdrop-blur py-3 -mx-3 sm:-mx-4 px-3 sm:px-4 border-b border-border/50 flex items-center justify-between gap-3"
+          style={{ top: "calc(var(--admin-header-h, 60px) + var(--admin-section-title-h, 0px))" }}
+        >
           <p className="text-xs sm:text-sm text-muted-foreground">⚠️ Osparade ändringar</p>
           <Button onClick={handleSave} disabled={saving} size="lg" className="text-sm sm:text-base px-4 sm:px-8 h-10 sm:h-11">
             {saving ? <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 animate-spin" /> : saved ? <CheckCircle2 className="w-4 h-4 sm:w-5 sm:h-5 mr-2 text-green-400" /> : <Save className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />}

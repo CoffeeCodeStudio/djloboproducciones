@@ -207,7 +207,10 @@ const BrandingTab = () => {
     <div className="w-full max-w-[600px] mx-auto flex flex-col gap-6 sm:gap-8">
         {/* Save Button - Sticky */}
         {hasPendingChanges && (
-          <div className="sticky top-[60px] sm:top-[72px] z-10 bg-background/95 backdrop-blur py-3 -mx-3 sm:-mx-4 px-3 sm:px-4 border-b border-border/50">
+          <div
+            className="sticky z-10 bg-background/95 backdrop-blur py-3 -mx-3 sm:-mx-4 px-3 sm:px-4 border-b border-border/50"
+            style={{ top: "calc(var(--admin-header-h, 60px) + var(--admin-section-title-h, 0px))" }}
+          >
             <div className="flex items-center justify-between gap-3">
               <p className="text-xs sm:text-sm text-muted-foreground">
                 ⚠️ Osparade ändringar
