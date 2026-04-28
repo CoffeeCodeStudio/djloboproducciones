@@ -155,6 +155,7 @@ const Admin = () => {
 
       {/* Mobile-only sticky section title — gives context on long pages */}
       <div
+        ref={sectionTitleRef}
         className="sm:hidden sticky z-40 bg-background/95 backdrop-blur border-b border-border/50"
         style={{ top: "var(--admin-header-h, 60px)" }}
       >
