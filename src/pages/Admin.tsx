@@ -37,27 +37,34 @@ const Admin = () => {
 
   const [activeTab, setActiveTab] = useState<string>("framsida");
   const headerRef = useRef<HTMLElement | null>(null);
+  const sectionTitleRef = useRef<HTMLDivElement | null>(null);
   const tabBarRef = useRef<HTMLDivElement | null>(null);
 
   // Publish header height as a CSS variable so sticky save-bars in tab
   // components can align to the actual header bottom (not a hardcoded offset).
   useLayoutEffect(() => {
-    const el = headerRef.current;
-    if (!el) return;
+    const headerEl = headerRef.current;
+    if (!headerEl) return;
     const apply = () => {
-      const h = el.getBoundingClientRect().height;
+      const h = headerEl.getBoundingClientRect().height;
       document.documentElement.style.setProperty("--admin-header-h", `${Math.round(h)}px`);
+      const sec = sectionTitleRef.current;
+      // Section title is mobile-only (display:none on sm+); offsetParent === null when hidden.
+      const sh = sec && sec.offsetParent !== null ? sec.getBoundingClientRect().height : 0;
+      document.documentElement.style.setProperty("--admin-section-title-h", `${Math.round(sh)}px`);
     };
     apply();
     const ro = new ResizeObserver(apply);
-    ro.observe(el);
+    ro.observe(headerEl);
+    if (sectionTitleRef.current) ro.observe(sectionTitleRef.current);
     window.addEventListener("resize", apply);
     return () => {
       ro.disconnect();
       window.removeEventListener("resize", apply);
       document.documentElement.style.removeProperty("--admin-header-h");
+      document.documentElement.style.removeProperty("--admin-section-title-h");
     };
-  }, [user, isAdmin]);
+  }, [user, isAdmin, activeTab]);
 
   // Auto-scroll the active tab into view on mobile when it changes.
   useEffect(() => {
