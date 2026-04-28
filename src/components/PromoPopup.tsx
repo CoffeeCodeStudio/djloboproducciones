@@ -122,6 +122,8 @@ function playOpenSound(): (() => number) | null {
 const SOUND_SESSION_KEY = "promo-popup-sound-played";
 const MUTE_PREFERENCE_KEY = "promo-popup-muted";
 
+const EXIT_ANIM_MS = 220;
+
 const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProps) => {
   const ytEmbed = promo.youtube_url ? getYouTubeEmbedUrl(promo.youtube_url) : null;
   const timersRef = useRef<number[]>([]);
@@ -133,6 +135,37 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   const intensityActiveUntilRef = useRef<number>(0);
   // Refs for the 5 EQ bars so we can drive scaleY directly
   const eqBarRefs = useRef<Array<HTMLSpanElement | null>>([]);
+
+  // Exit animation state — when true, render exit class for EXIT_ANIM_MS
+  // before invoking onClose so Radix unmount feels soft instead of snappy.
+  const [closing, setClosing] = useState(false);
+  const closeTimerRef = useRef<number | null>(null);
+
+  // Reset closing state whenever the popup re-opens (open transitioned false→true)
+  useEffect(() => {
+    if (open) {
+      setClosing(false);
+      if (closeTimerRef.current) {
+        window.clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+    }
+  }, [open]);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+    };
+  }, []);
+
+  const requestClose = (cb: () => void) => {
+    if (closing) return;
+    setClosing(true);
+    closeTimerRef.current = window.setTimeout(() => {
+      closeTimerRef.current = null;
+      cb();
+    }, EXIT_ANIM_MS);
+  };
 
   // Mute preference — persisted in localStorage, scoped to the promo popup only.
   // Does NOT affect any other audio in the app.
