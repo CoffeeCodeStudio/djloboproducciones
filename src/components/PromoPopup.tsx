@@ -555,14 +555,16 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
             </div>
           )}
 
-          {/* Text — glassmorphism container with neon border + live EQ */}
+          {/* Text — glassmorphism container with neon border + live EQ.
+              On extra-narrow viewports (<400px) we stack title above the EQ row
+              and switch to a more compact type scale so nothing clips. */}
           <div
             ref={ctaAnchorRef}
-            className="px-4 sm:px-6 pt-5 pr-12 sm:pr-6 pb-4 space-y-3 bg-black/60 backdrop-blur-xl border-t border-b border-primary/40"
+            className="px-3 xs:px-4 sm:px-6 pt-4 sm:pt-5 pr-10 xs:pr-12 sm:pr-6 pb-4 space-y-3 bg-black/60 backdrop-blur-xl border-t border-b border-primary/40"
           >
-            <div className="flex items-start justify-between gap-2 sm:gap-3">
+            <div className="flex flex-col xs:flex-row items-start xs:items-start xs:justify-between gap-2 xs:gap-3">
               <h2
-                className="text-2xl sm:text-3xl font-bold bg-gradient-to-r from-pink-500 to-cyan-400 bg-clip-text text-transparent leading-tight break-words min-w-0"
+                className="text-xl xs:text-2xl sm:text-3xl font-bold bg-gradient-to-r from-pink-500 to-cyan-400 bg-clip-text text-transparent leading-tight break-words min-w-0 w-full xs:w-auto"
                 style={{
                   textShadow: "0 2px 6px rgba(0,0,0,0.85)",
                   filter: "drop-shadow(0 2px 4px rgba(0,0,0,0.8))",
@@ -596,8 +598,8 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
           </div>
         </div>
 
-        {/* Sticky footer: CTA always visible */}
-        <div className="px-6 py-4 space-y-3 border-t border-border/40 bg-background/80 backdrop-blur-sm flex-shrink-0 rounded-b-[inherit]">
+        {/* Sticky footer: CTA always visible. Stacks vertically on narrow screens. */}
+        <div className="px-4 xs:px-6 py-3 xs:py-4 space-y-2 xs:space-y-3 border-t border-border/40 bg-background/80 backdrop-blur-sm flex-shrink-0 rounded-b-[inherit]">
           {promo.cta_text && promo.cta_url && (
             <Button onClick={handleCta} className="w-full promo-cta-pulse" size="lg">
               {promo.cta_text}
