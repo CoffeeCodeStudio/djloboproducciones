@@ -9,6 +9,7 @@ import { lazy, Suspense } from "react";
 import Layout from "@/components/Layout";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import WhiteScreenGuard from "@/components/WhiteScreenGuard";
+import WhiteScreenDebugOverlay from "@/components/WhiteScreenDebugOverlay";
 
 const Index = lazy(() => import("./pages/Index"));
 const ListenPage = lazy(() => import("./pages/ListenPage"));
@@ -39,6 +40,7 @@ const App = () => (
       <TooltipProvider>
         <Toaster />
         <Sonner />
+        <WhiteScreenDebugOverlay />
         <BrowserRouter>
           <WhiteScreenGuard />
           <ErrorBoundary>
