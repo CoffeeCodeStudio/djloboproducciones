@@ -30,6 +30,38 @@ const isChunkLoadError = (error: unknown): boolean => {
   );
 };
 
+/**
+ * Try to extract the failing module URL from a chunk-load error message.
+ * Vite/browsers usually include the URL in the message, e.g.:
+ *   "Failed to fetch dynamically imported module: https://.../Admin-abc123.js"
+ */
+const extractFailingUrl = (error: unknown): string | null => {
+  if (!error) return null;
+  const msg = (error as Error)?.message ?? String(error);
+  const match = msg.match(/https?:\/\/[^\s'")]+/);
+  return match ? match[0] : null;
+};
+
+/** Structured chunk-error log — one line, easy to grep after deploys. */
+const logChunkError = (
+  error: unknown,
+  ctx: { source: string; recovery: "auto-reload" | "skipped-already-reloaded" | "none" }
+) => {
+  const err = error as Error | undefined;
+  const url = extractFailingUrl(error);
+  // eslint-disable-next-line no-console
+  console.error("[chunk-load-error]", {
+    source: ctx.source,
+    recovery: ctx.recovery,
+    message: err?.message ?? String(error),
+    failingUrl: url,
+    pageUrl: typeof window !== "undefined" ? window.location.href : null,
+    userAgent: typeof navigator !== "undefined" ? navigator.userAgent : null,
+    timestamp: new Date().toISOString(),
+    stack: err?.stack,
+  });
+};
+
 class ErrorBoundary extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
@@ -41,27 +73,48 @@ class ErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: React.ErrorInfo) {
-    if (import.meta.env.DEV) {
-      console.error("ErrorBoundary caught:", error, info);
-    }
-
-    // Auto-recover from stale chunk errors by reloading once per session.
     if (isChunkLoadError(error)) {
+      let alreadyReloaded = false;
       try {
-        if (!sessionStorage.getItem(CHUNK_RELOAD_FLAG)) {
-          sessionStorage.setItem(CHUNK_RELOAD_FLAG, "1");
-          // Small delay so React commits the error state first.
-          setTimeout(() => {
-            try {
-              window.location.reload();
-            } catch {
-              /* ignore */
-            }
-          }, 50);
-        }
+        alreadyReloaded = !!sessionStorage.getItem(CHUNK_RELOAD_FLAG);
       } catch {
         /* ignore */
       }
+
+      logChunkError(error, {
+        source: "ErrorBoundary",
+        recovery: alreadyReloaded ? "skipped-already-reloaded" : "auto-reload",
+      });
+
+      if (!alreadyReloaded) {
+        try {
+          sessionStorage.setItem(CHUNK_RELOAD_FLAG, "1");
+        } catch {
+          /* ignore */
+        }
+        setTimeout(() => {
+          try {
+            window.location.reload();
+          } catch {
+            /* ignore */
+          }
+        }, 50);
+      }
+      return;
+    }
+
+    if (import.meta.env.DEV) {
+      // eslint-disable-next-line no-console
+      console.error("[ErrorBoundary] caught:", {
+        message: error.message,
+        stack: error.stack,
+        componentStack: info.componentStack,
+        pageUrl: window.location.href,
+        timestamp: new Date().toISOString(),
+      });
+    } else {
+      // eslint-disable-next-line no-console
+      console.error("[ErrorBoundary]", error.message, "at", window.location.href);
     }
   }
 
