@@ -97,22 +97,40 @@
           var bootedAt = Date.now();
           var alive = false;
 
+          // Emit a structured event the in-app debug overlay can listen to.
+          function emit(kind, detail) {
+            try {
+              var payload = Object.assign(
+                { kind: kind, t: Date.now() - bootedAt },
+                detail || {}
+              );
+              // Buffer events so the overlay (mounted later) can replay them.
+              window.__lovableWsEvents = window.__lovableWsEvents || [];
+              window.__lovableWsEvents.push(payload);
+              window.dispatchEvent(
+                new CustomEvent("lovable:white-screen-event", { detail: payload })
+              );
+            } catch (e) {}
+          }
+
+          emit("boot", { softTimeout: SOFT_TIMEOUT, hardTimeout: HARD_TIMEOUT });
+
           window.__lovableReportAlive = function () {
+            if (alive) return;
             alive = true;
             window.__lovableAlive = true;
+            emit("alive");
           };
 
           function appPainted() {
             if (alive) return true;
             var root = document.getElementById("root");
             if (!root) return false;
-            // Heuristic: main content node exists and has measurable size.
             var main = document.getElementById("main-content");
             if (main) {
               var r = main.getBoundingClientRect();
               if (r.width > 0 && r.height > 0) return true;
             }
-            // Fallback: root has any rendered children with size.
             if (root.children && root.children.length > 0) {
               var rr = root.getBoundingClientRect();
               if (rr.width > 0 && rr.height > 0) return true;
@@ -120,32 +138,33 @@
             return false;
           }
 
-          // Soft recovery: dispatch an event the app can listen to; also clear
-          // any stuck overlays from extensions and re-trigger a resize.
+          // Soft recovery
           setTimeout(function () {
             if (appPainted()) return;
+            emit("soft-recover", { reason: "main not painted" });
             try {
               window.dispatchEvent(new CustomEvent("lovable:white-screen-recover"));
-              // Nudge layout in case a CSS/iframe race left it 0x0.
               window.dispatchEvent(new Event("resize"));
             } catch (e) {}
           }, SOFT_TIMEOUT);
 
-          // Hard recovery: reload once per session if still blank.
+          // Hard recovery
           setTimeout(function () {
             if (appPainted()) return;
             try {
-              if (sessionStorage.getItem(RELOAD_FLAG)) return;
+              if (sessionStorage.getItem(RELOAD_FLAG)) {
+                emit("hard-skip", { reason: "already reloaded this session" });
+                return;
+              }
               sessionStorage.setItem(RELOAD_FLAG, String(Date.now()));
             } catch (e) {}
+            emit("hard-reload");
             try {
               console.warn("[white-screen-detector] App not painted within " + HARD_TIMEOUT + "ms — reloading.");
             } catch (e) {}
             location.reload();
           }, HARD_TIMEOUT);
 
-          // Clear the reload flag once the app has painted, so a future stuck
-          // session can also recover automatically.
           var clearInt = setInterval(function () {
             if (appPainted()) {
               try { sessionStorage.removeItem(RELOAD_FLAG); } catch (e) {}
