@@ -122,6 +122,8 @@ function playOpenSound(): (() => number) | null {
 const SOUND_SESSION_KEY = "promo-popup-sound-played";
 const MUTE_PREFERENCE_KEY = "promo-popup-muted";
 
+const EXIT_ANIM_MS = 220;
+
 const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProps) => {
   const ytEmbed = promo.youtube_url ? getYouTubeEmbedUrl(promo.youtube_url) : null;
   const timersRef = useRef<number[]>([]);
@@ -133,6 +135,37 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   const intensityActiveUntilRef = useRef<number>(0);
   // Refs for the 5 EQ bars so we can drive scaleY directly
   const eqBarRefs = useRef<Array<HTMLSpanElement | null>>([]);
+
+  // Exit animation state — when true, render exit class for EXIT_ANIM_MS
+  // before invoking onClose so Radix unmount feels soft instead of snappy.
+  const [closing, setClosing] = useState(false);
+  const closeTimerRef = useRef<number | null>(null);
+
+  // Reset closing state whenever the popup re-opens (open transitioned false→true)
+  useEffect(() => {
+    if (open) {
+      setClosing(false);
+      if (closeTimerRef.current) {
+        window.clearTimeout(closeTimerRef.current);
+        closeTimerRef.current = null;
+      }
+    }
+  }, [open]);
+
+  useEffect(() => {
+    return () => {
+      if (closeTimerRef.current) window.clearTimeout(closeTimerRef.current);
+    };
+  }, []);
+
+  const requestClose = (cb: () => void) => {
+    if (closing) return;
+    setClosing(true);
+    closeTimerRef.current = window.setTimeout(() => {
+      closeTimerRef.current = null;
+      cb();
+    }, EXIT_ANIM_MS);
+  };
 
   // Mute preference — persisted in localStorage, scoped to the promo popup only.
   // Does NOT affect any other audio in the app.
@@ -254,7 +287,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
       // Signal to PromoManager that this close was automatic, not manual
       (window as unknown as { __promoCloseReason?: string }).__promoCloseReason = "auto";
       trackPromoEvent(promo.id, "closed", { close_reason: "auto", after_ms: AUTO_CLOSE_MS });
-      onClose();
+      requestClose(onClose);
     }, AUTO_CLOSE_MS);
     return () => window.clearTimeout(t);
   }, [open, isPaused, promo.id, onClose]);
@@ -386,7 +419,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
     if (promo.cta_url) {
       window.open(promo.cta_url, "_blank", "noopener,noreferrer");
     }
-    onClose();
+    requestClose(onClose);
   };
 
   // Pre-compute drifting musical particles (notes + vinyls) — outside modal edges
@@ -408,7 +441,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   }, []);
 
   return (
-    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
+    <Dialog open={open} onOpenChange={(v) => { if (!v) requestClose(onClose); }}>
       {/* Ambient drifting musical particles — fixed full-screen, behind dialog content */}
       {open && (
         <div
@@ -447,7 +480,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
         data-zlayer="promo-popup-content"
         aria-labelledby="promo-popup-title"
         aria-describedby={promo.subtitle ? "promo-popup-desc" : undefined}
-        className="p-0 overflow-visible w-[calc(100vw-1.5rem)] xs:w-[calc(100vw-2rem)] sm:w-auto max-w-[min(calc(100vw-1.5rem),28rem)] sm:max-w-md max-h-[80vh] sm:max-h-[90vh] mx-3 xs:mx-4 sm:mx-auto flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow promo-popup-enter"
+        className={`p-0 overflow-visible w-[calc(100vw-1.5rem)] xs:w-[calc(100vw-2rem)] sm:w-auto max-w-[min(calc(100vw-1.5rem),28rem)] sm:max-w-md max-h-[80vh] sm:max-h-[90vh] mx-3 xs:mx-4 sm:mx-auto flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow ${closing ? "promo-popup-exit" : "promo-popup-enter"}`}
         style={{ zIndex: 9999, cursor: "auto" }}
         onMouseEnter={() => setIsPaused(true)}
         onMouseLeave={() => setIsPaused(false)}
@@ -506,7 +539,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
         {/* Vinyl-record close button — spinning record with bold centered white X */}
         <button
           type="button"
-          onClick={onClose}
+          onClick={() => requestClose(onClose)}
           aria-label="Stäng"
           className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 z-30 w-11 h-11 rounded-full bg-background/70 backdrop-blur-md border-2 border-primary shadow-[0_0_16px_hsl(var(--primary)/0.9)] hover:shadow-[0_0_28px_hsl(var(--primary))] hover:scale-110 active:scale-95 transition-all group flex items-center justify-center"
         >
@@ -607,7 +640,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
           )}
           <div className="text-center">
             <button
-              onClick={onPermanentDismiss}
+              onClick={() => requestClose(onPermanentDismiss)}
               className="text-xs text-muted-foreground underline hover:text-foreground transition-colors"
             >
               Visa inte igen

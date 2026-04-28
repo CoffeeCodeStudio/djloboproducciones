@@ -673,6 +673,25 @@ body {
     animation: promo-popup-enter 0.55s cubic-bezier(0.22, 1.2, 0.36, 1) both;
   }
 
+  /* Soft fade + scale exit — feels gentler than Radix's instant unmount,
+     especially on mobile where the popup occupies most of the viewport. */
+  @keyframes promo-popup-exit {
+    0% {
+      transform: scale(1) translateY(0);
+      opacity: 1;
+      filter: blur(0);
+    }
+    100% {
+      transform: scale(0.94) translateY(6px);
+      opacity: 0;
+      filter: blur(2px);
+    }
+  }
+
+  .promo-popup-exit {
+    animation: promo-popup-exit 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
   /* 5-bar EQ animation */
   @keyframes eq-bounce {
     0%, 100% { transform: scaleY(0.3); }
@@ -812,6 +831,7 @@ body {
         0 0 40px 8px hsla(var(--neon-cyan), 0.5) !important;
     }
     .promo-popup-enter,
+    .promo-popup-exit,
     .promo-cta-pulse,
     .eq-bar,
     .vinyl-spin,
