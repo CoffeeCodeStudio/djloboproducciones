@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { CookieConsentProvider } from "@/contexts/CookieConsentContext";
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useState } from "react";
 import Layout from "@/components/Layout";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import WhiteScreenGuard from "@/components/WhiteScreenGuard";
@@ -33,19 +33,17 @@ const SuspenseFallback = () => (
   </div>
 );
 
-const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <LanguageProvider>
-      <CookieConsentProvider>
-      <TooltipProvider>
-        <Toaster />
-        <Sonner />
-        <WhiteScreenDebugOverlay />
-        <BrowserRouter>
-          <WhiteScreenGuard />
-          <ErrorBoundary>
-            <Suspense fallback={<SuspenseFallback />}>
-              <Routes>
+const AppShell = () => {
+  const [routerResetKey, setRouterResetKey] = useState(0);
+
+  return (
+    <>
+      <WhiteScreenDebugOverlay />
+      <BrowserRouter key={routerResetKey}>
+        <WhiteScreenGuard onSoftReset={() => setRouterResetKey((key) => key + 1)} />
+        <ErrorBoundary>
+          <Suspense fallback={<SuspenseFallback />}>
+            <Routes>
                 {/* Standalone pages without nav/footer */}
                 <Route path="/admin" element={<Admin />} />
                 <Route path="/reset-password" element={<ResetPassword />} />
@@ -68,11 +66,23 @@ const App = () => (
                   <Route path="/terms" element={<TermsOfService />} />
                   <Route path="*" element={<NotFound />} />
                 </Route>
-              </Routes>
-            </Suspense>
-          </ErrorBoundary>
-        </BrowserRouter>
-      </TooltipProvider>
+            </Routes>
+          </Suspense>
+        </ErrorBoundary>
+      </BrowserRouter>
+    </>
+  );
+};
+
+const App = () => (
+  <QueryClientProvider client={queryClient}>
+    <LanguageProvider>
+      <CookieConsentProvider>
+        <TooltipProvider>
+          <Toaster />
+          <Sonner />
+          <AppShell />
+        </TooltipProvider>
       </CookieConsentProvider>
     </LanguageProvider>
   </QueryClientProvider>
