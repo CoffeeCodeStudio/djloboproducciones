@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useLayoutEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -19,10 +18,56 @@ import HelpTab from "@/components/admin/HelpTab";
 import UsersTab from "@/components/admin/UsersTab";
 import PromosTab from "@/components/admin/PromosTab";
 
+const TAB_DEFS = [
+  { value: "framsida",   icon: Home,       label: "Hem" },
+  { value: "media",      icon: ImageIcon,  label: "Media" },
+  { value: "reklam",     icon: Megaphone,  label: "Reklam" },
+  { value: "radio",      icon: Radio,      label: "Radio" },
+  { value: "omdomen",    icon: Star,       label: "Omdömen" },
+  { value: "spelningar", icon: Calendar,   label: "Event" },
+  { value: "utseende",   icon: Palette,    label: "Stil" },
+  { value: "hjalp",      icon: HelpCircle, label: "Hjälp" },
+  { value: "anvandare",  icon: Users,      label: "Konto" },
+] as const;
+
 const Admin = () => {
   const { user, isAdmin, loading: authLoading, signIn, signUp, signOut, resetPassword } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
+
+  const [activeTab, setActiveTab] = useState<string>("framsida");
+  const headerRef = useRef<HTMLElement | null>(null);
+  const tabBarRef = useRef<HTMLDivElement | null>(null);
+
+  // Publish header height as a CSS variable so sticky save-bars in tab
+  // components can align to the actual header bottom (not a hardcoded offset).
+  useLayoutEffect(() => {
+    const el = headerRef.current;
+    if (!el) return;
+    const apply = () => {
+      const h = el.getBoundingClientRect().height;
+      document.documentElement.style.setProperty("--admin-header-h", `${Math.round(h)}px`);
+    };
+    apply();
+    const ro = new ResizeObserver(apply);
+    ro.observe(el);
+    window.addEventListener("resize", apply);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("resize", apply);
+      document.documentElement.style.removeProperty("--admin-header-h");
+    };
+  }, [user, isAdmin]);
+
+  // Auto-scroll the active tab into view on mobile when it changes.
+  useEffect(() => {
+    const bar = tabBarRef.current;
+    if (!bar) return;
+    const active = bar.querySelector<HTMLElement>(`[data-tab-value="${activeTab}"]`);
+    if (active) {
+      active.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    }
+  }, [activeTab]);
 
   const handleSignOut = async () => {
     await signOut();
@@ -66,13 +111,15 @@ const Admin = () => {
     );
   }
 
+  const activeLabel = TAB_DEFS.find((t) => t.value === activeTab)?.label ?? "";
+
   return (
     <div className="min-h-screen bg-background pb-safe">
       <div className="light-leak-purple" />
       <div className="light-leak-blue" />
 
-      {/* Header - Mobile optimized */}
-      <header className="sticky top-0 z-50 glass-card border-b border-border/50 safe-area-top">
+      {/* Header */}
+      <header ref={headerRef} className="sticky top-0 z-50 glass-card border-b border-border/50 safe-area-top">
         <div className="container mx-auto px-3 sm:px-4 py-2.5 sm:py-4 flex items-center justify-between gap-2">
           <div className="flex items-center gap-2 sm:gap-4 min-w-0">
             <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="hover:bg-muted flex-shrink-0 h-9 w-9 sm:h-10 sm:w-10">
@@ -99,47 +146,53 @@ const Admin = () => {
         </div>
       </header>
 
+      {/* Mobile-only sticky section title — gives context on long pages */}
+      <div
+        className="sm:hidden sticky z-40 bg-background/95 backdrop-blur border-b border-border/50"
+        style={{ top: "var(--admin-header-h, 60px)" }}
+      >
+        <div className="container mx-auto px-3 py-2">
+          <h2 className="font-display text-lg text-neon-gradient leading-tight truncate">{activeLabel}</h2>
+        </div>
+      </div>
+
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 relative z-10">
-        <Tabs defaultValue="framsida" className="w-full">
-          {/* Mobile-first tab navigation */}
-          <TabsList className="grid w-full grid-cols-9 mb-4 sm:mb-8 glass-card h-auto p-1 gap-0.5">
-            <TabsTrigger value="framsida" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
-              <Home className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[9px] sm:text-sm leading-tight">Hem</span>
-            </TabsTrigger>
-            <TabsTrigger value="media" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
-              <ImageIcon className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[9px] sm:text-sm leading-tight">Media</span>
-            </TabsTrigger>
-            <TabsTrigger value="reklam" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
-              <Megaphone className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[9px] sm:text-sm leading-tight">Reklam</span>
-            </TabsTrigger>
-            <TabsTrigger value="radio" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
-              <Radio className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[9px] sm:text-sm leading-tight">Radio</span>
-            </TabsTrigger>
-            <TabsTrigger value="omdomen" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
-              <Star className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[9px] sm:text-sm leading-tight">Omdömen</span>
-            </TabsTrigger>
-            <TabsTrigger value="spelningar" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
-              <Calendar className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[9px] sm:text-sm leading-tight">Event</span>
-            </TabsTrigger>
-            <TabsTrigger value="utseende" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
-              <Palette className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[9px] sm:text-sm leading-tight">Stil</span>
-            </TabsTrigger>
-            <TabsTrigger value="hjalp" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
-              <HelpCircle className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[9px] sm:text-sm leading-tight">Hjälp</span>
-            </TabsTrigger>
-            <TabsTrigger value="anvandare" className="data-[state=active]:bg-primary/20 flex flex-col sm:flex-row items-center justify-center gap-0.5 sm:gap-1.5 py-2 sm:py-2.5 px-0.5 sm:px-3 min-h-[52px] sm:min-h-0">
-              <Users className="w-4 h-4 sm:w-4 sm:h-4" />
-              <span className="text-[9px] sm:text-sm leading-tight">Konto</span>
-            </TabsTrigger>
-          </TabsList>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          {/* Mobile: scrollable horizontal tab bar with edge fades.
+              Desktop: existing grid layout. */}
+          <div className="relative mb-4 sm:mb-8">
+            {/* Edge fade indicators (mobile only) */}
+            <div
+              aria-hidden="true"
+              className="sm:hidden pointer-events-none absolute left-0 top-0 bottom-0 w-6 z-10"
+              style={{ background: "linear-gradient(to right, hsl(var(--background)), transparent)" }}
+            />
+            <div
+              aria-hidden="true"
+              className="sm:hidden pointer-events-none absolute right-0 top-0 bottom-0 w-6 z-10"
+              style={{ background: "linear-gradient(to left, hsl(var(--background)), transparent)" }}
+            />
+
+            <div
+              ref={tabBarRef}
+              className="overflow-x-auto sm:overflow-visible scrollbar-none -mx-3 sm:mx-0 px-3 sm:px-0"
+              style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
+            >
+              <TabsList className="inline-flex sm:grid w-auto sm:w-full sm:grid-cols-9 glass-card h-auto p-1 gap-0.5">
+                {TAB_DEFS.map(({ value, icon: Icon, label }) => (
+                  <TabsTrigger
+                    key={value}
+                    value={value}
+                    data-tab-value={value}
+                    className="data-[state=active]:bg-primary/20 flex-shrink-0 flex flex-row sm:flex-row items-center justify-center gap-1.5 px-3 py-2.5 sm:px-3 sm:py-2.5 min-h-[44px] sm:min-h-0"
+                  >
+                    <Icon className="w-4 h-4 flex-shrink-0" />
+                    <span className="text-xs sm:text-sm leading-tight whitespace-nowrap">{label}</span>
+                  </TabsTrigger>
+                ))}
+              </TabsList>
+            </div>
+          </div>
 
           <TabsContent value="framsida"><FramsidaTab /></TabsContent>
           <TabsContent value="media"><GalleryTab /></TabsContent>
