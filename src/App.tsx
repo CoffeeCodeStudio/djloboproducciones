@@ -8,6 +8,7 @@ import { CookieConsentProvider } from "@/contexts/CookieConsentContext";
 import { lazy, Suspense } from "react";
 import Layout from "@/components/Layout";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import WhiteScreenGuard from "@/components/WhiteScreenGuard";
 
 const Index = lazy(() => import("./pages/Index"));
 const ListenPage = lazy(() => import("./pages/ListenPage"));
@@ -39,6 +40,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <WhiteScreenGuard />
           <ErrorBoundary>
             <Suspense fallback={<SuspenseFallback />}>
               <Routes>
