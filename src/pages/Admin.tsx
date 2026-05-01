@@ -125,44 +125,33 @@ const Admin = () => {
       <div className="light-leak-purple" />
       <div className="light-leak-blue" />
 
-      {/* Header */}
-      <header ref={headerRef} className="sticky top-0 z-50 glass-card border-b border-border/50 safe-area-top">
-        <div className="container mx-auto px-3 sm:px-4 py-2.5 sm:py-4 flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 sm:gap-4 min-w-0">
-            <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="hover:bg-muted flex-shrink-0 h-9 w-9 sm:h-10 sm:w-10">
+      {/* Header — strikt mörk navy/charcoal enligt admin-temat (ingen neon) */}
+      <header ref={headerRef} className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border/50 safe-area-top">
+        <div className="container mx-auto px-2 sm:px-4 py-2 sm:py-3 flex items-center justify-between gap-2">
+          <div className="flex items-center gap-1.5 sm:gap-3 min-w-0 flex-1">
+            <Button variant="ghost" size="icon" onClick={() => navigate("/")} className="hover:bg-muted flex-shrink-0 h-9 w-9 sm:h-10 sm:w-10" aria-label="Tillbaka till startsidan">
               <ArrowLeft className="w-5 h-5" />
             </Button>
-            <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-              <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-full icon-gradient-pink flex items-center justify-center flex-shrink-0">
-                <Radio className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+            <div className="flex items-center gap-2 sm:gap-3 min-w-0 flex-1">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-foreground/80" />
               </div>
-              <div className="min-w-0">
-                <h1 className="font-display text-base sm:text-xl text-neon-gradient leading-tight">Kontrollpanel</h1>
-                <p className="text-[10px] sm:text-xs text-muted-foreground truncate max-w-[120px] sm:max-w-none">{user.email}</p>
+              <div className="min-w-0 flex-1">
+                <h1 className="font-display text-sm sm:text-xl text-foreground leading-tight truncate">Kontrollpanel</h1>
+                <p className="text-[10px] sm:text-xs text-muted-foreground truncate">{user.email}</p>
               </div>
             </div>
           </div>
           <div className="flex items-center gap-1 sm:gap-3 flex-shrink-0">
-            <Badge variant="outline" className="border-primary/50 text-primary text-[10px] sm:text-xs px-1.5 sm:px-2.5 h-6 sm:h-auto hidden xs:flex">
-              <Shield className="w-3 h-3 mr-0.5 sm:mr-1" />Admin
+            <Badge variant="outline" className="border-border text-muted-foreground text-[10px] sm:text-xs px-1.5 sm:px-2.5 h-6 sm:h-auto hidden sm:flex">
+              <Shield className="w-3 h-3 mr-1" />Admin
             </Badge>
-            <Button variant="ghost" size="icon" onClick={handleSignOut} className="hover:bg-destructive/10 hover:text-destructive h-9 w-9 sm:h-10 sm:w-10">
+            <Button variant="ghost" size="icon" onClick={handleSignOut} className="hover:bg-destructive/10 hover:text-destructive h-9 w-9 sm:h-10 sm:w-10" aria-label="Logga ut">
               <LogOut className="w-5 h-5" />
             </Button>
           </div>
         </div>
       </header>
-
-      {/* Mobile-only sticky section title — gives context on long pages */}
-      <div
-        ref={sectionTitleRef}
-        className="sm:hidden sticky z-40 bg-background/95 backdrop-blur border-b border-border/50"
-        style={{ top: "var(--admin-header-h, 60px)" }}
-      >
-        <div className="container mx-auto px-3 py-2">
-          <h2 className="font-display text-lg text-neon-gradient leading-tight truncate">{activeLabel}</h2>
-        </div>
-      </div>
 
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
