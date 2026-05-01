@@ -5,6 +5,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Shield, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Star, Home, HelpCircle, Users, Megaphone } from "lucide-react";
+// Note: Radio icon kept in import for tab definitions below.
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import AdminLogin from "@/components/AdminLogin";
