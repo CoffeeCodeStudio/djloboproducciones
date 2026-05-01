@@ -38,7 +38,6 @@ const Admin = () => {
 
   const [activeTab, setActiveTab] = useState<string>("framsida");
   const headerRef = useRef<HTMLElement | null>(null);
-  const sectionTitleRef = useRef<HTMLDivElement | null>(null);
   const tabBarRef = useRef<HTMLDivElement | null>(null);
 
   // Publish header height as a CSS variable so sticky save-bars in tab
@@ -49,15 +48,12 @@ const Admin = () => {
     const apply = () => {
       const h = headerEl.getBoundingClientRect().height;
       document.documentElement.style.setProperty("--admin-header-h", `${Math.round(h)}px`);
-      const sec = sectionTitleRef.current;
-      // Section title is mobile-only (display:none on sm+); offsetParent === null when hidden.
-      const sh = sec && sec.offsetParent !== null ? sec.getBoundingClientRect().height : 0;
-      document.documentElement.style.setProperty("--admin-section-title-h", `${Math.round(sh)}px`);
+      // Section title removed; keep var at 0 for any consumer still referencing it.
+      document.documentElement.style.setProperty("--admin-section-title-h", `0px`);
     };
     apply();
     const ro = new ResizeObserver(apply);
     ro.observe(headerEl);
-    if (sectionTitleRef.current) ro.observe(sectionTitleRef.current);
     window.addEventListener("resize", apply);
     return () => {
       ro.disconnect();
