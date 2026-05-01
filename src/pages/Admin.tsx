@@ -115,12 +115,8 @@ const Admin = () => {
     );
   }
 
-  const activeLabel = TAB_DEFS.find((t) => t.value === activeTab)?.label ?? "";
-
   return (
     <div className="min-h-screen bg-background pb-safe">
-      <div className="light-leak-purple" />
-      <div className="light-leak-blue" />
 
       {/* Header — strikt mörk navy/charcoal enligt admin-temat (ingen neon) */}
       <header ref={headerRef} className="sticky top-0 z-50 bg-background/95 backdrop-blur border-b border-border/50 safe-area-top">
