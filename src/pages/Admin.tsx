@@ -148,19 +148,19 @@ const Admin = () => {
 
       <main className="container mx-auto px-3 sm:px-4 py-4 sm:py-8 relative z-10">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          {/* Mobile: scrollable horizontal tab bar with edge fades.
-              Desktop: existing grid layout. */}
+          {/* Mobile: scrollable horizontal tab bar with edge fades + position indicator.
+              Desktop: even grid layout. */}
           <div className="relative mb-4 sm:mb-8">
             {/* Edge fade indicators (mobile only) */}
             <div
               aria-hidden="true"
-              className="sm:hidden pointer-events-none absolute left-0 top-0 bottom-0 w-6 z-10"
-              style={{ background: "linear-gradient(to right, hsl(var(--background)), transparent)" }}
+              className="sm:hidden pointer-events-none absolute left-0 top-0 bottom-0 w-8 z-10"
+              style={{ background: "linear-gradient(to right, hsl(var(--background)) 20%, transparent)" }}
             />
             <div
               aria-hidden="true"
-              className="sm:hidden pointer-events-none absolute right-0 top-0 bottom-0 w-6 z-10"
-              style={{ background: "linear-gradient(to left, hsl(var(--background)), transparent)" }}
+              className="sm:hidden pointer-events-none absolute right-0 top-0 bottom-0 w-8 z-10"
+              style={{ background: "linear-gradient(to left, hsl(var(--background)) 20%, transparent)" }}
             />
 
             <div
@@ -168,19 +168,40 @@ const Admin = () => {
               className="overflow-x-auto sm:overflow-visible scrollbar-none -mx-3 sm:mx-0 px-3 sm:px-0"
               style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
             >
-              <TabsList className="inline-flex sm:grid w-auto sm:w-full sm:grid-cols-9 glass-card h-auto p-1 gap-0.5">
+              <TabsList className="inline-flex sm:grid w-auto sm:w-full sm:grid-cols-9 bg-card border border-border rounded-lg h-auto p-1 gap-1">
                 {TAB_DEFS.map(({ value, icon: Icon, label }) => (
                   <TabsTrigger
                     key={value}
                     value={value}
                     data-tab-value={value}
-                    className="data-[state=active]:bg-primary/20 flex-shrink-0 flex flex-row sm:flex-row items-center justify-center gap-1.5 px-3 py-2.5 sm:px-3 sm:py-2.5 min-h-[44px] sm:min-h-0"
+                    aria-label={label}
+                    className="
+                      relative flex-shrink-0 flex flex-row items-center justify-center gap-1.5
+                      px-3 py-2 sm:px-2.5 sm:py-2 min-h-[44px] sm:min-h-[40px] rounded-md
+                      text-muted-foreground hover:text-foreground hover:bg-muted/60
+                      transition-colors
+                      data-[state=active]:bg-foreground data-[state=active]:text-background
+                      data-[state=active]:shadow-sm
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background
+                    "
                   >
                     <Icon className="w-4 h-4 flex-shrink-0" />
-                    <span className="text-xs sm:text-sm leading-tight whitespace-nowrap">{label}</span>
+                    <span className="text-xs sm:text-sm font-medium leading-tight whitespace-nowrap">{label}</span>
                   </TabsTrigger>
                 ))}
               </TabsList>
+            </div>
+
+            {/* Mobile-only position indicator (e.g. "1 / 9") so users know more tabs exist */}
+            <div
+              className="sm:hidden mt-2 flex items-center justify-center gap-2 text-[11px] text-muted-foreground"
+              aria-live="polite"
+            >
+              <span>
+                {(TAB_DEFS.findIndex((t) => t.value === activeTab) + 1)} / {TAB_DEFS.length}
+              </span>
+              <span aria-hidden="true">·</span>
+              <span>Svep för fler</span>
             </div>
           </div>
 
