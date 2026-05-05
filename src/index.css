@@ -644,27 +644,30 @@ body {
     border-color: hsla(var(--neon-pink), 0.7) !important;
   }
 
-  /* Bass-drop spring entrance: scale 0.8 -> 1.05 -> 1.0 with subtle shake on landing */
+  /* Bass-drop spring entrance — preserves Radix Dialog's translate(-50%, -50%)
+     centering by always including it in the transform. Without this baseline,
+     the scale() call would override Radix's centering and the popup would
+     anchor at the top-left of the screen-center point. */
   @keyframes promo-popup-enter {
     0% {
-      transform: scale(0.8) translateX(0);
+      transform: translate(-50%, -50%) scale(0.8);
       opacity: 0;
     }
     60% {
-      transform: scale(1.05) translateX(0);
+      transform: translate(-50%, -50%) scale(1.05);
       opacity: 1;
     }
     75% {
-      transform: scale(1) translateX(-3px);
+      transform: translate(calc(-50% - 3px), -50%) scale(1);
     }
     82% {
-      transform: scale(1) translateX(3px);
+      transform: translate(calc(-50% + 3px), -50%) scale(1);
     }
     89% {
-      transform: scale(1) translateX(-2px);
+      transform: translate(calc(-50% - 2px), -50%) scale(1);
     }
     100% {
-      transform: scale(1) translateX(0);
+      transform: translate(-50%, -50%) scale(1);
       opacity: 1;
     }
   }
@@ -673,16 +676,15 @@ body {
     animation: promo-popup-enter 0.55s cubic-bezier(0.22, 1.2, 0.36, 1) both;
   }
 
-  /* Soft fade + scale exit — feels gentler than Radix's instant unmount,
-     especially on mobile where the popup occupies most of the viewport. */
+  /* Soft fade + scale exit — also keeps centering translate intact. */
   @keyframes promo-popup-exit {
     0% {
-      transform: scale(1) translateY(0);
+      transform: translate(-50%, -50%) scale(1);
       opacity: 1;
       filter: blur(0);
     }
     100% {
-      transform: scale(0.94) translateY(6px);
+      transform: translate(-50%, calc(-50% + 6px)) scale(0.94);
       opacity: 0;
       filter: blur(2px);
     }
