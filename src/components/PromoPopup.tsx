@@ -596,7 +596,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
           aria-labelledby="promo-popup-title"
           aria-describedby={promo.subtitle ? "promo-popup-desc" : undefined}
           tabIndex={-1}
-          className={`fixed inset-x-0 mx-auto my-[max(env(safe-area-inset-top),1rem)] top-0 bottom-0 h-fit max-h-[calc(100dvh-2rem-env(safe-area-inset-top)-env(safe-area-inset-bottom))] sm:max-h-[85vh] w-[calc(100vw-1.5rem)] xs:w-[calc(100vw-2rem)] sm:w-auto max-w-[min(calc(100vw-1.5rem),28rem)] sm:max-w-md grid gap-0 p-0 overflow-visible flex flex-col glass-card border-2 border-primary/60 promo-neon-glow focus:outline-none ${closing ? "promo-popup-exit-centered" : "promo-popup-enter-centered"}`}
+          className={`fixed inset-0 m-auto w-[calc(100vw-1.5rem)] xs:w-[calc(100vw-2rem)] sm:w-auto max-w-[min(calc(100vw-1.5rem),28rem)] sm:max-w-md h-fit max-h-[80vh] sm:max-h-[85vh] grid gap-0 p-0 overflow-visible flex flex-col glass-card border-2 border-primary/60 promo-neon-glow focus:outline-none ${closing ? "promo-popup-exit-centered" : "promo-popup-enter-centered"}`}
           style={{
             zIndex: Z_LAYERS.promoPopupContent,
             cursor: "auto",
