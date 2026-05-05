@@ -468,6 +468,7 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
                         </Button>
                       </>
                     )}
+                    <p className="text-xs text-muted-foreground">Tips: Kvadratisk, max 15 sek, utan ljud, max 50 MB.</p>
                   </div>
                 )}
 
