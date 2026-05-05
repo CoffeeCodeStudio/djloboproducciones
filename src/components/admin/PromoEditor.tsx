@@ -421,7 +421,11 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
                     </Button>
                   </div>
                 </div>
-                <p className="text-xs text-muted-foreground">Tips: Kvadratisk (1080×1080), max 2 MB.</p>
+                <div className="text-xs text-muted-foreground space-y-0.5">
+                  <p><strong className="text-foreground/80">Rekommenderat:</strong> 1080×1080 px (1:1 kvadratisk), max 2 MB.</p>
+                  <p><strong className="text-foreground/80">Format:</strong> JPG eller WebP (PNG endast vid transparens).</p>
+                  <p>Tips: Optimera på <span className="font-mono">squoosh.app</span> för att hålla filen liten.</p>
+                </div>
               </div>
 
               <div className="space-y-3">
