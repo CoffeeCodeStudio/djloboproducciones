@@ -164,9 +164,16 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
+    e.target.value = "";
     if (!file) return;
-    if (file.size > 2 * 1024 * 1024) {
-      toast.error("Bilden är för stor (max 2 MB)");
+    if (!file.type.startsWith("image/")) {
+      toast.error("Endast bildfiler tillåtna (JPG, PNG, WebP)");
+      return;
+    }
+    if (file.size > MAX_IMAGE_BYTES) {
+      toast.error(`Bilden är för stor (${formatMB(file.size)} MB)`, {
+        description: "Max 2 MB. Komprimera t.ex. på squoosh.app och försök igen.",
+      });
       return;
     }
     const reader = new FileReader();
@@ -175,7 +182,6 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       setCropOpen(true);
     };
     reader.readAsDataURL(file);
-    e.target.value = "";
   };
 
   const handleCropComplete = async (blob: Blob) => {
