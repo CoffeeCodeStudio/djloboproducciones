@@ -694,6 +694,25 @@ body {
     animation: promo-popup-exit 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
   }
 
+  /* Centered variants — used when the dialog is positioned via inset-0 + m-auto
+     (no translate centering needed). Animations only affect scale/opacity so
+     they cannot break positioning. */
+  @keyframes promo-popup-enter-centered {
+    0% { transform: scale(0.8); opacity: 0; }
+    60% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+  }
+  @keyframes promo-popup-exit-centered {
+    0% { transform: scale(1); opacity: 1; filter: blur(0); }
+    100% { transform: scale(0.94) translateY(6px); opacity: 0; filter: blur(2px); }
+  }
+  .promo-popup-enter-centered {
+    animation: promo-popup-enter-centered 0.45s cubic-bezier(0.22, 1.2, 0.36, 1) both;
+  }
+  .promo-popup-exit-centered {
+    animation: promo-popup-exit-centered 0.22s cubic-bezier(0.4, 0, 0.2, 1) both;
+  }
+
   /* 5-bar EQ animation */
   @keyframes eq-bounce {
     0%, 100% { transform: scaleY(0.3); }
