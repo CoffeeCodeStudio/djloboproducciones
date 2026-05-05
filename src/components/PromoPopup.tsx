@@ -694,7 +694,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
         <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth rounded-[inherit]">
           {/* Media — contained, never pushes content off-screen */}
           {(promo.video_file_url || ytEmbed || promo.flyer_image_url) && (
-            <div className="relative w-full bg-black flex items-center justify-center" style={{ maxHeight: "55vh" }}>
+            <div className="relative w-full bg-black flex items-center justify-center" style={{ maxHeight: "40vh" }}>
               {promo.video_file_url ? (
                 <video
                   src={promo.video_file_url}
@@ -703,7 +703,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
                   autoPlay
                   muted
                   playsInline
-                  className="w-full h-auto max-h-[55vh] object-contain"
+                  className="w-full h-auto max-h-[40vh] object-contain"
                 />
               ) : ytEmbed ? (
                 <div className="relative w-full aspect-video">
@@ -719,7 +719,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
                 <img
                   src={promo.flyer_image_url}
                   alt={promo.title}
-                  className="w-full h-auto max-h-[55vh] object-contain"
+                  className="w-full h-auto max-h-[40vh] object-contain"
                 />
               ) : null}
             </div>
