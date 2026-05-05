@@ -213,6 +213,32 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       });
       return;
     }
+
+    // Varna (men blockera inte) om videon är längre än 15 sek
+    try {
+      const duration = await new Promise<number>((resolve, reject) => {
+        const v = document.createElement("video");
+        v.preload = "metadata";
+        v.muted = true;
+        v.onloadedmetadata = () => {
+          URL.revokeObjectURL(v.src);
+          resolve(v.duration);
+        };
+        v.onerror = () => {
+          URL.revokeObjectURL(v.src);
+          reject(new Error("Kunde inte läsa video-metadata"));
+        };
+        v.src = URL.createObjectURL(file);
+      });
+      if (Number.isFinite(duration) && duration > 15) {
+        toast.warning(`Videon är ${duration.toFixed(1)} sek lång`, {
+          description: "Rekommenderat: max 15 sek loop. Längre videor laddar långsamt på mobil.",
+        });
+      }
+    } catch {
+      // Ignorera metadata-fel — fortsätt med uppladdning
+    }
+
     setUploadingVideo(true);
     try {
       const url = await uploadPromoVideo(file);
