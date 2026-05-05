@@ -158,6 +158,43 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
     };
   }, []);
 
+  // Background scroll lock — prevents the page underneath from scrolling while
+  // the promo popup is open. Managed explicitly (instead of relying on Radix's
+  // built-in lock) so it stays active during the custom exit animation and is
+  // guaranteed to release on unmount/close, including on iOS Safari.
+  useEffect(() => {
+    if (!open) return;
+    const { body, documentElement: html } = document;
+    const scrollY = window.scrollY;
+    const scrollbarWidth = window.innerWidth - html.clientWidth;
+    const prev = {
+      bodyOverflow: body.style.overflow,
+      bodyPosition: body.style.position,
+      bodyTop: body.style.top,
+      bodyWidth: body.style.width,
+      bodyPaddingRight: body.style.paddingRight,
+      htmlOverscroll: html.style.overscrollBehavior,
+    };
+    body.style.overflow = "hidden";
+    // position:fixed stops iOS Safari rubber-band scrolling behind the modal
+    body.style.position = "fixed";
+    body.style.top = `-${scrollY}px`;
+    body.style.width = "100%";
+    if (scrollbarWidth > 0) body.style.paddingRight = `${scrollbarWidth}px`;
+    html.style.overscrollBehavior = "none";
+
+    return () => {
+      body.style.overflow = prev.bodyOverflow;
+      body.style.position = prev.bodyPosition;
+      body.style.top = prev.bodyTop;
+      body.style.width = prev.bodyWidth;
+      body.style.paddingRight = prev.bodyPaddingRight;
+      html.style.overscrollBehavior = prev.htmlOverscroll;
+      // Restore the scroll position that was active before the lock
+      window.scrollTo(0, scrollY);
+    };
+  }, [open]);
+
   const requestClose = (cb: () => void) => {
     if (closing) return;
     setClosing(true);
