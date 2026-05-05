@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { Dialog, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Disc3, X } from "lucide-react";
 import confetti from "canvas-confetti";
@@ -7,6 +8,7 @@ import { logger } from "@/lib/logger";
 import {
   CONFETTI_CANVAS_Z_INDEX,
   PROMO_PARTICLE_LAYER_Z_INDEX,
+  Z_LAYERS,
   createConfettiThrottleState,
   resetOpenCycle,
   shouldFireConfetti,
@@ -581,23 +583,30 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
         </div>
       )}
 
-      <DialogContent
-        ref={dialogContentRef}
-        data-zlayer="promo-popup-content"
-        aria-labelledby="promo-popup-title"
-        aria-describedby={promo.subtitle ? "promo-popup-desc" : undefined}
-        className={`p-0 overflow-visible w-[calc(100vw-1.5rem)] xs:w-[calc(100vw-2rem)] sm:w-auto max-w-[min(calc(100vw-1.5rem),28rem)] sm:max-w-md max-h-[80vh] sm:max-h-[90vh] mx-3 xs:mx-4 sm:mx-auto flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow ${closing ? "promo-popup-exit" : "promo-popup-enter"}`}
-        style={{ zIndex: 9999, cursor: "auto" }}
-        onMouseEnter={() => setIsPaused(true)}
-        onMouseLeave={() => setIsPaused(false)}
-        onFocusCapture={() => setIsPaused(true)}
-        onBlurCapture={(e) => {
-          // Only unpause when focus actually leaves the dialog content
-          if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
-            setIsPaused(false);
-          }
-        }}
-      >
+      <DialogPrimitive.Portal>
+        {/* Dedicated overlay so we can stack it above navbar (z-50) and
+            mini-player (z-50). Sits just below the popup content layer. */}
+        <DialogPrimitive.Overlay
+          className="fixed inset-0 bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0"
+          style={{ zIndex: Z_LAYERS.promoPopupBackdrop }}
+        />
+        <DialogPrimitive.Content
+          ref={dialogContentRef}
+          data-zlayer="promo-popup-content"
+          aria-labelledby="promo-popup-title"
+          aria-describedby={promo.subtitle ? "promo-popup-desc" : undefined}
+          className={`fixed left-[50%] top-[50%] grid w-[calc(100vw-1.5rem)] xs:w-[calc(100vw-2rem)] sm:w-auto max-w-[min(calc(100vw-1.5rem),28rem)] sm:max-w-md max-h-[80vh] sm:max-h-[90vh] gap-0 p-0 overflow-visible flex flex-col glass-card border-2 border-primary/60 promo-neon-glow ${closing ? "promo-popup-exit" : "promo-popup-enter"}`}
+          style={{ zIndex: Z_LAYERS.promoPopupContent, cursor: "auto" }}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onFocusCapture={() => setIsPaused(true)}
+          onBlurCapture={(e) => {
+            // Only unpause when focus actually leaves the dialog content
+            if (!e.currentTarget.contains(e.relatedTarget as Node | null)) {
+              setIsPaused(false);
+            }
+          }}
+        >
         {/* Screen-reader-only title & description for accessibility */}
         <DialogTitle className="sr-only" id="promo-popup-title">
           {promo.title}
@@ -647,7 +656,8 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
           type="button"
           onClick={() => requestClose(onClose)}
           aria-label="Stäng"
-          className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 z-30 w-11 h-11 rounded-full bg-background/70 backdrop-blur-md border-2 border-primary shadow-[0_0_16px_hsl(var(--primary)/0.9)] hover:shadow-[0_0_28px_hsl(var(--primary))] hover:scale-110 active:scale-95 transition-all group flex items-center justify-center"
+          className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-11 h-11 rounded-full bg-background/70 backdrop-blur-md border-2 border-primary shadow-[0_0_16px_hsl(var(--primary)/0.9)] hover:shadow-[0_0_28px_hsl(var(--primary))] hover:scale-110 active:scale-95 transition-all group flex items-center justify-center"
+          style={{ zIndex: 50 }}
         >
           <Disc3
             className="absolute inset-0 m-auto h-9 w-9 vinyl-spin text-primary/80 group-hover:[animation-duration:1.2s]"
@@ -753,7 +763,8 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
             </button>
           </div>
         </div>
-      </DialogContent>
+        </DialogPrimitive.Content>
+      </DialogPrimitive.Portal>
     </Dialog>
   );
 };
