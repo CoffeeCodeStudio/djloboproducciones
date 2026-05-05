@@ -55,6 +55,8 @@ async function uploadPromoFlyer(blob: Blob): Promise<string> {
 }
 
 const MAX_VIDEO_BYTES = 50 * 1024 * 1024;
+const MAX_IMAGE_BYTES = 2 * 1024 * 1024;
+const formatMB = (bytes: number) => (bytes / 1024 / 1024).toFixed(1);
 
 async function uploadPromoVideo(file: File): Promise<string> {
   const fileName = `promos/videos/${crypto.randomUUID()}.mp4`;
