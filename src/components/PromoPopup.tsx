@@ -596,7 +596,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
           aria-labelledby="promo-popup-title"
           aria-describedby={promo.subtitle ? "promo-popup-desc" : undefined}
           tabIndex={-1}
-          className={`fixed inset-0 m-auto w-[calc(100vw-1.5rem)] xs:w-[calc(100vw-2rem)] sm:w-auto max-w-[min(calc(100vw-1.5rem),28rem)] sm:max-w-md h-fit max-h-[85dvh] sm:max-h-[90vh] grid gap-0 p-0 overflow-visible flex flex-col glass-card border-2 border-primary/60 promo-neon-glow focus:outline-none ${closing ? "promo-popup-exit-centered" : "promo-popup-enter-centered"}`}
+          className={`fixed inset-0 m-auto w-[calc(100vw-1.5rem)] xs:w-[calc(100vw-2rem)] sm:w-auto max-w-[min(calc(100vw-1.5rem),28rem)] sm:max-w-md h-fit max-h-[80vh] sm:max-h-[85vh] grid gap-0 p-0 overflow-visible flex flex-col glass-card border-2 border-primary/60 promo-neon-glow focus:outline-none ${closing ? "promo-popup-exit-centered" : "promo-popup-enter-centered"}`}
           style={{
             zIndex: Z_LAYERS.promoPopupContent,
             cursor: "auto",
@@ -694,7 +694,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
         <div ref={scrollRef} className="flex-1 min-h-0 overflow-y-auto overflow-x-hidden scroll-smooth rounded-[inherit]">
           {/* Media — contained, never pushes content off-screen */}
           {(promo.video_file_url || ytEmbed || promo.flyer_image_url) && (
-            <div className="relative w-full bg-black flex items-center justify-center" style={{ maxHeight: "55vh" }}>
+            <div className="relative w-full bg-black flex items-center justify-center" style={{ maxHeight: "40vh" }}>
               {promo.video_file_url ? (
                 <video
                   src={promo.video_file_url}
@@ -703,7 +703,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
                   autoPlay
                   muted
                   playsInline
-                  className="w-full h-auto max-h-[55vh] object-contain"
+                  className="w-full h-auto max-h-[40vh] object-contain"
                 />
               ) : ytEmbed ? (
                 <div className="relative w-full aspect-video">
@@ -719,7 +719,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
                 <img
                   src={promo.flyer_image_url}
                   alt={promo.title}
-                  className="w-full h-auto max-h-[55vh] object-contain"
+                  className="w-full h-auto max-h-[40vh] object-contain"
                 />
               ) : null}
             </div>
