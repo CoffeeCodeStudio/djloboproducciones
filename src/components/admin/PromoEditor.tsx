@@ -208,7 +208,9 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       return;
     }
     if (file.size > MAX_VIDEO_BYTES) {
-      toast.error("Videon är för stor. Max 50 MB. Använd YouTube-länk istället.");
+      toast.error(`Videon är för stor (${formatMB(file.size)} MB)`, {
+        description: "Max 50 MB. Komprimera videon eller använd YouTube-länk istället.",
+      });
       return;
     }
     setUploadingVideo(true);
