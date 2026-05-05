@@ -8,6 +8,7 @@ import { logger } from "@/lib/logger";
 import {
   CONFETTI_CANVAS_Z_INDEX,
   PROMO_PARTICLE_LAYER_Z_INDEX,
+  Z_LAYERS,
   createConfettiThrottleState,
   resetOpenCycle,
   shouldFireConfetti,
