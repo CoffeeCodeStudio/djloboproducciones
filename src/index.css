@@ -853,6 +853,8 @@ body {
     }
     .promo-popup-enter,
     .promo-popup-exit,
+    .promo-popup-enter-centered,
+    .promo-popup-exit-centered,
     .promo-cta-pulse,
     .eq-bar,
     .vinyl-spin,
