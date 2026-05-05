@@ -596,8 +596,12 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
           aria-labelledby="promo-popup-title"
           aria-describedby={promo.subtitle ? "promo-popup-desc" : undefined}
           tabIndex={-1}
-          className={`fixed left-[50%] top-[50%] grid w-[calc(100vw-1.5rem)] xs:w-[calc(100vw-2rem)] sm:w-auto max-w-[min(calc(100vw-1.5rem),28rem)] sm:max-w-md max-h-[80vh] sm:max-h-[90vh] gap-0 p-0 overflow-visible flex flex-col glass-card border-2 border-primary/60 promo-neon-glow focus:outline-none ${closing ? "promo-popup-exit" : "promo-popup-enter"}`}
-          style={{ zIndex: Z_LAYERS.promoPopupContent, cursor: "auto" }}
+          className={`fixed left-1/2 top-1/2 grid w-[calc(100vw-1.5rem)] xs:w-[calc(100vw-2rem)] sm:w-auto max-w-[min(calc(100vw-1.5rem),28rem)] sm:max-w-md max-h-[85dvh] sm:max-h-[90vh] gap-0 p-0 overflow-visible flex flex-col glass-card border-2 border-primary/60 promo-neon-glow focus:outline-none ${closing ? "promo-popup-exit" : "promo-popup-enter"}`}
+          style={{
+            zIndex: Z_LAYERS.promoPopupContent,
+            cursor: "auto",
+            transform: "translate(-50%, -50%)",
+          }}
           onEscapeKeyDown={(e) => {
             // Always honour ESC, even when our exit animation is mid-flight.
             // Prevent Radix's default close so our requestClose() can run the
