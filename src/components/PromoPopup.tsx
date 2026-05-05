@@ -130,6 +130,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   const throttleStateRef = useRef(createConfettiThrottleState());
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const ctaAnchorRef = useRef<HTMLDivElement | null>(null);
+  const dialogContentRef = useRef<HTMLDivElement | null>(null);
   // Live audio intensity getter (returns 0..1) — set when sound is played
   const intensityGetterRef = useRef<(() => number) | null>(null);
   const intensityActiveUntilRef = useRef<number>(0);
@@ -477,6 +478,73 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
     });
   }, []);
 
+  // Focus trap — Radix Dialog ships with one for desktop, but on iOS/iPadOS
+  // Safari the trap can leak when VoiceOver, the address bar, or external
+  // keyboards interact with it. We add an explicit keydown listener that
+  // wraps Tab/Shift+Tab focus within the dialog content as a safety net.
+  useEffect(() => {
+    if (!open) return;
+    const root = dialogContentRef.current;
+    if (!root) return;
+
+    const FOCUSABLE_SELECTOR = [
+      'a[href]',
+      'button:not([disabled])',
+      'input:not([disabled]):not([type="hidden"])',
+      'select:not([disabled])',
+      'textarea:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])',
+      'iframe',
+      'audio[controls]',
+      'video[controls]',
+      '[contenteditable]:not([contenteditable="false"])',
+    ].join(',');
+
+    const getFocusable = (): HTMLElement[] => {
+      const nodes = Array.from(
+        root.querySelectorAll<HTMLElement>(FOCUSABLE_SELECTOR),
+      );
+      return nodes.filter(
+        (el) =>
+          !el.hasAttribute("disabled") &&
+          el.getAttribute("aria-hidden") !== "true" &&
+          // Element is actually visible/laid out
+          (el.offsetWidth > 0 || el.offsetHeight > 0 || el === document.activeElement),
+      );
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+      const focusable = getFocusable();
+      if (focusable.length === 0) {
+        // Nothing focusable — keep focus on the dialog itself
+        e.preventDefault();
+        root.focus();
+        return;
+      }
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      const active = document.activeElement as HTMLElement | null;
+
+      // If focus is outside the dialog entirely, pull it back in
+      if (!active || !root.contains(active)) {
+        e.preventDefault();
+        (e.shiftKey ? last : first).focus();
+        return;
+      }
+      if (e.shiftKey && active === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && active === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown, true);
+    return () => document.removeEventListener("keydown", handleKeyDown, true);
+  }, [open]);
+
   return (
     <Dialog open={open} onOpenChange={(v) => { if (!v) requestClose(onClose); }}>
       {/* Ambient drifting musical particles — fixed full-screen, behind dialog content */}
@@ -514,6 +582,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
       )}
 
       <DialogContent
+        ref={dialogContentRef}
         data-zlayer="promo-popup-content"
         aria-labelledby="promo-popup-title"
         aria-describedby={promo.subtitle ? "promo-popup-desc" : undefined}
