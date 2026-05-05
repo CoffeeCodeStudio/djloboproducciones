@@ -508,7 +508,11 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
                         </Button>
                       </>
                     )}
-                    <p className="text-xs text-muted-foreground">Tips: Kvadratisk, max 15 sek, utan ljud, max 50 MB.</p>
+                    <div className="text-xs text-muted-foreground space-y-0.5">
+                      <p><strong className="text-foreground/80">Rekommenderat:</strong> 1080×1080 px (1:1), 5–15 sek loop, utan ljud.</p>
+                      <p><strong className="text-foreground/80">Format:</strong> MP4 (H.264-codec), max 50 MB — gärna under 10 MB.</p>
+                      <p>Längre eller större videor: använd YouTube-länk istället.</p>
+                    </div>
                   </div>
                 )}
 
