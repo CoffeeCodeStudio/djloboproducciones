@@ -385,6 +385,7 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
                     </Button>
                   </div>
                 </div>
+                <p className="text-xs text-muted-foreground">Tips: Kvadratisk (1080×1080), max 2 MB.</p>
               </div>
 
               <div className="space-y-3">

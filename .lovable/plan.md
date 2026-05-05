@@ -1,37 +1,28 @@
+## Mål
+1. Visa korta tips i kampanj-editorn så kunden vet rekommenderade format.
+2. Eliminera svarta kanter (letterboxing) i popup-annonsen så bild/video alltid fyller rutan.
 
+## Ändringar
 
-## Pricing Grid for PrislistaPage
+### 1. `src/components/admin/PromoEditor.tsx`
+Lägg till två små hjälptexter (`<p className="text-xs text-muted-foreground">`) — minimalt och i linje med befintlig stil.
 
-### What we're building
-A 2x2 pricing card grid above the existing BookingSection, with neon-styled cards, scroll animations, info text, and a CTA button.
+- Under **Flyer-bild (1:1)**-fältet (efter `</div>` på rad ~387):
+  > *Tips: Kvadratisk (1080×1080), max 2 MB.*
 
-### Implementation
+- Under **video-uppladdningsknappen** inuti `mediaType === "video"`-blocket (rad ~470):
+  > *Tips: Kvadratisk, max 15 sek, utan ljud, max 50 MB.*
 
-**1. Update `tailwind.config.ts`**
-- Add `glow-pulse` keyframe (border glow pulsing between magenta/cyan)
-- Add `slide-in-bottom` keyframe for scroll-triggered entrance
+### 2. `src/components/PromoPopup.tsx` (rad 696–726)
+Ändra media-containern från fri höjd + `object-contain` till **kvadratisk + `object-cover`**:
 
-**2. Update `src/pages/PrislistaPage.tsx`**
-Add a new `PricingGrid` component inline (or separate file) rendered between the page header and BookingSection:
+- Ta bort `style={{ maxHeight: "40vh" }}` på wrappern och ge den `aspect-square` istället.
+- `<video>`: byt `w-full h-auto max-h-[40vh] object-contain` → `w-full h-full object-cover`.
+- `<img>`: byt `w-full h-auto max-h-[40vh] object-contain` → `w-full h-full object-cover`.
+- YouTube `<iframe>`-grenen lämnas oförändrad (16:9 video kan inte kvadratbeskäras utan att klippa ansikten — `aspect-video` med `object-cover` bibehålls). Alternativt kan vi byta även den till `aspect-square` om du vill ha helt enhetligt utseende — säg till.
 
-- **4 cards** in `grid grid-cols-1 sm:grid-cols-2 gap-6` layout
-- Each card uses `glass-card` base styling with:
-  - Alternating `border-neon-pink` / `border-neon-cyan` with `shadow-[0_0_15px_...]` glow
-  - Hover: intensified glow via `hover:shadow-[0_0_25px_...]`
-  - Package name: `font-display uppercase text-neon-cyan`
-  - Price: large `text-yellow-400 font-display font-bold`
-  - Two feature lines with `Clock` and `Speaker` icons from lucide-react
-  - Muted addon text below
-- **Scroll animation**: Use Intersection Observer hook to add `animate-fade-in-up` class when cards enter viewport
-- **Info text**: muted paragraph with dot separators
-- **CTA**: italic text + gradient button that does `document.getElementById('boka').scrollIntoView()`
+`PromoMiniCard.tsx` använder redan `object-cover` och behöver inte röras.
 
-**3. Multi-language support**
-Add Swedish/English/Spanish translations for all card text, info line, CTA text — matching existing `translations` pattern.
-
-### Technical details
-- Reuses existing design tokens: `neon-pink`, `neon-cyan`, `font-display` (Orbitron), `glass-card`
-- Uses existing `fade-in-up` animation keyframe already in tailwind config
-- No new dependencies needed
-- BookingSection remains completely untouched
-
+## Resultat
+- Kunden ser tipsen direkt i editorn — ingen behov av att läsa guiden.
+- Uppladdade kvadratiska bilder/videor fyller hela popup-rutan utan svarta kanter. Om kunden ändå laddar upp icke-kvadratiskt material beskärs det automatiskt (cover) istället för att letterboxas.
