@@ -657,7 +657,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
           onClick={() => requestClose(onClose)}
           aria-label="Stäng"
           className="absolute -top-3 -right-3 sm:-top-4 sm:-right-4 w-11 h-11 rounded-full bg-background/70 backdrop-blur-md border-2 border-primary shadow-[0_0_16px_hsl(var(--primary)/0.9)] hover:shadow-[0_0_28px_hsl(var(--primary))] hover:scale-110 active:scale-95 transition-all group flex items-center justify-center"
-          style={{ zIndex: 1 }}
+          style={{ zIndex: 50 }}
         >
           <Disc3
             className="absolute inset-0 m-auto h-9 w-9 vinyl-spin text-primary/80 group-hover:[animation-duration:1.2s]"
