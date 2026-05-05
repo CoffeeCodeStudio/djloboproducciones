@@ -130,6 +130,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
   const throttleStateRef = useRef(createConfettiThrottleState());
   const scrollRef = useRef<HTMLDivElement | null>(null);
   const ctaAnchorRef = useRef<HTMLDivElement | null>(null);
+  const dialogContentRef = useRef<HTMLDivElement | null>(null);
   // Live audio intensity getter (returns 0..1) — set when sound is played
   const intensityGetterRef = useRef<(() => number) | null>(null);
   const intensityActiveUntilRef = useRef<number>(0);
