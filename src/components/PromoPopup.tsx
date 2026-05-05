@@ -582,7 +582,7 @@ const PromoPopup = ({ promo, open, onClose, onPermanentDismiss }: PromoPopupProp
       )}
 
       <DialogContent
-        data-zlayer="promo-popup-content"
+        ref={dialogContentRef}
         aria-labelledby="promo-popup-title"
         aria-describedby={promo.subtitle ? "promo-popup-desc" : undefined}
         className={`p-0 overflow-visible w-[calc(100vw-1.5rem)] xs:w-[calc(100vw-2rem)] sm:w-auto max-w-[min(calc(100vw-1.5rem),28rem)] sm:max-w-md max-h-[80vh] sm:max-h-[90vh] mx-3 xs:mx-4 sm:mx-auto flex flex-col gap-0 glass-card border-2 border-primary/60 promo-neon-glow ${closing ? "promo-popup-exit" : "promo-popup-enter"}`}
