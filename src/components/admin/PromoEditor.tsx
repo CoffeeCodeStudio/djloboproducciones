@@ -214,15 +214,16 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
       return;
     }
 
-    // Varna (men blockera inte) om videon är längre än 15 sek
+    // Varna (men blockera inte) om videon är längre än 15 sek eller inte 1080×1080
     try {
-      const duration = await new Promise<number>((resolve, reject) => {
+      const meta = await new Promise<{ duration: number; width: number; height: number }>((resolve, reject) => {
         const v = document.createElement("video");
         v.preload = "metadata";
         v.muted = true;
         v.onloadedmetadata = () => {
+          const result = { duration: v.duration, width: v.videoWidth, height: v.videoHeight };
           URL.revokeObjectURL(v.src);
-          resolve(v.duration);
+          resolve(result);
         };
         v.onerror = () => {
           URL.revokeObjectURL(v.src);
@@ -230,9 +231,17 @@ const PromoEditor = ({ open, onClose, promo }: PromoEditorProps) => {
         };
         v.src = URL.createObjectURL(file);
       });
-      if (Number.isFinite(duration) && duration > 15) {
-        toast.warning(`Videon är ${duration.toFixed(1)} sek lång`, {
+      if (Number.isFinite(meta.duration) && meta.duration > 15) {
+        toast.warning(`Videon är ${meta.duration.toFixed(1)} sek lång`, {
           description: "Rekommenderat: max 15 sek loop. Längre videor laddar långsamt på mobil.",
+        });
+      }
+      if (meta.width && meta.height && (meta.width !== 1080 || meta.height !== 1080)) {
+        const isSquare = meta.width === meta.height;
+        toast.warning(`Videon är ${meta.width}×${meta.height} px`, {
+          description: isSquare
+            ? "Rekommenderad upplösning: 1080×1080 px (1:1 kvadratisk)."
+            : "Rekommenderad upplösning: 1080×1080 px (1:1 kvadratisk). Icke-kvadratiska videor beskärs automatiskt i popup.",
         });
       }
     } catch {
