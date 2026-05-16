@@ -1,6 +1,7 @@
 import BookingSection from "@/components/BookingSection";
 import Footer from "@/components/Footer";
 import PricingGrid from "@/components/PricingGrid";
+import Seo from "@/components/Seo";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const translations = {
