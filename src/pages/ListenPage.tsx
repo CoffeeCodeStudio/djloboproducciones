@@ -7,6 +7,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useBranding } from "@/hooks/useBranding";
 import { useStreamStatus } from "@/hooks/useStreamStatus";
 import { optimizeProfile } from "@/lib/imageOptimizer";
+import Seo from "@/components/Seo";
 
 const translations = {
   sv: {
@@ -49,6 +50,11 @@ const ListenPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto">
+      <Seo
+        title="Lyssna Live – DJ Lobo Radio | Latin, 80-tal & 90-tal"
+        description="Lyssna på DJ Lobo Radio live dygnet runt. Latin beats, salsa, reggaeton, 80-tal och 90-tal — direkt från Göteborg."
+        path="/lyssna"
+      />
       {/* Radio Section Title */}
       <div className="text-center pt-8 pb-4">
         <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-black text-neon-gradient tracking-wider">

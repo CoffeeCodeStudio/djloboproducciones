@@ -8,6 +8,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import MediaFilterBar, { type MediaFilter } from "@/components/MediaFilterBar";
 import MediaLightbox from "@/components/MediaLightbox";
 import { optimizeGallery } from "@/lib/imageOptimizer";
+import Seo from "@/components/Seo";
 
 const translations = {
   sv: {
@@ -107,6 +108,11 @@ const MediaPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto">
+      <Seo
+        title="Media – DJ Lobo | Bilder & Videos från spelningar"
+        description="Bildgalleri och videoklipp från DJ Lobos spelningar — bröllop, företagsfester och klubbnätter i Göteborg."
+        path="/media"
+      />
       {/* Social Links */}
       <section className="py-10 sm:py-14 px-4" aria-labelledby="social-heading">
         <h2 id="social-heading" className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-neon-gradient mb-8 text-center italic">

@@ -1,6 +1,7 @@
 import BookingSection from "@/components/BookingSection";
 import Footer from "@/components/Footer";
 import PricingGrid from "@/components/PricingGrid";
+import Seo from "@/components/Seo";
 import { useLanguage } from "@/contexts/LanguageContext";
 
 const translations = {
@@ -24,6 +25,11 @@ const PrislistaPage = () => {
 
   return (
     <div className="max-w-7xl mx-auto">
+      <Seo
+        title="Prislista & Bokning – DJ Lobo Producciones"
+        description="Paket och priser för bröllop, företagsevent och privatfester. Skicka bokningsförfrågan direkt till DJ Lobo i Göteborg."
+        path="/prislista"
+      />
       {/* Page Header */}
       <div className="text-center pt-8 pb-4">
         <h1 className="font-display text-3xl sm:text-4xl md:text-5xl font-black text-neon-gradient tracking-wider">
