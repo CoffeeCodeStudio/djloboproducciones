@@ -12,3 +12,8 @@ Allow: /
 
 User-agent: *
 Allow: /
+Disallow: /admin
+Disallow: /reset-password
+Disallow: /dev/
+
+Sitemap: https://djloboproducciones.com/sitemap.xml
