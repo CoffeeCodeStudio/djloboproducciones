@@ -7,6 +7,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useBranding } from "@/hooks/useBranding";
 import { useStreamStatus } from "@/hooks/useStreamStatus";
 import { optimizeProfile } from "@/lib/imageOptimizer";
+import Seo from "@/components/Seo";
 
 const translations = {
   sv: {
