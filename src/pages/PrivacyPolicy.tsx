@@ -174,6 +174,11 @@ const PrivacyPolicy = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground relative">
+      <Seo
+        title="Sekretesspolicy – DJ Lobo Producciones"
+        description="Information om hur DJ Lobo Producciones hanterar personuppgifter enligt GDPR — bokningar, chatt och cookies."
+        path="/privacy"
+      />
       <div className="light-leak-purple" aria-hidden="true"></div>
       <div className="light-leak-blue" aria-hidden="true"></div>
 
