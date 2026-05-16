@@ -30,6 +30,11 @@ const TermsOfService = () => {
 
   return (
     <div className="min-h-screen bg-background text-foreground relative">
+      <Seo
+        title="Användarvillkor – DJ Lobo Producciones"
+        description="Villkor för bokning, chatt och tredjepartstjänster på djloboproducciones.com."
+        path="/terms"
+      />
       {/* Light leak backgrounds */}
       <div className="light-leak-purple" aria-hidden="true"></div>
       <div className="light-leak-blue" aria-hidden="true"></div>
