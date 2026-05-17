@@ -166,7 +166,7 @@ const MediaPage = () => {
               <button
                 key={item.id}
                 onClick={() => openLightbox(item)}
-                className="w-full aspect-square glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
+                className="w-full aspect-[4/3] glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
               >
                 <img
                   src={item.src}
