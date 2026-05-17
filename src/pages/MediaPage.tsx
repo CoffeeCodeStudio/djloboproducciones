@@ -155,29 +155,30 @@ const MediaPage = () => {
         <MediaFilterBar active={filter} onChange={setFilter} counts={counts} />
 
         {isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div className="columns-2 sm:columns-3 lg:columns-4 gap-4 sm:gap-5 [column-fill:_balance]">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="aspect-[4/3] glass-card animate-pulse bg-muted/20 rounded-xl" />
+              <div
+                key={i}
+                className="mb-4 sm:mb-5 break-inside-avoid aspect-[4/3] glass-card animate-pulse bg-muted/20 rounded-xl"
+              />
             ))}
           </div>
         ) : filtered.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
+          <div className="columns-2 sm:columns-3 lg:columns-4 gap-4 sm:gap-5 [column-fill:_balance]">
             {filtered.map((item) => (
               <button
                 key={item.id}
                 onClick={() => openLightbox(item)}
-                className="w-full aspect-[4/3] glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
+                className="mb-4 sm:mb-5 break-inside-avoid w-full glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
               >
                 <img
                   src={item.src}
                   alt={item.alt}
-                  className="w-full h-full object-contain object-center bg-background/40"
+                  className="w-full h-auto block bg-background/40"
                   loading="lazy"
-                  width={400}
-                  height={400}
                   onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = item.fallback; }}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
                 {/* Type badge */}
                 <div className="absolute top-2 left-2">
