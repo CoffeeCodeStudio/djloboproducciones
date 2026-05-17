@@ -1,0 +1,193 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for / [en] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/en" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for / [es] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/es" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for / [sv] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/sv" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /lyssna [en] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/en/lyssna" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/lyssna" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/lyssna" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/lyssna" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/lyssna" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /lyssna [es] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/es/lyssna" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/lyssna" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/lyssna" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/lyssna" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/lyssna" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /lyssna [sv] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/sv/lyssna" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/lyssna" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/lyssna" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/lyssna" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/lyssna" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /media [en] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/en/media" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/media" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/media" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/media" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/media" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /media [es] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/es/media" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/media" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/media" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/media" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/media" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /media [sv] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/sv/media" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/media" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/media" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/media" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/media" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /mixar [en] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/en/mixar" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/mixar" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/mixar" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/mixar" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/mixar" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /mixar [es] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/es/mixar" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/mixar" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/mixar" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/mixar" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/mixar" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /mixar [sv] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/sv/mixar" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/mixar" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/mixar" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/mixar" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/mixar" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /prislista [en] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/en/prislista" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/prislista" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/prislista" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/prislista" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/prislista" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /prislista [es] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/es/prislista" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/prislista" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/prislista" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/prislista" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/prislista" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /prislista [sv] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/sv/prislista" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/prislista" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/prislista" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/prislista" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/prislista" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /privacy [en] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/en/privacy" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/privacy" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/privacy" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/privacy" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/privacy" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /privacy [es] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/es/privacy" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/privacy" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/privacy" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/privacy" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/privacy" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /privacy [sv] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/sv/privacy" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/privacy" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/privacy" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/privacy" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/privacy" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /referenser [en] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/en/referenser" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/referenser" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/referenser" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/referenser" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/referenser" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /referenser [es] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/es/referenser" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/referenser" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/referenser" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/referenser" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/referenser" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /referenser [sv] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/sv/referenser" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/referenser" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/referenser" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/referenser" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/referenser" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /terms [en] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/en/terms" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/terms" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/terms" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/terms" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/terms" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /terms [es] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/es/terms" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/terms" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/terms" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/terms" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/terms" />"
+`;
+
+exports[`Seo snapshot: canonical + hreflang markup > emits stable link markup for /terms [sv] 1`] = `
+"<link rel="canonical" href="https://djloboproducciones.com/sv/terms" />
+<link rel="alternate" hreflang="sv-SE" href="https://djloboproducciones.com/sv/terms" />
+<link rel="alternate" hreflang="en-US" href="https://djloboproducciones.com/en/terms" />
+<link rel="alternate" hreflang="es-ES" href="https://djloboproducciones.com/es/terms" />
+<link rel="alternate" hreflang="x-default" href="https://djloboproducciones.com/sv/terms" />"
+`;
