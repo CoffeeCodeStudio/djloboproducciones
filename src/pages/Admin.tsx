@@ -8,6 +8,7 @@ import { Shield, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Star, H
 // Note: Radio icon kept in import for tab definitions below.
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
+import { useNoindex } from "@/hooks/useNoindex";
 import AdminLogin from "@/components/AdminLogin";
 import FramsidaTab from "@/components/admin/FramsidaTab";
 import GalleryTab from "@/components/admin/GalleryTab";
@@ -32,6 +33,7 @@ const TAB_DEFS = [
 ] as const;
 
 const Admin = () => {
+  useNoindex();
   const { user, isAdmin, loading: authLoading, signIn, signUp, signOut, resetPassword } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();

@@ -5,8 +5,10 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Lock, CheckCircle } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useNoindex } from "@/hooks/useNoindex";
 
 const ResetPassword = () => {
+  useNoindex();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
