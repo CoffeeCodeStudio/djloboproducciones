@@ -44,17 +44,7 @@ const getInitialLanguage = (): Language => {
 
 export const LanguageProvider = ({ children }: { children: ReactNode }) => {
   const [language, setLanguageState] = useState<Language>(getInitialLanguage);
-  const location = useLocation();
-  const navigate = useNavigate();
-
-  // URL is the source of truth: when the path's lang segment changes
-  // (e.g. user clicks a link to /en/lyssna), mirror it into state.
-  useEffect(() => {
-    const seg = location.pathname.split("/")[1];
-    if (seg && (VALID as string[]).includes(seg) && seg !== language) {
-      setLanguageState(seg as Language);
-    }
-  }, [location.pathname, language]);
+  const inRouter = useInRouterContext();
 
   // Keep <html lang="…"> in sync.
   useEffect(() => {
@@ -83,25 +73,52 @@ export const LanguageProvider = ({ children }: { children: ReactNode }) => {
     } catch {
       /* ignore quota / privacy errors */
     }
-    // Swap the language segment in the current URL so search engines and
-    // shared links reflect the active language.
-    const parts = location.pathname.split("/");
-    if (parts[1] && (VALID as string[]).includes(parts[1])) {
-      parts[1] = lang;
-    } else {
-      parts.splice(1, 0, lang);
-    }
-    const next = parts.join("/").replace(/\/+$/, "") || `/${lang}`;
-    if (next !== location.pathname) {
-      navigate(`${next}${location.search}${location.hash}`, { replace: false });
+    if (typeof window !== "undefined") {
+      const parts = window.location.pathname.split("/");
+      if (parts[1] && (VALID as string[]).includes(parts[1])) {
+        parts[1] = lang;
+      } else {
+        parts.splice(1, 0, lang);
+      }
+      const next = parts.join("/").replace(/\/+$/, "") || `/${lang}`;
+      if (next !== window.location.pathname) {
+        // Use history API directly so this works even outside <Router>.
+        window.history.pushState({}, "", `${next}${window.location.search}${window.location.hash}`);
+        // Notify React Router (and anything else listening) of the change.
+        window.dispatchEvent(new PopStateEvent("popstate"));
+      }
     }
   };
 
   return (
     <LanguageContext.Provider value={{ language, setLanguage }}>
+      {inRouter ? <RouterUrlSync language={language} setLanguageState={setLanguageState} /> : null}
       {children}
     </LanguageContext.Provider>
   );
+};
+
+/** Router-aware child: mirrors the URL's lang segment into state. Only mounted
+ *  when a <Router> ancestor exists, so LanguageProvider stays safe to render
+ *  outside one (error boundaries, fallback UIs, etc.). */
+const RouterUrlSync = ({
+  language,
+  setLanguageState,
+}: {
+  language: Language;
+  setLanguageState: (l: Language) => void;
+}) => {
+  const location = useLocation();
+  // Imported for side-effect parity with previous version; navigate isn't
+  // strictly needed here but kept to keep the hook order stable if reintroduced.
+  useNavigate();
+  useEffect(() => {
+    const seg = location.pathname.split("/")[1];
+    if (seg && (VALID as string[]).includes(seg) && seg !== language) {
+      setLanguageState(seg as Language);
+    }
+  }, [location.pathname, language, setLanguageState]);
+  return null;
 };
 
 export const useLanguage = () => {
