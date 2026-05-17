@@ -11,6 +11,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { logger } from "@/lib/logger";
 import { validateAndCleanMessage, sanitizeMessage } from "@/lib/profanityFilter";
 import { Link } from "react-router-dom";
+import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 
 const chatTranslations = {
   sv: {
@@ -490,11 +491,11 @@ const LiveChat = () => {
               {/* Legal disclaimer */}
               <p className="text-xs text-foreground/70 text-center px-2">
                 {t.legalDisclaimer}{" "}
-                <Link to="/terms" className="text-neon-cyan hover:underline">
+                <Link to={lto("/terms")} className="text-neon-cyan hover:underline">
                   {t.termsOfService}
                 </Link>
                 {" "}{t.and}{" "}
-                <Link to="/privacy" className="text-neon-cyan hover:underline">
+                <Link to={lto("/privacy")} className="text-neon-cyan hover:underline">
                   {t.privacyPolicy}
                 </Link>
               </p>

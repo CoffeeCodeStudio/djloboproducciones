@@ -4,6 +4,8 @@ import { useActivePromo } from "@/hooks/useActivePromo";
 import { trackPromoEvent } from "@/lib/promoAnalytics";
 import { useLanguage, Language } from "@/contexts/LanguageContext";
 import { Link, useLocation } from "react-router-dom";
+import { useLocalizedTo } from "@/hooks/useLocalizedTo";
+import { stripLang } from "@/lib/i18nRoutes";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -47,6 +49,7 @@ const languages: LanguageOption[] = [
 
 const Navbar = () => {
   const { language, setLanguage } = useLanguage();
+  const lto = useLocalizedTo();
   const { promo } = useActivePromo();
   const logoSrc = "/logo-neon.png";
   const location = useLocation();
@@ -83,8 +86,9 @@ const Navbar = () => {
   }, []);
 
   const isActive = (item: NavItem) => {
-    if (item.href === "/") return location.pathname === "/";
-    return location.pathname.startsWith(item.href);
+    const here = stripLang(location.pathname);
+    if (item.href === "/") return here === "/";
+    return here === item.href || here.startsWith(`${item.href}/`);
   };
 
   return (
@@ -102,7 +106,7 @@ const Navbar = () => {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link
-              to="/"
+              to={lto("/")}
               className="focus-neon rounded-lg hover:scale-105 transition-transform flex-shrink-0"
               aria-label="DJ Lobo Producciones - Hem"
             >
@@ -122,7 +126,7 @@ const Navbar = () => {
               {navItems.map((item) => (
                 <Link
                   key={item.id}
-                  to={item.href}
+                  to={lto(item.href)}
                   className={`px-2.5 lg:px-4 py-2 text-xs lg:text-sm font-medium rounded-lg transition-all duration-200 flex items-center gap-1.5 lg:gap-2 ${
                     isActive(item)
                       ? "text-neon-cyan bg-neon-cyan/10 shadow-[0_0_10px_rgba(0,255,255,0.3)]"
@@ -219,7 +223,7 @@ const Navbar = () => {
                   {navItems.map((item) => (
                     <DropdownMenuItem key={item.id} asChild>
                       <Link
-                        to={item.href}
+                        to={lto(item.href)}
                         className={`flex items-center gap-3 px-3 py-2.5 text-sm font-medium cursor-pointer ${
                           item.highlight
                             ? "text-neon-pink font-bold"
