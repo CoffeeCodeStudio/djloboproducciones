@@ -32,6 +32,7 @@ const TAB_DEFS = [
 ] as const;
 
 const Admin = () => {
+  useNoindex();
   const { user, isAdmin, loading: authLoading, signIn, signUp, signOut, resetPassword } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
