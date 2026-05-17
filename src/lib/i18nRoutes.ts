@@ -3,6 +3,27 @@ import type { Language } from "@/contexts/LanguageContext";
 export const LANGS: Language[] = ["sv", "en", "es"];
 export const DEFAULT_LANG: Language = "sv";
 
+/**
+ * Best-effort browser language detection. Mirrors what an
+ * `Accept-Language` header would give a server: walks navigator.languages
+ * in priority order and returns the first supported language, else
+ * DEFAULT_LANG. Pure SPA — there's no real HTTP redirect, this runs
+ * client-side and the result drives the client-side <Navigate>.
+ */
+export const detectBrowserLang = (): Language => {
+  if (typeof navigator === "undefined") return DEFAULT_LANG;
+  const candidates = (navigator.languages && navigator.languages.length
+    ? navigator.languages
+    : [navigator.language]
+  )
+    .filter(Boolean)
+    .map((l) => l.toLowerCase().split("-")[0]);
+  for (const c of candidates) {
+    if ((LANGS as string[]).includes(c)) return c as Language;
+  }
+  return DEFAULT_LANG;
+};
+
 /** All public, localized route paths (without the /:lang prefix, leading slash). */
 export const LOCALIZED_PATHS = [
   "/",
