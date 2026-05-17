@@ -133,7 +133,7 @@ const ListenPage = () => {
         
 
         {/* Listen hint */}
-        <p className="text-xs sm:text-sm text-muted-foreground/60 flex items-center gap-2">
+        <p className="text-xs sm:text-sm text-muted-foreground flex items-center gap-2">
           <Headphones className="w-4 h-4 text-neon-cyan" aria-hidden="true" />
           {t.listenBelow}
         </p>
