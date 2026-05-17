@@ -9,6 +9,7 @@ import ZIndexDebugOverlay from "@/components/dev/ZIndexDebugOverlay";
 import { Button } from "@/components/ui/button";
 import { Z_LAYERS } from "@/lib/confettiThrottle";
 import type { Promo } from "@/hooks/useActivePromo";
+import { useNoindex } from "@/hooks/useNoindex";
 
 /**
  * Dev-only visual stacking story. Mounts the mini-player, footer,
