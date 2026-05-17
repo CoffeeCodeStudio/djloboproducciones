@@ -58,6 +58,7 @@ const LayerLegend = () => (
 );
 
 const DevZStack = () => {
+  useNoindex();
   const [showMini, setShowMini] = useState(true);
   const [showPopup, setShowPopup] = useState(false);
 
