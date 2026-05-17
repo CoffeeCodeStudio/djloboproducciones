@@ -21,6 +21,7 @@ import WhiteScreenDebugOverlay from "@/components/WhiteScreenDebugOverlay";
 import {
   DEFAULT_LANG,
   LEGACY_PATH_MAP,
+  detectBrowserLang,
   isLang,
   localizedHref,
 } from "@/lib/i18nRoutes";
@@ -49,6 +50,12 @@ const SuspenseFallback = () => (
 );
 
 /** Detect preferred language from storage; falls back to DEFAULT_LANG ("sv"). */
+/**
+ * Preferred language order:
+ *   1. explicit user choice persisted in localStorage
+ *   2. browser Accept-Language (navigator.languages)
+ *   3. DEFAULT_LANG ("sv")
+ */
 const getPreferredLang = (): Language => {
   try {
     const stored = window.localStorage.getItem("dj-lobo-language");
@@ -56,7 +63,7 @@ const getPreferredLang = (): Language => {
   } catch {
     /* ignore */
   }
-  return DEFAULT_LANG;
+  return detectBrowserLang();
 };
 
 /** /:lang gate — validates the lang segment, else redirects into a valid one. */

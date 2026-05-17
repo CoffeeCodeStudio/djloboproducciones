@@ -15,7 +15,8 @@ const VALID: Language[] = ["sv", "en", "es"];
 
 /**
  * Read the initial language. URL prefix wins (it's the canonical source for
- * SEO and bookmarks); fall back to localStorage, then "sv".
+ * SEO and bookmarks); then localStorage; then browser Accept-Language;
+ * finally "sv".
  */
 const getInitialLanguage = (): Language => {
   if (typeof window === "undefined") return "sv";
@@ -26,6 +27,17 @@ const getInitialLanguage = (): Language => {
     if (stored && (VALID as string[]).includes(stored)) return stored as Language;
   } catch {
     /* localStorage may be unavailable (SSR / private mode) */
+  }
+  if (typeof navigator !== "undefined") {
+    const candidates = (navigator.languages?.length
+      ? navigator.languages
+      : [navigator.language]
+    )
+      .filter(Boolean)
+      .map((l) => l.toLowerCase().split("-")[0]);
+    for (const c of candidates) {
+      if ((VALID as string[]).includes(c)) return c as Language;
+    }
   }
   return "sv";
 };
