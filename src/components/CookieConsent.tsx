@@ -32,6 +32,7 @@ const translations = {
 const CookieConsent = () => {
   const [isVisible, setIsVisible] = useState(false);
   const { language } = useLanguage();
+  const lto = useLocalizedTo();
   const { consent, acceptCookies, declineCookies } = useCookieConsent();
   const t = translations[language];
 
