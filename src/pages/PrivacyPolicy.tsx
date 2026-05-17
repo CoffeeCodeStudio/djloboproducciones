@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowLeft, Shield } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 import Seo from "@/components/Seo";
 
 const translations = {
@@ -170,6 +171,7 @@ Contáctenos en info@djloboproducciones.com para ejercer sus derechos. También 
 
 const PrivacyPolicy = () => {
   const { language } = useLanguage();
+  const lto = useLocalizedTo();
   const t = translations[language];
 
   return (
@@ -185,7 +187,7 @@ const PrivacyPolicy = () => {
       <div className="relative z-10 px-4 sm:px-6 py-8 sm:py-12">
         <div className="max-w-3xl mx-auto">
           <Link 
-            to="/" 
+            to={lto("/")} 
             className="inline-flex items-center gap-2 text-neon-cyan hover:underline mb-8 focus-neon rounded px-2 py-1"
           >
             <ArrowLeft className="w-4 h-4" />

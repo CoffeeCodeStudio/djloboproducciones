@@ -4,6 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { optimizeHero } from "@/lib/imageOptimizer";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 import { Link } from "react-router-dom";
+import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 
 const translations = {
   sv: {
@@ -32,6 +33,7 @@ const translations = {
 const HeroSection = () => {
   const { branding } = useBranding();
   const { language } = useLanguage();
+  const lto = useLocalizedTo();
   const t = translations[language];
   const heroOpt = optimizeHero(branding?.hero_image_url);
   const siteName = branding?.site_name || "DJ LOBO";
@@ -100,7 +102,7 @@ const HeroSection = () => {
         </button>
 
         <Link
-          to="/lyssna"
+          to={lto("/lyssna")}
           className="permanent-neon-link tap-target px-8 sm:px-10 py-3.5 sm:py-4 font-display font-bold tracking-wider text-sm sm:text-base flex items-center justify-center gap-2.5 transition-all hover:scale-105 w-full sm:w-auto sm:min-w-[240px]">
           
           <Headphones className="w-5 h-5" />

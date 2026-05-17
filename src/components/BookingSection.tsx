@@ -1,6 +1,7 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Calendar, Clock, MapPin, Music, Send, CalendarIcon, Info, MessageCircle, CalendarCheck, AlertCircle } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 import { useState } from "react";
 import { format } from "date-fns";
 import { z } from "zod";
@@ -154,6 +155,7 @@ const translations = {
 
 const BookingSection = () => {
   const { language } = useLanguage();
+  const lto = useLocalizedTo();
   const { toast } = useToast();
   const t = translations[language];
 
@@ -571,7 +573,7 @@ const BookingSection = () => {
               )}
               <p className="text-xs text-muted-foreground">
                 {t.privacyConsent}{" "}
-                <Link to="/privacy" className="text-neon-cyan hover:underline">{t.privacyLink}</Link>.
+                <Link to={lto("/privacy")} className="text-neon-cyan hover:underline">{t.privacyLink}</Link>.
               </p>
             </div>
           </form>

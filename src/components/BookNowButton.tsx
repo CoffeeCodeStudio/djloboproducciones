@@ -1,6 +1,7 @@
 import { Calendar } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "react-router-dom";
+import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 
 const translations = {
   sv: {
@@ -19,11 +20,12 @@ const translations = {
 
 const BookNowButton = () => {
   const { language } = useLanguage();
+  const lto = useLocalizedTo();
   const t = translations[language];
 
   return (
     <Link
-      to="/#bokning"
+      to={lto("/#bokning")}
       aria-label={t.ariaLabel}
       className="book-now-button group relative inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-6 py-2 sm:py-3 rounded-full font-display font-bold tracking-wider text-xs sm:text-base transition-all duration-300 overflow-hidden whitespace-nowrap"
     >

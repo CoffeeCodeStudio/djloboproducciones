@@ -1,28 +1,72 @@
-## Mål
-1. Visa korta tips i kampanj-editorn så kunden vet rekommenderade format.
-2. Eliminera svarta kanter (letterboxing) i popup-annonsen så bild/video alltid fyller rutan.
+# URL-prefixed language routing (`/sv`, `/en`, `/es`)
 
-## Ändringar
+Goal: every public page lives at `/{lang}/...` so we can emit valid `hreflang` alternates and per-URL canonicals.
 
-### 1. `src/components/admin/PromoEditor.tsx`
-Lägg till två små hjälptexter (`<p className="text-xs text-muted-foreground">`) — minimalt och i linje med befintlig stil.
+## Routing changes (`src/App.tsx`)
 
-- Under **Flyer-bild (1:1)**-fältet (efter `</div>` på rad ~387):
-  > *Tips: Kvadratisk (1080×1080), max 2 MB.*
+Wrap the localized routes in a `:lang` param and keep `/admin`, `/reset-password`, `/dev/zstack` unprefixed.
 
-- Under **video-uppladdningsknappen** inuti `mediaType === "video"`-blocket (rad ~470):
-  > *Tips: Kvadratisk, max 15 sek, utan ljud, max 50 MB.*
+```text
+/admin                          (unchanged, noindex)
+/reset-password                 (unchanged, noindex)
+/dev/zstack                     (unchanged, noindex)
+/:lang                          → Index
+/:lang/lyssna                   → ListenPage
+/:lang/mixar                    → MixesPage
+/:lang/media                    → MediaPage
+/:lang/referenser               → ReferencesPage
+/:lang/prislista                → PrislistaPage
+/:lang/privacy                  → PrivacyPolicy
+/:lang/terms                    → TermsOfService
+/:lang/*                        → NotFound
 
-### 2. `src/components/PromoPopup.tsx` (rad 696–726)
-Ändra media-containern från fri höjd + `object-contain` till **kvadratisk + `object-cover`**:
+/                               → redirect to /sv (or detected lang)
+/lyssna, /mixar, …              → 301-style <Navigate> to /sv/<path>
+/radio, /mixes, /galleri, …     → existing legacy aliases, now redirect to /sv/<canonical>
+```
 
-- Ta bort `style={{ maxHeight: "40vh" }}` på wrappern och ge den `aspect-square` istället.
-- `<video>`: byt `w-full h-auto max-h-[40vh] object-contain` → `w-full h-full object-cover`.
-- `<img>`: byt `w-full h-auto max-h-[40vh] object-contain` → `w-full h-full object-cover`.
-- YouTube `<iframe>`-grenen lämnas oförändrad (16:9 video kan inte kvadratbeskäras utan att klippa ansikten — `aspect-video` med `object-cover` bibehålls). Alternativt kan vi byta även den till `aspect-square` om du vill ha helt enhetligt utseende — säg till.
+A `<LangGuard>` element validates `:lang ∈ {sv,en,es}` and either renders `<Outlet/>` or redirects to `/sv/...`. It also calls `setLanguage(lang)` on mount so the URL is the source of truth.
 
-`PromoMiniCard.tsx` använder redan `object-cover` och behöver inte röras.
+## Language context (`src/contexts/LanguageContext.tsx`)
 
-## Resultat
-- Kunden ser tipsen direkt i editorn — ingen behov av att läsa guiden.
-- Uppladdade kvadratiska bilder/videor fyller hela popup-rutan utan svarta kanter. Om kunden ändå laddar upp icke-kvadratiskt material beskärs det automatiskt (cover) istället för att letterboxas.
+- Initial language: read from URL first, fall back to `localStorage`, then `sv`.
+- `setLanguage(lang)` continues to persist to `localStorage` for cross-tab sync but ALSO navigates to the equivalent URL in the new language (swap the first path segment).
+- Keep `<html lang>` effect.
+
+## Language switcher
+
+Find every call site of `setLanguage` and let the new context handle the navigation — no per-component changes needed. The switcher will start producing real URL transitions.
+
+## SEO (`src/components/Seo.tsx`)
+
+- `canonical` becomes `https://djloboproducciones.com{pathname}` (the active localized URL).
+- Emit real `<link rel="alternate" hreflang="sv|en|es|x-default" href="…/{lang}{rest}" />` for each route by swapping the first segment.
+- Drop the `og:locale:alternate` workaround (keep `og:locale` driven by active lang).
+
+## Sitemap (`scripts/generate-sitemap.ts`)
+
+Generate one `<url>` per (route × language) with full `xhtml:link` hreflang annotations and `x-default` → `/sv/...`. Add `xmlns:xhtml` to `<urlset>`.
+
+## Robots / noindex
+
+No changes — `/admin`, `/reset-password`, `/dev/zstack` stay unprefixed and keep their existing `Disallow` + `useNoindex()`.
+
+## Internal links
+
+Replace hard-coded `to="/lyssna"` etc. with a tiny helper `localizedHref(path, lang)` so the navbar, footer, CTAs, and any `<Link>` produce `/sv/lyssna` etc. I'll grep for `to="/` and update each match.
+
+## Files touched
+
+- `src/App.tsx` — new route tree + redirects + `LangGuard`.
+- `src/contexts/LanguageContext.tsx` — URL-driven init + navigate on `setLanguage`.
+- `src/components/Seo.tsx` — real hreflang + per-URL canonical.
+- `src/lib/localizedHref.ts` — new helper.
+- `src/components/**` — swap hard-coded internal `to="/..."` for localized hrefs (Navigation, Footer, hero CTAs, etc.).
+- `scripts/generate-sitemap.ts` — multi-lang entries with hreflang.
+- `public/robots.txt` — unchanged.
+
+## Risks
+
+- Inbound links to `/lyssna` keep working via the legacy `<Navigate>` redirects.
+- Bookmarks survive (root + each legacy path redirects to the user's stored language, falling back to `sv`).
+- Spanish (`es`) gets URLs too even though it's not in the original hreflang ask; this keeps the system consistent and future-proof.
