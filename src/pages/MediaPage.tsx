@@ -157,7 +157,7 @@ const MediaPage = () => {
         {isLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="aspect-square glass-card animate-pulse bg-muted/20 rounded-xl" />
+              <div key={i} className="aspect-[4/3] glass-card animate-pulse bg-muted/20 rounded-xl" />
             ))}
           </div>
         ) : filtered.length > 0 ? (
