@@ -3,6 +3,7 @@ import { Shield } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
 import { Link } from "react-router-dom";
+import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 
 const translations = {
   sv: {
@@ -62,7 +63,7 @@ const CookieConsent = () => {
         </div>
         <div className="flex items-center justify-between gap-3">
           <Link
-            to="/privacy"
+            to={lto("/privacy")}
             className="text-xs text-muted-foreground hover:text-foreground hover:underline transition-colors"
           >
             {t.learnMore}

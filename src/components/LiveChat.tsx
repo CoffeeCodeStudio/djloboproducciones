@@ -169,6 +169,7 @@ const LiveChat = () => {
   
   const { listenerCount, trackPresence } = usePresence();
   const { language } = useLanguage();
+  const lto = useLocalizedTo();
   const t = chatTranslations[language];
 
   // Cooldown timer
