@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useInRouterContext } from "react-router-dom";
 
 export type Language = "sv" | "en" | "es";
 
