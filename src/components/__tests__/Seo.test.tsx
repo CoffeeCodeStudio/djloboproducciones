@@ -69,7 +69,7 @@ describe("Seo: canonical + hreflang + x-default", () => {
       it(`${pagePath} @ ${lang}: canonical is self`, async () => {
         renderSeo(pagePath, lang);
         // Helmet flushes asynchronously
-        await Promise.resolve();
+        await waitFor(() => expect(document.head.querySelector("link[rel=canonical]")).not.toBeNull());
         const canonicals = headLinks().filter((l) => l.rel === "canonical");
         expect(canonicals).toHaveLength(1);
         expect(canonicals[0].href).toBe(url);
@@ -77,7 +77,7 @@ describe("Seo: canonical + hreflang + x-default", () => {
 
       it(`${pagePath} @ ${lang}: emits 3 hreflang alternates + x-default`, async () => {
         renderSeo(pagePath, lang);
-        await Promise.resolve();
+        await waitFor(() => expect(document.head.querySelector("link[rel=canonical]")).not.toBeNull());
         const alts = headLinks().filter((l) => l.rel === "alternate");
         // 3 language alternates + 1 x-default
         expect(alts).toHaveLength(4);
@@ -97,7 +97,7 @@ describe("Seo: canonical + hreflang + x-default", () => {
 
       it(`${pagePath} @ ${lang}: alternate set includes self (bidirectional)`, async () => {
         renderSeo(pagePath, lang);
-        await Promise.resolve();
+        await waitFor(() => expect(document.head.querySelector("link[rel=canonical]")).not.toBeNull());
         const alts = headLinks().filter(
           (l) => l.rel === "alternate" && l.hreflang !== "x-default",
         );
@@ -116,7 +116,7 @@ describe("Seo: canonical + hreflang + x-default", () => {
       for (const lang of LANGS) {
         document.head.querySelectorAll("link, meta, title").forEach((n) => n.remove());
         renderSeo(pagePath, lang);
-        await Promise.resolve();
+        await waitFor(() => expect(document.head.querySelector("link[rel=canonical]")).not.toBeNull());
         const url = `${SITE}${localizedHref(pagePath, lang)}`;
         const alts = new Set(
           headLinks()
