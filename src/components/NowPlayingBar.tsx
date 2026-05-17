@@ -17,6 +17,7 @@ import { usePlayerStore } from "@/stores/usePlayerStore";
 import { useStreamStatus } from "@/hooks/useStreamStatus";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useNavigate } from "react-router-dom";
+import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 import { logger } from "@/lib/logger";
 import { useScheduleNow, formatRelativeShort } from "@/hooks/useScheduleNow";
 
@@ -110,6 +111,7 @@ const NowPlayingBar = () => {
   const { status, setStatus } = useStreamStatus();
   const { language } = useLanguage();
   const navigate = useNavigate();
+  const lto = useLocalizedTo();
   const t = translations[language];
   const schedule = useScheduleNow();
 
@@ -277,7 +279,7 @@ const NowPlayingBar = () => {
   };
 
   const handleMixesClick = () => {
-    navigate("/mixar");
+    navigate(lto("/mixar"));
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {

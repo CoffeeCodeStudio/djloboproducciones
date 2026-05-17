@@ -39,7 +39,7 @@ const HeroSection = () => {
   const siteName = branding?.site_name || "DJ LOBO";
 
   const scrollToBooking = () => {
-    window.location.href = "/prislista#boka";
+    window.location.href = `${lto("/prislista")}#boka`;
   };
 
   // Hero is above the fold — drop the rootMargin so the stagger plays
