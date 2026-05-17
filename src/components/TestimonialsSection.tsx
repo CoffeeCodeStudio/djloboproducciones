@@ -1,4 +1,5 @@
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 import { Star, Quote, Building2, Music, PartyPopper, GraduationCap, Heart, Users } from "lucide-react";
 
 interface Testimonial {
@@ -98,6 +99,7 @@ const translations = {
 
 const TestimonialsSection = () => {
   const { language } = useLanguage();
+  const lto = useLocalizedTo();
   const t = translations[language];
 
   const goToBooking = () => {
@@ -106,7 +108,7 @@ const TestimonialsSection = () => {
     if (bokaEl) {
       bokaEl.scrollIntoView({ behavior: "smooth" });
     } else {
-      window.location.href = "/prislista#boka";
+      window.location.href = `${lto("/prislista")}#boka`;
     }
   };
 
