@@ -11,7 +11,7 @@
  * advertising alternates.
  */
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
-import { render, cleanup } from "@testing-library/react";
+import { render, cleanup, waitFor } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import fs from "node:fs";
