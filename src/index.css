@@ -33,7 +33,8 @@ body {
     --secondary-foreground: 0 0% 0%;
 
     --muted: 260 20% 15%;
-    --muted-foreground: 260 10% 70%;
+    /* Bumped from 70% → 80% lightness for WCAG AA contrast on dark bg (≈12.6:1) */
+    --muted-foreground: 260 10% 80%;
 
     --accent: 270 100% 60%;
     --accent-foreground: 0 0% 100%;
