@@ -1,5 +1,6 @@
 import { useLanguage } from "@/contexts/LanguageContext";
 import { Link } from "react-router-dom";
+import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 import { Send } from "lucide-react";
 import { useState } from "react";
 import { z } from "zod";
@@ -100,6 +101,7 @@ type FieldErrors = Partial<Record<"name" | "email" | "message", string>>;
 
 const ContactSection = () => {
   const { language } = useLanguage();
+  const lto = useLocalizedTo();
   const t = translations[language];
 
   const [formData, setFormData] = useState({ name: "", email: "", message: "" });
@@ -245,7 +247,7 @@ const ContactSection = () => {
 
             <p className="text-xs text-muted-foreground mt-3">
               {t.privacyConsent}{" "}
-              <Link to="/privacy" className="text-neon-cyan hover:underline">
+              <Link to={lto("/privacy")} className="text-neon-cyan hover:underline">
                 {t.privacyLink}
               </Link>
               .

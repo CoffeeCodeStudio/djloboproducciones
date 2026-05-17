@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { logger } from "@/lib/logger";
 import { Music, Disc3 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 
 const translations = {
   sv: {
@@ -25,6 +26,7 @@ const translations = {
 const NotFound = () => {
   const location = useLocation();
   const { language } = useLanguage();
+  const lto = useLocalizedTo();
   const t = translations[language];
 
   useEffect(() => {
@@ -45,7 +47,7 @@ const NotFound = () => {
           {t.message}
         </p>
         <Link
-          to="/"
+          to={lto("/")}
           className="group mt-4 inline-flex items-center gap-2 rounded-full border-2 border-neon-cyan bg-transparent px-8 py-3 font-display text-sm uppercase tracking-widest text-neon-cyan transition-all duration-300 hover:scale-105 hover:bg-neon-cyan/10 focus-neon tap-target"
         >
           <Music className="h-4 w-4 transition-transform group-hover:rotate-12" />

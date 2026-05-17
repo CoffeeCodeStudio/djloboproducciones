@@ -1,6 +1,7 @@
 import { forwardRef } from "react";
 import { Instagram, Facebook, Youtube, Radio as RadioIcon, Mail, Phone, MapPin, Cookie } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
 
@@ -57,6 +58,7 @@ const translations = {
 
 const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { language } = useLanguage();
+  const lto = useLocalizedTo();
   const logoSrc = "/logo-neon.png";
   const { resetConsent } = useCookieConsent();
   const t = translations[language];
@@ -169,8 +171,8 @@ const socialLinks = {
           <p className="text-muted-foreground text-xs">{t.copyright}</p>
           <nav aria-label="Juridiska länkar">
             <ul className="flex gap-4 text-xs items-center">
-              <li><Link to="/privacy" className="text-neon-cyan hover:underline">{t.privacyPolicy}</Link></li>
-              <li><Link to="/terms" className="text-neon-cyan hover:underline">{t.terms}</Link></li>
+              <li><Link to={lto("/privacy")} className="text-neon-cyan hover:underline">{t.privacyPolicy}</Link></li>
+              <li><Link to={lto("/terms")} className="text-neon-cyan hover:underline">{t.terms}</Link></li>
               <li>
                 <button
                   onClick={resetConsent}

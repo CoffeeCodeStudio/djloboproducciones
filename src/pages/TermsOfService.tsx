@@ -27,6 +27,7 @@ const translations = {
 
 const TermsOfService = () => {
   const { language } = useLanguage();
+  const lto = useLocalizedTo();
   const t = translations[language];
 
   return (
@@ -44,7 +45,7 @@ const TermsOfService = () => {
         <div className="max-w-3xl mx-auto">
           {/* Back link */}
           <Link 
-            to="/" 
+            to={lto("/")} 
             className="inline-flex items-center gap-2 text-neon-cyan hover:underline mb-8 focus-neon rounded px-2 py-1"
           >
             <ArrowLeft className="w-4 h-4" />
