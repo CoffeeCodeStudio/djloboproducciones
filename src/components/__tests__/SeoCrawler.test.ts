@@ -54,8 +54,11 @@ const parseRoutes = () => {
 
   // Pull every <Route ...> in source order, then split by whether it sits
   // inside the /:lang block.
+  // Greedy-but-balanced: a Route tag may contain self-closing JSX inside
+  // `element={<Foo />}`, so we allow one level of nested `<X .../>` between
+  // the angle brackets.
   const allRoutes: { match: string; index: number }[] = [];
-  const routeRe = /<Route\s[^>]*\/?>/g;
+  const routeRe = /<Route\b(?:[^<>]|<\w+\b[^>]*\/>)*\/?>/g;
   for (const m of src.matchAll(routeRe)) {
     allRoutes.push({ match: m[0], index: m.index! });
   }
