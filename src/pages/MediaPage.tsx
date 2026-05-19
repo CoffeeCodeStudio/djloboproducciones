@@ -184,18 +184,13 @@ const MediaPage = () => {
                 onClick={() => openLightbox(item)}
                 className="w-full aspect-[4/3] sm:aspect-[5/4] lg:aspect-[4/3] xl:aspect-[3/2] glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
               >
-                <img
+                <SmartGalleryImage
                   src={item.src}
                   alt={item.alt}
-                  className="w-full h-full object-cover object-center scale-100 sm:scale-[0.96] lg:scale-[0.92] xl:scale-[0.88] group-hover:scale-100 transition-transform duration-300"
-                  loading="lazy"
-                  width={400}
-                  height={400}
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = item.fallback;
-                  }}
+                  fallback={item.fallback}
+                  className="group-hover:scale-[1.03]"
                 />
+
                 <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
                 {/* Type badge */}
