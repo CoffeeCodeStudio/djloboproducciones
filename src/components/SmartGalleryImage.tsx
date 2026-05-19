@@ -1,23 +1,23 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 
 interface SmartGalleryImageProps {
   src: string;
   alt: string;
   fallback?: string;
   className?: string;
-  /** Approximate container aspect ratio (w/h) — used to decide cover vs contain */
+  /** Fallback container aspect ratio (w/h) used before measurement or if measuring fails */
   containerRatio?: number;
-  /** Tolerance: how much an image's ratio can differ from container before we switch to contain */
+  /** Tolerance: how much an image's ratio can differ from the container before we switch to contain */
   tolerance?: number;
 }
 
 /**
  * Smart layout image:
+ * - Measures the actual rendered cell via ResizeObserver to get the real aspect ratio
  * - Loads the image, measures its natural aspect ratio
- * - If the image roughly matches the container ratio → object-cover (fills nicely)
- * - If the image is much taller or wider than the container → object-contain
- *   with a blurred copy of the same image as background, so the cell still feels full
- *   but the photo isn't aggressively cropped / over-zoomed.
+ * - If the image roughly matches the cell ratio → object-cover (fills nicely)
+ * - If the image is much taller or wider than the cell → object-contain
+ *   with a blurred copy of the same image as background
  */
 const SmartGalleryImage = ({
   src,
@@ -29,28 +29,58 @@ const SmartGalleryImage = ({
 }: SmartGalleryImageProps) => {
   const [fit, setFit] = useState<"cover" | "contain">("cover");
   const [loaded, setLoaded] = useState(false);
+  const [cellRatio, setCellRatio] = useState<number>(containerRatio);
   const imgRef = useRef<HTMLImageElement>(null);
+  const sentinelRef = useRef<HTMLSpanElement>(null);
+
+  // Measure the parent cell with ResizeObserver
+  useLayoutEffect(() => {
+    const sentinel = sentinelRef.current;
+    const cell = sentinel?.parentElement;
+    if (!cell || typeof ResizeObserver === "undefined") return;
+
+    const update = (w: number, h: number) => {
+      if (w > 0 && h > 0) {
+        setCellRatio((prev) => {
+          const next = w / h;
+          return Math.abs(next - prev) > 0.01 ? next : prev;
+        });
+      }
+    };
+
+    update(cell.clientWidth, cell.clientHeight);
+
+    const ro = new ResizeObserver((entries) => {
+      for (const entry of entries) {
+        const { width, height } = entry.contentRect;
+        update(width, height);
+      }
+    });
+    ro.observe(cell);
+    return () => ro.disconnect();
+  }, []);
 
   useEffect(() => {
     setLoaded(false);
   }, [src]);
 
-  const handleLoad = () => {
+  // Recompute fit whenever cell ratio changes or image loads
+  useEffect(() => {
     const el = imgRef.current;
-    if (!el) return;
-    const r = el.naturalWidth / el.naturalHeight;
-    if (!isFinite(r) || r <= 0) {
-      setFit("cover");
-    } else {
-      const diff = Math.abs(r - containerRatio) / containerRatio;
-      setFit(diff > tolerance ? "contain" : "cover");
-    }
+    if (!el || !el.naturalWidth || !el.naturalHeight) return;
+    const imgR = el.naturalWidth / el.naturalHeight;
+    const diff = Math.abs(imgR - cellRatio) / cellRatio;
+    setFit(diff > tolerance ? "contain" : "cover");
+  }, [cellRatio, loaded, tolerance]);
+
+  const handleLoad = () => {
     setLoaded(true);
   };
 
   return (
     <>
-      {/* Blurred background fills the cell when we letterbox with contain */}
+      {/* Zero-size sentinel to grab parent reference without altering layout */}
+      <span ref={sentinelRef} className="hidden" aria-hidden />
       {fit === "contain" && (
         <div
           aria-hidden
