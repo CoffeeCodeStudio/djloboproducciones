@@ -182,12 +182,12 @@ const MediaPage = () => {
               <button
                 key={item.id}
                 onClick={() => openLightbox(item)}
-                className="w-full aspect-[4/3] glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
+                className="w-full aspect-[5/4] glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
               >
                 <img
                   src={item.src}
                   alt={item.alt}
-                  className="w-full h-full object-cover object-center"
+                  className="w-full h-full object-cover object-center scale-[0.94] group-hover:scale-100 transition-transform duration-300"
                   loading="lazy"
                   width={400}
                   height={400}
