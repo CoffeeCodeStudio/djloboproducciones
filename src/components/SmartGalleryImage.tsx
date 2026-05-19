@@ -25,7 +25,7 @@ const SmartGalleryImage = ({
   fallback,
   className = "",
   containerRatio = 4 / 3,
-  tolerance = 0.35,
+  tolerance = 0.75,
 }: SmartGalleryImageProps) => {
   const [fit, setFit] = useState<"cover" | "contain">("cover");
   const [loaded, setLoaded] = useState(false);
