@@ -178,22 +178,18 @@ const MediaPage = () => {
             ))}
           </div>
         ) : filtered.length > 0 ? (
-          <div className="columns-2 sm:columns-3 gap-4 sm:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
             {filtered.map((item) => (
               <button
                 key={item.id}
                 onClick={() => openLightbox(item)}
-                className="w-full break-inside-avoid mb-4 sm:mb-5 glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
+                className="w-full aspect-[4/3] sm:aspect-[5/4] lg:aspect-[4/3] xl:aspect-[3/2] glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
               >
-                <img
+                <SmartGalleryImage
                   src={item.src}
                   alt={item.alt}
-                  loading="lazy"
-                  className="w-full h-auto object-cover block transition-transform duration-300 group-hover:scale-[1.03]"
-                  onError={(e) => {
-                    e.currentTarget.onerror = null;
-                    e.currentTarget.src = item.fallback;
-                  }}
+                  fallback={item.fallback}
+                  className="group-hover:scale-[1.03]"
                 />
 
                 <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
@@ -217,7 +213,6 @@ const MediaPage = () => {
               </button>
             ))}
           </div>
-
         ) : (
           <div className="text-center py-12 glass-card rounded-xl">
             <Music className="w-12 h-12 mx-auto mb-3 text-muted-foreground opacity-50" />
