@@ -157,7 +157,7 @@ const MediaPage = () => {
         {isLoading ? (
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="aspect-[4/3] glass-card animate-pulse bg-muted/20 rounded-xl" />
+              <div key={i} className="aspect-square glass-card animate-pulse bg-muted/20 rounded-xl" />
             ))}
           </div>
         ) : filtered.length > 0 ? (
@@ -166,7 +166,7 @@ const MediaPage = () => {
               <button
                 key={item.id}
                 onClick={() => openLightbox(item)}
-                className="w-full aspect-[4/3] glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
+                className="w-full aspect-square glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
               >
                 <img
                   src={item.src}
