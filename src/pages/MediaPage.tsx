@@ -115,24 +115,39 @@ const MediaPage = () => {
       />
       {/* Social Links */}
       <section className="py-10 sm:py-14 px-4" aria-labelledby="social-heading">
-        <h2 id="social-heading" className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-neon-gradient mb-8 text-center italic">
+        <h2
+          id="social-heading"
+          className="font-display text-2xl sm:text-3xl md:text-4xl font-bold text-neon-gradient mb-8 text-center italic"
+        >
           {t.socialTitle}
         </h2>
         <div className="flex justify-center gap-4 flex-wrap">
-          <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 px-6 py-3.5 glass-card rounded-xl border border-primary/30 hover:border-primary/60 hover:scale-105 transition-all group">
+          <a
+            href={socialLinks.instagram}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2.5 px-6 py-3.5 glass-card rounded-xl border border-primary/30 hover:border-primary/60 hover:scale-105 transition-all group"
+          >
             <Instagram className="w-5 h-5 text-primary group-hover:drop-shadow-[0_0_8px_hsl(var(--primary)/0.6)]" />
             <span className="font-medium text-sm">{t.instagram}</span>
             <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
           </a>
-          <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 px-6 py-3.5 glass-card rounded-xl border border-destructive/30 hover:border-destructive/60 hover:scale-105 transition-all group">
+          <a
+            href={socialLinks.youtube}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2.5 px-6 py-3.5 glass-card rounded-xl border border-destructive/30 hover:border-destructive/60 hover:scale-105 transition-all group"
+          >
             <Youtube className="w-5 h-5 text-destructive group-hover:drop-shadow-[0_0_8px_hsl(var(--destructive)/0.6)]" />
             <span className="font-medium text-sm">{t.youtube}</span>
             <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
           </a>
-          <a href={socialLinks.facebook} target="_blank" rel="noopener noreferrer"
-            className="inline-flex items-center gap-2.5 px-6 py-3.5 glass-card rounded-xl border border-secondary/30 hover:border-secondary/60 hover:scale-105 transition-all group">
+          <a
+            href={socialLinks.facebook}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2.5 px-6 py-3.5 glass-card rounded-xl border border-secondary/30 hover:border-secondary/60 hover:scale-105 transition-all group"
+          >
             <Facebook className="w-5 h-5 text-secondary group-hover:drop-shadow-[0_0_8px_hsl(var(--secondary)/0.6)]" />
             <span className="font-medium text-sm">{t.facebook}</span>
             <ExternalLink className="w-3.5 h-3.5 text-muted-foreground" />
@@ -143,12 +158,13 @@ const MediaPage = () => {
       {/* Event Highlights with Filter */}
       <section className="py-12 sm:py-20 px-4 sm:px-6" aria-labelledby="event-highlights-heading">
         <div className="text-center mb-8 sm:mb-12">
-          <h2 id="event-highlights-heading" className="font-display text-2xl sm:text-4xl md:text-5xl font-bold text-neon-gradient mb-3 italic">
+          <h2
+            id="event-highlights-heading"
+            className="font-display text-2xl sm:text-4xl md:text-5xl font-bold text-neon-gradient mb-3 italic"
+          >
             {t.eventHighlights}
           </h2>
-          <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto">
-            {t.eventHighlightsDesc}
-          </p>
+          <p className="text-muted-foreground text-sm sm:text-base max-w-2xl mx-auto">{t.eventHighlightsDesc}</p>
         </div>
 
         {/* Filter Bar */}
@@ -166,7 +182,7 @@ const MediaPage = () => {
               <button
                 key={item.id}
                 onClick={() => openLightbox(item)}
-                className="w-full aspect-square glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
+                className="w-full aspect-[4/3] glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
               >
                 <img
                   src={item.src}
@@ -175,7 +191,10 @@ const MediaPage = () => {
                   loading="lazy"
                   width={400}
                   height={400}
-                  onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = item.fallback; }}
+                  onError={(e) => {
+                    e.currentTarget.onerror = null;
+                    e.currentTarget.src = item.fallback;
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
@@ -183,7 +202,7 @@ const MediaPage = () => {
                 <div className="absolute top-2 left-2">
                   <span className="px-2 py-1 rounded text-xs font-semibold bg-background/60 text-foreground flex items-center gap-1 backdrop-blur-sm">
                     {item.mediaType === "video" ? <Play className="w-3 h-3" /> : <ImageIcon className="w-3 h-3" />}
-                    {item.mediaType === "video" ? "Video" : (language === "en" ? "Photo" : "Foto")}
+                    {item.mediaType === "video" ? "Video" : language === "en" ? "Photo" : "Foto"}
                   </span>
                 </div>
 
@@ -215,7 +234,6 @@ const MediaPage = () => {
         alt={lightbox.alt}
         isYouTube={lightbox.isYouTube}
       />
-
 
       <Footer />
     </div>
