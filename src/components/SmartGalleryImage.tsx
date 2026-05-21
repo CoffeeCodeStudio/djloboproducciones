@@ -39,7 +39,7 @@ const SmartGalleryImage = ({
       }}
       loading="lazy"
       className={[
-        "block w-full h-auto transition-opacity duration-300",
+        "w-full h-full object-cover transition-opacity duration-300",
         loaded ? "opacity-100" : "opacity-0",
         className,
       ].join(" ")}
