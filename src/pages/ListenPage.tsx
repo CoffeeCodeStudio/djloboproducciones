@@ -104,20 +104,26 @@ const ListenPage = () => {
         </div>
 
         {/* DJ Profile Image with neon aura */}
-        <div className="relative mb-4 sm:mb-6">
-          <div className="w-36 h-36 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-full neon-border-gradient profile-neon-aura bg-background/20 overflow-hidden">
+        <div className="relative mb-4 sm:mb-6" style={{ width: 224, height: 224 }}>
+          <div
+            className="rounded-full neon-border-gradient bg-background/20 overflow-hidden"
+            style={{ width: 224, height: 224 }}
+          >
             <img
               src={profileImage}
               alt="DJ Lobo vid mixerbordet"
-              className="w-full h-full object-cover rounded-full"
+              className="block rounded-full"
               loading="eager"
               fetchPriority="high"
+              decoding="sync"
               width={224}
               height={224}
+              style={{ width: 224, height: 224 }}
               onError={(e) => {e.currentTarget.onerror = null;e.currentTarget.src = profileFallback;}} />
           </div>
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-neon-pink/30 to-neon-cyan/30 blur-3xl -z-10 scale-110" aria-hidden="true" />
         </div>
+
 
         {/* Name */}
         
