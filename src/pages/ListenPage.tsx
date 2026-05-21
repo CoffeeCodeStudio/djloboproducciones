@@ -111,19 +111,19 @@ const ListenPage = () => {
         {/* DJ Profile Image with neon aura */}
         <div className="relative mb-4 sm:mb-6" style={{ width: 224, height: 224 }}>
           <div
-            className="rounded-full neon-border-gradient bg-background/20 overflow-hidden flex items-center justify-center"
+            className="rounded-full neon-border-gradient bg-background/20 overflow-hidden"
             style={{ width: 224, height: 224 }}
           >
             <img
               src={profileImage}
               alt="DJ Lobo vid mixerbordet"
-              className="block rounded-full object-contain"
+              className="block rounded-full object-cover"
               loading="eager"
               fetchPriority="high"
               decoding="sync"
-              width={188}
-              height={188}
-              style={{ width: 188, height: 188 }}
+              width={224}
+              height={224}
+              style={{ width: 224, height: 224 }}
               data-radio-profile="true"
               onError={(e) => {e.currentTarget.onerror = null;e.currentTarget.src = profileFallback;}} />
           </div>
