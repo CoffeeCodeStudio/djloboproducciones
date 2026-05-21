@@ -253,11 +253,11 @@ const RadioTab = () => {
             <CardContent className="space-y-4">
               {(previewRadio || (branding as any)?.radio_image_url) ? (
                 <div className="space-y-3 max-w-[280px] mx-auto">
-                  <div className="relative w-full aspect-square rounded-full border-4 border-secondary/50 bg-muted/10 flex items-center justify-center p-3">
+                  <div className="relative w-full aspect-square rounded-full overflow-hidden border-4 border-secondary/50 bg-muted/10">
                     <img
                       src={previewRadio || (branding as any)?.radio_image_url}
                       alt="Radiobild"
-                      className="max-w-full max-h-full object-contain object-center"
+                      className="w-full h-full object-cover object-center"
                     />
                     {uploadingRadio && (
                       <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
@@ -443,9 +443,9 @@ const RadioTab = () => {
         imageSrc={cropperSrc}
         aspect={1}
         cropShape="round"
-        title="Beskär radiobild (rund)"
-        saveMode="contain"
-        outputType="image/png"
+        title="Beskär radiobild (1:1)"
+        saveMode="crop"
+        outputType="image/jpeg"
         onComplete={handleCropComplete}
         onCancel={() => setCropperOpen(false)}
       />
