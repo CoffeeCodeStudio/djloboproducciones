@@ -443,9 +443,9 @@ const RadioTab = () => {
         imageSrc={cropperSrc}
         aspect={1}
         cropShape="round"
-        title="Beskär radiobild (rund)"
-        saveMode="contain"
-        outputType="image/png"
+        title="Beskär radiobild (1:1)"
+        saveMode="crop"
+        outputType="image/jpeg"
         onComplete={handleCropComplete}
         onCancel={() => setCropperOpen(false)}
       />
