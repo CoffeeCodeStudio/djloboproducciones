@@ -36,6 +36,34 @@ async function loadImage(imageSrc: string): Promise<HTMLImageElement> {
   return image;
 }
 
+/**
+ * Tvingar fram en exakt 1:1 ruta utan avrundningsglapp.
+ * - size = floor(min(width, height))  → ingen risk för w !== h
+ * - x/y klampas så rutan alltid ryms inom bilden (om imageBounds anges)
+ */
+function toSquareCrop(
+  area: Area,
+  imageBounds?: { width: number; height: number }
+): { x: number; y: number; size: number } {
+  const rawSize = Math.min(area.width, area.height);
+  let size = Math.max(1, Math.floor(rawSize));
+
+  if (imageBounds) {
+    size = Math.min(size, imageBounds.width, imageBounds.height);
+  }
+
+  let x = Math.round(area.x);
+  let y = Math.round(area.y);
+  x = Math.max(0, x);
+  y = Math.max(0, y);
+  if (imageBounds) {
+    x = Math.min(x, imageBounds.width - size);
+    y = Math.min(y, imageBounds.height - size);
+  }
+
+  return { x, y, size };
+}
+
 async function getCroppedImg(
   imageSrc: string,
   pixelCrop: Area,
@@ -45,14 +73,16 @@ async function getCroppedImg(
   const imageWidth = image.naturalWidth || image.width;
   const imageHeight = image.naturalHeight || image.height;
 
+  const { x: safeX, y: safeY, size: cropSize } = toSquareCrop(pixelCrop, {
+    width: imageWidth,
+    height: imageHeight,
+  });
+
   const cropX = Math.max(0, Math.round(pixelCrop.x));
   const cropY = Math.max(0, Math.round(pixelCrop.y));
   const cropWidth = Math.round(pixelCrop.width);
   const cropHeight = Math.round(pixelCrop.height);
-  const cropSize = Math.max(1, Math.min(cropWidth, cropHeight));
 
-  const safeX = Math.min(cropX, Math.max(0, imageWidth - cropSize));
-  const safeY = Math.min(cropY, Math.max(0, imageHeight - cropSize));
 
   // === [ImageCropper] DEBUG: input vs. normaliserad export ===
   const aspectRatio = cropHeight === 0 ? 0 : cropWidth / cropHeight;
@@ -196,17 +226,16 @@ const ImageCropper = ({
   }, []);
 
   const onCropComplete = useCallback((_: Area, croppedPixels: Area) => {
-    const roundedCrop = {
-      x: Math.round(croppedPixels.x),
-      y: Math.round(croppedPixels.y),
-      width: Math.round(croppedPixels.width),
-      height: Math.round(croppedPixels.height),
-    };
+    // Tvinga exakt 1:1 redan här – samma matematik som getCroppedImg använder
+    // vid export, så ref och canvas alltid är pixelidentiska.
+    const { x, y, size } = toSquareCrop(croppedPixels);
+    const squareCrop: Area = { x, y, width: size, height: size };
 
-    croppedAreaPixelsRef.current = roundedCrop;
+    croppedAreaPixelsRef.current = squareCrop;
     cropDirtyRef.current = false;
-    setCroppedAreaPixels(roundedCrop);
+    setCroppedAreaPixels(squareCrop);
   }, []);
+
 
   /**
    * react-easy-crop debouncar onCropComplete (~100ms). Om användaren
