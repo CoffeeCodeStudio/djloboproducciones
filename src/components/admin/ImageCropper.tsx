@@ -226,17 +226,16 @@ const ImageCropper = ({
   }, []);
 
   const onCropComplete = useCallback((_: Area, croppedPixels: Area) => {
-    const roundedCrop = {
-      x: Math.round(croppedPixels.x),
-      y: Math.round(croppedPixels.y),
-      width: Math.round(croppedPixels.width),
-      height: Math.round(croppedPixels.height),
-    };
+    // Tvinga exakt 1:1 redan här – samma matematik som getCroppedImg använder
+    // vid export, så ref och canvas alltid är pixelidentiska.
+    const { x, y, size } = toSquareCrop(croppedPixels);
+    const squareCrop: Area = { x, y, width: size, height: size };
 
-    croppedAreaPixelsRef.current = roundedCrop;
+    croppedAreaPixelsRef.current = squareCrop;
     cropDirtyRef.current = false;
-    setCroppedAreaPixels(roundedCrop);
+    setCroppedAreaPixels(squareCrop);
   }, []);
+
 
   /**
    * react-easy-crop debouncar onCropComplete (~100ms). Om användaren
