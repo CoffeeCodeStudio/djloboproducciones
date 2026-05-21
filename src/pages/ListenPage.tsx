@@ -105,11 +105,11 @@ const ListenPage = () => {
 
         {/* DJ Profile Image with neon aura */}
         <div className="relative mb-4 sm:mb-6">
-          <div className="w-36 h-36 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-full neon-border-gradient profile-neon-aura bg-background/20 flex items-center justify-center p-3 sm:p-4">
+          <div className="w-36 h-36 sm:w-48 sm:h-48 md:w-56 md:h-56 rounded-full neon-border-gradient profile-neon-aura bg-background/20 overflow-hidden">
             <img
               src={profileImage}
               alt="DJ Lobo vid mixerbordet"
-              className="max-w-full max-h-full object-contain rounded-full"
+              className="w-full h-full object-cover rounded-full"
               loading="eager"
               fetchPriority="high"
               width={224}
