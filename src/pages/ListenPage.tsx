@@ -156,6 +156,7 @@ const ListenPage = () => {
 
       <LiveChat />
       <Footer />
+      {debugImage && <RadioImagePixelCheck src={profileImage} expectedSize={224} />}
     </div>);
 
 };
