@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { ZoomIn, ZoomOut, Check, X } from "lucide-react";
+import { ZoomIn, ZoomOut, Check, X, RotateCcw } from "lucide-react";
 
 interface ImageCropperProps {
   open: boolean;
@@ -154,13 +154,34 @@ const ImageCropper = ({
   const croppedAreaPixelsRef = useRef<Area | null>(null);
   const [saving, setSaving] = useState(false);
 
+  // === Visuell export-verifiering ===
+  const [pendingBlob, setPendingBlob] = useState<Blob | null>(null);
+  const [pendingUrl, setPendingUrl] = useState<string | null>(null);
+  const [pendingMeta, setPendingMeta] = useState<{
+    width: number;
+    height: number;
+    sizeKB: number;
+    type: string;
+  } | null>(null);
+
   useEffect(() => {
     if (!open) return;
     setCrop({ x: 0, y: 0 });
     setZoom(1);
     setCroppedAreaPixels(null);
     croppedAreaPixelsRef.current = null;
+    if (pendingUrl) URL.revokeObjectURL(pendingUrl);
+    setPendingBlob(null);
+    setPendingUrl(null);
+    setPendingMeta(null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, imageSrc]);
+
+  useEffect(() => {
+    return () => {
+      if (pendingUrl) URL.revokeObjectURL(pendingUrl);
+    };
+  }, [pendingUrl]);
 
   const onCropComplete = useCallback((_: Area, croppedPixels: Area) => {
     const roundedCrop = {
@@ -180,7 +201,24 @@ const ImageCropper = ({
     setSaving(true);
     try {
       const blob = await getCroppedImg(imageSrc, latestCrop, outputType);
-      onComplete(blob);
+
+      // Mät den faktiskt exporterade filen för visuell verifiering
+      const url = URL.createObjectURL(blob);
+      const probe = new Image();
+      const dims = await new Promise<{ w: number; h: number }>((resolve, reject) => {
+        probe.onload = () => resolve({ w: probe.naturalWidth, h: probe.naturalHeight });
+        probe.onerror = reject;
+        probe.src = url;
+      });
+
+      setPendingBlob(blob);
+      setPendingUrl(url);
+      setPendingMeta({
+        width: dims.w,
+        height: dims.h,
+        sizeKB: Number((blob.size / 1024).toFixed(1)),
+        type: blob.type,
+      });
     } catch (error) {
       console.error("[ImageCropper] Failed to save image", error);
     } finally {
@@ -188,62 +226,166 @@ const ImageCropper = ({
     }
   };
 
+  const handleConfirmVerified = () => {
+    if (!pendingBlob) return;
+    const blob = pendingBlob;
+    if (pendingUrl) URL.revokeObjectURL(pendingUrl);
+    setPendingBlob(null);
+    setPendingUrl(null);
+    setPendingMeta(null);
+    onComplete(blob);
+  };
+
+  const handleRecrop = () => {
+    if (pendingUrl) URL.revokeObjectURL(pendingUrl);
+    setPendingBlob(null);
+    setPendingUrl(null);
+    setPendingMeta(null);
+  };
+
+  const isSquare = pendingMeta ? pendingMeta.width === pendingMeta.height : false;
+  const aspectRatioStr = pendingMeta
+    ? (pendingMeta.width / Math.max(1, pendingMeta.height)).toFixed(3)
+    : "—";
+
   return (
     <Dialog open={open} onOpenChange={(v) => !v && onCancel()}>
       <DialogContent className="max-w-lg p-0 gap-0 overflow-hidden">
         <DialogHeader className="px-4 pt-4 pb-2">
-          <DialogTitle className="text-base">{title}</DialogTitle>
+          <DialogTitle className="text-base">
+            {pendingUrl ? "Verifiera exporterad bild" : title}
+          </DialogTitle>
         </DialogHeader>
 
-        {/* Crop area */}
-        <div className="relative w-full aspect-square bg-black/90">
-          <Cropper
-            image={imageSrc}
-            crop={crop}
-            zoom={zoom}
-            minZoom={1}
-            maxZoom={5}
-            aspect={aspect}
-            cropShape={cropShape}
-            onCropChange={setCrop}
-            onZoomChange={setZoom}
-            onCropComplete={onCropComplete}
-            showGrid={cropShape === "rect"}
-            objectFit="cover"
-            roundCropAreaPixels
-            restrictPosition={true}
-            style={{
-              containerStyle: { width: "100%", height: "100%" },
-            }}
-          />
-        </div>
+        {pendingUrl && pendingMeta ? (
+          <>
+            <div className="px-4 pb-2 pt-1 space-y-3">
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                    Förhandsvisning (cirkel)
+                  </p>
+                  <div className="relative w-full aspect-square rounded-full overflow-hidden bg-black/60 border border-border">
+                    <img
+                      src={pendingUrl}
+                      alt="Förhandsvisning som cirkel"
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground text-center">
+                    Så här ser den ut på /lyssna
+                  </p>
+                </div>
 
-        {/* Zoom slider */}
-        <div className="px-4 py-3 flex items-center gap-3">
-          <ZoomOut className="w-4 h-4 text-muted-foreground shrink-0" />
-          <Slider
-            min={1}
-            max={5}
-            step={0.05}
-            value={[zoom]}
-            onValueChange={([v]) => setZoom(v)}
-            className="flex-1"
-          />
-          <ZoomIn className="w-4 h-4 text-muted-foreground shrink-0" />
-          <span className="text-xs text-muted-foreground w-10 text-right">
-            {Math.round(zoom * 100)}%
-          </span>
-        </div>
+                <div className="space-y-1.5">
+                  <p className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                    Exporterad fil (rå)
+                  </p>
+                  <div className="relative w-full aspect-square overflow-hidden bg-muted/30 border border-border">
+                    <img
+                      src={pendingUrl}
+                      alt="Exporterad fil"
+                      className="w-full h-full object-contain"
+                    />
+                  </div>
+                  <p className="text-[10px] text-muted-foreground text-center">
+                    Faktiska pixlarna som sparas
+                  </p>
+                </div>
+              </div>
 
-        <DialogFooter className="px-4 pb-4 gap-2">
-          <Button variant="outline" onClick={onCancel} disabled={saving}>
-            <X className="w-4 h-4 mr-1" /> Avbryt
-          </Button>
-          <Button onClick={handleSave} disabled={saving || !croppedAreaPixels}>
-            <Check className="w-4 h-4 mr-1" />
-            {saving ? "Sparar..." : "Använd beskärning"}
-          </Button>
-        </DialogFooter>
+              <div className="rounded-md border border-border bg-muted/20 p-2.5 text-xs space-y-1">
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Dimensioner</span>
+                  <span className="font-mono">
+                    {pendingMeta.width} × {pendingMeta.height} px
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Aspect ratio</span>
+                  <span
+                    className={`font-mono ${isSquare ? "text-emerald-500" : "text-amber-500"}`}
+                  >
+                    {aspectRatioStr} {isSquare ? "✓ 1:1" : "⚠ ej 1:1"}
+                  </span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Filstorlek</span>
+                  <span className="font-mono">{pendingMeta.sizeKB} KB</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-muted-foreground">Typ</span>
+                  <span className="font-mono">{pendingMeta.type}</span>
+                </div>
+              </div>
+
+              {!isSquare && (
+                <p className="text-[11px] text-amber-500">
+                  ⚠ Exporten är inte exakt 1:1 – bilden kan bli förskjuten i cirkeln.
+                </p>
+              )}
+            </div>
+
+            <DialogFooter className="px-4 pb-4 pt-2 gap-2">
+              <Button variant="outline" onClick={handleRecrop}>
+                <RotateCcw className="w-4 h-4 mr-1" /> Beskär om
+              </Button>
+              <Button onClick={handleConfirmVerified}>
+                <Check className="w-4 h-4 mr-1" /> Bekräfta & spara
+              </Button>
+            </DialogFooter>
+          </>
+        ) : (
+          <>
+            <div className="relative w-full aspect-square bg-black/90">
+              <Cropper
+                image={imageSrc}
+                crop={crop}
+                zoom={zoom}
+                minZoom={1}
+                maxZoom={5}
+                aspect={aspect}
+                cropShape={cropShape}
+                onCropChange={setCrop}
+                onZoomChange={setZoom}
+                onCropComplete={onCropComplete}
+                showGrid={cropShape === "rect"}
+                objectFit="cover"
+                roundCropAreaPixels
+                restrictPosition={true}
+                style={{
+                  containerStyle: { width: "100%", height: "100%" },
+                }}
+              />
+            </div>
+
+            <div className="px-4 py-3 flex items-center gap-3">
+              <ZoomOut className="w-4 h-4 text-muted-foreground shrink-0" />
+              <Slider
+                min={1}
+                max={5}
+                step={0.05}
+                value={[zoom]}
+                onValueChange={([v]) => setZoom(v)}
+                className="flex-1"
+              />
+              <ZoomIn className="w-4 h-4 text-muted-foreground shrink-0" />
+              <span className="text-xs text-muted-foreground w-10 text-right">
+                {Math.round(zoom * 100)}%
+              </span>
+            </div>
+
+            <DialogFooter className="px-4 pb-4 gap-2">
+              <Button variant="outline" onClick={onCancel} disabled={saving}>
+                <X className="w-4 h-4 mr-1" /> Avbryt
+              </Button>
+              <Button onClick={handleSave} disabled={saving || !croppedAreaPixels}>
+                <Check className="w-4 h-4 mr-1" />
+                {saving ? "Verifierar..." : "Använd beskärning"}
+              </Button>
+            </DialogFooter>
+          </>
+        )}
       </DialogContent>
     </Dialog>
   );
