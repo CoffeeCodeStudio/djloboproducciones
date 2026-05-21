@@ -172,21 +172,21 @@ const MediaPage = () => {
         <MediaFilterBar active={filter} onChange={setFilter} counts={counts} />
 
         {isLoading ? (
-          <div className="columns-2 md:columns-3 gap-4 sm:gap-5 [column-fill:_balance]">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="break-inside-avoid mb-4 sm:mb-5 h-48 glass-card animate-pulse bg-muted/20 rounded-xl"
+                className="aspect-square glass-card animate-pulse bg-muted/20 rounded-xl"
               />
             ))}
           </div>
         ) : filtered.length > 0 ? (
-          <div className="columns-2 md:columns-3 gap-4 sm:gap-5 [column-fill:_balance]">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-5">
             {filtered.map((item) => (
               <button
                 key={item.id}
                 onClick={() => openLightbox(item)}
-                className="break-inside-avoid mb-4 sm:mb-5 w-full glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
+                className="aspect-square w-full glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
               >
                 <SmartGalleryImage
                   src={item.src}
