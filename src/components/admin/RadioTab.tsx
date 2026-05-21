@@ -255,7 +255,7 @@ const RadioTab = () => {
                     <img
                       src={previewRadio || (branding as any)?.radio_image_url}
                       alt="Radiobild"
-                      className="w-full h-full object-cover object-center"
+                      className="w-full h-full object-contain object-center"
                     />
                     {uploadingRadio && (
                       <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
