@@ -152,6 +152,7 @@ const ImageCropper = ({
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
   const croppedAreaPixelsRef = useRef<Area | null>(null);
+  const cropDirtyRef = useRef(false);
   const [saving, setSaving] = useState(false);
 
   // === Visuell export-verifiering ===
@@ -170,6 +171,7 @@ const ImageCropper = ({
     setZoom(1);
     setCroppedAreaPixels(null);
     croppedAreaPixelsRef.current = null;
+    cropDirtyRef.current = false;
     if (pendingUrl) URL.revokeObjectURL(pendingUrl);
     setPendingBlob(null);
     setPendingUrl(null);
@@ -183,6 +185,16 @@ const ImageCropper = ({
     };
   }, [pendingUrl]);
 
+  const handleCropChange = useCallback((next: { x: number; y: number }) => {
+    cropDirtyRef.current = true;
+    setCrop(next);
+  }, []);
+
+  const handleZoomChange = useCallback((next: number) => {
+    cropDirtyRef.current = true;
+    setZoom(next);
+  }, []);
+
   const onCropComplete = useCallback((_: Area, croppedPixels: Area) => {
     const roundedCrop = {
       x: Math.round(croppedPixels.x),
@@ -192,14 +204,40 @@ const ImageCropper = ({
     };
 
     croppedAreaPixelsRef.current = roundedCrop;
+    cropDirtyRef.current = false;
     setCroppedAreaPixels(roundedCrop);
   }, []);
 
+  /**
+   * react-easy-crop debouncar onCropComplete (~100ms). Om användaren
+   * zoomar/draggar snabbt och klickar Spara direkt kan ref:n innehålla
+   * en gammal area. Vi väntar in nästa onCropComplete innan vi exporterar.
+   */
+  const waitForFreshCrop = async (timeoutMs = 500) => {
+    if (!cropDirtyRef.current) return;
+    const start = performance.now();
+    while (cropDirtyRef.current && performance.now() - start < timeoutMs) {
+      await new Promise((r) => requestAnimationFrame(() => r(null)));
+    }
+  };
+
   const handleSave = async () => {
-    const latestCrop = croppedAreaPixelsRef.current ?? croppedAreaPixels;
-    if (!latestCrop) return;
     setSaving(true);
     try {
+      await waitForFreshCrop();
+      const latestCrop = croppedAreaPixelsRef.current ?? croppedAreaPixels;
+      if (!latestCrop) {
+        console.warn("[ImageCropper] ⚠️ handleSave: ingen croppedAreaPixels tillgänglig");
+        return;
+      }
+      if (cropDirtyRef.current) {
+        console.warn(
+          "[ImageCropper] ⚠️ handleSave: cropDirty kvar efter väntan – exporterar senast kända area",
+          latestCrop
+        );
+      } else {
+        console.log("[ImageCropper] 🎯 handleSave använder färsk croppedAreaPixels:", latestCrop);
+      }
       const blob = await getCroppedImg(imageSrc, latestCrop, outputType);
 
       // Mät den faktiskt exporterade filen för visuell verifiering
@@ -346,8 +384,8 @@ const ImageCropper = ({
                 maxZoom={5}
                 aspect={aspect}
                 cropShape={cropShape}
-                onCropChange={setCrop}
-                onZoomChange={setZoom}
+                onCropChange={handleCropChange}
+                onZoomChange={handleZoomChange}
                 onCropComplete={onCropComplete}
                 showGrid={cropShape === "rect"}
                 objectFit="cover"
@@ -366,7 +404,7 @@ const ImageCropper = ({
                 max={5}
                 step={0.05}
                 value={[zoom]}
-                onValueChange={([v]) => setZoom(v)}
+                onValueChange={([v]) => handleZoomChange(v)}
                 className="flex-1"
               />
               <ZoomIn className="w-4 h-4 text-muted-foreground shrink-0" />
