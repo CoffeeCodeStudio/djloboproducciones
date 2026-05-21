@@ -42,22 +42,35 @@ async function getCroppedImg(
   outputType: "image/jpeg" | "image/png" = "image/jpeg"
 ): Promise<Blob> {
   const image = await loadImage(imageSrc);
+  const imageWidth = image.naturalWidth || image.width;
+  const imageHeight = image.naturalHeight || image.height;
+
+  const cropX = Math.max(0, Math.round(pixelCrop.x));
+  const cropY = Math.max(0, Math.round(pixelCrop.y));
+  const cropWidth = Math.round(pixelCrop.width);
+  const cropHeight = Math.round(pixelCrop.height);
+  const cropSize = Math.max(1, Math.min(cropWidth, cropHeight));
+
+  const safeX = Math.min(cropX, Math.max(0, imageWidth - cropSize));
+  const safeY = Math.min(cropY, Math.max(0, imageHeight - cropSize));
 
   const canvas = document.createElement("canvas");
-  canvas.width = pixelCrop.width;
-  canvas.height = pixelCrop.height;
+  canvas.width = cropSize;
+  canvas.height = cropSize;
   const ctx = canvas.getContext("2d")!;
+  ctx.imageSmoothingEnabled = true;
+  ctx.imageSmoothingQuality = "high";
 
   ctx.drawImage(
     image,
-    pixelCrop.x,
-    pixelCrop.y,
-    pixelCrop.width,
-    pixelCrop.height,
+    safeX,
+    safeY,
+    cropSize,
+    cropSize,
     0,
     0,
-    pixelCrop.width,
-    pixelCrop.height
+    cropSize,
+    cropSize
   );
 
   return new Promise((resolve, reject) => {
@@ -92,7 +105,12 @@ const ImageCropper = ({
   }, [open, imageSrc]);
 
   const onCropComplete = useCallback((_: Area, croppedPixels: Area) => {
-    setCroppedAreaPixels(croppedPixels);
+    setCroppedAreaPixels({
+      x: Math.round(croppedPixels.x),
+      y: Math.round(croppedPixels.y),
+      width: Math.round(croppedPixels.width),
+      height: Math.round(croppedPixels.height),
+    });
   }, []);
 
   const handleSave = async () => {
@@ -130,6 +148,7 @@ const ImageCropper = ({
             onCropComplete={onCropComplete}
             showGrid={cropShape === "rect"}
             objectFit="cover"
+            roundCropAreaPixels
             restrictPosition={true}
             style={{
               containerStyle: { width: "100%", height: "100%" },
