@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { ZoomIn, ZoomOut, Check, X } from "lucide-react";
+import { ZoomIn, ZoomOut, Check, X, RotateCcw } from "lucide-react";
 
 interface ImageCropperProps {
   open: boolean;
