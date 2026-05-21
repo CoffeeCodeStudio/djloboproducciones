@@ -147,7 +147,9 @@ const RadioTab = () => {
     const previewUrl = URL.createObjectURL(croppedBlob);
     setPreviewRadio(previewUrl);
 
-    const file = new File([croppedBlob], "radio-cropped.jpg", { type: "image/jpeg" });
+    const fileType = croppedBlob.type === "image/png" ? "image/png" : "image/jpeg";
+    const fileExtension = fileType === "image/png" ? "png" : "jpg";
+    const file = new File([croppedBlob], `radio-cropped.${fileExtension}`, { type: fileType });
     setUploadingRadio(true);
     const { url, error } = await uploadImage(file, "radio");
     setUploadingRadio(false);
@@ -251,11 +253,11 @@ const RadioTab = () => {
             <CardContent className="space-y-4">
               {(previewRadio || (branding as any)?.radio_image_url) ? (
                 <div className="space-y-3 max-w-[280px] mx-auto">
-                  <div className="relative w-full aspect-square rounded-full overflow-hidden border-4 border-secondary/50">
+                  <div className="relative w-full aspect-square rounded-full border-4 border-secondary/50 bg-muted/10 flex items-center justify-center p-3">
                     <img
                       src={previewRadio || (branding as any)?.radio_image_url}
                       alt="Radiobild"
-                      className="w-full h-full object-contain object-center"
+                      className="max-w-full max-h-full object-contain object-center"
                     />
                     {uploadingRadio && (
                       <div className="absolute inset-0 bg-background/50 flex items-center justify-center">
@@ -442,6 +444,8 @@ const RadioTab = () => {
         aspect={1}
         cropShape="round"
         title="Beskär radiobild (rund)"
+        saveMode="contain"
+        outputType="image/png"
         onComplete={handleCropComplete}
         onCancel={() => setCropperOpen(false)}
       />
