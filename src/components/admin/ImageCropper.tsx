@@ -384,8 +384,8 @@ const ImageCropper = ({
                 maxZoom={5}
                 aspect={aspect}
                 cropShape={cropShape}
-                onCropChange={setCrop}
-                onZoomChange={setZoom}
+                onCropChange={handleCropChange}
+                onZoomChange={handleZoomChange}
                 onCropComplete={onCropComplete}
                 showGrid={cropShape === "rect"}
                 objectFit="cover"
@@ -404,7 +404,7 @@ const ImageCropper = ({
                 max={5}
                 step={0.05}
                 value={[zoom]}
-                onValueChange={([v]) => setZoom(v)}
+                onValueChange={([v]) => handleZoomChange(v)}
                 className="flex-1"
               />
               <ZoomIn className="w-4 h-4 text-muted-foreground shrink-0" />
