@@ -8,6 +8,7 @@ import { useBranding } from "@/hooks/useBranding";
 import { useStreamStatus } from "@/hooks/useStreamStatus";
 import { optimizeProfile } from "@/lib/imageOptimizer";
 import Seo from "@/components/Seo";
+import RadioImagePixelCheck from "@/components/dev/RadioImagePixelCheck";
 
 const translations = {
   sv: {
@@ -47,6 +48,10 @@ const ListenPage = () => {
   const profileFallback = radioOpt.fallback || djLoboImage;
   const siteName = branding?.site_name || "DJ LOBO";
   const radioSectionTitle = branding?.radio_section_title || "Live Radio";
+
+  const debugImage =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("debug") === "image";
 
   return (
     <div className="max-w-7xl mx-auto">
@@ -119,6 +124,7 @@ const ListenPage = () => {
               width={224}
               height={224}
               style={{ width: 224, height: 224 }}
+              data-radio-profile="true"
               onError={(e) => {e.currentTarget.onerror = null;e.currentTarget.src = profileFallback;}} />
           </div>
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-neon-pink/30 to-neon-cyan/30 blur-3xl -z-10 scale-110" aria-hidden="true" />
@@ -150,6 +156,7 @@ const ListenPage = () => {
 
       <LiveChat />
       <Footer />
+      {debugImage && <RadioImagePixelCheck src={profileImage} expectedSize={224} />}
     </div>);
 
 };
