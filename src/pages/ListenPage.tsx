@@ -49,6 +49,10 @@ const ListenPage = () => {
   const siteName = branding?.site_name || "DJ LOBO";
   const radioSectionTitle = branding?.radio_section_title || "Live Radio";
 
+  const debugImage =
+    typeof window !== "undefined" &&
+    new URLSearchParams(window.location.search).get("debug") === "image";
+
   return (
     <div className="max-w-7xl mx-auto">
       <Seo
