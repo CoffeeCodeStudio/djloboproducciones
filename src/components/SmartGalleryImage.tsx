@@ -38,10 +38,8 @@ const SmartGalleryImage = ({
         if (fallback) e.currentTarget.src = fallback;
       }}
       loading="lazy"
-      width={400}
-      height={400}
       className={[
-        "w-full h-full object-cover object-center transition-opacity duration-300",
+        "block w-full h-auto transition-opacity duration-300",
         loaded ? "opacity-100" : "opacity-0",
         className,
       ].join(" ")}
