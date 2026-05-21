@@ -167,7 +167,7 @@ const AboutSection = () => {
               <img
                 src={aboutImage}
                 alt="DJ Lobo spelar latinmusik live"
-                className="w-full h-full object-cover object-center block"
+                className="w-full h-full object-contain object-center block"
                 loading="lazy"
                 width={400}
                 height={500}
