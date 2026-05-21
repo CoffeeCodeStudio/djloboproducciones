@@ -147,7 +147,9 @@ const RadioTab = () => {
     const previewUrl = URL.createObjectURL(croppedBlob);
     setPreviewRadio(previewUrl);
 
-    const file = new File([croppedBlob], "radio-cropped.jpg", { type: "image/jpeg" });
+    const fileType = croppedBlob.type === "image/png" ? "image/png" : "image/jpeg";
+    const fileExtension = fileType === "image/png" ? "png" : "jpg";
+    const file = new File([croppedBlob], `radio-cropped.${fileExtension}`, { type: fileType });
     setUploadingRadio(true);
     const { url, error } = await uploadImage(file, "radio");
     setUploadingRadio(false);
