@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import Cropper, { Area } from "react-easy-crop";
 import {
   Dialog,
@@ -95,6 +95,7 @@ const ImageCropper = ({
   const [crop, setCrop] = useState({ x: 0, y: 0 });
   const [zoom, setZoom] = useState(1);
   const [croppedAreaPixels, setCroppedAreaPixels] = useState<Area | null>(null);
+  const croppedAreaPixelsRef = useRef<Area | null>(null);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
@@ -102,22 +103,27 @@ const ImageCropper = ({
     setCrop({ x: 0, y: 0 });
     setZoom(1);
     setCroppedAreaPixels(null);
+    croppedAreaPixelsRef.current = null;
   }, [open, imageSrc]);
 
   const onCropComplete = useCallback((_: Area, croppedPixels: Area) => {
-    setCroppedAreaPixels({
+    const roundedCrop = {
       x: Math.round(croppedPixels.x),
       y: Math.round(croppedPixels.y),
       width: Math.round(croppedPixels.width),
       height: Math.round(croppedPixels.height),
-    });
+    };
+
+    croppedAreaPixelsRef.current = roundedCrop;
+    setCroppedAreaPixels(roundedCrop);
   }, []);
 
   const handleSave = async () => {
-    if (!croppedAreaPixels) return;
+    const latestCrop = croppedAreaPixelsRef.current ?? croppedAreaPixels;
+    if (!latestCrop) return;
     setSaving(true);
     try {
-      const blob = await getCroppedImg(imageSrc, croppedAreaPixels, outputType);
+      const blob = await getCroppedImg(imageSrc, latestCrop, outputType);
       onComplete(blob);
     } catch (error) {
       console.error("[ImageCropper] Failed to save image", error);
