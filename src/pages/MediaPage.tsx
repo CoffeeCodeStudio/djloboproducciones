@@ -172,18 +172,21 @@ const MediaPage = () => {
         <MediaFilterBar active={filter} onChange={setFilter} counts={counts} />
 
         {isLoading ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
+          <div className="columns-2 md:columns-3 gap-4 sm:gap-5 [column-fill:_balance]">
             {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="aspect-square glass-card animate-pulse bg-muted/20 rounded-xl" />
+              <div
+                key={i}
+                className="break-inside-avoid mb-4 sm:mb-5 h-48 glass-card animate-pulse bg-muted/20 rounded-xl"
+              />
             ))}
           </div>
         ) : filtered.length > 0 ? (
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 sm:gap-5">
+          <div className="columns-2 md:columns-3 gap-4 sm:gap-5 [column-fill:_balance]">
             {filtered.map((item) => (
               <button
                 key={item.id}
                 onClick={() => openLightbox(item)}
-                className="w-full aspect-[4/3] sm:aspect-[5/4] lg:aspect-[4/3] xl:aspect-[3/2] glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
+                className="break-inside-avoid mb-4 sm:mb-5 w-full glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
               >
                 <SmartGalleryImage
                   src={item.src}
@@ -192,7 +195,7 @@ const MediaPage = () => {
                   className="group-hover:scale-[1.03]"
                 />
 
-                <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none" />
 
                 {/* Type badge */}
                 <div className="absolute top-2 left-2">
