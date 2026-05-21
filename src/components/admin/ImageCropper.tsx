@@ -54,6 +54,50 @@ async function getCroppedImg(
   const safeX = Math.min(cropX, Math.max(0, imageWidth - cropSize));
   const safeY = Math.min(cropY, Math.max(0, imageHeight - cropSize));
 
+  // === [ImageCropper] DEBUG: input vs. normaliserad export ===
+  const aspectRatio = cropHeight === 0 ? 0 : cropWidth / cropHeight;
+  const aspectDeviation = Math.abs(aspectRatio - 1);
+  const xClampDelta = cropX - safeX;
+  const yClampDelta = cropY - safeY;
+  const widthDelta = cropWidth - cropSize;
+  const heightDelta = cropHeight - cropSize;
+  const hasDeviation =
+    aspectDeviation > 0.001 ||
+    xClampDelta !== 0 ||
+    yClampDelta !== 0 ||
+    widthDelta !== 0 ||
+    heightDelta !== 0;
+
+  const debugPayload = {
+    image: { naturalWidth: imageWidth, naturalHeight: imageHeight },
+    rawCrop: {
+      x: pixelCrop.x,
+      y: pixelCrop.y,
+      width: pixelCrop.width,
+      height: pixelCrop.height,
+      aspectRatio: Number(aspectRatio.toFixed(4)),
+    },
+    normalizedCrop: { x: safeX, y: safeY, size: cropSize },
+    canvas: { width: cropSize, height: cropSize },
+    deltas: {
+      aspectDeviation: Number(aspectDeviation.toFixed(4)),
+      xClampDelta,
+      yClampDelta,
+      widthDelta,
+      heightDelta,
+    },
+    outputType,
+  };
+
+  if (hasDeviation) {
+    console.warn(
+      "[ImageCropper] ⚠️ Export avviker från förhandsvisningen – cropdata justerades innan canvas-render:",
+      debugPayload
+    );
+  } else {
+    console.log("[ImageCropper] ✅ Crop matchar förhandsvisning 1:1:", debugPayload);
+  }
+
   const canvas = document.createElement("canvas");
   canvas.width = cropSize;
   canvas.height = cropSize;
@@ -75,7 +119,19 @@ async function getCroppedImg(
 
   return new Promise((resolve, reject) => {
     canvas.toBlob(
-      (blob) => (blob ? resolve(blob) : reject(new Error("Canvas toBlob failed"))),
+      (blob) => {
+        if (!blob) {
+          console.error("[ImageCropper] ❌ canvas.toBlob() returnerade null", debugPayload);
+          reject(new Error("Canvas toBlob failed"));
+          return;
+        }
+        console.log("[ImageCropper] 💾 Exporterad fil:", {
+          sizeKB: Number((blob.size / 1024).toFixed(1)),
+          type: blob.type,
+          canvas: { width: canvas.width, height: canvas.height },
+        });
+        resolve(blob);
+      },
       outputType,
       outputType === "image/jpeg" ? 0.92 : undefined
     );
