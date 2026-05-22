@@ -75,14 +75,13 @@ const MediaPage = () => {
   // Build unified media items from gallery_images (which now have media_type)
   const allItems = (images || []).map((img) => {
     const isVideo = img.media_type === "video";
-    const opt = optimizeGallery(img.image_url);
     const ytId = isVideo && img.video_url ? extractYouTubeId(img.video_url) : null;
 
     return {
       id: img.id,
       mediaType: isVideo ? ("video" as const) : ("photo" as const),
-      src: opt.src,
-      fallback: opt.fallback,
+      src: img.image_url,
+      fallback: img.image_url,
       alt: img.alt_text || "DJ Lobo event",
       videoUrl: img.video_url,
       youtubeId: ytId,
