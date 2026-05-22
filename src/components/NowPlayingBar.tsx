@@ -293,7 +293,7 @@ const NowPlayingBar = () => {
     const path = currentTrack.originalUrl
       .replace(/https?:\/\/(www\.)?mixcloud\.com/, "")
       .replace(/\/$/, "");
-    return `https://www.mixcloud.com/widget/iframe/?dark=1&hide_cover=0&mini=0&autoplay=1&feed=${encodeURIComponent(path + "/")}`;
+    return `https://www.mixcloud.com/widget/iframe/?dark=1&hide_cover=0&mini=1&autoplay=1&feed=${encodeURIComponent(path + "/")}`;
   };
 
   const showExpandedMix = isMix && currentTrack && !isMinimized;
