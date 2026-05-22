@@ -115,15 +115,7 @@ const MixCardGrid = () => {
       });
       return;
     }
-    const track: MixTrack = {
-      id: mix.id,
-      title: mix.title,
-      coverArt: mix.coverArt,
-      embedUrl: mix.embedUrl,
-      source: mix.source,
-      originalUrl: mix.url,
-    };
-    playMix(track);
+    setModalMix(mix);
   };
 
   if (!loading && mixes.length === 0) {
