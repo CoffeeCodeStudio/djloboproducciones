@@ -5,6 +5,7 @@ import { usePlayerStore, MixTrack } from "@/stores/usePlayerStore";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
 import { toast } from "@/hooks/use-toast";
+import MixcloudModal from "@/components/MixcloudModal";
 
 const translations = {
   sv: {
