@@ -1,9 +1,11 @@
 import { useLocation, Link } from "react-router-dom";
 import { useEffect } from "react";
+import { Helmet } from "react-helmet-async";
 import { logger } from "@/lib/logger";
 import { Music, Disc3 } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useLocalizedTo } from "@/hooks/useLocalizedTo";
+import { getSeoMeta } from "@/lib/seoMeta";
 
 const translations = {
   sv: {
