@@ -43,9 +43,7 @@ const ListenPage = () => {
   const { status } = useStreamStatus();
   const t = translations[language];
 
-  const radioOpt = optimizeProfile((branding as any)?.radio_image_url || branding?.profile_image_url);
-  const profileImage = radioOpt.src || djLoboImage;
-  const profileFallback = radioOpt.fallback || djLoboImage;
+  const profileImage = (branding as any)?.radio_image_url || branding?.profile_image_url || djLoboImage;
   const siteName = branding?.site_name || "DJ LOBO";
   const radioSectionTitle = branding?.radio_section_title || "Live Radio";
 
@@ -124,7 +122,7 @@ const ListenPage = () => {
               width={224}
               height={224}
               data-radio-profile="true"
-              onError={(e) => {e.currentTarget.onerror = null;e.currentTarget.src = profileFallback;}} />
+              onError={(e) => {e.currentTarget.onerror = null;e.currentTarget.src = djLoboImage;}} />
           </div>
           <div className="absolute inset-0 rounded-full bg-gradient-to-br from-neon-pink/30 to-neon-cyan/30 blur-3xl -z-10 scale-110" aria-hidden="true" />
         </div>
