@@ -178,67 +178,9 @@ const NowPlayingBar = () => {
     }
   }, [volume, isMuted]);
 
-  // Mixcloud widget instance ref
-  const mixcloudWidgetRef = useRef<any>(null);
-  
+  // Mix playback is handled entirely by the iframe's autoplay=1 URL param.
+  // No Mixcloud Widget API needed.
 
-  // Dynamically load Mixcloud widget API on demand
-  const loadWidgetApi = useCallback((): Promise<void> => {
-    if ((window as any).Mixcloud) return Promise.resolve();
-
-    return new Promise((resolve) => {
-      const script = document.createElement("script");
-      script.src = "https://widget.mixcloud.com/media/js/widgetApi.js";
-      script.async = true;
-      script.onload = () => resolve();
-      script.onerror = () => resolve();
-      document.head.appendChild(script);
-    });
-  }, []);
-
-  // Initialize Mixcloud widget when iframe loads
-  const handleMixIframeLoad = useCallback(async () => {
-    const iframe = mixIframeRef.current;
-    if (!iframe || !currentTrack) return;
-
-    await loadWidgetApi();
-    if ((window as any).Mixcloud) {
-      try {
-        console.info("[NowPlayingBar] Initializing Mixcloud widget...");
-        const widget = (window as any).Mixcloud.PlayerWidget(iframe);
-        widget.ready.then(() => {
-          console.info("[NowPlayingBar] Mixcloud widget ready");
-          mixcloudWidgetRef.current = widget;
-          const vol = isMuted ? 0 : volume / 100;
-          widget.setVolume(vol);
-          widget.play();
-          console.info("[NowPlayingBar] Mixcloud widget.play() called");
-        }).catch((err: any) => {
-          console.error("[NowPlayingBar] Mixcloud widget.ready failed:", err);
-        });
-      } catch (e) {
-        console.error("[NowPlayingBar] Mixcloud widget init error:", e);
-      }
-    }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentTrack, loadWidgetApi]);
-
-  // Volume sync for mix widgets
-  useEffect(() => {
-    if (!isMix || !currentTrack) return;
-    const effectiveVolume = isMuted ? 0 : volume / 100;
-
-    if (mixcloudWidgetRef.current) {
-      try {
-        mixcloudWidgetRef.current.setVolume(effectiveVolume);
-      } catch { /* ignore */ }
-    }
-  }, [volume, isMuted, isMix, currentTrack]);
-
-  // Reset widget refs when track changes
-  useEffect(() => {
-    mixcloudWidgetRef.current = null;
-  }, [currentTrack?.id]);
 
   // Audio element event listeners
   useEffect(() => {
