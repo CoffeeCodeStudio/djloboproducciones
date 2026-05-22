@@ -117,13 +117,12 @@ const ListenPage = () => {
             <img
               src={profileImage}
               alt="DJ Lobo vid mixerbordet"
-              className="block rounded-full object-contain"
+              className="w-full h-full object-contain rounded-full"
               loading="eager"
               fetchPriority="high"
               decoding="sync"
-              width={168}
-              height={168}
-              style={{ width: 168, height: 168 }}
+              width={224}
+              height={224}
               data-radio-profile="true"
               onError={(e) => {e.currentTarget.onerror = null;e.currentTarget.src = profileFallback;}} />
           </div>
