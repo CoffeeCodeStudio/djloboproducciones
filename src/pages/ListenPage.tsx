@@ -8,6 +8,7 @@ import { useBranding } from "@/hooks/useBranding";
 import { useStreamStatus } from "@/hooks/useStreamStatus";
 import { optimizeProfile } from "@/lib/imageOptimizer";
 import Seo from "@/components/Seo";
+import { getSeoMeta } from "@/lib/seoMeta";
 import RadioImagePixelCheck from "@/components/dev/RadioImagePixelCheck";
 
 const translations = {
@@ -54,8 +55,8 @@ const ListenPage = () => {
   return (
     <div className="max-w-7xl mx-auto">
       <Seo
-        title="Lyssna Live – DJ Lobo Radio | Latin, 80-tal & 90-tal"
-        description="Lyssna på DJ Lobo Radio live dygnet runt. Latin beats, salsa, reggaeton, 80-tal och 90-tal — direkt från Göteborg."
+        title={getSeoMeta("/lyssna", language).title}
+        description={getSeoMeta("/lyssna", language).description}
         path="/lyssna"
       />
       {/* Radio Section Title */}

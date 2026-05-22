@@ -3,6 +3,7 @@ import { ArrowLeft, FileText } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 import Seo from "@/components/Seo";
+import { getSeoMeta } from "@/lib/seoMeta";
 
 const translations = {
   sv: {
@@ -33,8 +34,8 @@ const TermsOfService = () => {
   return (
     <div className="min-h-screen bg-background text-foreground relative">
       <Seo
-        title="Användarvillkor – DJ Lobo Producciones"
-        description="Villkor för bokning, chatt och tredjepartstjänster på djloboproducciones.com."
+        title={getSeoMeta("/terms", language).title}
+        description={getSeoMeta("/terms", language).description}
         path="/terms"
       />
       {/* Light leak backgrounds */}
