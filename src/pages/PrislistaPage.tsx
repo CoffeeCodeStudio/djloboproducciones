@@ -3,6 +3,7 @@ import Footer from "@/components/Footer";
 import PricingGrid from "@/components/PricingGrid";
 import Seo from "@/components/Seo";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { getSeoMeta } from "@/lib/seoMeta";
 
 const translations = {
   sv: {
