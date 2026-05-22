@@ -242,12 +242,6 @@ const MixCardGrid = () => {
           </div>
         )}
       </div>
-      <MixcloudModal
-        isOpen={modalMix !== null}
-        onClose={() => setModalMix(null)}
-        title={modalMix?.title ?? ""}
-        mixcloudUrl={modalMix?.url ?? ""}
-      />
     </section>
   );
 };
