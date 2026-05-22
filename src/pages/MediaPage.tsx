@@ -9,6 +9,7 @@ import MediaFilterBar, { type MediaFilter } from "@/components/MediaFilterBar";
 import MediaLightbox from "@/components/MediaLightbox";
 
 import Seo from "@/components/Seo";
+import { getSeoMeta } from "@/lib/seoMeta";
 import SmartGalleryImage from "@/components/SmartGalleryImage";
 
 const translations = {
