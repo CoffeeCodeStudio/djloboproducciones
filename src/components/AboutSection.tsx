@@ -160,43 +160,42 @@ const AboutSection = () => {
             </dl>
           </div>
 
-          {/* Right Column - Image and Features */}
-          <div className="space-y-4 sm:space-y-6">
-            {/* DJ Image */}
-            <div className="scroll-reveal glass-card overflow-hidden w-full max-w-sm aspect-square mx-auto">
+          {/* Right Column - Image */}
+          <div>
+            <div className="scroll-reveal glass-card overflow-hidden w-full max-w-md aspect-[3/4] mx-auto">
               <img
                 src={aboutImage}
                 alt="DJ Lobo spelar latinmusik live"
-                className="w-full h-full object-cover object-center block"
+                className="w-full h-full object-cover object-top block"
                 loading="lazy"
                 width={400}
-                height={500}
+                height={533}
                 onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.src = aboutFallback; }}
               />
             </div>
-
-            {/* Feature Cards */}
-            <ul className="grid grid-cols-3 gap-2 sm:gap-4" role="list">
-              {features.map((feature, index) => (
-                <li
-                  key={index}
-                  className="scroll-reveal glass-card p-3 sm:p-4 text-center"
-                >
-                  <div
-                    className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${feature.gradient} flex items-center justify-center mx-auto mb-2 sm:mb-3`}
-                    aria-hidden="true"
-                  >
-                    <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
-                  </div>
-                  <h3 className="font-semibold text-xs sm:text-sm mb-1">{feature.title}</h3>
-                  <p className="text-muted-foreground text-[10px] sm:text-xs">
-                    {feature.description}
-                  </p>
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
+
+        {/* Feature Cards - full width below */}
+        <ul className="grid grid-cols-3 gap-2 sm:gap-4 mt-10 sm:mt-16" role="list">
+          {features.map((feature, index) => (
+            <li
+              key={index}
+              className="scroll-reveal glass-card p-3 sm:p-4 text-center"
+            >
+              <div
+                className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${feature.gradient} flex items-center justify-center mx-auto mb-2 sm:mb-3`}
+                aria-hidden="true"
+              >
+                <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
+              </div>
+              <h3 className="font-semibold text-xs sm:text-sm mb-1">{feature.title}</h3>
+              <p className="text-muted-foreground text-[10px] sm:text-xs">
+                {feature.description}
+              </p>
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );
