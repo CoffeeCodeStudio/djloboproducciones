@@ -107,10 +107,43 @@ Deno.serve(async (req) => {
       }
     }
 
+    // --- Check existing non-hidden mixes for 404 (deleted on Mixcloud) ---
+    let hidden = 0;
+    let unhidden = 0;
+    const { data: allMixes } = await supabase
+      .from("mixcloud_mixes")
+      .select("id, mixcloud_url, hidden");
+
+    if (allMixes) {
+      const checks = await Promise.all(
+        allMixes.map(async (m) => {
+          try {
+            const r = await fetch(m.mixcloud_url, { method: "HEAD", redirect: "follow" });
+            return { id: m.id, ok: r.ok, status: r.status, wasHidden: m.hidden };
+          } catch {
+            return { id: m.id, ok: true, status: 0, wasHidden: m.hidden }; // network error: don't hide
+          }
+        })
+      );
+
+      const toHide = checks.filter((c) => c.status === 404 && !c.wasHidden).map((c) => c.id);
+      const toUnhide = checks.filter((c) => c.ok && c.wasHidden).map((c) => c.id);
+
+      if (toHide.length > 0) {
+        await supabase.from("mixcloud_mixes").update({ hidden: true }).in("id", toHide);
+        hidden = toHide.length;
+      }
+      if (toUnhide.length > 0) {
+        await supabase.from("mixcloud_mixes").update({ hidden: false }).in("id", toUnhide);
+        unhidden = toUnhide.length;
+      }
+    }
+
     return new Response(
-      JSON.stringify({ success: true, fetched: cloudcasts.length, inserted, updated }),
+      JSON.stringify({ success: true, fetched: cloudcasts.length, inserted, updated, hidden, unhidden }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
+
   } catch (error) {
     console.error("fetch-mixcloud error:", error);
     const msg = error instanceof Error ? error.message : "Unknown error";
