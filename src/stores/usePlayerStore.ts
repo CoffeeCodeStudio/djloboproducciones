@@ -54,7 +54,7 @@ export const usePlayerStore = create<PlayerState>((set) => ({
       mode: "mix",
       currentTrack: track,
       isPlaying: true,
-      isMinimized: true,
+      isMinimized: false,
     }),
 
   pause: () => set({ isPlaying: false }),

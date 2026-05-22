@@ -5,7 +5,6 @@ import { usePlayerStore, MixTrack } from "@/stores/usePlayerStore";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
 import { toast } from "@/hooks/use-toast";
-import MixcloudModal from "@/components/MixcloudModal";
 
 const translations = {
   sv: {
@@ -62,7 +61,6 @@ const MixCardGrid = () => {
   const t = translations[language];
   const [mixes, setMixes] = useState<UnifiedMix[]>([]);
   const [loading, setLoading] = useState(true);
-  const [modalMix, setModalMix] = useState<UnifiedMix | null>(null);
   const { playMix, currentTrack } = usePlayerStore();
   const { hasConsented, acceptCookies } = useCookieConsent();
 
@@ -115,7 +113,15 @@ const MixCardGrid = () => {
       });
       return;
     }
-    setModalMix(mix);
+    const track: MixTrack = {
+      id: mix.id,
+      title: mix.title,
+      coverArt: mix.coverArt,
+      embedUrl: mix.embedUrl,
+      source: mix.source,
+      originalUrl: mix.url,
+    };
+    playMix(track);
   };
 
   if (!loading && mixes.length === 0) {
@@ -236,12 +242,6 @@ const MixCardGrid = () => {
           </div>
         )}
       </div>
-      <MixcloudModal
-        isOpen={modalMix !== null}
-        onClose={() => setModalMix(null)}
-        title={modalMix?.title ?? ""}
-        mixcloudUrl={modalMix?.url ?? ""}
-      />
     </section>
   );
 };
