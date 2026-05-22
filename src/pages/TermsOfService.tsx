@@ -3,6 +3,7 @@ import { ArrowLeft, FileText } from "lucide-react";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 import Seo from "@/components/Seo";
+import { getSeoMeta } from "@/lib/seoMeta";
 
 const translations = {
   sv: {
