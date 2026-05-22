@@ -27,8 +27,8 @@ const PrislistaPage = () => {
   return (
     <div className="max-w-7xl mx-auto">
       <Seo
-        title="Prislista & Bokning – DJ Lobo Producciones"
-        description="Paket och priser för bröllop, företagsevent och privatfester. Skicka bokningsförfrågan direkt till DJ Lobo i Göteborg."
+        title={getSeoMeta("/prislista", language).title}
+        description={getSeoMeta("/prislista", language).description}
         path="/prislista"
       />
       {/* Page Header */}
