@@ -176,7 +176,7 @@ const MediaPage = () => {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="aspect-square glass-card animate-pulse bg-muted/20 rounded-xl"
+                className="aspect-[4/3] glass-card animate-pulse bg-muted/20 rounded-lg"
               />
             ))}
           </div>
@@ -186,7 +186,7 @@ const MediaPage = () => {
               <button
                 key={item.id}
                 onClick={() => openLightbox(item)}
-                className="aspect-square w-full glass-card overflow-hidden group relative rounded-xl border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
+                className="relative aspect-[4/3] w-full overflow-hidden rounded-lg glass-card group border border-border/30 hover:border-primary/50 transition-all duration-300 cursor-pointer text-left block"
               >
                 <SmartGalleryImage
                   src={item.src}
