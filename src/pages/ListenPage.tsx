@@ -8,6 +8,7 @@ import { useBranding } from "@/hooks/useBranding";
 import { useStreamStatus } from "@/hooks/useStreamStatus";
 import { optimizeProfile } from "@/lib/imageOptimizer";
 import Seo from "@/components/Seo";
+import { getSeoMeta } from "@/lib/seoMeta";
 import RadioImagePixelCheck from "@/components/dev/RadioImagePixelCheck";
 
 const translations = {
