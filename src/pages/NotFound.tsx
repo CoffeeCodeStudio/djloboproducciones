@@ -35,8 +35,15 @@ const NotFound = () => {
     logger.error("404 Error: User attempted to access non-existent route:", location.pathname);
   }, [location.pathname]);
 
+  const meta = getSeoMeta("notfound", language);
+
   return (
     <div className="flex min-h-[80vh] flex-col items-center justify-center px-6 text-center">
+      <Helmet>
+        <title>{meta.title}</title>
+        <meta name="description" content={meta.description} />
+        <meta name="robots" content="noindex,follow" />
+      </Helmet>
       <div className="relative z-10 flex flex-col items-center gap-6">
         <Disc3
           className="h-20 w-20 text-neon-cyan animate-[spin_4s_linear_infinite] opacity-60"
