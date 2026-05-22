@@ -54,8 +54,8 @@ const ListenPage = () => {
   return (
     <div className="max-w-7xl mx-auto">
       <Seo
-        title="Lyssna Live – DJ Lobo Radio | Latin, 80-tal & 90-tal"
-        description="Lyssna på DJ Lobo Radio live dygnet runt. Latin beats, salsa, reggaeton, 80-tal och 90-tal — direkt från Göteborg."
+        title={getSeoMeta("/lyssna", language).title}
+        description={getSeoMeta("/lyssna", language).description}
         path="/lyssna"
       />
       {/* Radio Section Title */}
