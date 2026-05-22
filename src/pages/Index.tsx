@@ -25,9 +25,6 @@ const Index = () => {
       <ErrorBoundary>
         <CalendarSection />
       </ErrorBoundary>
-      <ErrorBoundary>
-        <EquipmentSection />
-      </ErrorBoundary>
 
       <ErrorBoundary>
         <ContactSection />
