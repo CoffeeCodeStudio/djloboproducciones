@@ -489,7 +489,6 @@ const NowPlayingBar = () => {
               className="rounded-lg border border-primary/10"
               allow="autoplay"
               title={currentTrack.title}
-              onLoad={handleMixIframeLoad}
             />
           </div>
         )}
