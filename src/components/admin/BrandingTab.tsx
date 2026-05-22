@@ -47,7 +47,7 @@ const BrandingTab = () => {
   const [previewImages, setPreviewImages] = useState<Record<string, string>>({});
   const [uploadHistory, setUploadHistory] = useState<Record<string, UploadHistoryItem[]>>({});
   
-  const logoInputRef = useRef<HTMLInputElement>(null);
+  
   
 
   const fetchHistory = useCallback(async () => {
