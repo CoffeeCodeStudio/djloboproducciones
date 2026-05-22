@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
+import NeonWordmark from "@/components/NeonWordmark";
 
 const DEFAULT_SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/djloboradio",
@@ -76,16 +77,9 @@ const socialLinks = {
       <div className="max-w-7xl mx-auto">
         {/* Grid: About + Contact + Social */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:[grid-template-columns:1.5fr_1fr_1fr_1fr] gap-10 md:gap-8 mb-10">
-          {/* Logo */}
+          {/* Wordmark */}
           <div className="flex flex-col justify-start">
-            <img
-              alt="DJ Lobo Producciones Logo"
-              className="h-14 sm:h-16 w-auto object-contain bg-transparent animate-fade-in drop-shadow-[0_0_10px_rgba(0,255,255,0.3)]"
-              src={logoSrc}
-              loading="lazy"
-              width={320}
-              height={80}
-            />
+            <NeonWordmark size="footer" className="animate-fade-in" />
           </div>
 
           {/* Contact */}
