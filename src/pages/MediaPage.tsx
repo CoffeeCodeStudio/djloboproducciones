@@ -176,7 +176,7 @@ const MediaPage = () => {
             {Array.from({ length: 6 }).map((_, i) => (
               <div
                 key={i}
-                className="aspect-square glass-card animate-pulse bg-muted/20 rounded-xl"
+                className="aspect-[4/3] glass-card animate-pulse bg-muted/20 rounded-lg"
               />
             ))}
           </div>
