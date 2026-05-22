@@ -62,6 +62,7 @@ const MixCardGrid = () => {
   const t = translations[language];
   const [mixes, setMixes] = useState<UnifiedMix[]>([]);
   const [loading, setLoading] = useState(true);
+  const [modalMix, setModalMix] = useState<UnifiedMix | null>(null);
   const { playMix, currentTrack } = usePlayerStore();
   const { hasConsented, acceptCookies } = useCookieConsent();
 
