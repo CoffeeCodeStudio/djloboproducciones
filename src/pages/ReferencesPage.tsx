@@ -1,13 +1,17 @@
 import TestimonialsSection from "@/components/TestimonialsSection";
 import Footer from "@/components/Footer";
 import Seo from "@/components/Seo";
+import { useLanguage } from "@/contexts/LanguageContext";
+import { getSeoMeta } from "@/lib/seoMeta";
 
 const ReferencesPage = () => {
+  const { language } = useLanguage();
+  const meta = getSeoMeta("/referenser", language);
   return (
     <div className="max-w-7xl mx-auto">
       <Seo
-        title="Referenser & Omdömen – DJ Lobo Producciones"
-        description="Läs vad tidigare kunder säger om DJ Lobo. Bröllop, företagsevent och privatfester i Göteborg och hela Sverige."
+        title={meta.title}
+        description={meta.description}
         path="/referenser"
       />
       <TestimonialsSection />
