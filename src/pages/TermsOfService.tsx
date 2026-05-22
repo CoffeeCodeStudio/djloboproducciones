@@ -34,8 +34,8 @@ const TermsOfService = () => {
   return (
     <div className="min-h-screen bg-background text-foreground relative">
       <Seo
-        title="Användarvillkor – DJ Lobo Producciones"
-        description="Villkor för bokning, chatt och tredjepartstjänster på djloboproducciones.com."
+        title={getSeoMeta("/terms", language).title}
+        description={getSeoMeta("/terms", language).description}
         path="/terms"
       />
       {/* Light leak backgrounds */}
