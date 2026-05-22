@@ -1,14 +1,13 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
-  Upload, 
-  Palette, 
-  Save, 
-  Loader2, 
+  Upload,
+  Palette,
+  Save,
+  Loader2,
   Check,
-  Sparkles,
   Trash2,
   History,
   CheckCircle2
@@ -34,7 +33,7 @@ const COLOR_PRESETS = [
   { name: "Gyllene Timmen", primary: "40 100% 50%", secondary: "60 100% 45%", accent: "30 100% 55%" },
 ];
 
-const PLACEHOLDER_LOGO = "/placeholder.svg";
+
 
 const BrandingTab = () => {
   const { branding, loading, updateBranding, uploadImage, refetch } = useBranding();
@@ -200,7 +199,7 @@ const BrandingTab = () => {
     );
   }
 
-  const logoPreview = getImagePreview("logo") || PLACEHOLDER_LOGO;
+  
   
 
   return (
