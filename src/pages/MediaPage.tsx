@@ -110,8 +110,8 @@ const MediaPage = () => {
   return (
     <div className="max-w-7xl mx-auto">
       <Seo
-        title="Media – DJ Lobo | Bilder & Videos från spelningar"
-        description="Bildgalleri och videoklipp från DJ Lobos spelningar — bröllop, företagsfester och klubbnätter i Göteborg."
+        title={getSeoMeta("/media", language).title}
+        description={getSeoMeta("/media", language).description}
         path="/media"
       />
       {/* Social Links */}
