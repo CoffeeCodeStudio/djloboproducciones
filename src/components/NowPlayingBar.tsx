@@ -178,8 +178,69 @@ const NowPlayingBar = () => {
     }
   }, [volume, isMuted]);
 
-  // Mix playback is handled entirely by the iframe's autoplay=1 URL param.
-  // No Mixcloud Widget API needed.
+  // Mixcloud Widget API: when a mix iframe mounts/loads, programmatically
+  // call widget.play() so the user only needs to click once (on the card).
+  // Cross-origin iframes ignore autoplay=1 without an in-iframe gesture, but
+  // the Widget API postMessage bridge accepts play() from the parent as long
+  // as the parent had a recent user gesture (the card click).
+  useEffect(() => {
+    if (!isMix || !currentTrack || isMinimized) return;
+    const iframe = mixIframeRef.current;
+    if (!iframe) return;
+
+    // Lazy-load the Mixcloud Widget API script once.
+    const ensureScript = () =>
+      new Promise<void>((resolve, reject) => {
+        const w = window as any;
+        if (w.Mixcloud?.PlayerWidget) return resolve();
+        const existing = document.querySelector<HTMLScriptElement>(
+          'script[src="https://widget.mixcloud.com/media/js/widgetApi.js"]'
+        );
+        if (existing) {
+          existing.addEventListener("load", () => resolve());
+          existing.addEventListener("error", () => reject(new Error("script error")));
+          return;
+        }
+        const s = document.createElement("script");
+        s.src = "https://widget.mixcloud.com/media/js/widgetApi.js";
+        s.async = true;
+        s.onload = () => resolve();
+        s.onerror = () => reject(new Error("script error"));
+        document.head.appendChild(s);
+      });
+
+    let cancelled = false;
+
+    const attach = async () => {
+      try {
+        await ensureScript();
+        if (cancelled) return;
+        const w = window as any;
+        const widget = w.Mixcloud.PlayerWidget(iframe);
+        await widget.ready;
+        if (cancelled) return;
+        if (isPlaying) {
+          await widget.play();
+        }
+      } catch (err) {
+        logger.error("Mixcloud widget play error:", err);
+      }
+    };
+
+    // Wait for iframe load before talking to the widget.
+    if (iframe.contentWindow) {
+      iframe.addEventListener("load", attach, { once: true });
+      // If already loaded (cached), kick it off too.
+      attach();
+    }
+
+    return () => {
+      cancelled = true;
+      iframe.removeEventListener("load", attach);
+    };
+  }, [isMix, isMinimized, isPlaying, currentTrack?.id]);
+
+
 
 
   // Audio element event listeners
