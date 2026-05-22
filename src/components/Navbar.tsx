@@ -52,7 +52,7 @@ const Navbar = () => {
   const { language, setLanguage } = useLanguage();
   const lto = useLocalizedTo();
   const { promo } = useActivePromo();
-  const logoSrc = "/logo-neon.png";
+  
   const location = useLocation();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);

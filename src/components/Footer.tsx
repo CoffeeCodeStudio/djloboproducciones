@@ -60,7 +60,7 @@ const translations = {
 const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { language } = useLanguage();
   const lto = useLocalizedTo();
-  const logoSrc = "/logo-neon.png";
+  
   const { resetConsent } = useCookieConsent();
   const t = translations[language];
 
