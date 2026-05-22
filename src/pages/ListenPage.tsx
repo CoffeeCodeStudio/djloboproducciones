@@ -43,9 +43,7 @@ const ListenPage = () => {
   const { status } = useStreamStatus();
   const t = translations[language];
 
-  const radioOpt = optimizeProfile((branding as any)?.radio_image_url || branding?.profile_image_url);
-  const profileImage = radioOpt.src || djLoboImage;
-  const profileFallback = radioOpt.fallback || djLoboImage;
+  const profileImage = (branding as any)?.radio_image_url || branding?.profile_image_url || djLoboImage;
   const siteName = branding?.site_name || "DJ LOBO";
   const radioSectionTitle = branding?.radio_section_title || "Live Radio";
 
