@@ -12,6 +12,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import NeonWordmark from "@/components/NeonWordmark";
 
 interface NavItem {
   id: string;
@@ -51,7 +52,7 @@ const Navbar = () => {
   const { language, setLanguage } = useLanguage();
   const lto = useLocalizedTo();
   const { promo } = useActivePromo();
-  const logoSrc = "/logo-neon.png";
+  
   const location = useLocation();
   const [isLangOpen, setIsLangOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -110,15 +111,7 @@ const Navbar = () => {
               className="focus-neon rounded-lg hover:scale-105 transition-transform flex-shrink-0"
               aria-label="DJ Lobo Producciones - Hem"
             >
-              <img
-                alt="DJ Lobo Producciones Logo"
-                className="h-10 sm:h-12 w-auto max-w-[280px] object-contain animate-[fade-in_0.8s_ease-out] ring-0 border-0 outline-none shadow-none drop-shadow-[0_0_12px_rgba(0,255,255,0.4)]"
-                src={logoSrc}
-                loading="eager"
-                fetchPriority="high"
-                width={400}
-                height={48}
-              />
+              <NeonWordmark size="nav" className="animate-[fade-in_0.8s_ease-out]" />
             </Link>
 
             {/* Desktop Navigation — 5 items, RADIO centered */}

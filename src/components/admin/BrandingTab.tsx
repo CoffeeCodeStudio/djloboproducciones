@@ -1,14 +1,13 @@
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import {
-  Upload, 
-  Palette, 
-  Save, 
-  Loader2, 
+  Upload,
+  Palette,
+  Save,
+  Loader2,
   Check,
-  Sparkles,
   Trash2,
   History,
   CheckCircle2
@@ -34,7 +33,7 @@ const COLOR_PRESETS = [
   { name: "Gyllene Timmen", primary: "40 100% 50%", secondary: "60 100% 45%", accent: "30 100% 55%" },
 ];
 
-const PLACEHOLDER_LOGO = "/placeholder.svg";
+
 
 const BrandingTab = () => {
   const { branding, loading, updateBranding, uploadImage, refetch } = useBranding();
@@ -47,7 +46,7 @@ const BrandingTab = () => {
   const [previewImages, setPreviewImages] = useState<Record<string, string>>({});
   const [uploadHistory, setUploadHistory] = useState<Record<string, UploadHistoryItem[]>>({});
   
-  const logoInputRef = useRef<HTMLInputElement>(null);
+  
   
 
   const fetchHistory = useCallback(async () => {
@@ -200,7 +199,7 @@ const BrandingTab = () => {
     );
   }
 
-  const logoPreview = getImagePreview("logo") || PLACEHOLDER_LOGO;
+  
   
 
   return (
@@ -229,112 +228,9 @@ const BrandingTab = () => {
           </div>
         )}
 
-        {/* ===== LOGOTYP ===== */}
-        <Card className="bg-card border border-border/50 shadow-sm">
-          <CardHeader>
-            <CardTitle className="font-display flex items-center gap-2 text-base sm:text-lg">
-              <Sparkles className="w-4 h-4 sm:w-5 sm:h-5 text-neon-purple" />
-              Logotyp
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-3 sm:space-y-4">
-            <p className="text-xs sm:text-sm text-muted-foreground">
-              Logotypen visas i navigeringen (menyn) och i sidfoten. Den bör ha <strong>genomskinlig bakgrund</strong> (PNG) så att den smälter in i designen.
-            </p>
+        {/* Logotypen hanteras inte längre — ersatt med inbyggd neon-text-wordmark i Navbar och Footer. */}
 
-            <div className="flex flex-col gap-3 sm:gap-4">
-              <input
-                ref={logoInputRef}
-                type="file"
-                accept="image/png,image/webp,image/svg+xml"
-                className="hidden"
-                onChange={(e) => handleFileSelect(e, "logo", "logo_url", 1024)}
-              />
-              <div className="flex gap-2">
-                <Button 
-                  size="lg"
-                  variant="outline" 
-                  className="text-sm sm:text-base py-5 sm:py-6 h-auto flex-1"
-                  onClick={() => logoInputRef.current?.click()}
-                  disabled={uploading === "logo"}
-                >
-                  <Upload className="w-4 h-4 sm:w-5 sm:h-5 mr-2" />
-                  {uploading === "logo" ? "Laddar..." : "Ladda upp"}
-                </Button>
-                {(getImagePreview("logo") || branding?.logo_url) && (
-                  <Button 
-                    variant="destructive" 
-                    size="icon"
-                    className="h-12 w-12 sm:h-14 sm:w-14 flex-shrink-0"
-                    onClick={() => setPendingChanges((prev) => ({ ...prev, logo_url: null }))}
-                    title="Ta bort logotyp"
-                  >
-                    <Trash2 className="w-5 h-5" />
-                  </Button>
-                )}
-              </div>
 
-              {/* Live preview boxes */}
-              <div className="grid grid-cols-2 gap-3">
-                {/* Header preview */}
-                <div className="flex flex-col gap-1.5">
-                  <p className="text-xs text-muted-foreground font-medium">Header (mörk)</p>
-                  <div className="relative h-16 rounded-lg border border-border/50 flex items-center justify-center px-3"
-                    style={{ backgroundColor: "#000000" }}
-                  >
-                    {logoPreview !== PLACEHOLDER_LOGO ? (
-                      <img 
-                        src={logoPreview} 
-                        alt="Logo i header" 
-                        className="h-10 max-w-full object-contain rounded-xl"
-                        style={{ filter: "drop-shadow(0 0 6px hsl(var(--neon-cyan) / 0.5))" }}
-                      />
-                    ) : (
-                      <span className="text-xs text-muted-foreground">Ingen logotyp</span>
-                    )}
-                    {uploading === "logo" && (
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-lg">
-                        <Loader2 className="w-4 h-4 animate-spin text-white" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-
-                {/* Footer preview */}
-                <div className="flex flex-col gap-1.5">
-                  <p className="text-xs text-muted-foreground font-medium">Footer</p>
-                  <div className="relative h-16 rounded-lg border border-border/50 flex items-center justify-center px-3"
-                    style={{ backgroundColor: "hsl(var(--muted))" }}
-                  >
-                    {logoPreview !== PLACEHOLDER_LOGO ? (
-                      <img 
-                        src={logoPreview} 
-                        alt="Logo i footer" 
-                        className="h-10 max-w-full object-contain rounded-xl"
-                        style={{ filter: "drop-shadow(0 0 6px hsl(var(--neon-cyan) / 0.5))" }}
-                      />
-                    ) : (
-                      <span className="text-xs text-muted-foreground">Ingen logotyp</span>
-                    )}
-                    {uploading === "logo" && (
-                      <div className="absolute inset-0 bg-black/60 flex items-center justify-center rounded-lg">
-                        <Loader2 className="w-4 h-4 animate-spin text-white" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </div>
-
-              <div className="bg-muted/30 rounded-lg p-3">
-                <p className="text-xs sm:text-sm font-medium mb-1">📐 Rekommenderad storlek</p>
-                <p className="text-xs text-muted-foreground">
-                  400×100 pixlar, PNG med genomskinlig bakgrund, max 300 KB
-                </p>
-              </div>
-            </div>
-            {renderRecentUploads("logo", "logo_url")}
-          </CardContent>
-        </Card>
 
 
 
