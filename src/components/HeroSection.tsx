@@ -9,6 +9,7 @@ import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 const translations = {
   sv: {
     title: "DJ LOBO",
+    descriptor: "Professionell DJ i Göteborg för bröllop och fest",
     subtitle: "LATIN BEATS • HOUSE MUSIC • WORLD HITS • 80s & 90s",
     cta1: "SE SCHEMA",
     cta2: "BOKA SPELNING",
@@ -16,6 +17,7 @@ const translations = {
   },
   en: {
     title: "DJ LOBO",
+    descriptor: "Professional DJ in Gothenburg for weddings and parties",
     subtitle: "LATIN BEATS • HOUSE MUSIC • WORLD HITS • 80s & 90s",
     cta1: "VIEW SCHEDULE",
     cta2: "BOOK EVENT",
@@ -23,6 +25,7 @@ const translations = {
   },
   es: {
     title: "DJ LOBO",
+    descriptor: "DJ profesional en Gotemburgo para bodas y fiestas",
     subtitle: "LATIN BEATS • HOUSE MUSIC • WORLD HITS • 80s & 90s",
     cta1: "VER AGENDA",
     cta2: "RESERVAR",
@@ -84,6 +87,7 @@ const HeroSection = () => {
         className="scroll-reveal font-display text-[clamp(1.8rem,7vw,7rem)] font-black text-neon-gradient mb-3 sm:mb-4 tracking-wider text-high-contrast text-center px-2 leading-tight">
         
         DJ LOBO PRODUCCIONES
+        <span className="sr-only"> — {t.descriptor}</span>
       </h1>
 
       {/* Subtitle */}
