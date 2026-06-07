@@ -78,8 +78,12 @@ serve(async (req) => {
       });
     }
 
-    return new Response(JSON.stringify(data), {
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' },
+    const payload = JSON.stringify(data);
+    cachedPayload = payload;
+    cachedAt = Date.now();
+
+    return new Response(payload, {
+      headers: { ...corsHeaders, 'Content-Type': 'application/json', 'X-Cache': 'MISS' },
     });
   } catch (error) {
     console.error('Edge function error:', error);
