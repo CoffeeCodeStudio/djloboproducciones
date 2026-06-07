@@ -376,15 +376,11 @@ const LiveChat = () => {
 
     const sanitizedNickname = sanitizeMessage(nickname.trim());
     const cleanedMessage = validation.cleanedMessage;
-    const { data: inserted, error } = await supabase
-      .from("chat_messages")
-      .insert({
-        nickname: sanitizedNickname,
-        message: cleanedMessage,
-        session_id: sessionId,
-      })
-      .select("id, nickname, message, created_at")
-      .single();
+    const { error } = await supabase.from("chat_messages").insert({
+      nickname: sanitizedNickname,
+      message: cleanedMessage,
+      session_id: sessionId,
+    });
 
     if (error) {
       logger.error("Error sending message:", error);
@@ -394,25 +390,23 @@ const LiveChat = () => {
         variant: "destructive",
       });
     } else {
-      if (inserted) {
-        await supabase.channel("chat-broadcast").send({
-          type: "broadcast",
-          event: "new_message",
-          payload: {
-            id: inserted.id,
-            nickname: inserted.nickname,
-            message: inserted.message,
-            created_at: inserted.created_at,
-          },
-        });
-      }
+      await supabase.channel("chat-broadcast").send({
+        type: "broadcast",
+        event: "new_message",
+        payload: {
+          id: crypto.randomUUID(),
+          nickname: sanitizedNickname,
+          message: cleanedMessage,
+          created_at: new Date().toISOString(),
+        },
+      });
       setMessage("");
       setLastMessageTime(now);
     }
 
-
     setIsLoading(false);
   };
+
 
   const handleQuickEmote = async (emote: string) => {
     // Rate limiting check
@@ -431,15 +425,12 @@ const LiveChat = () => {
 
     setIsLoading(true);
 
-    const { data: inserted, error } = await supabase
-      .from("chat_messages")
-      .insert({
-        nickname: nickname.trim(),
-        message: emote,
-        session_id: sessionId,
-      })
-      .select("id, nickname, message, created_at")
-      .single();
+    const trimmedNickname = nickname.trim();
+    const { error } = await supabase.from("chat_messages").insert({
+      nickname: trimmedNickname,
+      message: emote,
+      session_id: sessionId,
+    });
 
     if (error) {
       logger.error("Error sending emote:", error);
@@ -449,20 +440,19 @@ const LiveChat = () => {
         variant: "destructive",
       });
     } else {
-      if (inserted) {
-        await supabase.channel("chat-broadcast").send({
-          type: "broadcast",
-          event: "new_message",
-          payload: {
-            id: inserted.id,
-            nickname: inserted.nickname,
-            message: inserted.message,
-            created_at: inserted.created_at,
-          },
-        });
-      }
+      await supabase.channel("chat-broadcast").send({
+        type: "broadcast",
+        event: "new_message",
+        payload: {
+          id: crypto.randomUUID(),
+          nickname: trimmedNickname,
+          message: emote,
+          created_at: new Date().toISOString(),
+        },
+      });
       setLastMessageTime(now);
     }
+
 
 
     setIsLoading(false);
