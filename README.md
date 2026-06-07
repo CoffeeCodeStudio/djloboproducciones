@@ -1,32 +1,30 @@
 # DJ Lobo Producciones
 
-> Marketing site, live radio stream, mix library, media gallery and booking portal for Gothenburg-based DJ Lobo.
+[![Live](https://img.shields.io/badge/live-djloboproducciones.com-ff00ff?style=flat-square)](https://djloboproducciones.com)
+[![React](https://img.shields.io/badge/React-18.3-61dafb?style=flat-square&logo=react)](https://react.dev)
+[![Supabase](https://img.shields.io/badge/Supabase-backend-3ecf8e?style=flat-square&logo=supabase)](https://supabase.com)
+[![Lovable Cloud](https://img.shields.io/badge/hosted-Lovable%20Cloud-7c3aed?style=flat-square)](https://lovable.dev)
+[![Coffee Code Studio](https://img.shields.io/badge/built%20by-Coffee%20Code%20Studio-00ffff?style=flat-square)](https://coffeecodestudio.se)
 
-**Live:** [djloboproducciones.com](https://djloboproducciones.com)
-**Built by:** [Coffee Code Studio](https://coffeecodestudio.se)
-
----
-
-## Summary
-
-A trilingual (Swedish / English / Spanish) single-page application powering DJ Lobo Producciones' public web presence and DJ Lobo Radio's live stream. Visitors can listen to the radio, browse Mixcloud sets, view event galleries, read pricing, chat live and request bookings. A built-in admin panel lets the owner manage every piece of content without code.
+Production website for **DJ Lobo Producciones** — a Gothenburg-based professional DJ. The site combines a public marketing front (hero, bio, gear, mixes, gallery, testimonials, pricing) with a 24/7 live radio stream, a moderated live chat, an integrated booking pipeline, and a full Swedish-language admin panel for content management.
 
 ---
 
 ## Features
 
-- 🎙️ **Live radio** — ZenoFM HLS stream with now-playing metadata and listener count
-- 🎚️ **Mix library** — auto-synced Mixcloud feed with in-page playback
-- 📷 **Media gallery** — photos and YouTube clips, filter + lightbox
-- 📅 **Schedule** — upcoming events from Google Calendar
-- 💬 **Live chat** — `/lyssna` chat with UUID-based rate limiting and ban system
-- 💸 **Pricing & booking** — tiered packages + booking form with email notifications via Resend
-- 🛠️ **Admin panel** — manage branding, hero, equipment, gallery, mixes, schedule, pricing, testimonials, promos, users
-- 🌐 **Trilingual** — sv / en / es with persistent language preference and hreflang SEO
-- 🎁 **Promos** — popup + mini-card promos with analytics events
-- 🍪 **Cookie consent** — GDPR-aware, category-based
-- ♿ **Accessibility-first** — skip link, semantic landmarks, sr-only H1s, keyboard navigation
-- 🔍 **SEO** — per-route meta, canonical, OG/Twitter cards, sitemap, FAQ JSON-LD on blog landing
+- 🎙️ **Live radio stream** via ZenoFM with persistent now-playing bar
+- 🎚️ **Mixcloud + SoundCloud mixes** with card-based player and admin auto-sync
+- 📸 **Media gallery** with lightbox supporting photos and YouTube videos
+- 📅 **Show schedule** powered by the Google Calendar API (5-min cached edge function)
+- 💌 **Booking & contact forms** delivered via Resend to `djloboproducciones75@gmail.com`
+- 💬 **Live chat** on `/lyssna` with UUID-based session rate limiting and admin ban system
+- 📣 **Promo / announcement system** with full-screen popup and bottom mini card, plus analytics
+- 🛠️ **Admin panel** with 9 management tabs (front page, gallery, promos, radio, testimonials, shows, branding, help, users)
+- 🌍 **Multilanguage** Swedish (default), English, Spanish — fully localized DB content
+- 🍪 **GDPR cookie consent gate** on all third-party embeds (Mixcloud, SoundCloud, YouTube, ZenoFM)
+- 🎨 **Dynamic branding** — logo, colors, bio, hero copy, and social links all editable from the admin panel
+- 🔎 **SEO built in** — `react-helmet-async`, auto-generated `sitemap.xml`, hreflang, JSON-LD FAQ schema
+- 📱 **Mobile-first responsive** with safe-area-aware bottom mini player
 
 ---
 
@@ -34,19 +32,18 @@ A trilingual (Swedish / English / Spanish) single-page application powering DJ L
 
 | Category | Technology |
 |---|---|
-| Framework | React 18 + Vite 5 + TypeScript 5 |
-| Styling | Tailwind CSS 3 + shadcn/ui (Radix) |
-| Animation | framer-motion |
+| Frontend | React 18.3, TypeScript 5.8, Vite 5.4 |
 | Routing | react-router-dom 7 |
-| Server state | @tanstack/react-query 5 |
-| Client state | Zustand 5 |
-| Forms | react-hook-form + zod |
-| SEO | react-helmet-async |
-| Backend | Supabase (Lovable Cloud) — Postgres, Auth, Storage, Edge Functions (Deno) |
+| Styling | Tailwind CSS 3.4, tailwindcss-animate, shadcn/ui (Radix primitives) |
+| Animation | framer-motion 12 |
+| State | Zustand 5 (player), @tanstack/react-query 5 (server state) |
+| Forms | react-hook-form 7 + zod 3 |
+| Backend | Supabase (Postgres + Auth + Storage + Edge Functions) |
 | Email | Resend |
-| Hosting | Lovable (with optional Vercel mirror), DNS at Strato |
-
-Full version matrix lives in [`ARCHITECTURE.md`](./ARCHITECTURE.md).
+| Calendar | Google Calendar API |
+| Audio | ZenoFM (radio), Mixcloud / SoundCloud iframes (mixes) |
+| Hosting | Lovable Cloud |
+| Tests | Vitest + @testing-library/react |
 
 ---
 
@@ -54,130 +51,97 @@ Full version matrix lives in [`ARCHITECTURE.md`](./ARCHITECTURE.md).
 
 ```
 src/
-├── pages/              Route components (Home, ListenPage, MixesPage, MediaPage, Admin, …)
-├── components/         UI sections, shell (Layout/Navbar/Footer), shadcn primitives, admin tabs
-├── contexts/           LanguageContext, CookieConsentContext
-├── hooks/              Data fetchers + UI hooks (useAuth, useBranding, useGallery, …)
-├── stores/             Zustand stores (usePlayerStore)
-├── lib/                i18nRoutes, seoMeta, imageOptimizer, utils
-└── integrations/       Auto-generated Supabase client + types (do NOT edit)
+├── components/      Public sections, layout, and admin tab panels
+│   ├── admin/       Admin-only management tabs
+│   └── ui/          shadcn/ui primitives
+├── contexts/        LanguageContext, CookieConsentContext
+├── hooks/           useBranding, useMixes, useGallery, useSchedule, useAuth, ...
+├── stores/          usePlayerStore (Zustand dual-mode player)
+├── lib/             i18n routing, promo analytics, logger, utils
+├── integrations/    Auto-generated Supabase client + types (do not edit)
+└── pages/           12 route components
+
 supabase/
-├── functions/          6 edge functions (fetch-mixcloud, google-calendar, send-*, admin tools)
-└── migrations/         SQL migrations
-scripts/                Pre-build helpers (sitemap generator)
-public/                 Static assets, robots.txt, sitemap.xml
+├── functions/       6 edge functions
+└── migrations/      SQL history
 ```
 
-For a deep dive see [`ARCHITECTURE.md`](./ARCHITECTURE.md).
+See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the full directory tree and deep-dive.
 
 ---
 
-## Getting Started
+## Local Development
 
 ### Prerequisites
+- Node 18+ or Bun
+- A Supabase project (the production ref is `gzdnxaseaimdobahilyc`)
 
-- **Node 18+** (or **Bun 1.x** — recommended; the project ships with a Bun lockfile)
-- A connected **Supabase / Lovable Cloud** project
-
-### Clone & install
-
+### Setup
 ```bash
-git clone <repo-url> djlobo
-cd djlobo
-bun install      # or: npm install
+git clone <repo-url>
+cd djloboproducciones
+bun install        # or: npm install
 ```
 
-### Environment variables
-
-The client `.env` is auto-managed by Lovable Cloud. If you run locally outside Lovable, create a `.env` with:
-
-```env
-VITE_SUPABASE_URL=https://<project-ref>.supabase.co
-VITE_SUPABASE_PUBLISHABLE_KEY=<anon-key>
-VITE_SUPABASE_PROJECT_ID=<project-ref>
-```
-
-Edge function secrets (set in Supabase, never committed):
+Create `.env` at the repo root (values from Lovable → Project Settings → Cloud):
 
 ```
-SUPABASE_URL, SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY,
-SUPABASE_PUBLISHABLE_KEY, SUPABASE_PUBLISHABLE_KEYS,
-SUPABASE_SECRET_KEYS, SUPABASE_JWKS, SUPABASE_DB_URL,
-LOVABLE_API_KEY, RESEND_API_KEY, GOOGLE_CALENDAR_API_KEY
+VITE_SUPABASE_URL="https://<project-ref>.supabase.co"
+VITE_SUPABASE_PUBLISHABLE_KEY="<anon-key>"
+VITE_SUPABASE_PROJECT_ID="<project-ref>"
 ```
 
-### Run locally
+> Server-side secrets (`RESEND_API_KEY`, `GOOGLE_CALENDAR_API_KEY`, `SUPABASE_SERVICE_ROLE_KEY`, `LOVABLE_API_KEY`) live in Supabase Edge Function Secrets — **never** committed to the repo.
 
+### Run
 ```bash
-bun run dev        # or: npm run dev
-```
-
-The `predev` hook regenerates `public/sitemap.xml`. Vite serves the SPA at the printed URL.
-
-### Other scripts
-
-```bash
-bun run build      # production build (runs sitemap prebuild)
-bun run lint       # ESLint
-bunx vitest run    # unit tests
+bun run dev        # http://localhost:5173 — also regenerates sitemap.xml
+bun run build      # production build
+bun run lint       # eslint
+bunx vitest run    # tests
 ```
 
 ---
 
-## Admin Panel
+## Admin Access
 
-`/admin` is gated by Supabase Auth and the `admin` role in `public.user_roles`. Admins can manage:
-
-- **Branding** — site copy, hero image, colors, social handles, contact info
-- **Framsida (Home)** — hero CTAs, sections toggle
-- **Mixcloud** — sync settings, manual refresh of `mixcloud_mixes`
-- **Mixes** — featured ordering, descriptions
-- **Schedule** — Google Calendar source + cache rules
-- **Spelningar (gigs)** — upcoming event highlights
-- **Gallery** — upload, crop, reorder photos and videos
-- **Equipment** — public equipment list
-- **Pricing** — package tiers + suffixes
-- **Promos** — popup / mini-card with start/end dates and sort strategy
-- **Testimonials** — references shown on `/referenser`
-- **Bio** — about-section text per language
-- **Users** — list admins, manage roles
-- **Help** — internal docs / Coffee Code Studio contact
-
-The admin theme is a strict dark navy/charcoal (no neon) and is intentionally Swedish-only.
+- URL: [`/admin`](https://djloboproducciones.com/admin) (Swedish UI only).
+- Sign in with an account that has the `admin` role in the `user_roles` table.
+- Roles: `admin` (full access), `moderator` (reserved), `user` (default).
+- New admins are provisioned by an existing admin from the **Användare** tab (calls the `list-admin-users` edge function with a service-role grant).
+- Roles are checked server-side via the `public.has_role(user_id, role)` `SECURITY DEFINER` function — never trust client-only checks.
 
 ---
 
 ## Deployment
 
-| Step | Where |
-|---|---|
-| 1. Commit | GitHub `main` |
-| 2. Build & host | Lovable picks up the commit and deploys to `lobo-radio-glow.lovable.app` |
-| 3. (Optional) Mirror | Vercel can pull the same repo for redundancy |
-| 4. Domain | Strato DNS points `djloboproducciones.com` / `www.djloboproducciones.com` at Lovable |
-| 5. Backend | Supabase edge functions and migrations deploy immediately via Lovable Cloud |
-
-**Frontend vs backend** — backend (DB / functions) deploys instantly on save; frontend changes only go live after clicking **Publish → Update** in the Lovable editor.
-
-SPA deep links and refresh work out of the box on Lovable hosting — no `_redirects` / `vercel.json` config needed.
+- **Auto-deploy** on every save in Lovable → Lovable Cloud → `djloboproducciones.com`.
+- **Domain:** Strato DNS points the apex and `www` records at Lovable.
+- **Sitemap:** regenerated automatically by `scripts/generate-sitemap.ts` (via the `predev` / `prebuild` hooks).
+- **No manual build step required.**
 
 ---
 
 ## Security Notes
 
-The next maintainer should review the following open items (see `ARCHITECTURE.md` §12 for the full list):
+The following items are **open** and should be addressed by the next maintainer:
 
-- 🟠 **`promo_events.session_id`** is client-supplied — analytics data can be polluted. Consider deriving from `request.jwt.claims` or accepting `NULL` only.
-- 🟠 **`google-calendar` edge function** is unauthenticated and uses the service role to read `site_secrets`. Quota-abusable. Add a server-side cache row, move `google_calendar_id` to a public config column, or gate the call with a shared-secret header.
-- 🟠 **HIBP leaked-password check** — verify it's enabled in Lovable Cloud → Users → Auth Settings.
-- 🟠 **MFA** — not enrolled for the admin role. Recommended for a single-admin production system.
-- 🟠 **Edge function admin guards** — re-confirm `has_role('admin')` checks on `list-admin-users` and `check-cron-jobs`.
-- 🟢 **`chat_messages.session_id`** — already REVOKE'd from anon/authenticated and Realtime publication scoped (resolved).
+1. 🟠 **HIBP** (HaveIBeenPwned) password compromise check is **not enabled** in Supabase Auth settings.
+2. 🟠 **MFA** is **not enforced** for admin accounts.
+3. 🟠 `send-booking-notification` and `send-contact-email` edge functions are **open endpoints** (rate-limited but no JWT or origin guard). Consider adding a shared secret header or origin check before launch.
+4. 🟠 The `branding` storage bucket allows **listing all files** (Supabase linter `0025_public_bucket_allows_listing`). Tighten the `storage.objects` SELECT policy if file enumeration is sensitive.
+5. ✅ `chat_messages.session_id` column-level access is locked down (verified via `has_column_privilege`).
 
-Roles are stored exclusively in `public.user_roles` and checked via the `has_role()` SECURITY DEFINER function — never on profiles or client storage.
+See **§13 Known Issues & Backlog** in [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the full list.
+
+---
+
+## Architecture
+
+For the full technical deep-dive — database schema, edge functions, RBAC model, player architecture, i18n, admin tabs, environment variables, and backlog — see [**`ARCHITECTURE.md`**](./ARCHITECTURE.md).
 
 ---
 
 ## Built By
 
-**[Coffee Code Studio](https://coffeecodestudio.se)** — Need a guide or have questions? Reach out at [coffeecodestudio.se](https://coffeecodestudio.se).
+**[Coffee Code Studio](https://coffeecodestudio.se)** — delivered as part of the **Digital Upgrade** package.
