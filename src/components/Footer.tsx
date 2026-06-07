@@ -13,7 +13,7 @@ const DEFAULT_SOCIAL_LINKS = {
   youtube: "https://www.youtube.com/@djloboproducciones3211",
   zenoPlayer: "https://zeno.fm/radio/dj-lobo-radio-o85p/"
 };
-const LINKEDIN_URL = "https://www.linkedin.com/in/rami-e-453b77330/";
+
 
 const translations = {
   sv: {
