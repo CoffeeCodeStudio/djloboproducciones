@@ -374,11 +374,17 @@ const LiveChat = () => {
       return;
     }
 
-    const { error } = await supabase.from("chat_messages").insert({
-      nickname: sanitizeMessage(nickname.trim()),
-      message: validation.cleanedMessage,
-      session_id: sessionId,
-    });
+    const sanitizedNickname = sanitizeMessage(nickname.trim());
+    const cleanedMessage = validation.cleanedMessage;
+    const { data: inserted, error } = await supabase
+      .from("chat_messages")
+      .insert({
+        nickname: sanitizedNickname,
+        message: cleanedMessage,
+        session_id: sessionId,
+      })
+      .select("id, nickname, message, created_at")
+      .single();
 
     if (error) {
       logger.error("Error sending message:", error);
@@ -388,9 +394,22 @@ const LiveChat = () => {
         variant: "destructive",
       });
     } else {
+      if (inserted) {
+        await supabase.channel("chat-broadcast").send({
+          type: "broadcast",
+          event: "new_message",
+          payload: {
+            id: inserted.id,
+            nickname: inserted.nickname,
+            message: inserted.message,
+            created_at: inserted.created_at,
+          },
+        });
+      }
       setMessage("");
       setLastMessageTime(now);
     }
+
 
     setIsLoading(false);
   };
@@ -412,11 +431,15 @@ const LiveChat = () => {
 
     setIsLoading(true);
 
-    const { error } = await supabase.from("chat_messages").insert({
-      nickname: nickname.trim(),
-      message: emote,
-      session_id: sessionId,
-    });
+    const { data: inserted, error } = await supabase
+      .from("chat_messages")
+      .insert({
+        nickname: nickname.trim(),
+        message: emote,
+        session_id: sessionId,
+      })
+      .select("id, nickname, message, created_at")
+      .single();
 
     if (error) {
       logger.error("Error sending emote:", error);
@@ -426,8 +449,21 @@ const LiveChat = () => {
         variant: "destructive",
       });
     } else {
+      if (inserted) {
+        await supabase.channel("chat-broadcast").send({
+          type: "broadcast",
+          event: "new_message",
+          payload: {
+            id: inserted.id,
+            nickname: inserted.nickname,
+            message: inserted.message,
+            created_at: inserted.created_at,
+          },
+        });
+      }
       setLastMessageTime(now);
     }
+
 
     setIsLoading(false);
   };
