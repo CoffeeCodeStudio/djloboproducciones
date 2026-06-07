@@ -10,8 +10,12 @@ This project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.htm
 - **bookings**: Added database-level `CHECK` constraints capping input size — `name` ≤ 200, `email` ≤ 254 (RFC 5321), `phone` ≤ 30, `location` ≤ 300, `message` ≤ 5000 characters. Defends against oversized payloads even if client/edge validation is bypassed.
 - **contact_submissions**: Added matching `CHECK` constraints — `email` ≤ 254 characters (plus `name` ≤ 200 and `message` ≤ 5000 when those columns are present).
 
+### Fixed
+- Restored anonymous Realtime chat updates via server-broadcast channel (replaced postgres_changes subscription that broke under new RLS policy).
+
 ### Notes
-- Anonymous Realtime updates on `chat_messages` are affected by the new SELECT policy (Realtime applies RLS). The view-based initial fetch continues to work; a follow-up change may reintroduce live updates for guests via a server-broadcast channel if needed.
+- Initial chat load continues to use the `chat_messages_public` view; live updates now arrive via a `chat-broadcast` Realtime channel that carries only `id`, `nickname`, `message`, `created_at` — never `session_id`.
+
 
 ---
 
