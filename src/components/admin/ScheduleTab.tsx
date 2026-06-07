@@ -10,7 +10,6 @@ import { useToast } from "@/hooks/use-toast";
 const ScheduleTab = () => {
   const [calendarId, setCalendarId] = useState("");
   const [saving, setSaving] = useState(false);
-  const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
   const [loading, setLoading] = useState(true);
   const [testResult, setTestResult] = useState<{ ok: boolean; message: string } | null>(null);
