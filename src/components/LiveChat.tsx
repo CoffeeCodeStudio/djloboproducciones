@@ -237,47 +237,43 @@ const LiveChat = () => {
     fetchMessages();
   }, [isJoined]);
 
-  // Real-time subscription
+  // Real-time subscription via broadcast channel (avoids exposing session_id under RLS)
   useEffect(() => {
     if (!isJoined) return;
 
     const channel = supabase
-      .channel("chat-messages")
-      .on(
-        "postgres_changes",
-        {
-          event: "INSERT",
-          schema: "public",
-          table: "chat_messages",
-        },
-        (payload) => {
-          const newMessage = payload.new as ChatMessage;
-          setMessages((prev) => [...prev, newMessage]);
-          
-          // Play sound for new messages (not your own)
-          if (newMessage.nickname !== nickname) {
-            playMessageSound();
-          }
-          
-          // Trigger fire animation if message contains 🔥
-          if (newMessage.message.includes("🔥")) {
-            setFireAnimations(prev => new Set([...prev, newMessage.id]));
-            setTimeout(() => {
-              setFireAnimations(prev => {
-                const next = new Set(prev);
-                next.delete(newMessage.id);
-                return next;
-              });
-            }, 2000);
-          }
+      .channel("chat-broadcast")
+      .on("broadcast", { event: "new_message" }, ({ payload }) => {
+        const newMessage = payload as ChatMessage;
+        setMessages((prev) => {
+          if (prev.some((m) => m.id === newMessage.id)) return prev;
+          return [...prev, newMessage];
+        });
+
+        // Play sound for new messages (not your own)
+        if (newMessage.nickname !== nickname) {
+          playMessageSound();
         }
-      )
+
+        // Trigger fire animation if message contains 🔥
+        if (newMessage.message.includes("🔥")) {
+          setFireAnimations((prev) => new Set([...prev, newMessage.id]));
+          setTimeout(() => {
+            setFireAnimations((prev) => {
+              const next = new Set(prev);
+              next.delete(newMessage.id);
+              return next;
+            });
+          }, 2000);
+        }
+      })
       .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
   }, [isJoined, nickname, playMessageSound]);
+
 
   // Scroll to bottom helper
   const scrollToBottom = useCallback(() => {
