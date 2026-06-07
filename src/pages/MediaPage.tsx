@@ -14,6 +14,7 @@ import SmartGalleryImage from "@/components/SmartGalleryImage";
 
 const translations = {
   sv: {
+    h1: "Media och galleri",
     socialTitle: "FÖLJ DJ LOBO",
     eventHighlights: "EVENT HIGHLIGHTS",
     eventHighlightsDesc: "Ögonblicken som definierar upplevelsen — bröllop, företagsfester och klubbnätter.",
@@ -23,6 +24,7 @@ const translations = {
     facebook: "Facebook",
   },
   en: {
+    h1: "Media and gallery",
     socialTitle: "FOLLOW DJ LOBO",
     eventHighlights: "EVENT HIGHLIGHTS",
     eventHighlightsDesc: "The moments that define the experience — weddings, corporate events and club nights.",
@@ -32,6 +34,7 @@ const translations = {
     facebook: "Facebook",
   },
   es: {
+    h1: "Media y galería",
     socialTitle: "SIGUE A DJ LOBO",
     eventHighlights: "MOMENTOS DESTACADOS",
     eventHighlightsDesc: "Los momentos que definen la experiencia — bodas, eventos corporativos y noches de club.",
@@ -114,6 +117,7 @@ const MediaPage = () => {
         description={getSeoMeta("/media", language).description}
         path="/media"
       />
+      <h1 className="sr-only">{t.h1}</h1>
       {/* Social Links */}
       <section className="py-10 sm:py-14 px-4" aria-labelledby="social-heading">
         <h2
