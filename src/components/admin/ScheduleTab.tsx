@@ -9,7 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 
 const ScheduleTab = () => {
   const [calendarId, setCalendarId] = useState("");
-  const [apiKey, setApiKey] = useState("");
+  const [saving, setSaving] = useState(false);
   const [saving, setSaving] = useState(false);
   const [testing, setTesting] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -122,8 +122,8 @@ const ScheduleTab = () => {
                 <ol className="list-decimal list-inside space-y-1 ml-2">
                   <li>Gå till <a href="https://console.cloud.google.com/apis/credentials" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">Google Cloud Console</a></li>
                   <li>Aktivera <strong>Google Calendar API</strong></li>
-                  <li>Skapa en <strong>API Key</strong> under Credentials</li>
-                  <li>Klistra in nyckeln nedan</li>
+                  <li>API-nyckeln hanteras av utvecklaren via Lovable secrets</li>
+                  <li>Klistra in kalender-ID:t nedan</li>
                 </ol>
                 <p className="mt-2">
                   <strong>Kalender-ID:</strong> Finns i Google Calendar → Inställningar → Integrera kalender. Kalendern måste vara <strong>offentlig</strong>.

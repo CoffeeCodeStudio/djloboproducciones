@@ -1,7 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import {
-  HelpCircle, Download, Home, ImageIcon, Radio, Star, Calendar, Palette,
+  HelpCircle, Home, ImageIcon, Radio, Star, Calendar, Palette,
   Mail, MessageSquare, Globe, ExternalLink, Clock, Users
 } from "lucide-react";
 
@@ -97,15 +96,18 @@ const HelpTab = () => {
         </CardHeader>
         <CardContent className="space-y-4">
           <p className="text-sm text-muted-foreground">
-            Här hittar du instruktioner för varje del av admin-panelen. Du kan också ladda ner en
-            komplett PDF-guide med alla detaljer.
+            Här hittar du instruktioner för varje del av admin-panelen.
+            Kontakta{" "}
+            <a
+              href="https://coffeecodestudio.se"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary hover:underline font-medium"
+            >
+              Coffee Code Studio
+            </a>{" "}
+            om du behöver en fullständig guide.
           </p>
-          <Button asChild className="neon-glow-pink">
-            <a href="/DJ_Lobo_Producciones_Guide.pdf" download>
-              <Download className="w-4 h-4 mr-2" />
-              Ladda ner fullständig guide (PDF)
-            </a>
-          </Button>
         </CardContent>
       </Card>
 

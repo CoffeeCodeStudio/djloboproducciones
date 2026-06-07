@@ -26,6 +26,7 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [changingPassword, setChangingPassword] = useState(false);
+  const [currentUserEmail, setCurrentUserEmail] = useState("");
   const { toast } = useToast();
 
   const fetchRoles = async () => {
@@ -40,7 +41,15 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
     setLoading(false);
   };
 
-  useEffect(() => { fetchRoles(); }, []);
+  useEffect(() => {
+    fetchRoles();
+    // Get current user email for password verification
+    supabase.auth.getSession().then(({ data }) => {
+      if (data.session?.user?.email) {
+        setCurrentUserEmail(data.session.user.email);
+      }
+    });
+  }, []);
 
   const removeRole = async (roleId: string, userId: string) => {
     if (userId === currentUserId) {
@@ -95,7 +104,24 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
       toast({ title: "Fel", description: "Lösenordet måste vara minst 6 tecken.", variant: "destructive" });
       return;
     }
+    if (!currentPassword) {
+      toast({ title: "Fel", description: "Ange ditt nuvarande lösenord.", variant: "destructive" });
+      return;
+    }
     setChangingPassword(true);
+
+    // Verify current password before allowing change
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: currentUserEmail,
+      password: currentPassword,
+    });
+
+    if (signInError) {
+      toast({ title: "Fel", description: "Nuvarande lösenord stämmer inte.", variant: "destructive" });
+      setChangingPassword(false);
+      return;
+    }
+
     const { error } = await supabase.auth.updateUser({ password: newPassword });
     if (error) {
       toast({ title: "Fel", description: error.message, variant: "destructive" });
@@ -103,6 +129,7 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
       toast({ title: "Klart", description: "Lösenordet har uppdaterats." });
       setNewPassword("");
       setConfirmPassword("");
+      setCurrentPassword("");
     }
     setChangingPassword(false);
   };
@@ -154,6 +181,16 @@ const UsersTab = ({ currentUserId }: { currentUserId: string }) => {
         </CardHeader>
         <CardContent>
           <form onSubmit={handleChangePassword} className="space-y-3">
+            <div>
+              <Input
+                type="password"
+                placeholder="Nuvarande lösenord"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                className="bg-input border-border"
+                required
+              />
+            </div>
             <div>
               <Input
                 type="password"

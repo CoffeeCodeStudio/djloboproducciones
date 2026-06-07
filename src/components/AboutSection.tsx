@@ -126,7 +126,7 @@ const AboutSection = () => {
               {t.title}
             </h2>
 
-            {dynamicBio && language === "sv" ? (
+            {dynamicBio ? (
               <div className="text-muted-foreground text-base sm:text-lg mb-6 sm:mb-8 leading-relaxed whitespace-pre-line">
                 {dynamicBio}
               </div>

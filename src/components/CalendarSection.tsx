@@ -4,7 +4,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useCalendarEvents } from "@/hooks/useCalendarEvents";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
 
-const MINIMUM_LOADING_TIME = 3000; // 3 seconds
+
 
 const translations = {
   sv: {
@@ -88,7 +88,6 @@ const CalendarSection = () => {
   const { language } = useLanguage();
   const t = translations[language];
   const { events, loading: apiLoading, error, refetch } = useCalendarEvents();
-  const [isLoading, setIsLoading] = useState(true);
   // Tick every 30s so LIVE badges flip on/off automatically as time passes,
   // even if the calendar feed is still cached.
   const [nowTick, setNowTick] = useState(() => Date.now());
@@ -118,27 +117,6 @@ const CalendarSection = () => {
     (n, ev) => (ev.date.getTime() <= nowTick && ev.endDate.getTime() >= nowTick ? n + 1 : n),
     0,
   );
-
-  // Force minimum loading time of 3 seconds
-  useEffect(() => {
-    const minimumLoadingPromise = new Promise((resolve) =>
-      setTimeout(resolve, MINIMUM_LOADING_TIME)
-    );
-
-    const checkLoading = async () => {
-      await Promise.all([minimumLoadingPromise]);
-      setIsLoading(false);
-    };
-
-    checkLoading();
-  }, []);
-
-  // Update loading state when API completes
-  useEffect(() => {
-    if (!apiLoading) {
-      // isLoading will be set to false when minimum time passes
-    }
-  }, [apiLoading]);
 
   // Reveal handled by the shared hook below for parity with Hero/About.
 
@@ -177,12 +155,12 @@ const CalendarSection = () => {
         {/* Event list container */}
         <div className="scroll-reveal rounded-2xl border border-neon-cyan/20 bg-background/40 backdrop-blur-md overflow-hidden" style={{ boxShadow: '0 0 30px -10px hsla(180, 100%, 50%, 0.15)' }}>
           {/* Loading animation */}
-          {isLoading && events.length === 0 && (
+          {apiLoading && events.length === 0 && (
             <DJLoadingAnimation loadingText={language === "en" ? "Loading shows..." : language === "es" ? "Cargando shows..." : "Laddar spelningar..."} />
           )}
 
           {/* Error state */}
-          {!isLoading && error && events.length === 0 && (
+          {!apiLoading && error && events.length === 0 && (
             <div className="flex flex-col items-center justify-center py-12 gap-3">
               <AlertCircle className="w-8 h-8 text-muted-foreground" />
               <p className="text-muted-foreground text-sm">{t.errorMessage}</p>
@@ -196,7 +174,7 @@ const CalendarSection = () => {
           )}
 
           {/* Empty state */}
-          {!isLoading && !error && events.length === 0 && (
+          {!apiLoading && !error && events.length === 0 && (
             <p className="text-center text-muted-foreground py-12 text-sm">
               {t.noEvents}
             </p>
