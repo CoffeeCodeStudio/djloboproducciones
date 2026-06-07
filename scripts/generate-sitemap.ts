@@ -30,6 +30,23 @@ const routes: Route[] = [
 const localized = (path: string) =>
   `${BASE_URL}/${DEFAULT_LANG}${path === "/" ? "" : path}`;
 
+interface ExtraEntry {
+  loc: string;
+  hreflang?: string;
+  changefreq?: Route["changefreq"];
+  priority?: string;
+}
+
+// Unlocalized / standalone routes (e.g. SEO landing pages with their own slug).
+const extraEntries: ExtraEntry[] = [
+  {
+    loc: `${BASE_URL}/blog/hyra-dj-brollop-goteborg`,
+    hreflang: "sv-SE",
+    changefreq: "monthly",
+    priority: "0.6",
+  },
+];
+
 const buildSitemap = (): string => {
   const blocks = routes.map((r) =>
     [
@@ -43,14 +60,32 @@ const buildSitemap = (): string => {
       .join("\n"),
   );
 
+  const extras = extraEntries.map((e) =>
+    [
+      `  <url>`,
+      `    <loc>${e.loc}</loc>`,
+      e.hreflang
+        ? `    <xhtml:link rel="alternate" hreflang="${e.hreflang}" href="${e.loc}" />`
+        : null,
+      e.changefreq ? `    <changefreq>${e.changefreq}</changefreq>` : null,
+      e.priority ? `    <priority>${e.priority}</priority>` : null,
+      `  </url>`,
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  );
+
   return [
     `<?xml version="1.0" encoding="UTF-8"?>`,
-    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+    `<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">`,
     ...blocks,
+    ...extras,
     `</urlset>`,
     ``,
   ].join("\n");
 };
 
 writeFileSync(resolve("public/sitemap.xml"), buildSitemap());
-console.log(`sitemap.xml written (${routes.length} entries)`);
+console.log(
+  `sitemap.xml written (${routes.length + extraEntries.length} entries)`,
+);
