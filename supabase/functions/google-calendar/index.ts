@@ -6,6 +6,13 @@ const corsHeaders = {
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
+// In-memory cache (persists across warm invocations of the same isolate).
+// This blunts quota-abuse attempts by serving repeated anonymous calls from
+// memory instead of forwarding every request to the Google Calendar API.
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+let cachedPayload: string | null = null;
+let cachedAt = 0;
+
 serve(async (req) => {
   if (req.method === 'OPTIONS') {
     return new Response(null, { headers: corsHeaders });
