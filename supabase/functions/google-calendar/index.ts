@@ -19,6 +19,14 @@ serve(async (req) => {
   }
 
   try {
+    // Serve from cache when fresh to avoid forwarding repeated anonymous
+    // requests to Google Calendar and exhausting daily API quota.
+    if (cachedPayload && Date.now() - cachedAt < CACHE_TTL_MS) {
+      return new Response(cachedPayload, {
+        headers: { ...corsHeaders, 'Content-Type': 'application/json', 'X-Cache': 'HIT' },
+      });
+    }
+
     // Fetch calendarId from database instead of accepting from caller
     const supabase = createClient(
       Deno.env.get('SUPABASE_URL')!,
