@@ -109,7 +109,7 @@ const NowPlayingBar = () => {
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const mixIframeRef = useRef<HTMLIFrameElement>(null);
-  const { status, setStatus } = useStreamStatus();
+  const { status, errorMessage, setStatus } = useStreamStatus();
   const { language } = useLanguage();
   const navigate = useNavigate();
   const lto = useLocalizedTo();
@@ -262,6 +262,7 @@ const NowPlayingBar = () => {
 
   const handleRadioToggle = () => {
     const audio = audioRef.current;
+    console.log("[Radio] toggle clicked, audio:", audio, "isRadio:", isRadio, "isPlaying:", isPlaying);
     if (!audio) return;
     if (isRadio && isPlaying) {
       audio.pause();
@@ -277,17 +278,18 @@ const NowPlayingBar = () => {
     audio.muted = false;
     audio.volume = isMuted ? 0 : volume / 100;
     audio.load();
+    console.log("[Radio] calling audio.play()");
     audio.play()
       .then(() => {
+        console.log("[Radio] play() succeeded");
         setIsLoading(false);
         playRadio();
         setStatus("live");
       })
       .catch((err) => {
-        logger.error("Radio play error:", err);
+        console.log("[Radio] play() failed:", err.name, err.message);
         setIsLoading(false);
-        setStatus("error", "Kunde inte ansluta");
-        toast.error("Din webbläsare blockerar autoplay. Klicka igen för att försöka.");
+        setStatus("error", "Kunde inte ansluta — " + err.message);
       });
   };
 
@@ -472,6 +474,11 @@ const NowPlayingBar = () => {
                   <div className="flex items-center gap-1.5">
                     <Loader2 className="w-3 h-3 animate-spin text-muted-foreground" />
                     <span>{t.connecting}</span>
+                  </div>
+                )}
+                {isRadio && status === "error" && errorMessage && (
+                  <div className="flex items-center gap-1.5 text-destructive">
+                    <span className="truncate">{errorMessage}</span>
                   </div>
                 )}
                 {isMix && currentTrack && (
