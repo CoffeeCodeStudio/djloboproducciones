@@ -292,8 +292,22 @@ const NowPlayingBar = () => {
   };
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setVolume(Number(e.target.value));
-    if (isMuted && Number(e.target.value) > 0) setIsMuted(false);
+    const next = Number(e.target.value);
+    // iOS Safari: set audio.volume synchronously inside the gesture handler.
+    // Doing it via useEffect breaks the gesture chain and the change is ignored.
+    if (audioRef.current) {
+      audioRef.current.volume = next / 100;
+    }
+    setVolume(next);
+    if (isMuted && next > 0) setIsMuted(false);
+  };
+
+  const handleMuteToggle = () => {
+    const next = !isMuted;
+    if (audioRef.current) {
+      audioRef.current.volume = next ? 0 : volume / 100;
+    }
+    setIsMuted(next);
   };
 
   // Build Mixcloud embed URL
