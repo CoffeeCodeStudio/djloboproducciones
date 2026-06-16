@@ -58,11 +58,11 @@ const GlobalMiniPlayer = () => {
   console.info("[GlobalMiniPlayer] Embed URL:", embedUrl);
 
   return (
-    <div data-zlayer="global-mini-player" className="fixed bottom-0 left-0 right-0 z-50 h-16 sm:h-[4.5rem]">
+    <div data-zlayer="global-mini-player" className="fixed bottom-0 left-0 right-0 z-50 pb-[env(safe-area-inset-bottom)]">
       {/* Glass backdrop */}
       <div className="absolute inset-0 bg-background/95 backdrop-blur-xl border-t border-primary/30 shadow-[0_-4px_30px_-4px_hsl(var(--primary)/0.25)]" />
 
-      <div className="relative h-full flex items-center gap-2 sm:gap-3 px-3 sm:px-4">
+      <div className="relative h-16 sm:h-[4.5rem] flex items-center gap-2 sm:gap-3 px-3 sm:px-4">
         {/* Cover art thumbnail */}
         <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-lg overflow-hidden shrink-0 border border-primary/20">
           {currentTrack.coverArt ? (
