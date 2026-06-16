@@ -476,6 +476,11 @@ const NowPlayingBar = () => {
                     <span>{t.connecting}</span>
                   </div>
                 )}
+                {isRadio && status === "error" && errorMessage && (
+                  <div className="flex items-center gap-1.5 text-destructive">
+                    <span className="truncate">{errorMessage}</span>
+                  </div>
+                )}
                 {isMix && currentTrack && (
                   <div className="flex items-center gap-1.5">
                     <Disc3 className="w-3 h-3 text-primary animate-spin shrink-0" style={{ animationDuration: "3s" }} />
