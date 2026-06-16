@@ -313,6 +313,16 @@ const NowPlayingBar = () => {
     if (audioRef.current) {
       audioRef.current.volume = next / 100;
     }
+    // Mixcloud Widget API: setVolume expects 0..1. The widget handles its own
+    // postMessage targeting; do NOT call iframe.contentWindow.postMessage directly
+    // (that's what was throwing the target-origin error).
+    if (mixWidgetRef.current) {
+      try {
+        mixWidgetRef.current.setVolume(next / 100);
+      } catch (err) {
+        logger.error("Mixcloud setVolume error:", err);
+      }
+    }
     setVolume(next);
     if (isMuted && next > 0) setIsMuted(false);
   };
@@ -321,6 +331,13 @@ const NowPlayingBar = () => {
     const next = !isMuted;
     if (audioRef.current) {
       audioRef.current.volume = next ? 0 : volume / 100;
+    }
+    if (mixWidgetRef.current) {
+      try {
+        mixWidgetRef.current.setVolume(next ? 0 : volume / 100);
+      } catch (err) {
+        logger.error("Mixcloud setVolume error:", err);
+      }
     }
     setIsMuted(next);
   };
