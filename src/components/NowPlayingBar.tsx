@@ -109,6 +109,7 @@ const NowPlayingBar = () => {
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const mixIframeRef = useRef<HTMLIFrameElement>(null);
+  const mixWidgetRef = useRef<any>(null);
   const { status, errorMessage, setStatus } = useStreamStatus();
   const { language } = useLanguage();
   const navigate = useNavigate();
@@ -207,6 +208,13 @@ const NowPlayingBar = () => {
         const widget = w.Mixcloud.PlayerWidget(iframe);
         await widget.ready;
         if (cancelled) return;
+        mixWidgetRef.current = widget;
+        // Apply current volume/mute state to the freshly-ready widget.
+        try {
+          await widget.setVolume(isMuted ? 0 : volume / 100);
+        } catch (e) {
+          logger.error("Mixcloud setVolume error:", e);
+        }
         if (isPlaying) {
           await widget.play();
         }
@@ -224,6 +232,7 @@ const NowPlayingBar = () => {
 
     return () => {
       cancelled = true;
+      mixWidgetRef.current = null;
       iframe.removeEventListener("load", attach);
     };
   }, [isMix, isMinimized, isPlaying, currentTrack?.id]);
@@ -304,6 +313,16 @@ const NowPlayingBar = () => {
     if (audioRef.current) {
       audioRef.current.volume = next / 100;
     }
+    // Mixcloud Widget API: setVolume expects 0..1. The widget handles its own
+    // postMessage targeting; do NOT call iframe.contentWindow.postMessage directly
+    // (that's what was throwing the target-origin error).
+    if (mixWidgetRef.current) {
+      try {
+        mixWidgetRef.current.setVolume(next / 100);
+      } catch (err) {
+        logger.error("Mixcloud setVolume error:", err);
+      }
+    }
     setVolume(next);
     if (isMuted && next > 0) setIsMuted(false);
   };
@@ -312,6 +331,13 @@ const NowPlayingBar = () => {
     const next = !isMuted;
     if (audioRef.current) {
       audioRef.current.volume = next ? 0 : volume / 100;
+    }
+    if (mixWidgetRef.current) {
+      try {
+        mixWidgetRef.current.setVolume(next ? 0 : volume / 100);
+      } catch (err) {
+        logger.error("Mixcloud setVolume error:", err);
+      }
     }
     setIsMuted(next);
   };
