@@ -109,6 +109,7 @@ const NowPlayingBar = () => {
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement>(null);
   const mixIframeRef = useRef<HTMLIFrameElement>(null);
+  const mixWidgetRef = useRef<any>(null);
   const { status, errorMessage, setStatus } = useStreamStatus();
   const { language } = useLanguage();
   const navigate = useNavigate();
