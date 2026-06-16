@@ -534,7 +534,7 @@ const NowPlayingBar = () => {
           {(isRadio || (isMix && currentTrack)) && (
             <div className="hidden xs:flex items-center gap-1 sm:gap-2 shrink-0">
               <button
-                onClick={() => setIsMuted(!isMuted)}
+                onClick={handleMuteToggle}
                 aria-label={isMuted ? t.unmute : t.mute}
                 className="tap-target p-1 sm:p-1.5 text-muted-foreground hover:text-foreground transition-colors focus-neon rounded-lg"
               >
