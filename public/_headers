@@ -32,12 +32,12 @@
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   X-Content-Type-Options: nosniff
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), encrypted-media=*
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://widget.mixcloud.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co https://*.mixcloud.com; media-src 'self' blob: https://stream.zeno.fm https://*.mixcloud.com; frame-src https://www.mixcloud.com https://www.youtube.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mixcloud.com https://www.googleapis.com https://stream.zeno.fm; object-src 'none'; base-uri 'self'; form-action 'self'
 /
   Cache-Control: public, max-age=0, must-revalidate
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
   X-Content-Type-Options: nosniff
-  Permissions-Policy: camera=(), microphone=(), geolocation=()
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), encrypted-media=*
   Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://widget.mixcloud.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co https://*.mixcloud.com; media-src 'self' blob: https://stream.zeno.fm https://*.mixcloud.com; frame-src https://www.mixcloud.com https://www.youtube.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mixcloud.com https://www.googleapis.com https://stream.zeno.fm; object-src 'none'; base-uri 'self'; form-action 'self'
