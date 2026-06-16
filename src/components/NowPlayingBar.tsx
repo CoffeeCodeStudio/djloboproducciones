@@ -147,20 +147,7 @@ const NowPlayingBar = () => {
     const audio = audioRef.current;
     if (!audio) return;
 
-    if (isRadio && isPlaying) {
-      setIsLoading(true);
-      setStatus("connecting");
-      audio.src = STREAM_URL;
-      audio.load();
-      audio.play().then(() => {
-        setIsLoading(false);
-        setStatus("live");
-      }).catch((err) => {
-        logger.error("Radio play error:", err);
-        setIsLoading(false);
-        setStatus("error", "Kunde inte ansluta");
-      });
-    } else if (!isRadio || !isPlaying) {
+    if (!isRadio || !isPlaying) {
       audio.pause();
       audio.removeAttribute("src");
       audio.load();
