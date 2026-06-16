@@ -579,7 +579,7 @@ const NowPlayingBar = () => {
               width="100%"
               height="100%"
               className="rounded-lg border border-primary/10"
-              allow="autoplay"
+              allow="autoplay; encrypted-media"
               title={currentTrack.title}
             />
           </div>
