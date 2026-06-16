@@ -208,6 +208,13 @@ const NowPlayingBar = () => {
         const widget = w.Mixcloud.PlayerWidget(iframe);
         await widget.ready;
         if (cancelled) return;
+        mixWidgetRef.current = widget;
+        // Apply current volume/mute state to the freshly-ready widget.
+        try {
+          await widget.setVolume(isMuted ? 0 : volume / 100);
+        } catch (e) {
+          logger.error("Mixcloud setVolume error:", e);
+        }
         if (isPlaying) {
           await widget.play();
         }
@@ -225,6 +232,7 @@ const NowPlayingBar = () => {
 
     return () => {
       cancelled = true;
+      mixWidgetRef.current = null;
       iframe.removeEventListener("load", attach);
     };
   }, [isMix, isMinimized, isPlaying, currentTrack?.id]);
