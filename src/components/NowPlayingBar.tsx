@@ -274,6 +274,8 @@ const NowPlayingBar = () => {
     setIsLoading(true);
     setStatus("connecting");
     audio.src = STREAM_URL;
+    audio.muted = false;
+    audio.volume = isMuted ? 0 : volume / 100;
     audio.load();
     audio.play()
       .then(() => {
@@ -285,6 +287,7 @@ const NowPlayingBar = () => {
         logger.error("Radio play error:", err);
         setIsLoading(false);
         setStatus("error", "Kunde inte ansluta");
+        toast.error("Din webbläsare blockerar autoplay. Klicka igen för att försöka.");
       });
   };
 
