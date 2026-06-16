@@ -262,6 +262,7 @@ const NowPlayingBar = () => {
 
   const handleRadioToggle = () => {
     const audio = audioRef.current;
+    console.log("[Radio] toggle clicked, audio:", audio, "isRadio:", isRadio, "isPlaying:", isPlaying);
     if (!audio) return;
     if (isRadio && isPlaying) {
       audio.pause();
@@ -277,17 +278,18 @@ const NowPlayingBar = () => {
     audio.muted = false;
     audio.volume = isMuted ? 0 : volume / 100;
     audio.load();
+    console.log("[Radio] calling audio.play()");
     audio.play()
       .then(() => {
+        console.log("[Radio] play() succeeded");
         setIsLoading(false);
         playRadio();
         setStatus("live");
       })
       .catch((err) => {
-        logger.error("Radio play error:", err);
+        console.log("[Radio] play() failed:", err.name, err.message);
         setIsLoading(false);
-        setStatus("error", "Kunde inte ansluta");
-        toast.error("Din webbläsare blockerar autoplay. Klicka igen för att försöka.");
+        setStatus("error", "Kunde inte ansluta — " + err.message);
       });
   };
 
