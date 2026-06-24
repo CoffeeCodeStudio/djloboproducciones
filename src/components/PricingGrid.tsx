@@ -4,9 +4,9 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 
 const packages = [
-  { key: "basic", price: "6 000", border: "neon-pink" },
-  { key: "standard", price: "8 000", border: "neon-cyan" },
-  { key: "premium", price: "12 000", border: "neon-pink" },
+  { key: "basic", price: "7 000", border: "neon-pink" },
+  { key: "standard", price: "8 500", border: "neon-cyan" },
+  { key: "premium", price: "12 500", border: "neon-pink" },
 ] as const;
 
 const translations = {
