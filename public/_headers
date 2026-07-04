@@ -1,8 +1,19 @@
-# Vite hashed assets — immutable forever
+# ============================================================
+# Security headers för alla sidor
+# ============================================================
+/*
+  X-Frame-Options: SAMEORIGIN
+  Referrer-Policy: strict-origin-when-cross-origin
+  X-Content-Type-Options: nosniff
+  Permissions-Policy: camera=(), microphone=(), geolocation=(), encrypted-media=*
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://widget.mixcloud.com https://w.soundcloud.com https://www.youtube.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co https://*.mixcloud.com https://*.sndcdn.com https://i.ytimg.com; media-src 'self' blob: https://stream.zeno.fm https://*.mixcloud.com https://*.sndcdn.com; frame-src https://www.mixcloud.com https://player.mixcloud.com https://w.soundcloud.com https://www.youtube.com https://www.youtube-nocookie.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mixcloud.com https://api.soundcloud.com https://www.googleapis.com https://stream.zeno.fm; object-src 'none'; base-uri 'self'; form-action 'self'
+
+# ============================================================
+# Cache-kontroll
+# ============================================================
 /assets/*
   Cache-Control: public, max-age=31536000, immutable
 
-# Static images — 30 days
 /*.png
   Cache-Control: public, max-age=2592000
 /*.jpg
@@ -14,30 +25,18 @@
 /*.ico
   Cache-Control: public, max-age=2592000
 
-# Fonts — immutable
 /*.woff2
   Cache-Control: public, max-age=31536000, immutable
 /*.woff
   Cache-Control: public, max-age=31536000, immutable
 
-# JS/CSS bundles — immutable (Vite hashes them)
 /*.js
   Cache-Control: public, max-age=31536000, immutable
 /*.css
   Cache-Control: public, max-age=31536000, immutable
 
-# HTML — always revalidate + security headers
 /*.html
   Cache-Control: public, max-age=0, must-revalidate
-  X-Frame-Options: SAMEORIGIN
-  Referrer-Policy: strict-origin-when-cross-origin
-  X-Content-Type-Options: nosniff
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), encrypted-media=*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://widget.mixcloud.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co https://*.mixcloud.com; media-src 'self' blob: https://stream.zeno.fm https://*.mixcloud.com; frame-src https://www.mixcloud.com https://www.youtube.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mixcloud.com https://www.googleapis.com https://stream.zeno.fm; object-src 'none'; base-uri 'self'; form-action 'self'
+
 /
   Cache-Control: public, max-age=0, must-revalidate
-  X-Frame-Options: SAMEORIGIN
-  Referrer-Policy: strict-origin-when-cross-origin
-  X-Content-Type-Options: nosniff
-  Permissions-Policy: camera=(), microphone=(), geolocation=(), encrypted-media=*
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://widget.mixcloud.com https://fonts.googleapis.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob: https://*.supabase.co https://*.mixcloud.com; media-src 'self' blob: https://stream.zeno.fm https://*.mixcloud.com; frame-src https://www.mixcloud.com https://www.youtube.com; connect-src 'self' https://*.supabase.co wss://*.supabase.co https://api.mixcloud.com https://www.googleapis.com https://stream.zeno.fm; object-src 'none'; base-uri 'self'; form-action 'self'
