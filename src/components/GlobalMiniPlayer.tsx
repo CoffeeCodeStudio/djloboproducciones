@@ -5,7 +5,7 @@ import { useCookieConsent } from "@/contexts/CookieConsentContext";
 import { logger } from "@/lib/logger";
 
 const GlobalMiniPlayer = () => {
-  const { currentTrack, isPlaying, stop } = usePlayerStore();
+  const { currentTrack, isPlaying, stop, mode, isMinimized } = usePlayerStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { hasConsented } = useCookieConsent();
 
