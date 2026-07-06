@@ -206,6 +206,7 @@ export type Database = {
           created_at: string
           external_id: string | null
           hidden: boolean
+          hidden_reason: string | null
           id: string
           mixcloud_created_time: string | null
           mixcloud_url: string
@@ -220,6 +221,7 @@ export type Database = {
           created_at?: string
           external_id?: string | null
           hidden?: boolean
+          hidden_reason?: string | null
           id?: string
           mixcloud_created_time?: string | null
           mixcloud_url: string
@@ -234,6 +236,7 @@ export type Database = {
           created_at?: string
           external_id?: string | null
           hidden?: boolean
+          hidden_reason?: string | null
           id?: string
           mixcloud_created_time?: string | null
           mixcloud_url?: string
