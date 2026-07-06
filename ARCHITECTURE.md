@@ -229,7 +229,7 @@ All tables in the `public` schema. RLS enabled on every table.
 ## 11. Media & Player Architecture
 
 ### NowPlayingBar (dual mode)
-- **Radio mode:** `<audio>` element streaming `https://stream.zeno.fm/n53wq19xs98uv` (ZenoFM). Volume + play/pause.
+- **Radio mode:** `<audio>` element streaming `https://stream.zeno.fm/gzzqvbuy0d7uv` (ZenoFM). Volume + play/pause.
 - **Mix mode:** Mixcloud or SoundCloud iframe embed (autoplay hack via reload-with-`autoplay=1` query). Track metadata from `mixcloud_mixes`.
 
 ### GlobalMiniPlayer
