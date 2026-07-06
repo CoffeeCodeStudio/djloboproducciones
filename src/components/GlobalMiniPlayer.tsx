@@ -5,7 +5,7 @@ import { useCookieConsent } from "@/contexts/CookieConsentContext";
 import { logger } from "@/lib/logger";
 
 const GlobalMiniPlayer = () => {
-  const { currentTrack, isPlaying, stop } = usePlayerStore();
+  const { currentTrack, isPlaying, stop, mode, isMinimized } = usePlayerStore();
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const { hasConsented } = useCookieConsent();
 
@@ -103,8 +103,8 @@ const GlobalMiniPlayer = () => {
         </button>
       </div>
 
-      {/* Hidden iframe for audio playback — visually hidden but in-DOM so autoplay works */}
-      {hasConsented && (
+      {/* Hidden iframe for audio playback — only render when NowPlayingBar isn't already playing this mix */}
+      {hasConsented && !(mode === "mix" && !isMinimized) && (
         <iframe
           ref={iframeRef}
           key={currentTrack.id}

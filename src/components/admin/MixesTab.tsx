@@ -100,9 +100,13 @@ const MixesTab = () => {
   };
 
   const toggleHidden = async (mix: Mix) => {
-    const { error } = await supabase.from("mixcloud_mixes").update({ hidden: !mix.hidden }).eq("id", mix.id);
+    const nextHidden = !mix.hidden;
+    const { error } = await supabase
+      .from("mixcloud_mixes")
+      .update({ hidden: nextHidden, hidden_reason: nextHidden ? "admin" : null })
+      .eq("id", mix.id);
     if (!error) {
-      setMixes(prev => prev.map(m => m.id === mix.id ? { ...m, hidden: !m.hidden } : m));
+      setMixes(prev => prev.map(m => m.id === mix.id ? { ...m, hidden: nextHidden } : m));
       toast({ title: mix.hidden ? "Synlig igen" : "🙈 Dold" });
     }
   };

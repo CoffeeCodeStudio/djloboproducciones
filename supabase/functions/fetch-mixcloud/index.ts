@@ -3,7 +3,7 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers":
-    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+    "authorization, x-client-info, apikey, content-type, x-cron-secret, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 interface MixcloudCloudcast {
@@ -22,40 +22,46 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const cronSecret = Deno.env.get("CRON_SECRET");
 
-    // --- Auth check: verify caller is admin ---
-    const authHeader = req.headers.get("Authorization");
-    if (!authHeader) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
+    // --- Auth: allow either (a) valid CRON_SECRET header, or (b) admin JWT ---
+    const providedCronSecret = req.headers.get("x-cron-secret");
+    const isCron = !!(cronSecret && providedCronSecret && providedCronSecret === cronSecret);
+
+    if (!isCron) {
+      const authHeader = req.headers.get("Authorization");
+      if (!authHeader) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
+
+      const anonClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!, {
+        global: { headers: { Authorization: authHeader } },
       });
-    }
 
-    const anonClient = createClient(supabaseUrl, Deno.env.get("SUPABASE_ANON_KEY")!, {
-      global: { headers: { Authorization: authHeader } },
-    });
+      const { data: { user }, error: userError } = await anonClient.auth.getUser();
+      if (userError || !user) {
+        return new Response(JSON.stringify({ error: "Unauthorized" }), {
+          status: 401,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
 
-    const { data: { user }, error: userError } = await anonClient.auth.getUser();
-    if (userError || !user) {
-      return new Response(JSON.stringify({ error: "Unauthorized" }), {
-        status: 401,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
-    }
+      const { data: roleData } = await anonClient
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", user.id)
+        .eq("role", "admin")
+        .maybeSingle();
 
-    const { data: roleData } = await anonClient
-      .from("user_roles")
-      .select("role")
-      .eq("user_id", user.id)
-      .eq("role", "admin")
-      .maybeSingle();
-
-    if (!roleData) {
-      return new Response(JSON.stringify({ error: "Forbidden" }), {
-        status: 403,
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+      if (!roleData) {
+        return new Response(JSON.stringify({ error: "Forbidden" }), {
+          status: 403,
+          headers: { ...corsHeaders, "Content-Type": "application/json" },
+        });
+      }
     }
     // --- End auth check ---
 
@@ -107,40 +113,54 @@ Deno.serve(async (req) => {
       }
     }
 
-    // --- Check existing non-hidden mixes for 404 (deleted on Mixcloud) ---
+    // --- Check mixes for 404 (deleted on Mixcloud) — respects admin overrides ---
     let hidden = 0;
     let unhidden = 0;
     const { data: allMixes } = await supabase
       .from("mixcloud_mixes")
-      .select("id, mixcloud_url, hidden");
+      .select("id, mixcloud_url, hidden, hidden_reason");
 
     if (allMixes) {
       const checks = await Promise.all(
         allMixes.map(async (m) => {
           try {
             const r = await fetch(m.mixcloud_url, { method: "HEAD", redirect: "follow" });
-            return { id: m.id, ok: r.ok, status: r.status, wasHidden: m.hidden };
+            return { id: m.id, ok: r.ok, status: r.status, wasHidden: m.hidden, reason: m.hidden_reason };
           } catch {
-            return { id: m.id, ok: true, status: 0, wasHidden: m.hidden }; // network error: don't hide
+            return { id: m.id, ok: true, status: 0, wasHidden: m.hidden, reason: m.hidden_reason };
           }
         })
       );
 
-      const toHide = checks.filter((c) => c.status === 404 && !c.wasHidden).map((c) => c.id);
-      const toUnhide = checks.filter((c) => c.ok && c.wasHidden).map((c) => c.id);
+      // Auto-hide on 404, but never overwrite an admin-set hidden_reason
+      const toHide = checks
+        .filter((c) => c.status === 404 && (!c.wasHidden || c.reason === "auto_404"))
+        .filter((c) => c.reason !== "admin")
+        .map((c) => c.id);
+
+      // Auto-unhide ONLY if previously hidden by auto_404 (never touch admin-hidden)
+      const toUnhide = checks
+        .filter((c) => c.ok && c.wasHidden && c.reason === "auto_404")
+        .map((c) => c.id);
 
       if (toHide.length > 0) {
-        await supabase.from("mixcloud_mixes").update({ hidden: true }).in("id", toHide);
+        await supabase
+          .from("mixcloud_mixes")
+          .update({ hidden: true, hidden_reason: "auto_404" })
+          .in("id", toHide);
         hidden = toHide.length;
       }
       if (toUnhide.length > 0) {
-        await supabase.from("mixcloud_mixes").update({ hidden: false }).in("id", toUnhide);
+        await supabase
+          .from("mixcloud_mixes")
+          .update({ hidden: false, hidden_reason: null })
+          .in("id", toUnhide);
         unhidden = toUnhide.length;
       }
     }
 
     return new Response(
-      JSON.stringify({ success: true, fetched: cloudcasts.length, inserted, updated, hidden, unhidden }),
+      JSON.stringify({ success: true, fetched: cloudcasts.length, inserted, updated, hidden, unhidden, via: isCron ? "cron" : "admin" }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
