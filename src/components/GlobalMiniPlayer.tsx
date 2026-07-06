@@ -103,8 +103,8 @@ const GlobalMiniPlayer = () => {
         </button>
       </div>
 
-      {/* Hidden iframe for audio playback — visually hidden but in-DOM so autoplay works */}
-      {hasConsented && (
+      {/* Hidden iframe for audio playback — only render when NowPlayingBar isn't already playing this mix */}
+      {hasConsented && !(mode === "mix" && !isMinimized) && (
         <iframe
           ref={iframeRef}
           key={currentTrack.id}
