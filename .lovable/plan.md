@@ -1,72 +1,91 @@
-# URL-prefixed language routing (`/sv`, `/en`, `/es`)
 
-Goal: every public page lives at `/{lang}/...` so we can emit valid `hreflang` alternates and per-URL canonicals.
+# Ändringar i admin-panelen
 
-## Routing changes (`src/App.tsx`)
+Nedan visas exakt vad jag tänker göra. Inget sparas förrän du säger OK.
 
-Wrap the localized routes in a `:lang` param and keep `/admin`, `/reset-password`, `/dev/zstack` unprefixed.
+---
 
-```text
-/admin                          (unchanged, noindex)
-/reset-password                 (unchanged, noindex)
-/dev/zstack                     (unchanged, noindex)
-/:lang                          → Index
-/:lang/lyssna                   → ListenPage
-/:lang/mixar                    → MixesPage
-/:lang/media                    → MediaPage
-/:lang/referenser               → ReferencesPage
-/:lang/prislista                → PrislistaPage
-/:lang/privacy                  → PrivacyPolicy
-/:lang/terms                    → TermsOfService
-/:lang/*                        → NotFound
+## 1. Stream-URL flyttas till admin
 
-/                               → redirect to /sv (or detected lang)
-/lyssna, /mixar, …              → 301-style <Navigate> to /sv/<path>
-/radio, /mixes, /galleri, …     → existing legacy aliases, now redirect to /sv/<canonical>
-```
+**Databas (migration):**
+- Ny kolumn `radio_stream_url TEXT` i `site_branding` (default: `'https://stream.zeno.fm/gzzqvbuy0d7uv'`).
 
-A `<LangGuard>` element validates `:lang ∈ {sv,en,es}` and either renders `<Outlet/>` or redirects to `/sv/...`. It also calls `setLanguage(lang)` on mount so the URL is the source of truth.
+**Kod:**
+- `src/hooks/useBranding.ts` → exportera `radioStreamUrl`.
+- `src/components/admin/RadioTab.tsx` → nytt textfält "Stream-URL (ZenoFM)" med Spara-knapp.
+- `src/components/NowPlayingBar.tsx` → använd `branding.radioStreamUrl` med fallback till hårdkodad URL om tom.
 
-## Language context (`src/contexts/LanguageContext.tsx`)
+**Frågor:**
+- Ska även Footer-länken `zeno.fm/radio/dj-lobo-radio-o85p/` (spelar-sidan) flyttas till admin i samma veva? Idag frågade jag om detta tidigare — säg till om ja så lägger jag till en andra kolumn `radio_player_url`. Annars lämnar jag den orörd.
 
-- Initial language: read from URL first, fall back to `localStorage`, then `sv`.
-- `setLanguage(lang)` continues to persist to `localStorage` for cross-tab sync but ALSO navigates to the equivalent URL in the new language (swap the first path segment).
-- Keep `<html lang>` effect.
+---
 
-## Language switcher
+## 2. Prisredigerare i admin
 
-Find every call site of `setLanguage` and let the new context handle the navigation — no per-component changes needed. The switcher will start producing real URL transitions.
+**Databas (migration):**
+- Ny tabell `public.pricing_packages`:
+  - `key` (basic/standard/premium)
+  - `sort_order`, `price` (text, t.ex. "7 000"), `active`
+  - Namn + beskrivning per språk: `name_sv/en/es`, `guests_sv/en/es`
+- RLS: publik SELECT, admin ALL. GRANT till anon/authenticated/service_role.
+- Seedas med nuvarande värden från `PricingGrid.tsx`.
 
-## SEO (`src/components/Seo.tsx`)
+**Kod:**
+- Ny flik i admin: **"Priser"** (egen flik – tydligare än under Hem).
+- `src/components/admin/PricingTab.tsx` – tre kort (Basic/Standard/Premium) med fält: Pris, Namn (SV/EN/ES), Beskrivning gäster (SV/EN/ES). Spara per paket.
+- `src/components/PricingGrid.tsx` → läser från DB istället för hårdkodad array. Behåller översatta statiska texter (timmar, ljud/ljus, CTA osv.) – bara paketnamn/pris/gäster blir redigerbara.
 
-- `canonical` becomes `https://djloboproducciones.com{pathname}` (the active localized URL).
-- Emit real `<link rel="alternate" hreflang="sv|en|es|x-default" href="…/{lang}{rest}" />` for each route by swapping the first segment.
-- Drop the `og:locale:alternate` workaround (keep `og:locale` driven by active lang).
+**Fråga:**
+- OK att bara pris + paketnamn + gäst-text är redigerbara? Eller vill du också kunna ändra "4 timmar spelning", "Ljud & ljus ingår", tillägg-priset osv.? (Jag rekommenderar att börja litet – kan utökas senare.)
 
-## Sitemap (`scripts/generate-sitemap.ts`)
+---
 
-Generate one `<url>` per (route × language) with full `xhtml:link` hreflang annotations and `x-default` → `/sv/...`. Add `xmlns:xhtml` to `<urlset>`.
+## 3. Radera Utrustning
 
-## Robots / noindex
+- Ta bort flik i `SpelningarTab.tsx` (blir bara Kalender kvar → förenkla till att rendera `ScheduleTab` direkt, eller behålla som är?).
+- Radera filer: `src/components/admin/EquipmentTab.tsx`, `src/components/EquipmentSection.tsx`.
+- Ta bort `equipment`-referenser i `BookingSection.tsx`.
+- Migration: `DROP TABLE public.equipment CASCADE;`
 
-No changes — `/admin`, `/reset-password`, `/dev/zstack` stay unprefixed and keep their existing `Disallow` + `useNoindex()`.
+**Fråga:**
+- `EquipmentSection.tsx` – används den på någon publik sida (t.ex. prislistan)? Jag kollar och rapporterar, men bekräfta gärna att du vill ta bort helt även för besökare.
 
-## Internal links
+---
 
-Replace hard-coded `to="/lyssna"` etc. with a tiny helper `localizedHref(path, lang)` so the navbar, footer, CTAs, and any `<Link>` produce `/sv/lyssna` etc. I'll grep for `to="/` and update each match.
+## 4. Oanvända filer
 
-## Files touched
+Bekräftat: `BioTab.tsx` och `MixcloudTab.tsx` importeras ingenstans (verifierat via sökning i `src/`).
+→ Radera båda.
 
-- `src/App.tsx` — new route tree + redirects + `LangGuard`.
-- `src/contexts/LanguageContext.tsx` — URL-driven init + navigate on `setLanguage`.
-- `src/components/Seo.tsx` — real hreflang + per-URL canonical.
-- `src/lib/localizedHref.ts` — new helper.
-- `src/components/**` — swap hard-coded internal `to="/..."` for localized hrefs (Navigation, Footer, hero CTAs, etc.).
-- `scripts/generate-sitemap.ts` — multi-lang entries with hreflang.
-- `public/robots.txt` — unchanged.
+---
 
-## Risks
+## 5. Guiden (HelpTab)
 
-- Inbound links to `/lyssna` keep working via the legacy `<Navigate>` redirects.
-- Bookmarks survive (root + each legacy path redirects to the user's stored language, falling back to `sv`).
-- Spanish (`es`) gets URLs too even though it's not in the original hreflang ask; this keeps the system consistent and future-proof.
+Konkreta ändringar:
+- Filstorlek: "max 1 MB" → **"max 2 MB"** (5 MB där det gäller större bilder – jag dubbelkollar mot faktiska limits i uppladdningskomponenterna först).
+- "Klicka på bilderna" → **"Klicka på Ladda upp-knappen"**.
+- Ny kort sektion: **"Beskär bilden"** — förklarar att en beskärare öppnas efter uppladdning så du kan välja utsnitt innan du sparar.
+- Flytta "Sajtnamn/Tagline"-instruktionen från Utseende-sektionen till **Hem-sektionen**.
+- "API-nyckeln uppdateras via Lovable Chat" → **"Kontakta Coffee Code Studio om nyckeln behöver bytas."**
+- Språkgenomgång: korta meningar, inga tekniska termer (byter ut "endpoint", "credentials", "RLS" osv. mot vardagsspråk).
+- Lägg till saknade sektioner: **Reklam** och **Konto** (som saknades helt).
+
+---
+
+## Ordning för genomförande
+
+1. Migration (stream-URL + pricing_packages + drop equipment) – kräver din approval.
+2. Kod-ändringar efter att migrationen är körd och types regenererats.
+3. Radering av oanvända filer.
+4. HelpTab-omskrivning.
+
+**Rör inte navbar** – bekräftat.
+
+---
+
+## Vänta med svar på:
+1. Footer ZenoFM-länk också till admin? (ja/nej)
+2. Prisredigerare – bara pris/namn/gäster, eller även övriga rader? 
+3. `EquipmentSection` – bekräfta radering även från publik sida.
+
+Säg "kör" så börjar jag med migrationen.
