@@ -16,6 +16,7 @@ import {
 import { usePlayerStore } from "@/stores/usePlayerStore";
 import { useStreamStatus } from "@/hooks/useStreamStatus";
 import { useLanguage } from "@/contexts/LanguageContext";
+import { useBranding } from "@/hooks/useBranding";
 import { useNavigate } from "react-router-dom";
 import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 import { logger } from "@/lib/logger";
@@ -112,6 +113,8 @@ const NowPlayingBar = () => {
   const mixWidgetRef = useRef<any>(null);
   const { status, errorMessage, setStatus } = useStreamStatus();
   const { language } = useLanguage();
+  const { branding } = useBranding();
+  const streamUrl = branding?.radio_stream_url || FALLBACK_STREAM_URL;
   const navigate = useNavigate();
   const lto = useLocalizedTo();
   const t = translations[language];
@@ -283,7 +286,7 @@ const NowPlayingBar = () => {
     }
     setIsLoading(true);
     setStatus("connecting");
-    audio.src = STREAM_URL;
+    audio.src = streamUrl;
     audio.muted = false;
     audio.volume = isMuted ? 0 : volume / 100;
     audio.load();
