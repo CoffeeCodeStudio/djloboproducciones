@@ -22,11 +22,18 @@ Deno.serve(async (req) => {
   try {
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
-    const cronSecret = Deno.env.get("CRON_SECRET");
 
-    // --- Auth: allow either (a) valid CRON_SECRET header, or (b) admin JWT ---
+    // Service-role client used for privileged reads (Vault) and DB writes
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
+
+    // --- Auth: allow either (a) valid CRON_SECRET header (checked against Vault), or (b) admin JWT ---
     const providedCronSecret = req.headers.get("x-cron-secret");
-    const isCron = !!(cronSecret && providedCronSecret && providedCronSecret === cronSecret);
+    let isCron = false;
+    if (providedCronSecret) {
+      const { data: vaultSecret } = await supabase.rpc("get_cron_secret");
+      isCron = typeof vaultSecret === "string" && vaultSecret.length > 0 && providedCronSecret === vaultSecret;
+    }
+
 
     if (!isCron) {
       const authHeader = req.headers.get("Authorization");
