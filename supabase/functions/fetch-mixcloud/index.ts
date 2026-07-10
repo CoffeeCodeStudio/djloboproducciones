@@ -72,7 +72,8 @@ Deno.serve(async (req) => {
     }
     // --- End auth check ---
 
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    // supabase client already created above (service role)
+
 
     const MIXCLOUD_USERNAME = "DjLobo75";
     const apiUrl = `https://api.mixcloud.com/${MIXCLOUD_USERNAME}/cloudcasts/?limit=20`;
