@@ -48,6 +48,9 @@ const RadioTab = () => {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [radioSectionTitle, setRadioSectionTitle] = useState("");
+  const [streamUrl, setStreamUrl] = useState("");
+  const [playerUrl, setPlayerUrl] = useState("");
+  const [savingUrls, setSavingUrls] = useState(false);
   
   // Radio image upload state
   const [uploadingRadio, setUploadingRadio] = useState(false);
@@ -61,7 +64,24 @@ const RadioTab = () => {
     if (branding?.radio_section_title !== undefined) {
       setRadioSectionTitle(branding.radio_section_title || "Live Radio");
     }
-  }, [branding?.radio_section_title]);
+    if (branding?.radio_stream_url !== undefined) {
+      setStreamUrl(branding.radio_stream_url || "");
+    }
+    if (branding?.radio_player_url !== undefined) {
+      setPlayerUrl(branding.radio_player_url || "");
+    }
+  }, [branding?.radio_section_title, branding?.radio_stream_url, branding?.radio_player_url]);
+
+  const handleSaveUrls = async () => {
+    setSavingUrls(true);
+    const { error } = await updateBranding({
+      radio_stream_url: streamUrl.trim() || null,
+      radio_player_url: playerUrl.trim() || null,
+    });
+    setSavingUrls(false);
+    if (error) sonnerToast.error("Kunde inte spara: " + error);
+    else { sonnerToast.success("✅ Radio-länkar sparade!"); refetch(); }
+  };
 
   const fetchMessages = async () => {
     setLoading(true);
