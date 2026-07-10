@@ -1,8 +1,39 @@
 # 📋 DJ Lobo Producciones – Changelog
 
-Detaljerad sammanställning av all utveckling (2026-01-11 → 2026-06-16, ~1437 meddelanden).
+Detaljerad sammanställning av all utveckling (2026-01-11 → 2026-07-10).
 
 ---
+
+## 🛡️ v1.2 – Admin V2 & Säkerhet (2026-07-10)
+
+### Tillagt
+- `pricing_packages` + `pricing_settings`-tabeller (RLS: publik läs, admin skriv)
+- `radio_stream_url` + `radio_player_url` i `site_branding`
+- `PricingTab.tsx` – prisredigerare i admin (3 paket × 3 språk)
+- Radio-länkar-sektion i `RadioTab`
+- `SECURITY.md` skapad
+- `hidden_reason`-kolumn i `mixcloud_mixes` (admin/auto_404)
+- `CRON_SECRET` för automatisk Mixcloud-synk
+- `public/_headers`: `/*`-block, SoundCloud + YouTube-thumbnails
+
+### Ändrat
+- `PricingGrid.tsx` hämtar från DB istället för hårdkodat
+- `NowPlayingBar` + `Footer` läser radio-URL från branding
+- `GlobalMiniPlayer` renderar inte iframe när `NowPlayingBar` redan spelar
+- `HelpTab` omskriven: 2 MB, Ladda upp-knappen, beskärar-guide
+
+### Raderat
+- `equipment`-tabellen droppad
+- `EquipmentSection.tsx`, `EquipmentTab.tsx`, `BioTab.tsx`, `MixcloudTab.tsx`
+
+### Fixat
+- Stream-URL-mismatch mellan kod och `ARCHITECTURE.md`
+- Auto-unhide skrev över admin-dolda mixar
+- Dubbelt ljud när mix spelades i två iframes samtidigt
+
+---
+
+
 
 ## 🚀 v0.1 – Initial Build (2026-01-11)
 
