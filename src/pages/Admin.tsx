@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Star, Home, HelpCircle, Users, Megaphone } from "lucide-react";
+import { Shield, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Star, Home, HelpCircle, Users, Megaphone, DollarSign } from "lucide-react";
 // Note: Radio icon kept in import for tab definitions below.
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -19,12 +19,14 @@ import BrandingTab from "@/components/admin/BrandingTab";
 import HelpTab from "@/components/admin/HelpTab";
 import UsersTab from "@/components/admin/UsersTab";
 import PromosTab from "@/components/admin/PromosTab";
+import PricingTab from "@/components/admin/PricingTab";
 
 const TAB_DEFS = [
   { value: "framsida",   icon: Home,       label: "Hem" },
   { value: "media",      icon: ImageIcon,  label: "Media" },
   { value: "reklam",     icon: Megaphone,  label: "Reklam" },
   { value: "radio",      icon: Radio,      label: "Radio" },
+  { value: "priser",     icon: DollarSign, label: "Priser" },
   { value: "omdomen",    icon: Star,       label: "Omdömen" },
   { value: "spelningar", icon: Calendar,   label: "Event" },
   { value: "utseende",   icon: Palette,    label: "Stil" },
