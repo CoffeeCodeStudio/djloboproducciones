@@ -172,7 +172,7 @@ const Admin = () => {
               className="overflow-x-auto sm:overflow-visible scrollbar-none -mx-3 sm:mx-0 px-3 sm:px-0"
               style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
             >
-              <TabsList className="inline-flex sm:grid w-auto sm:w-full sm:grid-cols-9 bg-card border border-border rounded-lg h-auto p-1 gap-1">
+              <TabsList className="inline-flex sm:grid w-auto sm:w-full sm:grid-cols-10 bg-card border border-border rounded-lg h-auto p-1 gap-1">
                 {TAB_DEFS.map(({ value, icon: Icon, label }) => (
                   <TabsTrigger
                     key={value}
@@ -213,6 +213,7 @@ const Admin = () => {
           <TabsContent value="media"><GalleryTab /></TabsContent>
           <TabsContent value="reklam"><PromosTab /></TabsContent>
           <TabsContent value="radio"><RadioTab /></TabsContent>
+          <TabsContent value="priser"><PricingTab /></TabsContent>
           <TabsContent value="omdomen"><TestimonialsTab /></TabsContent>
           <TabsContent value="spelningar"><SpelningarTab /></TabsContent>
           <TabsContent value="utseende"><BrandingTab /></TabsContent>
