@@ -30,6 +30,8 @@ export interface SiteBranding {
   instagram_post_4: string | null;
   instagram_post_5: string | null;
   instagram_post_6: string | null;
+  radio_stream_url: string | null;
+  radio_player_url: string | null;
   updated_at: string;
 }
 

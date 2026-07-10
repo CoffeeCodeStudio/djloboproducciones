@@ -22,7 +22,7 @@ import { logger } from "@/lib/logger";
 import { useScheduleNow, formatRelativeShort } from "@/hooks/useScheduleNow";
 import { toast } from "sonner";
 
-const STREAM_URL = "https://stream.zeno.fm/gzzqvbuy0d7uv";
+const FALLBACK_STREAM_URL = "https://stream.zeno.fm/gzzqvbuy0d7uv";
 
 const translations = {
   sv: {
