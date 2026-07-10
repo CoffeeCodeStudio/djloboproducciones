@@ -81,7 +81,7 @@ const AboutSection = () => {
 
   const stats = [
     { value: "20+", label: t.yearsLabel, ariaLabel: "Över 20 års erfarenhet" },
-    { value: "500+", label: t.eventsLabel, ariaLabel: "Över 500 spelningar" },
+    { value: "1000+", label: t.eventsLabel, ariaLabel: "Över 1000 spelningar" },
   ];
 
   const features = [
