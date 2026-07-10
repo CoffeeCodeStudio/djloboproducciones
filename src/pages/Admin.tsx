@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Shield, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Star, Home, HelpCircle, Users, Megaphone } from "lucide-react";
+import { Shield, Radio, ArrowLeft, LogOut, Palette, ImageIcon, Calendar, Star, Home, HelpCircle, Users, Megaphone, DollarSign } from "lucide-react";
 // Note: Radio icon kept in import for tab definitions below.
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
@@ -19,12 +19,14 @@ import BrandingTab from "@/components/admin/BrandingTab";
 import HelpTab from "@/components/admin/HelpTab";
 import UsersTab from "@/components/admin/UsersTab";
 import PromosTab from "@/components/admin/PromosTab";
+import PricingTab from "@/components/admin/PricingTab";
 
 const TAB_DEFS = [
   { value: "framsida",   icon: Home,       label: "Hem" },
   { value: "media",      icon: ImageIcon,  label: "Media" },
   { value: "reklam",     icon: Megaphone,  label: "Reklam" },
   { value: "radio",      icon: Radio,      label: "Radio" },
+  { value: "priser",     icon: DollarSign, label: "Priser" },
   { value: "omdomen",    icon: Star,       label: "Omdömen" },
   { value: "spelningar", icon: Calendar,   label: "Event" },
   { value: "utseende",   icon: Palette,    label: "Stil" },
@@ -170,7 +172,7 @@ const Admin = () => {
               className="overflow-x-auto sm:overflow-visible scrollbar-none -mx-3 sm:mx-0 px-3 sm:px-0"
               style={{ scrollbarWidth: "none", WebkitOverflowScrolling: "touch" }}
             >
-              <TabsList className="inline-flex sm:grid w-auto sm:w-full sm:grid-cols-9 bg-card border border-border rounded-lg h-auto p-1 gap-1">
+              <TabsList className="inline-flex sm:grid w-auto sm:w-full sm:grid-cols-10 bg-card border border-border rounded-lg h-auto p-1 gap-1">
                 {TAB_DEFS.map(({ value, icon: Icon, label }) => (
                   <TabsTrigger
                     key={value}
@@ -211,6 +213,7 @@ const Admin = () => {
           <TabsContent value="media"><GalleryTab /></TabsContent>
           <TabsContent value="reklam"><PromosTab /></TabsContent>
           <TabsContent value="radio"><RadioTab /></TabsContent>
+          <TabsContent value="priser"><PricingTab /></TabsContent>
           <TabsContent value="omdomen"><TestimonialsTab /></TabsContent>
           <TabsContent value="spelningar"><SpelningarTab /></TabsContent>
           <TabsContent value="utseende"><BrandingTab /></TabsContent>

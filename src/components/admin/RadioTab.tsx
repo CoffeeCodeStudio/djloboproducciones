@@ -48,6 +48,9 @@ const RadioTab = () => {
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
   const [radioSectionTitle, setRadioSectionTitle] = useState("");
+  const [streamUrl, setStreamUrl] = useState("");
+  const [playerUrl, setPlayerUrl] = useState("");
+  const [savingUrls, setSavingUrls] = useState(false);
   
   // Radio image upload state
   const [uploadingRadio, setUploadingRadio] = useState(false);
@@ -61,7 +64,24 @@ const RadioTab = () => {
     if (branding?.radio_section_title !== undefined) {
       setRadioSectionTitle(branding.radio_section_title || "Live Radio");
     }
-  }, [branding?.radio_section_title]);
+    if (branding?.radio_stream_url !== undefined) {
+      setStreamUrl(branding.radio_stream_url || "");
+    }
+    if (branding?.radio_player_url !== undefined) {
+      setPlayerUrl(branding.radio_player_url || "");
+    }
+  }, [branding?.radio_section_title, branding?.radio_stream_url, branding?.radio_player_url]);
+
+  const handleSaveUrls = async () => {
+    setSavingUrls(true);
+    const { error } = await updateBranding({
+      radio_stream_url: streamUrl.trim() || null,
+      radio_player_url: playerUrl.trim() || null,
+    });
+    setSavingUrls(false);
+    if (error) sonnerToast.error("Kunde inte spara: " + error);
+    else { sonnerToast.success("✅ Radio-länkar sparade!"); refetch(); }
+  };
 
   const fetchMessages = async () => {
     setLoading(true);
@@ -188,7 +208,48 @@ const RadioTab = () => {
         </TabsList>
 
         <TabsContent value="settings" className="space-y-6">
-          {/* Radio Section Title */}
+          {/* Radio URLs */}
+          <Card className="glass-card border-white/10 max-w-2xl mx-auto">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg">📡 Radio-länkar</CardTitle>
+              <CardDescription>
+                Byt själv om du flyttar till en ny stream-tjänst. Lämna tomt för att använda standardvärde.
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div>
+                <Label htmlFor="streamUrl">Stream-URL (ljudström)</Label>
+                <Input
+                  id="streamUrl"
+                  value={streamUrl}
+                  onChange={(e) => setStreamUrl(e.target.value)}
+                  placeholder="https://stream.zeno.fm/..."
+                  className="mt-1.5"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Direkt-URL till radioströmmen. Används av spelaren på sajten.
+                </p>
+              </div>
+              <div>
+                <Label htmlFor="playerUrl">Spelar-länk (ZenoFM-sida)</Label>
+                <Input
+                  id="playerUrl"
+                  value={playerUrl}
+                  onChange={(e) => setPlayerUrl(e.target.value)}
+                  placeholder="https://zeno.fm/radio/..."
+                  className="mt-1.5"
+                />
+                <p className="text-xs text-muted-foreground mt-1">
+                  Länk till ZenoFM-sidan – visas i sidfoten under "Följ Radion".
+                </p>
+              </div>
+              <Button onClick={handleSaveUrls} disabled={savingUrls} size="lg" className="w-full text-base py-6">
+                {savingUrls ? (<><Loader2 className="w-5 h-5 mr-2 animate-spin" />Sparar...</>) : (<><Save className="w-5 h-5 mr-2" />Spara länkar</>)}
+              </Button>
+            </CardContent>
+          </Card>
+
+
           <Card className="glass-card border-white/10 max-w-2xl mx-auto">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg">

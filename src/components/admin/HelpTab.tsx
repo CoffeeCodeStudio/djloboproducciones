@@ -1,121 +1,152 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import {
   HelpCircle, Home, ImageIcon, Radio, Star, Calendar, Palette,
-  Mail, MessageSquare, Globe, ExternalLink, Clock, Users
+  Mail, Globe, ExternalLink, Clock, Users, Crop, Megaphone, DollarSign
 } from "lucide-react";
 
 const sections = [
   {
     icon: Home,
-    title: "Framsida",
-    description: "Ändra hero-bild, profilbild, tagline och bio-text.",
+    title: "Hem",
+    description: "Startsidans hero-bild, profilbild, sajtnamn, tagline och bio-text.",
     steps: [
-      "Gå till fliken Hem",
-      "Klicka på bilderna för att byta dem (max 1 MB)",
-      "Skriv ny tagline eller bio-text i textfälten",
-      "Klicka Spara"
-    ]
+      "Öppna fliken Hem",
+      "Klicka på Ladda upp-knappen för att byta bild (max 2 MB)",
+      "Skriv nytt sajtnamn, tagline eller bio-text i textfälten",
+      "Klicka Spara",
+    ],
   },
   {
     icon: ImageIcon,
-    title: "Media (Galleri)",
-    description: "Hantera foton och videos som visas på /media-sidan.",
+    title: "Media",
+    description: "Foton och videor som visas på /media-sidan.",
     steps: [
-      "Gå till fliken Media",
-      "Ladda upp foton (JPG/PNG, max 2 MB) eller lägg till YouTube-URL",
-      "Toggla mellan Foto och Video-typ",
-      "Dra för att ändra ordning, klicka 🗑️ för att ta bort"
-    ]
+      "Öppna fliken Media",
+      "Klicka på Ladda upp-knappen för att lägga till foto (max 2 MB) — eller klistra in en YouTube-länk",
+      "Välj typ: Foto eller Video",
+      "Dra kort för att ändra ordning, klicka på papperskorgen för att ta bort",
+    ],
+  },
+  {
+    icon: Megaphone,
+    title: "Reklam",
+    description: "Popup-erbjudanden och kampanjer som visas för besökare.",
+    steps: [
+      "Öppna fliken Reklam",
+      "Klicka Lägg till kampanj",
+      "Fyll i rubrik, text, bild och länk – välj när kampanjen ska visas",
+      "Aktivera med knappen och klicka Spara",
+    ],
   },
   {
     icon: Radio,
     title: "Radio",
-    description: "Ändra radiobild och sektionsrubrik för DJ Lobo Radio.",
+    description: "Radio-länkar, radiobild och sektionsrubrik.",
     steps: [
-      "Gå till fliken Radio",
-      "Byt radiobild och/eller sektionsrubrik",
-      "Klicka Spara",
-      "Själva radioströmmen hanteras via zeno.fm"
-    ]
+      "Öppna fliken Radio → Inställningar",
+      "Byt stream-URL eller spelar-länk om du bytt tjänst (annars lämna som det är)",
+      "Klicka på Ladda upp-knappen för att byta radiobild (max 2 MB)",
+      "Skriv ny rubrik för radiosidan och klicka Spara",
+    ],
+  },
+  {
+    icon: DollarSign,
+    title: "Priser",
+    description: "Redigera de tre prispaketen och gemensamma texter.",
+    steps: [
+      "Öppna fliken Priser",
+      "Ändra pris, paketnamn eller beskrivning direkt i fälten – för alla tre språk",
+      "Klicka Spara under respektive paket",
+      "Justera gemensamma texter (info-rad och CTA) längst ner om du vill",
+    ],
   },
   {
     icon: Star,
     title: "Omdömen",
-    description: "Lägg till, redigera eller ta bort kundomdömen.",
+    description: "Kundomdömen som visas på hemsidan.",
     steps: [
-      "Gå till fliken Omdömen",
-      "Klicka Lägg till för nya omdömen",
+      "Öppna fliken Omdömen",
+      "Klicka Lägg till för nytt omdöme",
       "Fyll i namn, text och betyg",
-      "Klicka Spara"
-    ]
+      "Klicka Spara",
+    ],
   },
   {
     icon: Calendar,
-    title: "Spelningar (Google Calendar)",
-    description: "Kommande spelningar hämtas automatiskt från Google Calendar.",
+    title: "Event",
+    description: "Kommande spelningar hämtas automatiskt från Google Kalender.",
     steps: [
-      "Öppna Google Calendar (calendar.google.com)",
-      "Logga in med djloboproducciones75@gmail.com",
+      "Öppna calendar.google.com och logga in med djloboproducciones75@gmail.com",
       "Skapa ett nytt event med titel, plats och tid",
-      "Eventet visas på hemsidan inom 5 minuter"
-    ]
+      "Eventet visas på hemsidan inom 5 minuter",
+    ],
   },
   {
     icon: Palette,
-    title: "Utseende",
-    description: "Ändra logo, sidnamn och glow-färger.",
+    title: "Stil",
+    description: "Logotyp, färger och bakgrund för hela sajten.",
     steps: [
-      "Gå till fliken Stil",
-      "Ladda upp ny logo (max 1 MB)",
-      "Ändra sidnamn, tagline eller färger",
-      "Klicka Spara"
-    ]
+      "Öppna fliken Stil",
+      "Klicka på Ladda upp-knappen för ny logotyp (max 2 MB)",
+      "Ändra färger via färgväljarna",
+      "Klicka Spara",
+    ],
+  },
+  {
+    icon: Users,
+    title: "Konto",
+    description: "Hantera admin-användare och byt ditt lösenord.",
+    steps: [
+      "Öppna fliken Konto",
+      "Bjud in nya administratörer med e-post",
+      "Ta bort användare med papperskorgen",
+      "Klicka på ditt eget namn för att byta lösenord",
+    ],
+  },
+  {
+    icon: Crop,
+    title: "Beskär bilden",
+    description: "Så fungerar beskäraren som öppnas efter uppladdning.",
+    steps: [
+      "När du väljer en bild öppnas en beskärare",
+      "Dra bilden och zooma för att välja utsnittet",
+      "Ramen visar exakt hur bilden kommer att synas på sajten",
+      "Klicka Använd beskärning – bilden sparas direkt",
+    ],
   },
 ];
 
 const quickFacts = [
-  { icon: Clock, label: "Uppdateringstid", value: "Ändringar syns direkt (kalender max 5 min)" },
+  { icon: Clock, label: "Uppdateringstid", value: "Direkt (kalendern max 5 min)" },
   { icon: Mail, label: "Mejl skickas till", value: "djloboproducciones75@gmail.com" },
-  { icon: Globe, label: "Språk", value: "Svenska, Engelska, Spanska" },
-  { icon: Users, label: "Besökarchatt", value: "Live-chatt med moderering" },
+  { icon: Globe, label: "Språk", value: "Svenska, engelska, spanska" },
+  { icon: Users, label: "Besökarchatt", value: "Live med moderering" },
 ];
 
 const HelpTab = () => {
   return (
     <div className="space-y-6">
-      {/* Header + PDF download */}
       <Card className="glass-card">
         <CardHeader>
           <CardTitle className="font-display flex items-center gap-2">
             <HelpCircle className="w-5 h-5 text-primary" />
-            Hjälp & Instruktioner
+            Hjälp & instruktioner
           </CardTitle>
-          <CardDescription>
-            Allt du behöver veta för att hantera din hemsida
-          </CardDescription>
+          <CardDescription>Allt du behöver för att sköta din hemsida själv.</CardDescription>
         </CardHeader>
-        <CardContent className="space-y-4">
+        <CardContent>
           <p className="text-sm text-muted-foreground">
-            Här hittar du instruktioner för varje del av admin-panelen.
+            Här får du enkla steg för varje del av admin-panelen. Behöver du hjälp?
             Kontakta{" "}
-            <a
-              href="https://coffeecodestudio.se"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-primary hover:underline font-medium"
-            >
+            <a href="https://coffeecodestudio.se" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline font-medium">
               Coffee Code Studio
-            </a>{" "}
-            om du behöver en fullständig guide.
+            </a>.
           </p>
         </CardContent>
       </Card>
 
-      {/* Quick facts */}
       <Card className="glass-card">
-        <CardHeader>
-          <CardTitle className="font-display text-lg">Snabbfakta</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle className="font-display text-lg">Snabbfakta</CardTitle></CardHeader>
         <CardContent>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             {quickFacts.map((fact) => (
@@ -131,7 +162,6 @@ const HelpTab = () => {
         </CardContent>
       </Card>
 
-      {/* Section guides */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {sections.map((section) => (
           <Card key={section.title} className="glass-card">
@@ -156,18 +186,18 @@ const HelpTab = () => {
         ))}
       </div>
 
-      {/* FAQ */}
       <Card className="glass-card">
-        <CardHeader>
-          <CardTitle className="font-display text-lg">Vanliga frågor</CardTitle>
-        </CardHeader>
+        <CardHeader><CardTitle className="font-display text-lg">Vanliga frågor</CardTitle></CardHeader>
         <CardContent className="space-y-4">
           {[
-            { q: "Hur snabbt syns mina ändringar?", a: "Direkt — utom kalenderändringar som tar max 5 minuter." },
-            { q: "Hur lägger jag till en spelning?", a: "Skapa ett event i Google Calendar med kontot djloboproducciones75@gmail.com. Det dyker upp automatiskt." },
-            { q: "Vad händer när någon bokar via sidan?", a: "Du får ett mejl till djloboproducciones75@gmail.com. Svara direkt — det går till kundens e-post." },
-            { q: "Kan jag ändra priserna?", a: "Priserna är hårdkodade i designen. Kontakta utvecklaren (Coffee Code Studio) för att ändra." },
-            { q: "Vad är skillnaden på DJ Lobo Radio och DJ Lobo Producciones?", a: "'DJ Lobo Producciones' är verksamheten. 'DJ Lobo Radio' är enbart radiokanalen." },
+            { q: "Hur snabbt syns mina ändringar?", a: "Direkt – utom kalendern som uppdateras inom 5 minuter." },
+            { q: "Hur lägger jag till en spelning?", a: "Skapa ett event i Google Kalender med kontot djloboproducciones75@gmail.com. Det syns automatiskt på sajten." },
+            { q: "Vad händer när någon bokar via sidan?", a: "Du får ett mejl till djloboproducciones75@gmail.com. Svara direkt – det går till kunden." },
+            { q: "Kan jag ändra priserna?", a: "Ja, öppna fliken Priser. Där kan du ändra pris, namn och beskrivning för alla paket." },
+            { q: "Kan jag byta ZenoFM-länken?", a: "Ja, öppna fliken Radio → Inställningar och skriv in den nya länken." },
+            { q: "Filen är för stor – vad gör jag?", a: "Max filstorlek är 2 MB för de flesta bilder. Använd t.ex. tinypng.com eller squoosh.app för att krympa bilden först." },
+            { q: "Kan jag byta API-nyckel för Google Kalender?", a: "Kontakta Coffee Code Studio så hjälper vi till att byta nyckeln." },
+            { q: "Vad är skillnaden på DJ Lobo Radio och DJ Lobo Producciones?", a: "DJ Lobo Producciones är verksamheten. DJ Lobo Radio är enbart radiokanalen." },
           ].map((faq, i) => (
             <div key={i} className="border-b border-border/30 pb-3 last:border-0 last:pb-0">
               <p className="text-sm font-medium text-foreground mb-1">{faq.q}</p>
@@ -177,19 +207,11 @@ const HelpTab = () => {
         </CardContent>
       </Card>
 
-      {/* Support */}
       <Card className="glass-card">
         <CardContent className="py-6">
           <div className="text-center space-y-2">
-            <p className="text-sm text-muted-foreground">
-              Behöver du mer hjälp? Kontakta utvecklaren:
-            </p>
-            <a
-              href="https://coffeecodestudio.se"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 text-sm text-primary hover:underline font-medium"
-            >
+            <p className="text-sm text-muted-foreground">Behöver du mer hjälp? Kontakta:</p>
+            <a href="https://coffeecodestudio.se" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-sm text-primary hover:underline font-medium">
               <ExternalLink className="w-4 h-4" />
               Coffee Code Studio
             </a>

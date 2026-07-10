@@ -125,48 +125,6 @@ export type Database = {
         }
         Relationships: []
       }
-      equipment: {
-        Row: {
-          created_at: string
-          description_en: string
-          description_es: string
-          description_sv: string
-          icon: string
-          id: string
-          sort_order: number
-          title_en: string
-          title_es: string
-          title_sv: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          description_en?: string
-          description_es?: string
-          description_sv?: string
-          icon?: string
-          id?: string
-          sort_order?: number
-          title_en: string
-          title_es: string
-          title_sv: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          description_en?: string
-          description_es?: string
-          description_sv?: string
-          icon?: string
-          id?: string
-          sort_order?: number
-          title_en?: string
-          title_es?: string
-          title_sv?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       gallery_images: {
         Row: {
           alt_text: string | null
@@ -244,6 +202,126 @@ export type Database = {
           sort_order?: number
           source?: string
           title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pricing_packages: {
+        Row: {
+          active: boolean
+          addon_en: string
+          addon_es: string
+          addon_sv: string
+          created_at: string
+          guests_en: string
+          guests_es: string
+          guests_sv: string
+          hours_en: string
+          hours_es: string
+          hours_sv: string
+          id: string
+          key: string
+          name_en: string
+          name_es: string
+          name_sv: string
+          price: string
+          sort_order: number
+          sound_light_en: string
+          sound_light_es: string
+          sound_light_sv: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          addon_en: string
+          addon_es: string
+          addon_sv: string
+          created_at?: string
+          guests_en: string
+          guests_es: string
+          guests_sv: string
+          hours_en: string
+          hours_es: string
+          hours_sv: string
+          id?: string
+          key: string
+          name_en: string
+          name_es: string
+          name_sv: string
+          price: string
+          sort_order?: number
+          sound_light_en: string
+          sound_light_es: string
+          sound_light_sv: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          addon_en?: string
+          addon_es?: string
+          addon_sv?: string
+          created_at?: string
+          guests_en?: string
+          guests_es?: string
+          guests_sv?: string
+          hours_en?: string
+          hours_es?: string
+          hours_sv?: string
+          id?: string
+          key?: string
+          name_en?: string
+          name_es?: string
+          name_sv?: string
+          price?: string
+          sort_order?: number
+          sound_light_en?: string
+          sound_light_es?: string
+          sound_light_sv?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pricing_settings: {
+        Row: {
+          created_at: string
+          cta_text_en: string
+          cta_text_es: string
+          cta_text_sv: string
+          id: string
+          info_en: string
+          info_es: string
+          info_sv: string
+          large_event_en: string
+          large_event_es: string
+          large_event_sv: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          cta_text_en: string
+          cta_text_es: string
+          cta_text_sv: string
+          id?: string
+          info_en: string
+          info_es: string
+          info_sv: string
+          large_event_en: string
+          large_event_es: string
+          large_event_sv: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          cta_text_en?: string
+          cta_text_es?: string
+          cta_text_sv?: string
+          id?: string
+          info_en?: string
+          info_es?: string
+          info_sv?: string
+          large_event_en?: string
+          large_event_es?: string
+          large_event_sv?: string
           updated_at?: string
         }
         Relationships: []
@@ -361,7 +439,9 @@ export type Database = {
           profile_image_url: string | null
           promo_sort_strategy: string
           radio_image_url: string | null
+          radio_player_url: string | null
           radio_section_title: string | null
+          radio_stream_url: string | null
           secondary_glow_color: string | null
           site_name: string | null
           tagline: string | null
@@ -394,7 +474,9 @@ export type Database = {
           profile_image_url?: string | null
           promo_sort_strategy?: string
           radio_image_url?: string | null
+          radio_player_url?: string | null
           radio_section_title?: string | null
+          radio_stream_url?: string | null
           secondary_glow_color?: string | null
           site_name?: string | null
           tagline?: string | null
@@ -427,7 +509,9 @@ export type Database = {
           profile_image_url?: string | null
           promo_sort_strategy?: string
           radio_image_url?: string | null
+          radio_player_url?: string | null
           radio_section_title?: string | null
+          radio_stream_url?: string | null
           secondary_glow_color?: string | null
           site_name?: string | null
           tagline?: string | null

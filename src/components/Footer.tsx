@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
+import { useBranding } from "@/hooks/useBranding";
 import NeonWordmark from "@/components/NeonWordmark";
 
 const DEFAULT_SOCIAL_LINKS = {
@@ -60,6 +61,7 @@ const translations = {
 const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { language } = useLanguage();
   const lto = useLocalizedTo();
+  const { branding } = useBranding();
   
   const { resetConsent } = useCookieConsent();
   const t = translations[language];
@@ -69,7 +71,7 @@ const socialLinks = {
     youtube: DEFAULT_SOCIAL_LINKS.youtube,
     facebookRadio: DEFAULT_SOCIAL_LINKS.facebookRadio,
     facebookProd: DEFAULT_SOCIAL_LINKS.facebookProd,
-    zenoPlayer: DEFAULT_SOCIAL_LINKS.zenoPlayer
+    zenoPlayer: branding?.radio_player_url || DEFAULT_SOCIAL_LINKS.zenoPlayer
   };
 
   return (
