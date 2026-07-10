@@ -30,9 +30,11 @@ Deno.serve(async (req) => {
     const providedCronSecret = req.headers.get("x-cron-secret");
     let isCron = false;
     if (providedCronSecret) {
-      const { data: vaultSecret } = await supabase.rpc("get_cron_secret");
+      const { data: vaultSecret, error: vaultErr } = await supabase.rpc("get_cron_secret");
+      console.log("[fetch-mixcloud] cron auth check", { hasProvided: !!providedCronSecret, hasVault: !!vaultSecret, vaultErr: vaultErr?.message });
       isCron = typeof vaultSecret === "string" && vaultSecret.length > 0 && providedCronSecret === vaultSecret;
     }
+
 
 
     if (!isCron) {
