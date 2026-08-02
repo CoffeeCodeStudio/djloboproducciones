@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Instagram, Facebook, Youtube, Radio as RadioIcon, Mail, Phone, MapPin, Cookie } from "lucide-react";
+import { Instagram, Facebook, Youtube, Radio as RadioIcon, Music, Mail, Phone, MapPin, Cookie } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 import { useLanguage } from "@/contexts/LanguageContext";
