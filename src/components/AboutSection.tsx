@@ -90,18 +90,24 @@ const AboutSection = () => {
       title: t.feature1Title,
       description: t.feature1Desc,
       gradient: "icon-gradient-pink",
+      glowColor: "hsla(var(--neon-pink), 0.45)",
+      iconColor: "text-neon-pink",
     },
     {
       icon: Disc,
       title: t.feature2Title,
       description: t.feature2Desc,
       gradient: "icon-gradient-cyan",
+      glowColor: "hsla(var(--neon-cyan), 0.45)",
+      iconColor: "text-neon-cyan",
     },
     {
       icon: Headphones,
       title: t.feature3Title,
       description: t.feature3Desc,
       gradient: "icon-gradient-purple",
+      glowColor: "hsla(var(--neon-purple), 0.45)",
+      iconColor: "text-neon-purple",
     },
   ];
 
