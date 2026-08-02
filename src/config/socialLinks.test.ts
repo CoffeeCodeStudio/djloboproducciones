@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { SOCIAL_LINKS, SOCIAL_LINK_GROUPS } from "./socialLinks";
+import { SOCIAL_LINKS, SOCIAL_LINK_GROUPS, isValidHttpUrl, safeUrl } from "./socialLinks";
 
 const groupByKey = (key: string) => {
   const group = SOCIAL_LINK_GROUPS.find((g) => g.key === key);
