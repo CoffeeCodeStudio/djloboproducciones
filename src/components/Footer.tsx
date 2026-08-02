@@ -6,7 +6,8 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
 import { useBranding } from "@/hooks/useBranding";
 import NeonWordmark from "@/components/NeonWordmark";
-import { SOCIAL_LINKS, safeUrl } from "@/config/socialLinks";
+import { SOCIAL_LINKS, SOCIAL_LINK_GROUPS, safeUrl } from "@/config/socialLinks";
+import type { SocialLinkGroup, SocialLinkGroupItem } from "@/config/socialLinks";
 
 const DEFAULT_SOCIAL_LINKS = {
   instagram: SOCIAL_LINKS.instagram,
@@ -16,7 +17,26 @@ const DEFAULT_SOCIAL_LINKS = {
   zenoPlayer: SOCIAL_LINKS.zenoPlayer
 };
 
+const ICONS = {
+  facebook: Facebook,
+  instagram: Instagram,
+  youtube: Youtube,
+  music: Music,
+  radio: RadioIcon,
+} as const;
 
+const COLOR_STYLES: Record<SocialLinkGroup["color"], { heading: string; hover: string; iconHover: string }> = {
+  "neon-pink": {
+    heading: "text-neon-pink",
+    hover: "hover:text-neon-pink",
+    iconHover: "group-hover:text-neon-pink",
+  },
+  "neon-cyan": {
+    heading: "text-neon-cyan",
+    hover: "hover:text-neon-cyan",
+    iconHover: "group-hover:text-neon-cyan",
+  },
+};
 
 const translations = {
   sv: {
@@ -28,15 +48,7 @@ const translations = {
     about: "Om DJ Lobo",
     aboutText: "Professionell DJ i Göteborg med 20+ års erfarenhet. Expert på House, World Hits, 80-tal, 90-tal och Latin beats.",
     location: "Göteborg, Sverige",
-    socialMedia: "Sociala medier",
-    musicRadio: "Musik & Radio",
-    visitStudio: "Besök Coffee Code Studio",
-    ariaFacebookProd: "DJ Lobo Producciones på Facebook",
-    ariaInstagram: "DJ Lobo på Instagram",
-    ariaYoutube: "DJ Lobo på YouTube",
-    ariaMixcloud: "DJ Lobo på Mixcloud",
-    ariaZeno: "Lyssna på DJ Lobo Producciones via ZenoFM",
-    ariaFacebookRadio: "DJ Lobo Radio på Facebook"
+    visitStudio: "Besök Coffee Code Studio"
   },
   en: {
     copyright: "© 2026 DJ Lobo Producciones. All rights reserved.",
@@ -47,15 +59,7 @@ const translations = {
     about: "About DJ Lobo",
     aboutText: "Professional DJ in Gothenburg with 20+ years of experience. Expert in House, World Hits, 80s, 90s and Latin beats.",
     location: "Gothenburg, Sweden",
-    socialMedia: "Social Media",
-    musicRadio: "Music & Radio",
-    visitStudio: "Visit Coffee Code Studio",
-    ariaFacebookProd: "DJ Lobo Producciones on Facebook",
-    ariaInstagram: "DJ Lobo on Instagram",
-    ariaYoutube: "DJ Lobo on YouTube",
-    ariaMixcloud: "DJ Lobo on Mixcloud",
-    ariaZeno: "Listen to DJ Lobo Producciones on ZenoFM",
-    ariaFacebookRadio: "DJ Lobo Radio on Facebook"
+    visitStudio: "Visit Coffee Code Studio"
   },
   es: {
     copyright: "© 2026 DJ Lobo Producciones. Todos los derechos reservados.",
@@ -66,15 +70,7 @@ const translations = {
     about: "Sobre DJ Lobo",
     aboutText: "DJ profesional en Gotemburgo con más de 20 años de experiencia. Experto en House, World Hits, 80s, 90s y Latin beats.",
     location: "Gotemburgo, Suecia",
-    socialMedia: "Redes sociales",
-    musicRadio: "Música y Radio",
-    visitStudio: "Visitar Coffee Code Studio",
-    ariaFacebookProd: "DJ Lobo Producciones en Facebook",
-    ariaInstagram: "DJ Lobo en Instagram",
-    ariaYoutube: "DJ Lobo en YouTube",
-    ariaMixcloud: "DJ Lobo en Mixcloud",
-    ariaZeno: "Escucha DJ Lobo Producciones en ZenoFM",
-    ariaFacebookRadio: "DJ Lobo Radio en Facebook"
+    visitStudio: "Visitar Coffee Code Studio"
   }
 };
 
@@ -86,7 +82,7 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
   const { resetConsent } = useCookieConsent();
   const t = translations[language];
 
-const socialLinks = {
+  const socialLinks = {
     instagram: safeUrl(DEFAULT_SOCIAL_LINKS.instagram, SOCIAL_LINKS.instagram),
     youtube: safeUrl(DEFAULT_SOCIAL_LINKS.youtube, SOCIAL_LINKS.youtube),
     facebookRadio: safeUrl(DEFAULT_SOCIAL_LINKS.facebookRadio, SOCIAL_LINKS.facebook),
@@ -94,6 +90,24 @@ const socialLinks = {
     zenoPlayer: safeUrl(branding?.radio_player_url, DEFAULT_SOCIAL_LINKS.zenoPlayer)
   };
 
+  const resolveSocialUrl = (linkKey: SocialLinkGroupItem["linkKey"]): string => {
+    switch (linkKey) {
+      case "facebookProducciones":
+        return socialLinks.facebookProd;
+      case "facebook":
+        return socialLinks.facebookRadio;
+      case "instagram":
+        return socialLinks.instagram;
+      case "youtube":
+        return socialLinks.youtube;
+      case "mixcloud":
+        return SOCIAL_LINKS.mixcloud;
+      case "branding.zenoPlayer":
+        return socialLinks.zenoPlayer;
+      default:
+        return safeUrl(linkKey, SOCIAL_LINKS[linkKey as keyof typeof SOCIAL_LINKS]);
+    }
+  };
 
   return (
     <footer ref={ref} className="py-12 sm:py-16 px-4 sm:px-6 pb-32 sm:pb-36 relative border-t border-neon-purple/20">
@@ -124,71 +138,38 @@ const socialLinks = {
             </ul>
           </div>
 
-          {/* Section 1: Sociala medier */}
-          <div className="flex flex-col">
-            <h3 className="font-display text-lg font-bold text-neon-pink mb-4">{t.socialMedia}</h3>
-            <nav aria-label={t.socialMedia}>
-              <ul className="space-y-3">
-                <li>
-                  <a href={socialLinks.facebookProd} target="_blank" rel="noopener noreferrer" aria-label={t.ariaFacebookProd} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
-                    <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                      <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" aria-hidden="true" />
-                    </span>
-                    <span>Facebook</span>
-                  </a>
-                </li>
-                <li>
-                  <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label={t.ariaInstagram} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
-                    <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                      <Instagram className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" aria-hidden="true" />
-                    </span>
-                    <span>Instagram</span>
-                  </a>
-                </li>
-                <li>
-                  <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label={t.ariaYoutube} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
-                    <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                      <Youtube className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" aria-hidden="true" />
-                    </span>
-                    <span>YouTube</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-
-          {/* Section 2: Musik & Radio */}
-          <div className="flex flex-col">
-            <h3 className="font-display text-lg font-bold text-neon-cyan mb-4">{t.musicRadio}</h3>
-            <nav aria-label={t.musicRadio}>
-              <ul className="space-y-3">
-                <li>
-                  <a href={SOCIAL_LINKS.mixcloud} target="_blank" rel="noopener noreferrer" aria-label={t.ariaMixcloud} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
-                    <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                      <Music className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" aria-hidden="true" />
-                    </span>
-                    <span>Mixcloud</span>
-                  </a>
-                </li>
-                <li>
-                  <a href={socialLinks.zenoPlayer} target="_blank" rel="noopener noreferrer" aria-label={t.ariaZeno} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
-                    <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                      <RadioIcon className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" aria-hidden="true" />
-                    </span>
-                    <span>ZenoFM</span>
-                  </a>
-                </li>
-                <li>
-                  <a href={socialLinks.facebookRadio} target="_blank" rel="noopener noreferrer" aria-label={t.ariaFacebookRadio} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
-                    <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                      <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" aria-hidden="true" />
-                    </span>
-                    <span>FB Radio</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
+          {/* Social link groups rendered from config */}
+          {SOCIAL_LINK_GROUPS.map((group) => {
+            const colors = COLOR_STYLES[group.color];
+            return (
+              <div key={group.key} className="flex flex-col">
+                <h3 className={`font-display text-lg font-bold ${colors.heading} mb-4`}>{group.title[language]}</h3>
+                <nav aria-label={group.title[language]}>
+                  <ul className="space-y-3">
+                    {group.links.map((item) => {
+                      const Icon = ICONS[item.icon];
+                      return (
+                        <li key={item.linkKey}>
+                          <a
+                            href={resolveSocialUrl(item.linkKey)}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={item.ariaLabel[language]}
+                            className={`flex items-center gap-3 text-sm text-muted-foreground ${colors.hover} transition-colors group`}
+                          >
+                            <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                              <Icon className={`w-4 h-4 text-muted-foreground ${colors.iconHover} transition-colors`} aria-hidden="true" />
+                            </span>
+                            <span>{item.label[language]}</span>
+                          </a>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </nav>
+              </div>
+            );
+          })}
         </div>
 
         {/* Bottom bar */}
