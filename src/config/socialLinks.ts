@@ -12,6 +12,110 @@ export const SOCIAL_LINKS = {
 } as const;
 
 export type SocialLinkKey = keyof typeof SOCIAL_LINKS;
+export type Language = "sv" | "en" | "es";
+
+export type LocalizedText = Record<Language, string>;
+
+export interface SocialLinkGroupItem {
+  /** Key matching SOCIAL_LINKS or a dynamic source (e.g. branding). */
+  linkKey: SocialLinkKey | "branding.zenoPlayer";
+  /** Visible link label per language. */
+  label: LocalizedText;
+  /** Accessible name per language. */
+  ariaLabel: LocalizedText;
+  /** Icon identifier mapped by the consumer. */
+  icon: "facebook" | "instagram" | "youtube" | "music" | "radio";
+}
+
+export interface SocialLinkGroup {
+  key: string;
+  /** Section heading per language. */
+  title: LocalizedText;
+  /** Tailwind color token used for hover/text accents. */
+  color: "neon-pink" | "neon-cyan";
+  links: SocialLinkGroupItem[];
+}
+
+/**
+ * Single source of truth for the footer social link sections.
+ * Headings, links, labels, icons and ARIA labels all live here.
+ */
+export const SOCIAL_LINK_GROUPS: SocialLinkGroup[] = [
+  {
+    key: "socialMedia",
+    title: { sv: "Sociala medier", en: "Social Media", es: "Redes sociales" },
+    color: "neon-pink",
+    links: [
+      {
+        linkKey: "facebookProducciones",
+        label: { sv: "Facebook", en: "Facebook", es: "Facebook" },
+        ariaLabel: {
+          sv: "DJ Lobo Producciones på Facebook",
+          en: "DJ Lobo Producciones on Facebook",
+          es: "DJ Lobo Producciones en Facebook",
+        },
+        icon: "facebook",
+      },
+      {
+        linkKey: "instagram",
+        label: { sv: "Instagram", en: "Instagram", es: "Instagram" },
+        ariaLabel: {
+          sv: "DJ Lobo på Instagram",
+          en: "DJ Lobo on Instagram",
+          es: "DJ Lobo en Instagram",
+        },
+        icon: "instagram",
+      },
+      {
+        linkKey: "youtube",
+        label: { sv: "YouTube", en: "YouTube", es: "YouTube" },
+        ariaLabel: {
+          sv: "DJ Lobo på YouTube",
+          en: "DJ Lobo on YouTube",
+          es: "DJ Lobo en YouTube",
+        },
+        icon: "youtube",
+      },
+    ],
+  },
+  {
+    key: "musicRadio",
+    title: { sv: "Musik & Radio", en: "Music & Radio", es: "Música y Radio" },
+    color: "neon-cyan",
+    links: [
+      {
+        linkKey: "mixcloud",
+        label: { sv: "Mixcloud", en: "Mixcloud", es: "Mixcloud" },
+        ariaLabel: {
+          sv: "DJ Lobo på Mixcloud",
+          en: "DJ Lobo on Mixcloud",
+          es: "DJ Lobo en Mixcloud",
+        },
+        icon: "music",
+      },
+      {
+        linkKey: "branding.zenoPlayer",
+        label: { sv: "ZenoFM", en: "ZenoFM", es: "ZenoFM" },
+        ariaLabel: {
+          sv: "Lyssna på DJ Lobo Producciones via ZenoFM",
+          en: "Listen to DJ Lobo Producciones on ZenoFM",
+          es: "Escucha DJ Lobo Producciones en ZenoFM",
+        },
+        icon: "radio",
+      },
+      {
+        linkKey: "facebook",
+        label: { sv: "FB Radio", en: "FB Radio", es: "FB Radio" },
+        ariaLabel: {
+          sv: "DJ Lobo Radio på Facebook",
+          en: "DJ Lobo Radio on Facebook",
+          es: "DJ Lobo Radio en Facebook",
+        },
+        icon: "facebook",
+      },
+    ],
+  },
+];
 
 const MAX_URL_LENGTH = 2048;
 
