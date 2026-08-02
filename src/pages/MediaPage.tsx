@@ -11,6 +11,8 @@ import MediaLightbox from "@/components/MediaLightbox";
 import Seo from "@/components/Seo";
 import { getSeoMeta } from "@/lib/seoMeta";
 import SmartGalleryImage from "@/components/SmartGalleryImage";
+import { SOCIAL_LINKS } from "@/config/socialLinks";
+
 
 const translations = {
   sv: {
@@ -46,10 +48,11 @@ const translations = {
 };
 
 const DEFAULT_SOCIAL = {
-  instagram: "https://www.instagram.com/djloboradio",
-  youtube: "https://www.youtube.com/@djloboproducciones3211",
-  facebook: "https://www.facebook.com/djloboradiodjs/",
+  instagram: SOCIAL_LINKS.instagram,
+  youtube: SOCIAL_LINKS.youtube,
+  facebook: SOCIAL_LINKS.facebook,
 };
+
 
 const MediaPage = () => {
   const { images, isLoading } = useGallery();

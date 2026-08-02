@@ -4,13 +4,8 @@ import { useGallery } from "@/hooks/useGallery";
 import { useLanguage } from "@/contexts/LanguageContext";
 import MixcloudModal from "@/components/MixcloudModal";
 import { optimizeGallery } from "@/lib/imageOptimizer";
+import { SOCIAL_LINKS } from "@/config/socialLinks";
 
-const SOCIAL_LINKS = {
-  instagram: "https://www.instagram.com/djloboradio",
-  facebook: "https://www.facebook.com/djloboradiodjs/",
-  youtube: "https://www.youtube.com/@djloboproducciones3211",
-  mixcloud: "https://www.mixcloud.com/DjLobo75/",
-};
 
 const translations = {
   sv: {

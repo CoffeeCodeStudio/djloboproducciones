@@ -6,14 +6,16 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
 import { useBranding } from "@/hooks/useBranding";
 import NeonWordmark from "@/components/NeonWordmark";
+import { SOCIAL_LINKS } from "@/config/socialLinks";
 
 const DEFAULT_SOCIAL_LINKS = {
-  instagram: "https://www.instagram.com/djloboradio",
-  facebookRadio: "https://www.facebook.com/djloboradiodjs/",
-  facebookProd: "https://www.facebook.com/DjloboProduccionesSweden/",
-  youtube: "https://www.youtube.com/@djloboproducciones3211",
-  zenoPlayer: "https://zeno.fm/radio/dj-lobo-radio-o85p/"
+  instagram: SOCIAL_LINKS.instagram,
+  facebookRadio: SOCIAL_LINKS.facebook,
+  facebookProd: SOCIAL_LINKS.facebookProducciones,
+  youtube: SOCIAL_LINKS.youtube,
+  zenoPlayer: SOCIAL_LINKS.zenoPlayer
 };
+
 
 
 const translations = {
