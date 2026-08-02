@@ -45,7 +45,7 @@ describe("footer social link groups", () => {
     }
     expect(SOCIAL_LINKS.mixcloud).toBe("https://www.mixcloud.com/live/DjLobo75/");
     expect(SOCIAL_LINKS.facebook).toBe(
-      "https://www.facebook.com/profile.php?id=61592519669407"
+      "https://www.facebook.com/people/Adolfo-Rodriguez/pfbid02AjLQwJCVEWg4oTMSo9NH95iXPSMVZVn7uiti2HYt71e5kugCnFiWPBVLokoyAmCLl/"
     );
   });
 

@@ -4,7 +4,7 @@
  */
 export const SOCIAL_LINKS = {
   instagram: "https://www.instagram.com/djloboradio",
-  facebook: "https://www.facebook.com/profile.php?id=61592519669407",
+  facebook: "https://www.facebook.com/people/Adolfo-Rodriguez/pfbid02AjLQwJCVEWg4oTMSo9NH95iXPSMVZVn7uiti2HYt71e5kugCnFiWPBVLokoyAmCLl/",
   facebookProducciones: "https://www.facebook.com/DjloboProduccionesSweden/",
   youtube: "https://www.youtube.com/@djloboproducciones3211",
   mixcloud: "https://www.mixcloud.com/live/DjLobo75/",
