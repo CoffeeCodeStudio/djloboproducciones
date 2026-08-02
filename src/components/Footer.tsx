@@ -179,7 +179,7 @@ const socialLinks = {
                   </a>
                 </li>
                 <li>
-                  <a href={socialLinks.facebookRadio} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo Radio på Facebook" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
+                  <a href={socialLinks.facebookRadio} target="_blank" rel="noopener noreferrer" aria-label={t.ariaFacebookRadio} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" aria-hidden="true" />
                     </span>
