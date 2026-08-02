@@ -6,7 +6,7 @@ import { useLanguage } from "@/contexts/LanguageContext";
 import { useCookieConsent } from "@/contexts/CookieConsentContext";
 import { useBranding } from "@/hooks/useBranding";
 import NeonWordmark from "@/components/NeonWordmark";
-import { SOCIAL_LINKS } from "@/config/socialLinks";
+import { SOCIAL_LINKS, safeUrl } from "@/config/socialLinks";
 
 const DEFAULT_SOCIAL_LINKS = {
   instagram: SOCIAL_LINKS.instagram,
@@ -69,12 +69,13 @@ const Footer = forwardRef<HTMLElement>((_, ref) => {
   const t = translations[language];
 
 const socialLinks = {
-    instagram: DEFAULT_SOCIAL_LINKS.instagram,
-    youtube: DEFAULT_SOCIAL_LINKS.youtube,
-    facebookRadio: DEFAULT_SOCIAL_LINKS.facebookRadio,
-    facebookProd: DEFAULT_SOCIAL_LINKS.facebookProd,
-    zenoPlayer: branding?.radio_player_url || DEFAULT_SOCIAL_LINKS.zenoPlayer
+    instagram: safeUrl(DEFAULT_SOCIAL_LINKS.instagram, SOCIAL_LINKS.instagram),
+    youtube: safeUrl(DEFAULT_SOCIAL_LINKS.youtube, SOCIAL_LINKS.youtube),
+    facebookRadio: safeUrl(DEFAULT_SOCIAL_LINKS.facebookRadio, SOCIAL_LINKS.facebook),
+    facebookProd: safeUrl(DEFAULT_SOCIAL_LINKS.facebookProd, SOCIAL_LINKS.facebookProducciones),
+    zenoPlayer: safeUrl(branding?.radio_player_url, DEFAULT_SOCIAL_LINKS.zenoPlayer)
   };
+
 
   return (
     <footer ref={ref} className="py-12 sm:py-16 px-4 sm:px-6 pb-32 sm:pb-36 relative border-t border-neon-purple/20">
