@@ -30,7 +30,13 @@ const translations = {
     location: "Göteborg, Sverige",
     socialMedia: "Sociala medier",
     musicRadio: "Musik & Radio",
-    visitStudio: "Besök Coffee Code Studio"
+    visitStudio: "Besök Coffee Code Studio",
+    ariaFacebookProd: "DJ Lobo Producciones på Facebook",
+    ariaInstagram: "DJ Lobo på Instagram",
+    ariaYoutube: "DJ Lobo på YouTube",
+    ariaMixcloud: "DJ Lobo på Mixcloud",
+    ariaZeno: "Lyssna på DJ Lobo Producciones via ZenoFM",
+    ariaFacebookRadio: "DJ Lobo Radio på Facebook"
   },
   en: {
     copyright: "© 2026 DJ Lobo Producciones. All rights reserved.",
@@ -43,7 +49,13 @@ const translations = {
     location: "Gothenburg, Sweden",
     socialMedia: "Social Media",
     musicRadio: "Music & Radio",
-    visitStudio: "Visit Coffee Code Studio"
+    visitStudio: "Visit Coffee Code Studio",
+    ariaFacebookProd: "DJ Lobo Producciones on Facebook",
+    ariaInstagram: "DJ Lobo on Instagram",
+    ariaYoutube: "DJ Lobo on YouTube",
+    ariaMixcloud: "DJ Lobo on Mixcloud",
+    ariaZeno: "Listen to DJ Lobo Producciones on ZenoFM",
+    ariaFacebookRadio: "DJ Lobo Radio on Facebook"
   },
   es: {
     copyright: "© 2026 DJ Lobo Producciones. Todos los derechos reservados.",
@@ -56,7 +68,13 @@ const translations = {
     location: "Gotemburgo, Suecia",
     socialMedia: "Redes sociales",
     musicRadio: "Música y Radio",
-    visitStudio: "Visitar Coffee Code Studio"
+    visitStudio: "Visitar Coffee Code Studio",
+    ariaFacebookProd: "DJ Lobo Producciones en Facebook",
+    ariaInstagram: "DJ Lobo en Instagram",
+    ariaYoutube: "DJ Lobo en YouTube",
+    ariaMixcloud: "DJ Lobo en Mixcloud",
+    ariaZeno: "Escucha DJ Lobo Producciones en ZenoFM",
+    ariaFacebookRadio: "DJ Lobo Radio en Facebook"
   }
 };
 
@@ -112,7 +130,7 @@ const socialLinks = {
             <nav aria-label={t.socialMedia}>
               <ul className="space-y-3">
                 <li>
-                  <a href={socialLinks.facebookProd} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo Producciones på Facebook" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
+                  <a href={socialLinks.facebookProd} target="_blank" rel="noopener noreferrer" aria-label={t.ariaFacebookProd} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" aria-hidden="true" />
                     </span>
@@ -120,7 +138,7 @@ const socialLinks = {
                   </a>
                 </li>
                 <li>
-                  <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo på Instagram" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
+                  <a href={socialLinks.instagram} target="_blank" rel="noopener noreferrer" aria-label={t.ariaInstagram} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Instagram className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" aria-hidden="true" />
                     </span>
@@ -128,7 +146,7 @@ const socialLinks = {
                   </a>
                 </li>
                 <li>
-                  <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo på YouTube" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
+                  <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label={t.ariaYoutube} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Youtube className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" aria-hidden="true" />
                     </span>
@@ -145,7 +163,7 @@ const socialLinks = {
             <nav aria-label={t.musicRadio}>
               <ul className="space-y-3">
                 <li>
-                  <a href={SOCIAL_LINKS.mixcloud} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo på Mixcloud" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
+                  <a href={SOCIAL_LINKS.mixcloud} target="_blank" rel="noopener noreferrer" aria-label={t.ariaMixcloud} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Music className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" aria-hidden="true" />
                     </span>
@@ -153,7 +171,7 @@ const socialLinks = {
                   </a>
                 </li>
                 <li>
-                  <a href={socialLinks.zenoPlayer} target="_blank" rel="noopener noreferrer" aria-label="Lyssna på DJ Lobo Producciones via ZenoFM" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
+                  <a href={socialLinks.zenoPlayer} target="_blank" rel="noopener noreferrer" aria-label={t.ariaZeno} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <RadioIcon className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" aria-hidden="true" />
                     </span>
@@ -161,7 +179,7 @@ const socialLinks = {
                   </a>
                 </li>
                 <li>
-                  <a href={socialLinks.facebookRadio} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo Radio på Facebook" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
+                  <a href={socialLinks.facebookRadio} target="_blank" rel="noopener noreferrer" aria-label={t.ariaFacebookRadio} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" aria-hidden="true" />
                     </span>
