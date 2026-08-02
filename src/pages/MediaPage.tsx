@@ -11,7 +11,7 @@ import MediaLightbox from "@/components/MediaLightbox";
 import Seo from "@/components/Seo";
 import { getSeoMeta } from "@/lib/seoMeta";
 import SmartGalleryImage from "@/components/SmartGalleryImage";
-import { SOCIAL_LINKS } from "@/config/socialLinks";
+import { SOCIAL_LINKS, safeUrl, instagramProfileUrl, youtubeChannelUrl } from "@/config/socialLinks";
 
 
 const translations = {
@@ -70,14 +70,11 @@ const MediaPage = () => {
   }>({ open: false, type: "photo", src: "" });
 
   const socialLinks = {
-    instagram: branding?.instagram_username
-      ? `https://www.instagram.com/${branding.instagram_username}`
-      : DEFAULT_SOCIAL.instagram,
-    youtube: branding?.youtube_channel_id
-      ? `https://www.youtube.com/${branding.youtube_channel_id.startsWith("@") ? branding.youtube_channel_id : `channel/${branding.youtube_channel_id}`}`
-      : DEFAULT_SOCIAL.youtube,
-    facebook: DEFAULT_SOCIAL.facebook,
+    instagram: instagramProfileUrl(branding?.instagram_username, DEFAULT_SOCIAL.instagram),
+    youtube: youtubeChannelUrl(branding?.youtube_channel_id, DEFAULT_SOCIAL.youtube),
+    facebook: safeUrl(DEFAULT_SOCIAL.facebook, SOCIAL_LINKS.facebook),
   };
+
 
   // Build unified media items from gallery_images (which now have media_type)
   const allItems = (images || []).map((img) => {

@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { safeUrl } from "@/config/socialLinks";
+
 import {
   Play,
   Pause,
@@ -114,7 +116,7 @@ const NowPlayingBar = () => {
   const { status, errorMessage, setStatus } = useStreamStatus();
   const { language } = useLanguage();
   const { branding } = useBranding();
-  const streamUrl = branding?.radio_stream_url || FALLBACK_STREAM_URL;
+  const streamUrl = safeUrl(branding?.radio_stream_url, FALLBACK_STREAM_URL);
   const navigate = useNavigate();
   const lto = useLocalizedTo();
   const t = translations[language];

@@ -1,4 +1,6 @@
 import { useState, useEffect, useRef } from "react";
+import { isValidHttpUrl } from "@/config/socialLinks";
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -73,15 +75,28 @@ const RadioTab = () => {
   }, [branding?.radio_section_title, branding?.radio_stream_url, branding?.radio_player_url]);
 
   const handleSaveUrls = async () => {
+    const trimmedStream = streamUrl.trim();
+    const trimmedPlayer = playerUrl.trim();
+
+    if (trimmedStream && !isValidHttpUrl(trimmedStream)) {
+      sonnerToast.error("Stream-URL:en är ogiltig. Den måste börja med https://");
+      return;
+    }
+    if (trimmedPlayer && !isValidHttpUrl(trimmedPlayer)) {
+      sonnerToast.error("Spelar-URL:en är ogiltig. Den måste börja med https://");
+      return;
+    }
+
     setSavingUrls(true);
     const { error } = await updateBranding({
-      radio_stream_url: streamUrl.trim() || null,
-      radio_player_url: playerUrl.trim() || null,
+      radio_stream_url: trimmedStream || null,
+      radio_player_url: trimmedPlayer || null,
     });
     setSavingUrls(false);
     if (error) sonnerToast.error("Kunde inte spara: " + error);
     else { sonnerToast.success("✅ Radio-länkar sparade!"); refetch(); }
   };
+
 
   const fetchMessages = async () => {
     setLoading(true);
