@@ -57,11 +57,11 @@ const translations = {
     yearsLabel: "Años",
     eventsLabel: "Eventos",
     feature1Title: "80s & 90s",
-    feature1Desc: "Synth-pop, eurodance y clásicos disco",
+    feature1Desc: "Hits de una era que nunca muere",
     feature2Title: "Latin Vibes",
-    feature2Desc: "Salsa, reggaeton y tropical hits",
+    feature2Desc: "Ritmos que hacen mover el piso",
     feature3Title: "Club & Eventos",
-    feature3Desc: "Bodas, empresas y fiestas privadas",
+    feature3Desc: "Nosotros ponemos el ambiente — tú disfrutas",
   },
 };
 
