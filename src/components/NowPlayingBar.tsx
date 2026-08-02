@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect, useCallback } from "react";
+import { safeUrl } from "@/config/socialLinks";
+
 import {
   Play,
   Pause,
