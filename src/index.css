@@ -167,6 +167,23 @@ body {
     }
   }
 
+  /* Genre feature cards — lift + neon glow on hover */
+  .genre-card {
+    transition: transform 0.3s ease-out, box-shadow 0.3s ease-out, border-color 0.3s ease-out;
+  }
+  .genre-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 18px var(--card-glow), 0 0 36px var(--card-glow);
+    border-color: var(--card-glow);
+  }
+  .genre-icon {
+    transition: transform 0.3s ease-out, filter 0.3s ease-out;
+  }
+  .genre-card:hover .genre-icon {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 10px var(--card-glow));
+  }
+
   /* Live dot pulse — transform + opacity */
   .live-dot {
     animation: live-pulse 1.5s ease-in-out infinite;

@@ -1,5 +1,6 @@
 import djLoboAboutImage from "@/assets/dj-lobo-about.jpg";
 import { Music, Headphones, Zap, Disc } from "lucide-react";
+import type { CSSProperties } from "react";
 import { useBranding } from "@/hooks/useBranding";
 import { useLanguage } from "@/contexts/LanguageContext";
 import { useScrollReveal } from "@/hooks/useScrollReveal";
@@ -19,11 +20,11 @@ const translations = {
     yearsLabel: "År",
     eventsLabel: "Spelningar",
     feature1Title: "80 & 90-tal",
-    feature1Desc: "Synth-pop, eurodance och discoklassiker",
+    feature1Desc: "Hits från en era som aldrig dör",
     feature2Title: "Latin Vibes",
-    feature2Desc: "Salsa, reggaeton och tropical hits",
+    feature2Desc: "Rytmer som får golvet att röra sig",
     feature3Title: "Club & Spelningar",
-    feature3Desc: "Bröllop, företag och privatfester",
+    feature3Desc: "Vi sätter stämningen — du njuter",
   },
   en: {
     title: "ABOUT DJ LOBO",
@@ -38,11 +39,11 @@ const translations = {
     yearsLabel: "Years",
     eventsLabel: "Events",
     feature1Title: "80s & 90s",
-    feature1Desc: "Synth-pop, eurodance and disco classics",
+    feature1Desc: "Hits from an era that never dies",
     feature2Title: "Latin Vibes",
-    feature2Desc: "Salsa, reggaeton and tropical hits",
+    feature2Desc: "Rhythms that move the floor",
     feature3Title: "Club & Events",
-    feature3Desc: "Weddings, corporate and private parties",
+    feature3Desc: "We set the mood — you enjoy",
   },
   es: {
     title: "SOBRE DJ LOBO",
@@ -57,11 +58,11 @@ const translations = {
     yearsLabel: "Años",
     eventsLabel: "Eventos",
     feature1Title: "80s & 90s",
-    feature1Desc: "Synth-pop, eurodance y clásicos disco",
+    feature1Desc: "Hits de una era que nunca muere",
     feature2Title: "Latin Vibes",
-    feature2Desc: "Salsa, reggaeton y tropical hits",
+    feature2Desc: "Ritmos que hacen mover el piso",
     feature3Title: "Club & Eventos",
-    feature3Desc: "Bodas, empresas y fiestas privadas",
+    feature3Desc: "Nosotros ponemos el ambiente — tú disfrutas",
   },
 };
 
@@ -90,18 +91,24 @@ const AboutSection = () => {
       title: t.feature1Title,
       description: t.feature1Desc,
       gradient: "icon-gradient-pink",
+      glowColor: "hsla(var(--neon-pink), 0.45)",
+      iconColor: "text-neon-pink",
     },
     {
       icon: Disc,
       title: t.feature2Title,
       description: t.feature2Desc,
       gradient: "icon-gradient-cyan",
+      glowColor: "hsla(var(--neon-cyan), 0.45)",
+      iconColor: "text-neon-cyan",
     },
     {
       icon: Headphones,
       title: t.feature3Title,
       description: t.feature3Desc,
       gradient: "icon-gradient-purple",
+      glowColor: "hsla(var(--neon-purple), 0.45)",
+      iconColor: "text-neon-purple",
     },
   ];
 
@@ -181,10 +188,11 @@ const AboutSection = () => {
           {features.map((feature, index) => (
             <li
               key={index}
-              className="scroll-reveal glass-card p-3 sm:p-4 text-center"
+              className="scroll-reveal glass-card genre-card p-3 sm:p-4 text-center"
+              style={{ "--card-glow": feature.glowColor } as CSSProperties}
             >
               <div
-                className={`w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${feature.gradient} flex items-center justify-center mx-auto mb-2 sm:mb-3`}
+                className={`genre-icon w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${feature.gradient} flex items-center justify-center mx-auto mb-2 sm:mb-3`}
                 aria-hidden="true"
               >
                 <feature.icon className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
