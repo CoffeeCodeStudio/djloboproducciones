@@ -1,5 +1,5 @@
 import { forwardRef } from "react";
-import { Instagram, Facebook, Youtube, Radio as RadioIcon, Mail, Phone, MapPin, Cookie } from "lucide-react";
+import { Instagram, Facebook, Youtube, Radio as RadioIcon, Music, Mail, Phone, MapPin, Cookie } from "lucide-react";
 import { Link } from "react-router-dom";
 import { useLocalizedTo } from "@/hooks/useLocalizedTo";
 import { useLanguage } from "@/contexts/LanguageContext";
@@ -28,8 +28,8 @@ const translations = {
     about: "Om DJ Lobo",
     aboutText: "Professionell DJ i Göteborg med 20+ års erfarenhet. Expert på House, World Hits, 80-tal, 90-tal och Latin beats.",
     location: "Göteborg, Sverige",
-    bookSection: "DJ Lobo Producciones",
-    radioSection: "Följ Radion",
+    socialMedia: "Sociala medier",
+    musicRadio: "Musik & Radio",
     visitStudio: "Besök Coffee Code Studio"
   },
   en: {
@@ -41,8 +41,8 @@ const translations = {
     about: "About DJ Lobo",
     aboutText: "Professional DJ in Gothenburg with 20+ years of experience. Expert in House, World Hits, 80s, 90s and Latin beats.",
     location: "Gothenburg, Sweden",
-    bookSection: "DJ Lobo Producciones",
-    radioSection: "Follow the Radio",
+    socialMedia: "Social Media",
+    musicRadio: "Music & Radio",
     visitStudio: "Visit Coffee Code Studio"
   },
   es: {
@@ -54,8 +54,8 @@ const translations = {
     about: "Sobre DJ Lobo",
     aboutText: "DJ profesional en Gotemburgo con más de 20 años de experiencia. Experto en House, World Hits, 80s, 90s y Latin beats.",
     location: "Gotemburgo, Suecia",
-    bookSection: "DJ Lobo Producciones",
-    radioSection: "Sigue la Radio",
+    socialMedia: "Redes sociales",
+    musicRadio: "Música y Radio",
     visitStudio: "Visitar Coffee Code Studio"
   }
 };
@@ -106,17 +106,17 @@ const socialLinks = {
             </ul>
           </div>
 
-          {/* Section 1: Boka DJ Lobo */}
+          {/* Section 1: Sociala medier */}
           <div className="flex flex-col">
-            <h3 className="font-display text-lg font-bold text-neon-pink mb-4">{t.bookSection}</h3>
-            <nav aria-label={t.bookSection}>
+            <h3 className="font-display text-lg font-bold text-neon-pink mb-4">{t.socialMedia}</h3>
+            <nav aria-label={t.socialMedia}>
               <ul className="space-y-3">
                 <li>
                   <a href={socialLinks.facebookProd} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo Producciones på Facebook" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" aria-hidden="true" />
                     </span>
-                    <span>FB Producciones</span>
+                    <span>Facebook</span>
                   </a>
                 </li>
                 <li>
@@ -139,17 +139,17 @@ const socialLinks = {
             </nav>
           </div>
 
-          {/* Section 2: Följ Radion */}
+          {/* Section 2: Musik & Radio */}
           <div className="flex flex-col">
-            <h3 className="font-display text-lg font-bold text-neon-cyan mb-4">{t.radioSection}</h3>
-            <nav aria-label={t.radioSection}>
+            <h3 className="font-display text-lg font-bold text-neon-cyan mb-4">{t.musicRadio}</h3>
+            <nav aria-label={t.musicRadio}>
               <ul className="space-y-3">
                 <li>
-                  <a href={socialLinks.facebookRadio} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo Producciones på Facebook" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
+                  <a href={SOCIAL_LINKS.mixcloud} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo på Mixcloud" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
-                      <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" aria-hidden="true" />
+                      <Music className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" aria-hidden="true" />
                     </span>
-                    <span>FB Radio</span>
+                    <span>Mixcloud</span>
                   </a>
                 </li>
                 <li>
@@ -158,6 +158,14 @@ const socialLinks = {
                       <RadioIcon className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" aria-hidden="true" />
                     </span>
                     <span>ZenoFM</span>
+                  </a>
+                </li>
+                <li>
+                  <a href={socialLinks.facebookRadio} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo Radio på Facebook" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-cyan transition-colors group">
+                    <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
+                      <Facebook className="w-4 h-4 text-muted-foreground group-hover:text-neon-cyan transition-colors" aria-hidden="true" />
+                    </span>
+                    <span>FB Radio</span>
                   </a>
                 </li>
               </ul>
