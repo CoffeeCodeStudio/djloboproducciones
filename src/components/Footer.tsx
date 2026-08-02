@@ -146,7 +146,7 @@ const socialLinks = {
                   </a>
                 </li>
                 <li>
-                  <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label="DJ Lobo på YouTube" className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
+                  <a href={socialLinks.youtube} target="_blank" rel="noopener noreferrer" aria-label={t.ariaYoutube} className="flex items-center gap-3 text-sm text-muted-foreground hover:text-neon-pink transition-colors group">
                     <span className="w-9 h-9 glass-card rounded-full flex items-center justify-center group-hover:scale-110 transition-transform flex-shrink-0">
                       <Youtube className="w-4 h-4 text-muted-foreground group-hover:text-neon-pink transition-colors" aria-hidden="true" />
                     </span>
