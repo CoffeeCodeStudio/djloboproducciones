@@ -28,8 +28,8 @@ const translations = {
     about: "Om DJ Lobo",
     aboutText: "Professionell DJ i Göteborg med 20+ års erfarenhet. Expert på House, World Hits, 80-tal, 90-tal och Latin beats.",
     location: "Göteborg, Sverige",
-    bookSection: "DJ Lobo Producciones",
-    radioSection: "Följ Radion",
+    socialMedia: "Sociala medier",
+    musicRadio: "Musik & Radio",
     visitStudio: "Besök Coffee Code Studio"
   },
   en: {
@@ -41,8 +41,8 @@ const translations = {
     about: "About DJ Lobo",
     aboutText: "Professional DJ in Gothenburg with 20+ years of experience. Expert in House, World Hits, 80s, 90s and Latin beats.",
     location: "Gothenburg, Sweden",
-    bookSection: "DJ Lobo Producciones",
-    radioSection: "Follow the Radio",
+    socialMedia: "Social Media",
+    musicRadio: "Music & Radio",
     visitStudio: "Visit Coffee Code Studio"
   },
   es: {
@@ -54,8 +54,8 @@ const translations = {
     about: "Sobre DJ Lobo",
     aboutText: "DJ profesional en Gotemburgo con más de 20 años de experiencia. Experto en House, World Hits, 80s, 90s y Latin beats.",
     location: "Gotemburgo, Suecia",
-    bookSection: "DJ Lobo Producciones",
-    radioSection: "Sigue la Radio",
+    socialMedia: "Redes sociales",
+    musicRadio: "Música y Radio",
     visitStudio: "Visitar Coffee Code Studio"
   }
 };
