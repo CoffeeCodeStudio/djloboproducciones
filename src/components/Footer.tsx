@@ -68,7 +68,13 @@ const translations = {
     location: "Gotemburgo, Suecia",
     socialMedia: "Redes sociales",
     musicRadio: "Música y Radio",
-    visitStudio: "Visitar Coffee Code Studio"
+    visitStudio: "Visitar Coffee Code Studio",
+    ariaFacebookProd: "DJ Lobo Producciones en Facebook",
+    ariaInstagram: "DJ Lobo en Instagram",
+    ariaYoutube: "DJ Lobo en YouTube",
+    ariaMixcloud: "DJ Lobo en Mixcloud",
+    ariaZeno: "Escucha DJ Lobo Producciones en ZenoFM",
+    ariaFacebookRadio: "DJ Lobo Radio en Facebook"
   }
 };
 
