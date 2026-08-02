@@ -22,6 +22,11 @@ const EXPECTED_HREF: Record<string, string | RegExp> = {
   facebook: SOCIAL_LINKS.facebook,
 };
 
+const socialGroupLinks = (page: Page) =>
+  page.locator(
+    'footer nav[aria-label="Sociala medier"] a, footer nav[aria-label="Social Media"] a, footer nav[aria-label="Musik & Radio"] a, footer nav[aria-label="Music & Radio"] a'
+  );
+
 const gotoLang = async (page: Page, lang: Lang) => {
   await page.goto(lang === "sv" ? "/sv" : "/en", { waitUntil: "domcontentloaded" });
   await page.locator("footer").scrollIntoViewIfNeeded();
@@ -69,7 +74,7 @@ test.describe("footer social groups per language", () => {
       page.locator("footer").getByRole("heading", { name: "Musik & Radio", exact: true })
     ).toBeVisible();
 
-    const svHrefs = await page.locator("footer nav a").evaluateAll((els) =>
+    const svHrefs = await socialGroupLinks(page).evaluateAll((els) =>
       els.map((el) => (el as HTMLAnchorElement).href)
     );
 
@@ -84,7 +89,7 @@ test.describe("footer social groups per language", () => {
       page.locator("footer").getByRole("heading", { name: "Sociala medier", exact: true })
     ).toHaveCount(0);
 
-    const enHrefs = await page.locator("footer nav a").evaluateAll((els) =>
+    const enHrefs = await socialGroupLinks(page).evaluateAll((els) =>
       els.map((el) => (el as HTMLAnchorElement).href)
     );
     expect(enHrefs).toEqual(svHrefs);
