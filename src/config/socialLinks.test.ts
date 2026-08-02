@@ -68,3 +68,85 @@ describe("footer social link groups", () => {
     }
   });
 });
+
+const LANGS = ["sv", "en", "es"] as const;
+
+describe("social link URL protocol validation", () => {
+  it("every URL in SOCIAL_LINKS uses https and is a valid absolute URL", () => {
+    for (const [key, url] of Object.entries(SOCIAL_LINKS)) {
+      expect(isValidHttpUrl(url), `${key} should be a valid http(s) URL`).toBe(true);
+      expect(new URL(url).protocol, `${key} should use https`).toBe("https:");
+      expect(url.trim(), `${key} should not contain surrounding whitespace`).toBe(url);
+    }
+  });
+
+  it("rejects non-http protocols and malformed values", () => {
+    for (const bad of [
+      "javascript:alert(1)",
+      "data:text/html,<script>",
+      "ftp://example.com",
+      "/relative/path",
+      "example.com",
+      "",
+      "   ",
+      null,
+      undefined,
+      42,
+    ]) {
+      expect(isValidHttpUrl(bad as unknown), `${String(bad)} should be invalid`).toBe(false);
+      expect(safeUrl(bad as unknown, SOCIAL_LINKS.instagram)).toBe(SOCIAL_LINKS.instagram);
+    }
+  });
+
+  it("keeps a valid https URL untouched through safeUrl", () => {
+    expect(safeUrl(SOCIAL_LINKS.mixcloud, SOCIAL_LINKS.instagram)).toBe(SOCIAL_LINKS.mixcloud);
+    expect(safeUrl("  https://example.com/live  ", SOCIAL_LINKS.instagram)).toBe(
+      "https://example.com/live"
+    );
+  });
+
+  it("every static group link resolves to an https URL", () => {
+    for (const group of SOCIAL_LINK_GROUPS) {
+      for (const link of group.links) {
+        if (link.linkKey.startsWith("branding.")) continue;
+        const url = SOCIAL_LINKS[link.linkKey as keyof typeof SOCIAL_LINKS];
+        expect(url, `${link.linkKey} must exist in SOCIAL_LINKS`).toBeDefined();
+        expect(new URL(url).protocol).toBe("https:");
+      }
+    }
+  });
+});
+
+describe("no duplicates per language context", () => {
+  it.each(LANGS)("has unique link labels within each group (%s)", (lang) => {
+    for (const group of SOCIAL_LINK_GROUPS) {
+      const labels = group.links.map((l) => l.label[lang]);
+      expect(new Set(labels).size, `duplicate label in ${group.key} (${lang})`).toBe(
+        labels.length
+      );
+    }
+  });
+
+  it.each(LANGS)("has unique aria-labels across the whole footer (%s)", (lang) => {
+    const ariaLabels = SOCIAL_LINK_GROUPS.flatMap((g) => g.links.map((l) => l.ariaLabel[lang]));
+    expect(new Set(ariaLabels).size, `duplicate aria-label (${lang})`).toBe(ariaLabels.length);
+  });
+
+  it.each(LANGS)("has unique group titles (%s)", (lang) => {
+    const titles = SOCIAL_LINK_GROUPS.map((g) => g.title[lang]);
+    expect(new Set(titles).size).toBe(titles.length);
+  });
+
+  it("never renders the same URL twice across all groups", () => {
+    const urls = SOCIAL_LINK_GROUPS.flatMap((g) =>
+      g.links
+        .filter((l) => !l.linkKey.startsWith("branding."))
+        .map((l) => SOCIAL_LINKS[l.linkKey as keyof typeof SOCIAL_LINKS])
+    );
+    expect(new Set(urls).size, `duplicate URL: ${urls.join(", ")}`).toBe(urls.length);
+  });
+
+  it("keeps the two Facebook entries pointing at different pages", () => {
+    expect(SOCIAL_LINKS.facebook).not.toBe(SOCIAL_LINKS.facebookProducciones);
+  });
+});
