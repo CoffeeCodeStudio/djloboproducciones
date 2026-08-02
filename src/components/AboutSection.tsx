@@ -189,7 +189,7 @@ const AboutSection = () => {
             <li
               key={index}
               className="scroll-reveal glass-card genre-card p-3 sm:p-4 text-center"
-              style={{ "--card-glow": feature.glowColor } as React.CSSProperties}
+              style={{ "--card-glow": feature.glowColor } as CSSProperties}
             >
               <div
                 className={`genre-icon w-10 h-10 sm:w-12 sm:h-12 rounded-xl ${feature.gradient} flex items-center justify-center mx-auto mb-2 sm:mb-3`}
