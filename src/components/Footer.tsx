@@ -30,7 +30,13 @@ const translations = {
     location: "Göteborg, Sverige",
     socialMedia: "Sociala medier",
     musicRadio: "Musik & Radio",
-    visitStudio: "Besök Coffee Code Studio"
+    visitStudio: "Besök Coffee Code Studio",
+    ariaFacebookProd: "DJ Lobo Producciones på Facebook",
+    ariaInstagram: "DJ Lobo på Instagram",
+    ariaYoutube: "DJ Lobo på YouTube",
+    ariaMixcloud: "DJ Lobo på Mixcloud",
+    ariaZeno: "Lyssna på DJ Lobo Producciones via ZenoFM",
+    ariaFacebookRadio: "DJ Lobo Radio på Facebook"
   },
   en: {
     copyright: "© 2026 DJ Lobo Producciones. All rights reserved.",
