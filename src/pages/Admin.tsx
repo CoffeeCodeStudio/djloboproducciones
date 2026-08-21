@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useLayoutEffect } from "react";
+import { useState, useEffect, useRef, useLayoutEffect, lazy, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,16 +10,23 @@ import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { useNoindex } from "@/hooks/useNoindex";
 import AdminLogin from "@/components/AdminLogin";
-import FramsidaTab from "@/components/admin/FramsidaTab";
-import GalleryTab from "@/components/admin/GalleryTab";
-import RadioTab from "@/components/admin/RadioTab";
-import TestimonialsTab from "@/components/admin/TestimonialsTab";
-import SpelningarTab from "@/components/admin/SpelningarTab";
-import BrandingTab from "@/components/admin/BrandingTab";
-import HelpTab from "@/components/admin/HelpTab";
-import UsersTab from "@/components/admin/UsersTab";
-import PromosTab from "@/components/admin/PromosTab";
-import PricingTab from "@/components/admin/PricingTab";
+
+// Admin tabs are code-split: only the active tab's chunk is fetched.
+// All tab modules use default exports; the .then(m => ({ default: m.X }))
+// form is only needed for named exports.
+const FramsidaTab = lazy(() => import("@/components/admin/FramsidaTab"));
+const GalleryTab = lazy(() => import("@/components/admin/GalleryTab"));
+const RadioTab = lazy(() => import("@/components/admin/RadioTab"));
+const TestimonialsTab = lazy(() => import("@/components/admin/TestimonialsTab"));
+const SpelningarTab = lazy(() => import("@/components/admin/SpelningarTab"));
+const BrandingTab = lazy(() => import("@/components/admin/BrandingTab"));
+const HelpTab = lazy(() => import("@/components/admin/HelpTab"));
+const UsersTab = lazy(() => import("@/components/admin/UsersTab"));
+const PromosTab = lazy(() => import("@/components/admin/PromosTab"));
+const PricingTab = lazy(() => import("@/components/admin/PricingTab"));
+
+const TabFallback = () => <div className="p-8 text-center">Laddar...</div>;
+
 
 const TAB_DEFS = [
   { value: "framsida",   icon: Home,       label: "Hem" },
